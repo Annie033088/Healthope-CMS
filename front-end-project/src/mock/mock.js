@@ -1,16 +1,16 @@
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
 
+const mock = new MockAdapter(axios)
 
-export default function setupMock() {
-    let mockAdapter = new MockAdapter(axios)
+// 自動載入其他 mock 模組
+const context = require.context('./api', false, /\.js$/)
+context.keys().forEach((key) => {
+  const setup = context(key).default
+  if (typeof setup === 'function') {
+    // 把 mock 傳進去使用
+    setup(mock) 
+  }
+})
 
-    mockAdapter.onPost("/api/Login/LoggedIn").reply(200, {
-        ErrorCode: 1
-    })
-
-    mockAdapter.onPost("/api/Login/LoggedOut").reply(200, {
-        ErrorCode: 1
-    })
-
-}
+export default mock

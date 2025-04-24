@@ -46,14 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Interface\IAppSetting.cs" />
+    <Compile Include="Models\Admin.cs" />
+    <Compile Include="Models\AdminIdentityAndPermission.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\AdminPermissionUtility.cs" />
+    <Compile Include="Utility\AppSetting.cs" />
+    <Compile Include="Utility\Hash.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
