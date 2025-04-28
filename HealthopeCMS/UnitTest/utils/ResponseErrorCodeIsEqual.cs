@@ -8,9 +8,9 @@ namespace ToDoListTest.utils
     {
         public bool ErrorCodeIsEqual(IHttpActionResult actionResult, ErrorCodeDefine errorCodeDefine)
         {
-            if (actionResult is JsonResult<ResultResponse> jsonResultWithoutData)
+            if (actionResult is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
             {
-                if (jsonResultWithoutData.Content is ResultResponse resultWithoutData)
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
                 {
                     return resultWithoutData.ErrorCode == errorCodeDefine;
                 }
@@ -23,9 +23,9 @@ namespace ToDoListTest.utils
     {
         public bool ErrorCodeIsEqual(IHttpActionResult actionResult, ErrorCodeDefine errorCodeDefine)
         {
-            if (actionResult is JsonResult<ResultResponse<T>> jsonResultWithData)
+            if (actionResult is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
             {
-                if (jsonResultWithData.Content is ResultResponse<T> resultWithData)
+                if (okResultWithoutData.Content is ResultResponse<T> resultWithData)
                 {
                     return resultWithData.ErrorCode == errorCodeDefine;
                 }

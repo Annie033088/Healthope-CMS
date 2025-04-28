@@ -21,6 +21,8 @@ export default {
   methods: {
     colseNotificationBox() {
       this.$notificationBox.notificationBoxFlag = false;
+      // 刷新頁面
+      this.$router.go(0);
     },
   },
   created() {},

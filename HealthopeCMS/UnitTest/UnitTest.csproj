@@ -178,8 +178,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test\AccountAccess\AccountAccessServiceTest.cs" />
-    <Compile Include="Test\AccountAccess\AccountAccessControllerTest.cs" />
+    <Compile Include="Test\AccountAccessTest\AccountAccessServiceTest.cs" />
+    <Compile Include="Test\AccountAccessTest\AccountAccessControllerTest.cs" />
+    <Compile Include="Test\AdminTest\AdminControllerTest.cs" />
+    <Compile Include="Test\AdminTest\AdminRepositoryTest.cs" />
+    <Compile Include="Test\AdminTest\AdminServiceTest.cs" />
+    <Compile Include="Test\FilterTest\AdminKickOutFilterTest.cs" />
+    <Compile Include="Test\FilterTest\AdminPermissionAuthFilterTest.cs" />
     <Compile Include="utils\ResponseErrorCodeIsEqual.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -188,7 +193,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Service\" />
-    <Folder Include="Test\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApiLayer\ApiLayer.csproj">

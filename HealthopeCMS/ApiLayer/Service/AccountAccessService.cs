@@ -117,8 +117,6 @@ namespace ApiLayer.Service
             {
                 AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
 
-                if (adminSession == null) { return false; }
-
                 string redisKey = "Admin" + adminSession.AdminId;
 
                 // 清除會話
@@ -144,8 +142,7 @@ namespace ApiLayer.Service
             {
                 AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
 
-                if (adminSession == null) 
-                    return false;
+                if (adminSession == null) return false;
 
                 return true;
             }

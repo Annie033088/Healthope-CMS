@@ -5,13 +5,13 @@ using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
-using ApiLayer.Service;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 
 namespace ApiLayer.Controllers.api
 {
+    [RequestLoggerFilter]
     public class AccountAccessController : ApiController
     {
         private readonly AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
@@ -31,8 +31,15 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
-                (bool success, Admin admin) = accountAccessService.AdminLogin(loginDto);
                 ResultResponse response;
+
+                if (!ModelState.IsValid || loginDto.Account == loginDto.Pwd)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (bool success, Admin admin) = accountAccessService.AdminLogin(loginDto);
 
                 if (!success)
                 {
@@ -100,7 +107,7 @@ namespace ApiLayer.Controllers.api
                 if (accountAccessService.AdminLoggedIn())
                     return Json(new ResultResponse() { ErrorCode = ErrorCodeDefine.Success });
 
-                return Json(new ResultResponse() { ErrorCode = ErrorCodeDefine.NoPermission });
+                return Json(new ResultResponse() { ErrorCode = ErrorCodeDefine.UserNotLogin });
             }
             catch (Exception)
             {

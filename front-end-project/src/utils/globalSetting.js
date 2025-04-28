@@ -84,3 +84,14 @@ export function errorCodeToMessage(errorCode) {
     }
 }
 
+export const adminPermission = {
+    // 無
+    None:0,
+
+    // 管理者相關權限
+    EditAdmin:1,
+
+    // 
+    EditMember:2
+}
+

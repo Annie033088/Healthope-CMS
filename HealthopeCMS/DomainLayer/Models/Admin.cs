@@ -25,11 +25,6 @@ namespace DomainLayer.Models
         public bool Status { get; set; }
 
         /// <summary>
-        /// 職位描述(或權限描述)
-        /// </summary>
-        public string PositionDescription { get; set; }
-
-        /// <summary>
         /// 身份(對應權限)
         /// </summary>
         public byte Identity { get; set; }

@@ -5,7 +5,7 @@ namespace PersistentLayer.Interface
     public interface IAdminRepository
     {
         /// <summary>
-        /// 取得登入中的管理員資料
+        /// 取得正要登入的管理員資料
         /// </summary>
         Admin GetLoggingInAdmin(string account);
 

@@ -1,18 +1,21 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
 using DomainLayer.Models;
+using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ToDoListTest.utils;
 
-namespace UnitTest.Test.AccountAccess
+namespace UnitTest.Test.AccountAccessTest
 {
     [TestClass]
     public class AccountAccessControllerTest
     {
+        private readonly AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
         private AccountAccessController controller;
         private Mock<IAccountAccessService> loginServiceMock;
 
@@ -45,7 +48,7 @@ namespace UnitTest.Test.AccountAccess
             // Act
             IHttpActionResult result = controller.VerifyAdminLogin(loginDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            ResponseErrorCodeIsEqual<List<AdminPermission>> errorCodeIsEqual = new ResponseErrorCodeIsEqual<List<AdminPermission>>();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success)) return;
 
             Assert.Fail();
@@ -56,7 +59,7 @@ namespace UnitTest.Test.AccountAccess
         {
             // Arrange
             string account = "eqweqw123";
-            string pwd = "4556fgerger";
+            string pwd = "g4556fgerger";
             RequestLoginDto loginDto = new RequestLoginDto { Account = account, Pwd = pwd };
 
             // Mock 設定
@@ -70,6 +73,35 @@ namespace UnitTest.Test.AccountAccess
 
             ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.LoginFailed)) return;
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 登入_失敗_狀態禁用()
+        {
+            // Arrange
+            string account = "eqweqw123";
+            string pwd = "4556fgerger";
+            RequestLoginDto loginDto = new RequestLoginDto { Account = account, Pwd = pwd };
+
+            // Mock 設定
+            bool success = true;
+            Admin admin = new Admin()
+            {
+                AdminId = 10,
+                Identity = 5,
+                Status = false
+            };
+            loginServiceMock.Setup(s => s.AdminLogin(loginDto))
+                .Returns((success, admin));
+
+            // Act
+            IHttpActionResult result = controller.VerifyAdminLogin(loginDto);
+
+            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Baned)) return;
 
             // Assert
             Assert.Fail("測試出錯");

@@ -13,6 +13,8 @@ namespace DomainLayer.Models
         /// 管理者相關權限
         /// </summary>
         EditAdmin,
+
+        EditMember,
     }
 
     public enum AdminIdentity
@@ -65,7 +67,8 @@ namespace DomainLayer.Models
         /// </summary>
         public readonly Dictionary<AdminIdentity, List<AdminPermission>> IdentityPermission = new Dictionary<AdminIdentity, List<AdminPermission>>()
         {
-            { AdminIdentity.SuperAdmin, new List<AdminPermission> { AdminPermission.EditAdmin } },
+            { AdminIdentity.SuperAdmin, new List<AdminPermission> { AdminPermission.EditAdmin, AdminPermission.EditMember } },
+            { AdminIdentity.Admin, new List<AdminPermission> { AdminPermission.EditMember } },
         };
     }
 }

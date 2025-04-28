@@ -12,7 +12,7 @@ namespace PersistentLayer.Repository
         private readonly string ConnStr = ConfigurationManager.ConnectionStrings["ConnStr"].ConnectionString;
 
         /// <summary>
-        /// 取得登入中的管理員資料
+        /// 取得正要登入的管理員資料
         /// </summary>
         public Admin GetLoggingInAdmin(string account)
         {
@@ -71,18 +71,17 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_addAdmin @account, @hash, @positionDescription, @identity";
+                cmd.CommandText = "EXEC pro_healthope_addAdmin @account, @hash, @identity";
 
                 cmd.Parameters.Add("@account", SqlDbType.VarChar).Value = admin.Account;
                 cmd.Parameters.Add("@hash", SqlDbType.VarChar).Value = admin.Hash;
-                cmd.Parameters.Add("@positionDescription", SqlDbType.NVarChar).Value = admin.PositionDescription;
                 cmd.Parameters.Add("@identity", SqlDbType.TinyInt).Value = admin.Identity;
 
                 cmd.Connection.Open();
 
                 int ExeCnt = cmd.ExecuteNonQuery();
 
-                //受影響筆數為1代表成功
+                // 受影響筆數為1代表成功
                 if (ExeCnt == 1)
                 {
                     return true;

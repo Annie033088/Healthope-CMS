@@ -1,18 +1,20 @@
 <template>
-  <div>
-    <AppSidebar class="sidebar"> </AppSidebar>
-    <h1 class="contentContainer">weqiopweiqweqwioep</h1>
+  <div >
+    <h1 class="homeTitle">你好，管理者</h1>
+    <h2 class="homeTitle">歡迎來到 Healthope 後台管理網站</h2>
+    <div class="imgContainer">
+      <img
+        class="imgHealthopeLogo"
+        src="@/assets/logo/HealthopeLogo-circle-removebg-preview.png"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import AppSidebar from "@/components/AppSidebar.vue";
-
 export default {
   name: "HealthopeHome",
-  components: {
-    AppSidebar,
-  },
+  components: {},
   data() {
     return {
       tasks: [],
@@ -22,8 +24,18 @@ export default {
 </script>
 
 <style scoped>
-.contentContainer {
-  margin-top: 0;
-  margin-left: 200px;
+.homeTitle {
+  display: flex;
+  justify-content: center;
+}
+
+.imgContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.imgHealthopeLogo {
+  max-width: 100%;
+  height: auto;
 }
 </style>

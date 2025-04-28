@@ -15,11 +15,11 @@
           <div class="form">
             <span class="inputSpan">
               <label class="label">使用者帳號</label>
-              <input v-model="account"
+              <input v-model="account" @keydown.enter="login"
             /></span>
             <span class="inputSpan">
               <label class="label">使用者密碼</label>
-              <input v-model="pwd" type="password"
+              <input v-model="pwd" type="password" @keydown.enter="login"
             /></span>
             <span v-if="loginFail" class="hintSpan">{{ this.hintText }}</span>
             <button class="btnLogin" @click="login()">登入</button>
@@ -50,34 +50,42 @@ export default {
       // 帳號密碼驗證用的正規表達式
       const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
 
-      if (regex.test(this.account) && regex.test(this.pwd)) {
-        try {
-          // 傳輸登入資料
-          const loginDto = {
-            Account: this.account,
-            Pwd: this.pwd,
-          };
-
-          // post後回傳
-          const response = await this.$axios.post(
-            "/api/AccountAccess/VerifyAdminLogin",
-            loginDto
-          );
-
-          if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-            this.loginFail = false;
-            this.$router.push("/");
-            return;
-          } else {
-            this.loginFail = true;
-            this.hintText = "帳號密碼輸入錯誤";
-          }
-        } catch (error) {
-          console.error("登入驗證時發生錯誤", error);
-        }
-      } else {
+      if (!(regex.test(this.account) && regex.test(this.pwd))) {
         this.hintText = "請輸入 8~20 位英文數字";
         this.loginFail = true;
+        return;
+      }
+
+      if (this.account === this.pwd) {
+        this.hintText = "帳號密碼請勿一致";
+        this.loginFail = true;
+        return;
+      }
+
+      try {
+        // 傳輸登入資料
+        const loginDto = {
+          Account: this.account,
+          Pwd: this.pwd,
+        };
+
+        // post後回傳
+        const response = await this.$axios.post(
+          "/api/AccountAccess/VerifyAdminLogin",
+          loginDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.loginFail = false;
+          this.$emit("sendPermission", response.data.ApiDataObject);
+          this.$router.push("/");
+          return;
+        } else {
+          this.loginFail = true;
+          this.hintText = "帳號密碼輸入錯誤";
+        }
+      } catch (error) {
+        console.error("登入驗證時發生錯誤", error);
       }
     },
   },

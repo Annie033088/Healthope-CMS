@@ -1,7 +1,7 @@
 <template>
   <div class="sidebarCard">
-    <div class="sidebarRow">
-      <button class="btnSidebar">
+    <div class="sidebarRow" v-if="permissionMap.EditAdmin">
+      <button class="btnSidebar" @click="redirect('/admin')">
         <svg
           class="sidebarIcon"
           width="26"
@@ -20,8 +20,8 @@
         <b>管理員</b>
       </button>
     </div>
-    <div class="sidebarRow">
-      <button class="btnSidebar">
+    <div class="sidebarRow" v-if="permissionMap.EditMember">
+      <button class="btnSidebar" @click="redirect('/member')">
         <svg
           class="sidebarIcon"
           width="26"
@@ -84,7 +84,26 @@
 <script>
 export default {
   name: "AppSidebar",
+  props: {
+    permissionList: [],
+  },
+  data() {
+    return {
+      // 用來儲存權限對照結果
+      permissionMap: {
+        EditAdmin: false, // 初始設置為 false 或你希望的初始狀態
+        EditMember: false,
+        None: true,
+      },
+    };
+  },
+  computed: {
+    getPermissionList() {
+      return this.permissionList;
+    },
+  },
   created() {
+    this.initializePermissionMap(this.permissionList);
     // 讓側邊欄跟著視窗移動
     window.addEventListener("scroll", () => {
       const header = document.querySelector(".headerContainer");
@@ -99,6 +118,47 @@ export default {
       }
     });
   },
+  methods: {
+    redirect(page) {
+      if (this.$route.path !== page) {
+        this.$router.push(page);
+      }
+    },
+    // 檢查用戶擁有的權限
+    initializePermissionMap(permissionList) {
+      // 遍歷權限對照表並根據用戶權限設定對應結果
+      for (let key in this.$adminPermission) {
+        const permissionValue = this.$adminPermission[key];
+        this.permissionMap[key] = permissionList.includes(permissionValue);
+      }
+    },
+    // 發送請求取得權限
+    async getPermission() {
+      try {
+        // post
+        const response = await this.$axios.post("/api/Admin/GetPermission");
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getPermissionList = response.data.ApiDataObject;
+          this.initializePermissionMap(response.data.ApiDataObject);
+          this.$router.go;
+        } else {
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("創建管理者時發生錯誤", error);
+      }
+    },
+  },
+  mounted() {
+    // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
+    if (!(this.permissionList.length > 0) && this.$loginFlag) {
+      this.getPermission();
+    }
+  },
 };
 </script>
 
@@ -106,7 +166,7 @@ export default {
 <style scoped>
 .sidebarCard {
   position: fixed;
-  left: 0;
+  top: 58px;
   width: 200px;
   height: 100vh;
   border-radius: 3px;

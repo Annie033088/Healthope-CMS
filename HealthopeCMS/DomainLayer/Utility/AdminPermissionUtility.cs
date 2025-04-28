@@ -14,11 +14,11 @@ namespace DomainLayer.Utility
         /// <summary>
         /// 判斷有無此權限
         /// </summary>
-        public bool HasPermission(AdminIdentity role, AdminPermission permission)
+        public bool HasPermission(AdminIdentity identity, AdminPermission permission)
         {
             try
             {
-                return adminPermissionDictionary.IdentityPermission.TryGetValue(role, out List<AdminPermission> permissions) && permissions.Contains(permission);
+                return adminPermissionDictionary.IdentityPermission.TryGetValue(identity, out List<AdminPermission> permissions) && permissions.Contains(permission);
             }
             catch (Exception)
             {
@@ -29,11 +29,11 @@ namespace DomainLayer.Utility
         /// <summary>
         /// 取得此身分的權限
         /// </summary>
-        public List<AdminPermission> GetPermissions(AdminIdentity role)
+        public List<AdminPermission> GetPermissions(AdminIdentity identity)
         {
             try
             {
-                return adminPermissionDictionary.IdentityPermission.TryGetValue(role, out var permissions) ? permissions : null;
+                return adminPermissionDictionary.IdentityPermission.TryGetValue(identity, out List<AdminPermission> permissions) ? permissions : null;
             }
             catch (Exception)
             {

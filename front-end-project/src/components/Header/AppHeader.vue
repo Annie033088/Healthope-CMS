@@ -7,7 +7,7 @@
             <img class="btn" src="@/assets/logo/HealthopeCMSLogo.png" />
           </router-link>
         </div>
-        <div class="dropDownImg" v-if="loginPage">
+        <div class="dropDownImg" v-if="!loginPage">
           <svg
             @click="openPopUpWindow"
             class="btn"
@@ -50,9 +50,9 @@ export default {
   computed: {
     loginPage() {
       if (this.$route.path == "/login") {
-        return false;
-      } else {
         return true;
+      } else {
+        return false;
       }
     },
   },
@@ -91,6 +91,7 @@ header {
   width: 100%;
   border-bottom: 1px solid rgba(190, 190, 190, 0.619);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  background-color: white;
 }
 
 .headerContainer {
@@ -116,7 +117,7 @@ header .dropDownImg {
 
 .popUpWindow {
   position: fixed;
-  top: 60px;
+  top: 50px;
   right: 1%;
   animation: fadeIn 0.7s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
 }

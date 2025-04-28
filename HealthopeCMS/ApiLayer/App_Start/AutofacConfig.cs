@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Web.Http;
-using System.Web.Http.Filters;
-using ApiLayer.Controllers.api;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Service;
@@ -26,10 +22,13 @@ namespace ApiLayer.App_Start
 
             //註冊 service 跟 repository
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
-            builder.RegisterType<SessionService>().As<ISessionService>().InstancePerRequest();
+            builder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpHelpter>().As<IHttpHelper>().InstancePerLifetimeScope();
             builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
             builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
-            builder.RegisterType<RedisService>().As<IRedisService>().InstancePerRequest();
+            builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
+            builder.RegisterType<AdminService>().As<IAdminService>().InstancePerLifetimeScope();
+            builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerLifetimeScope();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>
@@ -51,8 +50,8 @@ namespace ApiLayer.App_Start
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             // 註冊 filter
-            //builder.RegisterType<AdminKickOutFilter>().AsWebApiActionFilterFor<AccountAccessController>().InstancePerRequest();
-            builder.RegisterType<AdminKickOutFilter>().PropertiesAutowired();
+            builder.RegisterType<AdminKickOutFilter>().InstancePerRequest();
+            builder.RegisterType<AdminPermissionAuthFilter>().InstancePerRequest();
 
             // 把 Autofac 的 FilterProvider 自動掛進 config
             HttpConfiguration config = GlobalConfiguration.Configuration;

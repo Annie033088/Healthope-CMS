@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 import router from './router';
 import App from './App.vue'
 import axios from 'axios';
-import {errorCodeDefine, errorCodeToMessage} from './utils/globalSetting';
+import {errorCodeDefine, errorCodeToMessage, adminPermission} from './utils/globalSetting';
 
 if (process.env.NODE_ENV === 'development') {
   await import('./mock/mock.js')
@@ -11,6 +11,8 @@ if (process.env.NODE_ENV === 'development') {
 
 Vue.prototype.$errorCodeDefine = errorCodeDefine;
 Vue.prototype.$errorCodeToMessage = errorCodeToMessage;
+Vue.prototype.$adminPermission = adminPermission;
+Vue.prototype.$loginFlag = false;
 Vue.prototype.$axios = axios;
 Vue.prototype.$notificationBox = Vue.observable({
   notificationBoxFlag: false,
