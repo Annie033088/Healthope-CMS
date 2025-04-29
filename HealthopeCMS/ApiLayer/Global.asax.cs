@@ -9,7 +9,7 @@ using NLog;
 
 namespace ApiLayer
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         protected void Application_Start()

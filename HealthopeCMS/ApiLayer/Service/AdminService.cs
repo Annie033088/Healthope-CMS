@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models.Admin;
 using ApiLayer.Models.Admin.RequestAdminDto;
+using ApiLayer.Models.Admin.ResponseAdminDto;
+using AutoMapper;
 using DomainLayer.Interface;
 using DomainLayer.Models;
 using DomainLayer.Utility;
@@ -17,12 +18,15 @@ namespace ApiLayer.Service
         private readonly ISessionService sessionService;
         private readonly IAppSetting appSetting;
         private readonly string adminSessionKey = "AdminSession";
+        private readonly IMapper mapper;
 
-        public AdminService(IAdminRepository adminRepository, IAppSetting appSetting, ISessionService sessionService)
+        public AdminService(IAdminRepository adminRepository, IAppSetting appSetting, ISessionService sessionService,
+          IMapper mapper)
         {
             this.adminRepository = adminRepository;
             this.appSetting = appSetting;
             this.sessionService = sessionService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -77,6 +81,45 @@ namespace ApiLayer.Service
                 AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
                 AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
                 return adminPermissionUtility.GetPermissions(adminSession.Identity);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 取得管理者清單(列表)
+        /// </summary>
+        public List<AdminPermission> GetAdmin()
+        {
+            try
+            {
+                AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
+                AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
+                return adminPermissionUtility.GetPermissions(adminSession.Identity);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 取得管理者清單(列表)
+        /// </summary>
+        public ResponseGetAdminDto GetAdmin(RequestGetAdminDto getAdminDto)
+        {
+            try
+            {
+                (List<Admin> admins, int totalPage) = adminRepository.GetAdmin(getAdminDto);
+                ResponseGetAdminDto responseGetAdminDto = new ResponseGetAdminDto()
+                {
+                    AdminList = mapper.Map<List<ResponseGetAdminListDto>>(admins),
+                    TotalPage = totalPage
+                };
+
+                return responseGetAdminDto;
             }
             catch (Exception)
             {

@@ -1,7 +1,13 @@
-﻿using ApiLayer.Models.Admin.RequestAdminDto;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ApiLayer.Interface;
+using ApiLayer.Models;
+using ApiLayer.Models.Admin;
+using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Service;
 using DomainLayer.Interface;
 using DomainLayer.Models;
+using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
@@ -12,6 +18,7 @@ namespace UnitTest.Test.AdminTest
     public class AdminServiceTest
     {
         private Mock<IAdminRepository> adminRepositoryMock;
+        private Mock<ISessionService> sessionServiceMock;
         private Mock<IAppSetting> appSettingMock;
         private AdminService adminService;
 
@@ -20,7 +27,8 @@ namespace UnitTest.Test.AdminTest
         {
             adminRepositoryMock = new Mock<IAdminRepository>();
             appSettingMock = new Mock<IAppSetting>();
-            adminService = new AdminService(adminRepositoryMock.Object, appSettingMock.Object);
+            sessionServiceMock = new Mock<ISessionService>();
+            adminService = new AdminService(adminRepositoryMock.Object, appSettingMock.Object, sessionServiceMock.Object);
         }
 
         [TestMethod]
@@ -87,6 +95,54 @@ namespace UnitTest.Test.AdminTest
 
             // Assert
             Assert.IsFalse(successFlag);
+        }
+
+        [TestMethod]
+        public void 取得權限_成功_回傳權限()
+        {
+            // Arrange
+            AdminSession adminSession = new AdminSession()
+            {
+                AdminId = 1,
+                Identity = AdminIdentity.Admin
+            };
+            string adminSessionKey = "AdminSession";
+            AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
+            List<AdminPermission> adminPermissions = adminPermissionUtility.GetPermissions(adminSession.Identity);
+
+            // Mock 設定
+            sessionServiceMock.Setup(s => s.GetSession<AdminSession>(adminSessionKey)).Returns(adminSession);
+
+            // Act
+            List<AdminPermission> result = adminService.GetPermission();
+
+            // Assert
+            if (adminPermissions.SequenceEqual(result)) return;
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        public void 取得權限_成功_回傳無權限()
+        {
+            // Arrange
+            AdminSession adminSession = new AdminSession()
+            {
+                AdminId = 1,
+                Identity = AdminIdentity.Accountant
+            };
+            string adminSessionKey = "AdminSession";
+            AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
+            List<AdminPermission> adminPermissions = adminPermissionUtility.GetPermissions(adminSession.Identity);
+
+            // Mock 設定
+            sessionServiceMock.Setup(s => s.GetSession<AdminSession>(adminSessionKey)).Returns(adminSession);
+
+            // Act
+            List<AdminPermission> result = adminService.GetPermission();
+
+            // Assert
+            if (result == null) return;
+            Assert.Fail();
         }
     }
 }

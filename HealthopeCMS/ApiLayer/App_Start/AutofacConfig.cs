@@ -21,14 +21,13 @@ namespace ApiLayer.App_Start
             ContainerBuilder builder = new ContainerBuilder();
 
             //註冊 service 跟 repository
-            builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
             builder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
             builder.RegisterType<HttpHelpter>().As<IHttpHelper>().InstancePerLifetimeScope();
             builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
-            builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
             builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
-            builder.RegisterType<AdminService>().As<IAdminService>().InstancePerLifetimeScope();
-            builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
+            builder.RegisterType<AdminService>().As<IAdminService>().InstancePerRequest();
+            builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

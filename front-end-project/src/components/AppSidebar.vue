@@ -97,30 +97,15 @@ export default {
       },
     };
   },
-  computed: {
-    getPermissionList() {
-      return this.permissionList;
-    },
-  },
   created() {
     this.initializePermissionMap(this.permissionList);
-    // 讓側邊欄跟著視窗移動
-    window.addEventListener("scroll", () => {
-      const header = document.querySelector(".headerContainer");
-      const sidebar = document.querySelector(".sidebarCard");
-      const headerBottom = header.getBoundingClientRect().bottom;
-
-      if (headerBottom <= 80) {
-        if (headerBottom <= 0) sidebar.style.top = 0;
-        else sidebar.style.top = headerBottom + "px";
-      } else {
-        sidebar.style.top = "auto";
-      }
-    });
+    this.setScrollWithWindow();
   },
   methods: {
     redirect(page) {
-      if (this.$route.path !== page) {
+      if (this.$route.path === page) {
+        this.$emit("refreshPage")
+      }else{
         this.$router.push(page);
       }
     },
@@ -139,9 +124,7 @@ export default {
         const response = await this.$axios.post("/api/Admin/GetPermission");
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.getPermissionList = response.data.ApiDataObject;
           this.initializePermissionMap(response.data.ApiDataObject);
-          this.$router.go;
         } else {
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
@@ -151,6 +134,21 @@ export default {
       } catch (error) {
         console.error("創建管理者時發生錯誤", error);
       }
+    },
+    setScrollWithWindow() {
+      // 讓側邊欄跟著視窗移動
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector(".headerContainer");
+        const sidebar = document.querySelector(".sidebarCard");
+        const headerBottom = header.getBoundingClientRect().bottom;
+
+        if (headerBottom <= 80) {
+          if (headerBottom <= 0) sidebar.style.top = 0;
+          else sidebar.style.top = headerBottom + "px";
+        } else {
+          sidebar.style.top = "auto";
+        }
+      });
     },
   },
   mounted() {

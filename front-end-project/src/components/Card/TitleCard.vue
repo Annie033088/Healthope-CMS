@@ -13,7 +13,9 @@ export default {
   methods: {
     redirect() {
       if (this.text === "管理者清單") {
-        if (this.$route.path !== "/admin") {
+        if (this.$route.path === "/admin") {
+        this.$emit("refreshPage")
+        } else {
           this.$router.push("/admin");
         }
       }
@@ -27,7 +29,7 @@ export default {
   margin-left: 3%;
 }
 
-.title:hover{
+.title:hover {
   cursor: pointer;
 }
 

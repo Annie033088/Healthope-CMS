@@ -6,7 +6,7 @@
 export default {
   name: "BtnNormal",
   props: {
-    text: String,
+    text: [String, Number],
   },
 }
 </script>

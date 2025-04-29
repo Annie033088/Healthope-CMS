@@ -41,6 +41,7 @@ export const errorCodeDefine = {
 
 //設定errorCode對應資料
 export function errorCodeToMessage(errorCode) {
+    console.log("!")
     let message;
 
     switch (errorCode) {
@@ -95,3 +96,34 @@ export const adminPermission = {
     EditMember:2
 }
 
+export default function adminIdentityToText (identity) {
+    let identityText;
+
+    switch (identity) {
+        case 0:
+            identityText = "無";
+            return identityText;
+        case 1:
+            identityText = "超級管理員";
+            return identityText;
+        case 2:
+            identityText = "一般管理員";
+            return identityText;
+        case 3:
+            identityText = "接待員";
+            return identityText;
+        case 4:
+            identityText = "會計";
+            return identityText;
+        case 5:
+            identityText = "課程管理員";
+            return identityText;
+        case 6:
+            identityText = "教練管理員";
+            return identityText;
+        case 7:
+            identityText = "業務";
+            return identityText;
+        default:
+    }
+}

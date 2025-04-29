@@ -1,6 +1,9 @@
 <template>
   <div>
-    <TitleCard text="管理者清單"></TitleCard>
+    <TitleCard
+      text="管理者清單"
+      @refreshPage="$emit('refreshPage')"
+    ></TitleCard>
     <div class="funtionColumn">
       <BtnNormal text="新增管理者" @click="redirect('/admin/add')"></BtnNormal>
       <div class="inputGroup">
@@ -9,8 +12,10 @@
           required=""
           autocomplete="off"
           placeholder="Account..."
+          v-model="searchAccount"
         />
         <svg
+          @click="selectAdmin()"
           class="btnSearch"
           width="30"
           height="30"
@@ -27,42 +32,88 @@
           />
         </svg>
       </div>
-      <div class="radioContainer">
+      <div class="statusContainer">
+        <label class="labStatus">狀態： </label>
         <label class="labRadioBox">
-          <span class="textStatus">狀態：</span>
-        </label>
-        <label class="labRadioBox">
-          <input type="radio" name="radioStatus" checked="" />
+          <input
+            type="radio"
+            name="radioStatus"
+            value=""
+            v-model="selectStatus"
+            @change="selectAdmin()"
+          />
           <span class="textRadio">無</span>
         </label>
         <label class="labRadioBox">
-          <input type="radio" name="radioStatus" />
+          <input
+            type="radio"
+            name="radioStatus"
+            value="true"
+            v-model="selectStatus"
+            @change="selectAdmin()"
+          />
           <span class="textRadio">啟用</span>
         </label>
         <label class="labRadioBox">
-          <input type="radio" name="radioStatus" />
-          <span class="textRadio">禁用</span>
+          <input
+            type="radio"
+            name="radioStatus"
+            value="false"
+            v-model="selectStatus"
+            @change="selectAdmin()"
+          />
+          <span class="textRadio">停用</span>
         </label>
       </div>
       <div class="sortContainer">
         <label class="labSort">排序選項：</label>
-        <select class="selectSort" name="sortOption">
-          <option value="name">名稱</option>
+        <select
+          class="selectSortOrder"
+          v-model="selectSortOption"
+          @change="getAdminData()"
+        >
+          <option value="">無</option>
+          <option value="account">帳號</option>
           <option value="status">狀態</option>
         </select>
         <label class="labRadioBox">
-          <input type="radio" name="radioSort" checked="" />
+          <input
+            type="radio"
+            name="radioSort"
+            value="ascending"
+            v-model="selectSortOrder"
+            @change="getAdminData()"
+          />
           <span class="textRadio">升序</span>
         </label>
         <label class="labRadioBox">
-          <input type="radio" name="radioSort" />
+          <input
+            type="radio"
+            name="radioSort"
+            value="descending"
+            v-model="selectSortOrder"
+            @change="getAdminData()"
+          />
           <span class="textRadio">降序</span>
         </label>
+      </div>
+      <div class="selectRecordContainer">
+        <label class="labRecord">顯示：</label>
+        <select
+          class="selectRecord"
+          v-model="recordPerPage"
+          @change="getAdminData()"
+        >
+          <option value="8">8</option>
+          <option value="12">12</option>
+          <option value="16">16</option>
+        </select>
+        <label class="">筆</label>
       </div>
       <BtnNormal text="差異紀錄"></BtnNormal>
     </div>
     <div class="adminTable">
-      <div class="card">
+      <div class="card" v-for="(admin, index) in adminList" :key="index">
         <div class="cardContent">
           <div class="cardImage">
             <svg
@@ -79,10 +130,16 @@
             </svg>
           </div>
           <div class="cardTitle">
-            <div class="cardMainTitle"><span>Name</span></div>
-            <div class="cardSubTitle"><span>Status</span></div>
+            <div class="cardMainTitle">
+              <span>{{ admin.Account }}</span>
+            </div>
+            <div class="cardSubTitle">
+              <span>狀態：{{ admin.Status ? "啟用" : "停用" }}</span>
+            </div>
           </div>
-          <div class="cardEndText"><span>Identity</span></div>
+          <div class="cardEndText">
+            <span>{{ adminIdentityToText(admin.Identity) }}</span>
+          </div>
         </div>
 
         <div class="cardEditBtn btn">
@@ -111,28 +168,131 @@
         </div>
       </div>
     </div>
+    <div>
+      <PaginationComponent
+        @searchPage="searchPage"
+        :currentPage="currentPage"
+        :totalPage="totalPage"
+      ></PaginationComponent>
+    </div>
   </div>
 </template>
 
 <script>
 import BtnNormal from "@/components/Btn/BtnNormal";
 import TitleCard from "@/components/Card/TitleCard";
+import PaginationComponent from "@/components/PaginationComponent";
+import adminIdentityToText from "../../utils/globalSetting";
 
 export default {
   name: "HealthopeAdmin",
   components: {
     BtnNormal,
     TitleCard,
+    PaginationComponent,
   },
   props: {
     text: String,
   },
+  data() {
+    return {
+      adminList: [],
+      selectStatus: "",
+      selectSortOrder: "ascending",
+      selectSortOption: "",
+      recordPerPage: "8",
+      searchAccount: "",
+      currentPage: 4,
+      totalPage: 3,
+      searchingPage: 1,
+    };
+  },
   methods: {
+    adminIdentityToText,
     redirect(page) {
-      if (this.$route.path !==  page) {
+      if (this.$route.path !== page) {
         this.$router.push(page);
       }
     },
+    searchPage(page) {
+      this.searchingPage = page;
+      this.getAdminData();
+    },
+    selectAdmin(){
+      this.searchingPage = 1;
+      this.getAdminData();
+    },
+    async getAdminData() {
+      try {
+        // 驗證參數
+        if (!(this.searchAccount.length > 1 || this.searchAccount === ""))
+          return;
+        if (
+          !(
+            this.selectStatus === "true" ||
+            this.selectStatus === "false" ||
+            this.selectStatus === ""
+          )
+        )
+          return;
+        if (
+          !(
+            this.selectSortOrder === "ascending" ||
+            this.selectSortOrder === "descending"
+          )
+        )
+          return;
+        if (
+          !(
+            this.selectSortOption === "account" ||
+            this.selectSortOption === "status" ||
+            this.selectSortOption === ""
+          )
+        )
+          return;
+        if (
+          !(
+            this.recordPerPage === "8" ||
+            this.recordPerPage === "12" ||
+            this.recordPerPage === "16"
+          )
+        )
+          return;
+        if (this.searchingPage < 1) return;
+
+        // post 的 dto 變數
+        let getADminDto = {
+          Status: this.selectStatus || null,
+          SortOrder: this.selectSortOrder,
+          SortOption: this.selectSortOption || null,
+          RecordPerPage: this.recordPerPage,
+          SearchAccount: this.searchAccount || null,
+          Page: this.searchingPage,
+        };
+
+        // post
+        const response = await this.$axios.post(
+          "/api/Admin/GetAdmin",
+          getADminDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.currentPage = this.searchingPage;
+          this.adminList = response.data.ApiDataObject.AdminList;
+          this.totalPage = response.data.ApiDataObject.TotalPage
+        } else {
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("取得管理者列表時發生錯誤", error);
+      }
+    },
+  },
+  created() {
+    this.getAdminData();
   },
 };
 </script>
@@ -143,6 +303,7 @@ export default {
   margin: 15px;
   display: flex;
   flex-wrap: wrap;
+  gap: 10px 20px;
 }
 
 .inputGroup {
@@ -154,7 +315,6 @@ export default {
   border: 1px solid rgb(200, 200, 200);
   background-color: transparent;
   border-radius: 1rem;
-  margin-left: 20px;
 }
 
 .inputGroup input {
@@ -166,6 +326,7 @@ export default {
   border-radius: 1rem;
   width: 100%;
 }
+
 .inputGroup input:hover {
   background-color: #fafbfc;
 }
@@ -185,18 +346,6 @@ export default {
 .btnSearch:active {
   background-color: #edeff2;
   transition: none 0.1s;
-}
-
-.radioContainer {
-  display: flex;
-  border-radius: 0.5rem;
-  background-color: #eee;
-  box-sizing: border-box;
-  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.25rem;
-  width: 300px;
-  font-size: 14px;
-  margin-left: 20px;
 }
 
 .labRadioBox {
@@ -223,18 +372,21 @@ export default {
   font-weight: 600;
 }
 
-.textStatus {
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem 0;
+.labStatus,
+.labSort,
+.labRecord {
+  padding: 0.5rem 0.5rem;
   border-radius: 0.5rem;
   background-color: #fff;
   font-weight: 500;
   margin-right: 5px;
 }
 
-.sortContainer {
+.sortContainer,
+.selectRecordContainer,
+.statusContainer {
   display: flex;
+  align-items: center;
   border-radius: 0.5rem;
   background-color: #eee;
   box-sizing: border-box;
@@ -242,21 +394,10 @@ export default {
   padding: 0.25rem;
   width: 300px;
   font-size: 14px;
-  margin-left: 20px;
-  margin-right: 20px;
 }
 
-.labSort {
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem 0.5rem;
-  border-radius: 0.5rem;
-  background-color: #fff;
-  font-weight: 500;
-  margin-right: 5px;
-}
-
-.selectSort {
+.selectSortOrder,
+.selectRecord {
   border: none;
   border-radius: 0.5rem;
   padding: 0.5rem 0.5rem;
@@ -264,8 +405,13 @@ export default {
   background-color: #fafbfc;
 }
 
-.selectSort:hover {
+.selectSort:hover,
+.selectRecord:hover {
   cursor: pointer;
+}
+
+.selectRecordContainer {
+  width: 150px;
 }
 </style>
 
@@ -274,18 +420,22 @@ export default {
 .adminTable {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
+
 .card {
   width: 50%;
+  min-width: 300px;
   background: #ffff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   padding: 12px 10px;
-  margin: 15px;
+  margin: 5px;
   display: flex;
   justify-content: space-between;
 }
 .cardContent {
   display: flex;
+  cursor: default;
 }
 
 .cardImage {
@@ -299,19 +449,19 @@ export default {
   margin-left: 20px;
 }
 
-.cardSubTitle {
-  margin-top: 5px;
-}
 .cardMainTitle {
   font-size: 20px;
 }
 
 .cardSubTitle {
-  font-size: 17px;
+  margin-top: 5px;
+  font-size: 16px;
+  color: #828282;
 }
 
 .cardEndText {
   margin-left: 30px;
   font-size: 18px;
+  color: #aa7f7f;
 }
 </style>

@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
-using ApiLayer.Models.Admin;
 using ApiLayer.Models;
+using ApiLayer.Models.Admin;
+using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
-using ApiLayer.Controllers.api;
-using ApiLayer.Service;
-using DomainLayer.Models;
 
 namespace UnitTest.Test.FilterTest
 {
@@ -26,7 +20,7 @@ namespace UnitTest.Test.FilterTest
         public Mock<IHttpHelper> httpHelper;
         public AdminPermissionAuthFilter adminPermissionAuthFilter;
         private HttpActionContext actionContext;
-        private HttpRequestMessage request; 
+        private HttpRequestMessage request;
         [TestInitialize]
         public void Setup()
         {
@@ -66,8 +60,8 @@ namespace UnitTest.Test.FilterTest
             actionContext.Response = httpResponseMessage;
 
             // Mock 設定
-            httpHelper.Setup(s=>s.GetControllerName(actionContext)).Returns(controllerName);
-            httpHelper.Setup(s=>s.GetActionName(actionContext)).Returns(actionName);
+            httpHelper.Setup(s => s.GetControllerName(actionContext)).Returns(controllerName);
+            httpHelper.Setup(s => s.GetActionName(actionContext)).Returns(actionName);
             sessionServiceMock.Setup(s => s.GetSession<AdminSession>(It.Is<string>(key => key == adminSessionKey))).Returns(adminSession);
 
             // Act

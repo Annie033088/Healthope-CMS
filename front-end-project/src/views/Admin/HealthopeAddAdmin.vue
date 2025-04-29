@@ -278,7 +278,8 @@ export default {
   box-sizing: border-box;
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
   padding: 0.35rem;
-  width: 350px;
+  width: 100%;
+  max-width: 350px;
   font-size: 16px;
   margin-left: 20px;
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ApiLayer.Models.Admin.RequestAdminDto;
+using ApiLayer.Models.Admin.ResponseAdminDto;
 using DomainLayer.Models;
 
 namespace ApiLayer.Interface
@@ -15,5 +16,10 @@ namespace ApiLayer.Interface
         /// 取得當前登入帳號權限
         /// </summary>
         List<AdminPermission> GetPermission();
+
+        /// <summary>
+        /// 取得當前登入帳號權限
+        /// </summary>
+        ResponseGetAdminDto GetAdmin(RequestGetAdminDto getAdminDto);
     }
 }

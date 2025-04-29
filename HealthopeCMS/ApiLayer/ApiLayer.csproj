@@ -201,6 +201,7 @@
     <Compile Include="Models\Admin\AdminSession.cs" />
     <Compile Include="Models\Admin\RequestAdminDto\RequestAddAdminDto.cs" />
     <Compile Include="Models\ActionRequiredPermissionTable.cs" />
+    <Compile Include="Models\Admin\ResponseAdminDto\ResponseGetAdminDto.cs" />
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestLoginDto.cs" />
     <Compile Include="Models\ResultResponse.cs" />
@@ -225,11 +226,11 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.2e63e6d5.css" />
+    <Content Include="wwwroot\css\app.8599ae65.css" />
     <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
     <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.84ce0721.js" />
+    <Content Include="wwwroot\js\app.f73dc9d4.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
@@ -239,7 +240,7 @@
   <ItemGroup>
     <Content Include="NLog.config" />
     <None Include="packages.config" />
-    <Content Include="wwwroot\js\app.84ce0721.js.map" />
+    <Content Include="wwwroot\js\app.f73dc9d4.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj">

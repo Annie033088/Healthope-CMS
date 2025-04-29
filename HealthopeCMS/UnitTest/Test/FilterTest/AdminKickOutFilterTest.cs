@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Admin;
-using ApiLayer.Service;
 using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -84,7 +79,7 @@ namespace UnitTest.Test.FilterTest
             AdminSession adminSession = new AdminSession() { AdminId = 1, Identity = AdminIdentity.Accountant };
             string redisKey = "Admin" + adminSession.AdminId;
             string sessionId = "asdawdpl21";
-            AdminRedis adminRedis = new AdminRedis() { ErrorCode = ErrorCodeDefine.Success, SessionId="dkaopdka2222" };
+            AdminRedis adminRedis = new AdminRedis() { ErrorCode = ErrorCodeDefine.Success, SessionId = "dkaopdka2222" };
 
             // 回傳設定
             ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.KickOut };

@@ -1,4 +1,6 @@
-﻿using DomainLayer.Models;
+﻿using System.Collections.Generic;
+using ApiLayer.Models.Admin.RequestAdminDto;
+using DomainLayer.Models;
 
 namespace PersistentLayer.Interface
 {
@@ -13,5 +15,10 @@ namespace PersistentLayer.Interface
         /// 新增管理員
         /// </summary>
         bool AddAdmin(Admin admin);
+
+        /// <summary>
+        /// 新增管理員
+        /// </summary>
+        (List<Admin> admins, int totalPage) GetAdmin(RequestGetAdminDto getAdminDto);
     }
 }

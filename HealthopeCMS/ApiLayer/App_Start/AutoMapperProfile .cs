@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using ApiLayer.Models.Admin.ResponseAdminDto;
+using AutoMapper;
+using DomainLayer.Models;
 
 namespace ApiLayer.App_Start
 {
@@ -9,7 +11,7 @@ namespace ApiLayer.App_Start
             // 在這裡配置所有的映射關係
             //CreateMap<RequestAddTaskDto, ToDoTask>();
             //CreateMap<RequestEditTaskDto, ToDoTask>();
-            //CreateMap<RequestLoginDto, User>();
+            CreateMap<Admin, ResponseGetAdminListDto>();
         }
     }
 }

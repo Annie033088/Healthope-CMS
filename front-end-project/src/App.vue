@@ -8,13 +8,16 @@
       v-if="this.$loginFlag"
       class="sidebar"
       :permissionList="permissionList"
+      @refreshPage="refreshRouterViewComponent"
     >
     </AppSidebar>
     <AppHeader :title="title"></AppHeader>
     <router-view
+      :key="routerViewKey"
       :class="{ contentContainer: this.$loginFlag }"
       :title="title"
       @sendPermission="setPermission"
+      @refreshPage="refreshRouterViewComponent"
     ></router-view>
     <AppFooter />
   </div>
@@ -38,12 +41,16 @@ export default {
     return {
       title: "Healthope 健望館後台管理網站",
       permissionList: [],
+      routerViewKey:0
     };
   },
   methods: {
     setPermission(permissionList) {
       this.permissionList = permissionList;
     },
+    refreshRouterViewComponent(){
+      this.routerViewKey += 1;
+    }
   },
 };
 </script>
@@ -61,20 +68,10 @@ export default {
   margin-left: 200px;
 }
 
-.app {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+html, body {
   background-color: #f7f6f6;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden; /* 防止橫向捲軸 */
 }
-/* .app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
 </style>
