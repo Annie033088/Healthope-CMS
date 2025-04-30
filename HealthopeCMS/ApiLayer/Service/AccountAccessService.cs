@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
@@ -134,17 +136,37 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 管理者是否已登入
+        /// 管理者 有/無權限 跳轉頁面
         /// </summary>
-        public bool AdminLoggedIn()
+        public ErrorCodeDefine AdminHavePermission(List<RequestPermissionDto> havePermissionDto)
         {
             try
             {
                 AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
 
-                if (adminSession == null) return false;
+                // 未登入
+                if (adminSession == null) return ErrorCodeDefine.UserNotLogin;
 
-                return true;
+                // 不需要權限
+                if(havePermissionDto == null) return ErrorCodeDefine.Success;
+
+                bool hasPermission = false;
+                AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
+
+                // 檢查是否有權限
+                foreach (RequestPermissionDto requiredPermission in havePermissionDto)
+                {
+                    // 只要有任一權限，則通過
+                    if (adminPermissionUtility.HasPermission(adminSession.Identity, requiredPermission.adminPermission))
+                    {
+                        hasPermission = true;
+                    }
+                }
+
+                // 沒權限則回傳無權限
+                if (!hasPermission) return ErrorCodeDefine.NoPermission;
+
+                return ErrorCodeDefine.Success;
             }
             catch (Exception)
             {

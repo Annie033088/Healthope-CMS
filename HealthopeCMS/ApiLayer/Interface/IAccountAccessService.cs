@@ -1,4 +1,6 @@
-﻿using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
+﻿using System.Collections.Generic;
+using ApiLayer.Models;
+using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
 using DomainLayer.Models;
 
 namespace ApiLayer.Interface
@@ -18,6 +20,6 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 管理者是否已登入
         /// </summary>
-        bool AdminLoggedIn();
+        ErrorCodeDefine AdminHavePermission(List<RequestPermissionDto> havePermissionDto);
     }
 }

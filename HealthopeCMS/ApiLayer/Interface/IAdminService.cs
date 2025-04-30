@@ -18,8 +18,18 @@ namespace ApiLayer.Interface
         List<AdminPermission> GetPermission();
 
         /// <summary>
-        /// 取得當前登入帳號權限
+        /// 取得管理者列表
         /// </summary>
-        ResponseGetAdminDto GetAdmin(RequestGetAdminDto getAdminDto);
+        ResponseGetAdminListDto GetAdmin(RequestGetAdminDto getAdminDto);
+
+        /// <summary>
+        /// 修改管理者
+        /// </summary>
+        bool EditAdmin(RequestEditAdminDto editAdminDto);
+
+        /// <summary>
+        /// 根據 Id 取得管理者
+        /// </summary>
+        ResponseGetAdminDto GetAdminById(RequestAdminIdDto getAdminDto);
     }
 }

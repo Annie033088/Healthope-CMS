@@ -82,6 +82,8 @@ namespace UnitTest.Test.AccountAccessTest
             Assert.AreEqual(admin, null);
         }
 
+        // TODO: 之後補上 HavePermission 檢查邏輯
+
         //[TestMethod]
         //public void 登入一般管理者_成功_回傳管理者資料()
         //{

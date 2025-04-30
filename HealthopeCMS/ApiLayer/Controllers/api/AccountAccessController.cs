@@ -97,17 +97,14 @@ namespace ApiLayer.Controllers.api
         }
 
         /// <summary>
-        /// 管理者是否已經登入
+        /// 管理者是否有權限
         /// </summary>
         [HttpPost]
-        public IHttpActionResult LoggedIn()
+        public IHttpActionResult HavePermission([FromBody] List<RequestPermissionDto> havePermissionDto)
         {
             try
             {
-                if (accountAccessService.AdminLoggedIn())
-                    return Json(new ResultResponse() { ErrorCode = ErrorCodeDefine.Success });
-
-                return Json(new ResultResponse() { ErrorCode = ErrorCodeDefine.UserNotLogin });
+                return Json(new ResultResponse() { ErrorCode = accountAccessService.AdminHavePermission(havePermissionDto) });
             }
             catch (Exception)
             {

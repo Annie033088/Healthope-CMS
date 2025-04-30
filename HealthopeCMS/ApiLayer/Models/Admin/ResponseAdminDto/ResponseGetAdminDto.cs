@@ -5,13 +5,13 @@ using System.Web;
 
 namespace ApiLayer.Models.Admin.ResponseAdminDto
 {
-    public class ResponseGetAdminDto
+    public class ResponseGetAdminListDto
     {
-        public List<ResponseGetAdminListDto> AdminList { get; set; }
+        public List<ResponseGetAdminDto> AdminList { get; set; }
         public int TotalPage {  get; set; }
     }
 
-    public class ResponseGetAdminListDto
+    public class ResponseGetAdminDto
     {
         /// <summary>
         /// 管理員 Id
@@ -36,6 +36,6 @@ namespace ApiLayer.Models.Admin.ResponseAdminDto
         /// <summary>
         /// 最後更新時間
         /// </summary>
-        public DateTime UpdateTime { get; set; }
+        public string UpdateTime { get; set; }
     }
 }

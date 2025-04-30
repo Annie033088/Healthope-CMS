@@ -36,7 +36,10 @@ export const errorCodeDefine = {
     ModifiedFailed: 11,
 
     //刪除失敗
-    DeleteFailed: 12
+    DeleteFailed: 12,
+
+    //刪除失敗
+    GetFailed: 13
 };
 
 //設定errorCode對應資料
@@ -81,22 +84,25 @@ export function errorCodeToMessage(errorCode) {
         case 12:
             message = "刪除失敗，請再試一次";
             return message;
+        case 13:
+            message = "取得資料失敗，請再試一次";
+            return message;
         default:
     }
 }
 
 export const adminPermission = {
     // 無
-    None:0,
+    None: 0,
 
     // 管理者相關權限
-    EditAdmin:1,
+    EditAdmin: 1,
 
     // 
-    EditMember:2
+    EditMember: 2
 }
 
-export default function adminIdentityToText (identity) {
+export default function adminIdentityToText(identity) {
     let identityText;
 
     switch (identity) {

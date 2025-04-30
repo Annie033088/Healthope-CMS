@@ -65,6 +65,11 @@
         /// <summary>
         /// 刪除失敗
         /// </summary>
-        DeleteFailed = 12
+        DeleteFailed = 12,
+
+        /// <summary>
+        /// 取得特定資料失敗
+        /// </summary>
+        GetFailed = 13
     }
 }

@@ -86,6 +86,7 @@ export default {
   name: "AppSidebar",
   props: {
     permissionList: [],
+    notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
@@ -104,8 +105,8 @@ export default {
   methods: {
     redirect(page) {
       if (this.$route.path === page) {
-        this.$emit("refreshPage")
-      }else{
+        this.$emit("refreshPage");
+      } else {
         this.$router.push(page);
       }
     },
@@ -126,6 +127,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.initializePermissionMap(response.data.ApiDataObject);
         } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                this.$emit("afterConfirmEvent")
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =

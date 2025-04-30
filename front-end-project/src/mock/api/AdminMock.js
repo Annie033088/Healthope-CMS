@@ -15,6 +15,20 @@ export default function (mock) {
         return [200, { ErrorCode: 1, ApiDataObject: [1, 2] }]
     })
 
+    mock.onPost("/api/Admin/GetAdminById").reply(config => {
+        let getAdminByIdDto = JSON.parse(config.data);
+        let adminTarget = AdminList.find(admin => admin.AdminId === getAdminByIdDto.AdminId);
+        if (adminTarget) {
+            return [200, { ErrorCode: 1, ApiDataObject: adminTarget }]
+        } else {
+            return [200, { ErrorCode: 13 }]
+        }
+    })
+
+    mock.onPost("/api/Admin/EditAdmin").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
     mock.onPost("/api/Admin/GetAdmin").reply(config => {
         let {
             Status,
@@ -79,7 +93,7 @@ export default function (mock) {
             AdminId: 1,
             Account: "qweokqwp21312",
             Status: true,
-            Identity: 1,
+            Identity: 3,
             UpdateTime: "2025-04-29T12:34:56.789Z"
         },
         {
@@ -100,47 +114,47 @@ export default function (mock) {
             AdminId: 4,
             Account: "adminTester001",
             Status: true,
-            Identity: 1,
+            Identity: 7,
             UpdateTime: "2025-03-15T09:12:00.000Z"
         },
         {
             AdminId: 5,
-            Account: "adminAlphaUser",
+            Account: "adminAlphaUser35",
             Status: false,
             Identity: 2,
             UpdateTime: "2025-03-10T17:45:00.000Z"
         },
         {
             AdminId: 6,
-            Account: "mainSuperAdmin",
+            Account: "mainAlphaUser71",
             Status: true,
             Identity: 3,
             UpdateTime: "2025-04-01T11:00:00.000Z"
         },
         {
             AdminId: 7,
-            Account: "tempAdminX",
+            Account: "tempCoachAdminX5",
             Status: false,
-            Identity: 1,
+            Identity: 4,
             UpdateTime: "2025-02-18T14:00:00.000Z"
         },
         {
             AdminId: 8,
-            Account: "userAdminY",
+            Account: "userAccountantY1",
             Status: true,
             Identity: 2,
             UpdateTime: "2025-04-05T10:00:00.000Z"
         },
         {
             AdminId: 9,
-            Account: "alphaUserAdmin",
+            Account: "alphaUserAdmin2",
             Status: false,
-            Identity: 1,
+            Identity: 6,
             UpdateTime: "2025-01-28T19:00:00.000Z"
         },
         {
             AdminId: 10,
-            Account: "rootManagerZ",
+            Account: "rootManagerZ9",
             Status: true,
             Identity: 3,
             UpdateTime: "2025-03-22T21:30:00.000Z"

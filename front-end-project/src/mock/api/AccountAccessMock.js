@@ -24,10 +24,10 @@ export default function (mock) {
         return [200, { ErrorCode: 1 }]
     })
 
-    mock.onPost("/api/AccountAccess/LoggedIn").reply(() => {
+    mock.onPost("/api/AccountAccess/HavePermission").reply(() => {
         if (Vue.prototype.$loginFlag) {
             return [200, { ErrorCode: 1 }]
         }
-        return [200, { ErrorCode: 6 }]
+        return [200, { ErrorCode: 8 }]
     })
 }

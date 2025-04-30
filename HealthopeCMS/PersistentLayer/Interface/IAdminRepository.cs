@@ -20,5 +20,15 @@ namespace PersistentLayer.Interface
         /// 新增管理員
         /// </summary>
         (List<Admin> admins, int totalPage) GetAdmin(RequestGetAdminDto getAdminDto);
+
+        /// <summary>
+        /// 修改管理者
+        /// </summary>
+        bool EditAdmin(RequestEditAdminDto editAdminDto);
+
+        /// <summary>
+        /// 根據 Id 取得管理者
+        /// </summary>
+        Admin GetAdminById(int adminId);
     }
 }

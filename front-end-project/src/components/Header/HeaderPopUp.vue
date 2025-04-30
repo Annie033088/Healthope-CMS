@@ -33,6 +33,9 @@
 <script>
 export default {
   name: "HeaderPopUp",
+  props: {
+    notificationBoxConfirmFlag: Boolean,
+  },
   methods: {
     async logout() {
       const response = await this.$axios.post("/api/AccountAccess/AdminLogout");
@@ -41,10 +44,24 @@ export default {
         this.$emit("closePopUpWindow");
         this.$router.push("/login");
         return;
-      }else{
+      } else {
+        // 添加監聽器，查看彈窗是否被按確認鍵
+        this.unwatchFlag = this.$watch(
+          "notificationBoxConfirmFlag",
+          (newVal) => {
+            if (newVal) {
+              this.$emit("afterConfirmEvent");
+              this.unwatchFlag(); // 移除監聽
+              this.unwatchFlag = null;
+            }
+          }
+        );
+
+        // 設定彈窗資料
         this.$notificationBox.notificationBoxFlag = true;
         this.$notificationBox.notificationBoxTitle = "發生錯誤!";
-        this.$notificationBox.notificationBoxErrorCode = response.data.ErrorCode;
+        this.$notificationBox.notificationBoxErrorCode =
+          response.data.ErrorCode;
       }
     },
   },

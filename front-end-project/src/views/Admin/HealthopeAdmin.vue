@@ -13,6 +13,7 @@
           autocomplete="off"
           placeholder="Account..."
           v-model="searchAccount"
+          @keydown.enter="selectAdmin()"
         />
         <svg
           @click="selectAdmin()"
@@ -113,7 +114,12 @@
       <BtnNormal text="差異紀錄"></BtnNormal>
     </div>
     <div class="adminTable">
-      <div class="card" v-for="(admin, index) in adminList" :key="index">
+      <div
+        class="card"
+        v-for="(admin, index) in adminList"
+        :key="index"
+        @click="goEditAdmin(admin.AdminId)"
+      >
         <div class="cardContent">
           <div class="cardImage">
             <svg
@@ -142,8 +148,9 @@
           </div>
         </div>
 
-        <div class="cardEditBtn btn">
+        <div class="">
           <svg
+            class="btn cardEditBtn"
             width="30"
             height="30"
             viewBox="0 0 24 24"
@@ -152,14 +159,14 @@
           >
             <path
               d="M12 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V12"
-              stroke="black"
+              stroke="#aa7f7f"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
             <path
               d="M18.375 2.625C18.7728 2.22717 19.3124 2.00368 19.875 2.00368C20.4376 2.00368 20.9772 2.22717 21.375 2.625C21.7728 3.02282 21.9963 3.56239 21.9963 4.125C21.9963 4.68761 21.7728 5.22717 21.375 5.625L12.362 14.639C12.1245 14.8762 11.8312 15.0499 11.509 15.144L8.636 15.984C8.54995 16.0091 8.45874 16.0106 8.37191 15.9884C8.28508 15.9661 8.20583 15.9209 8.14245 15.8576C8.07907 15.7942 8.03389 15.7149 8.01164 15.6281C7.9894 15.5413 7.9909 15.45 8.016 15.364L8.856 12.491C8.95053 12.169 9.12453 11.8761 9.362 11.639L18.375 2.625Z"
-              stroke="black"
+              stroke="#aa7f7f"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -209,6 +216,10 @@ export default {
   },
   methods: {
     adminIdentityToText,
+    async goEditAdmin(adminId) {
+      if (adminId < 1) return;
+      this.$router.push({ path: "/admin/edit", query: { id: adminId } });
+    },
     redirect(page) {
       if (this.$route.path !== page) {
         this.$router.push(page);
@@ -218,58 +229,62 @@ export default {
       this.searchingPage = page;
       this.getAdminData();
     },
-    selectAdmin(){
+    selectAdmin() {
       this.searchingPage = 1;
       this.getAdminData();
     },
     async getAdminData() {
+      // 驗證參數
+      if (!(this.searchAccount.length > 1 || this.searchAccount === "")) {
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "輸入長度需至少 2 位數";
+        this.$notificationBox.notificationBoxErrorCode = 5;
+        return;
+      }
+      if (
+        !(
+          this.selectStatus === "true" ||
+          this.selectStatus === "false" ||
+          this.selectStatus === ""
+        )
+      )
+        return;
+      if (
+        !(
+          this.selectSortOrder === "ascending" ||
+          this.selectSortOrder === "descending"
+        )
+      )
+        return;
+      if (
+        !(
+          this.selectSortOption === "account" ||
+          this.selectSortOption === "status" ||
+          this.selectSortOption === ""
+        )
+      )
+        return;
+      if (
+        !(
+          this.recordPerPage === "8" ||
+          this.recordPerPage === "12" ||
+          this.recordPerPage === "16"
+        )
+      )
+        return;
+      if (this.searchingPage < 1) return;
+
+      // post 的 dto 變數
+      let getADminDto = {
+        Status: this.selectStatus || null,
+        SortOrder: this.selectSortOrder,
+        SortOption: this.selectSortOption || null,
+        RecordPerPage: this.recordPerPage,
+        SearchAccount: this.searchAccount || null,
+        Page: this.searchingPage,
+      };
+
       try {
-        // 驗證參數
-        if (!(this.searchAccount.length > 1 || this.searchAccount === ""))
-          return;
-        if (
-          !(
-            this.selectStatus === "true" ||
-            this.selectStatus === "false" ||
-            this.selectStatus === ""
-          )
-        )
-          return;
-        if (
-          !(
-            this.selectSortOrder === "ascending" ||
-            this.selectSortOrder === "descending"
-          )
-        )
-          return;
-        if (
-          !(
-            this.selectSortOption === "account" ||
-            this.selectSortOption === "status" ||
-            this.selectSortOption === ""
-          )
-        )
-          return;
-        if (
-          !(
-            this.recordPerPage === "8" ||
-            this.recordPerPage === "12" ||
-            this.recordPerPage === "16"
-          )
-        )
-          return;
-        if (this.searchingPage < 1) return;
-
-        // post 的 dto 變數
-        let getADminDto = {
-          Status: this.selectStatus || null,
-          SortOrder: this.selectSortOrder,
-          SortOption: this.selectSortOption || null,
-          RecordPerPage: this.recordPerPage,
-          SearchAccount: this.searchAccount || null,
-          Page: this.searchingPage,
-        };
-
         // post
         const response = await this.$axios.post(
           "/api/Admin/GetAdmin",
@@ -279,8 +294,21 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.currentPage = this.searchingPage;
           this.adminList = response.data.ApiDataObject.AdminList;
-          this.totalPage = response.data.ApiDataObject.TotalPage
+          this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                this.$emit("afterConfirmEvent");
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =
@@ -432,10 +460,15 @@ export default {
   margin: 5px;
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
 }
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.668);
+}
+
 .cardContent {
   display: flex;
-  cursor: default;
 }
 
 .cardImage {
@@ -462,6 +495,10 @@ export default {
 .cardEndText {
   margin-left: 30px;
   font-size: 18px;
+  color: #aa7f7f;
+}
+
+.cardEditBtn {
   color: #aa7f7f;
 }
 </style>

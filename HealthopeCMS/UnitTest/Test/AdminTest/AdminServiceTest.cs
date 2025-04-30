@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Admin;
 using ApiLayer.Models.Admin.RequestAdminDto;
+using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Service;
+using AutoMapper;
 using DomainLayer.Interface;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
+using PersistentLayer.Repository;
 
 namespace UnitTest.Test.AdminTest
 {
@@ -20,6 +24,7 @@ namespace UnitTest.Test.AdminTest
         private Mock<IAdminRepository> adminRepositoryMock;
         private Mock<ISessionService> sessionServiceMock;
         private Mock<IAppSetting> appSettingMock;
+        private Mock<IMapper> mapperMock;
         private AdminService adminService;
 
         [TestInitialize]
@@ -28,7 +33,8 @@ namespace UnitTest.Test.AdminTest
             adminRepositoryMock = new Mock<IAdminRepository>();
             appSettingMock = new Mock<IAppSetting>();
             sessionServiceMock = new Mock<ISessionService>();
-            adminService = new AdminService(adminRepositoryMock.Object, appSettingMock.Object, sessionServiceMock.Object);
+            mapperMock = new Mock<IMapper>();
+            adminService = new AdminService(adminRepositoryMock.Object, appSettingMock.Object, sessionServiceMock.Object, mapperMock.Object);
         }
 
         [TestMethod]
@@ -143,6 +149,86 @@ namespace UnitTest.Test.AdminTest
             // Assert
             if (result == null) return;
             Assert.Fail();
+        }
+
+        [TestMethod]
+        public void 取得管理員清單_成功_回傳管理者清單()
+        {
+            // Arrange
+            RequestGetAdminDto getAdminDto = new RequestGetAdminDto()
+            {
+                Status = null,
+                Page = 1, // 必須>0
+                SearchAccount = null, // 只允許 null 或 長度>2的字串
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "account", // 只允許 account 或 name 或 null
+                RecordPerPage = 8 // 只允許 8 或 12 或 16
+            };
+            DateTime time = DateTime.Now;
+
+            List<Admin> admins = new List<Admin>()
+            {
+               new Admin()
+               {
+                   AdminId=1,
+                   Account="wqekopqw111",
+                   Identity=1,
+                   Status=true,
+                   UpdateTime=time
+               }
+            };
+            int totalPage = 1;
+            List<ResponseGetAdminListDto> expectedMappedResult = new List<ResponseGetAdminListDto>()
+            {
+                new ResponseGetAdminListDto()
+                {
+                   AdminId=1,
+                   Account="wqekopqw111",
+                   Identity=1,
+                   Status=true,
+                   UpdateTime=time
+                } 
+            };
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.GetAdmin(getAdminDto)).Returns((admins, totalPage));
+            mapperMock.Setup(m => m.Map<List<ResponseGetAdminListDto>>(admins)).Returns(expectedMappedResult);
+
+            // Act
+            ResponseGetAdminDto response = adminService.GetAdmin(getAdminDto);
+
+            // Assert
+            Assert.AreEqual(expectedMappedResult, response.AdminList);
+        }
+
+        [TestMethod]
+        public void 取得管理員清單_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetAdminDto getAdminDto = new RequestGetAdminDto()
+            {
+                Status = null,
+                Page = 1, // 必須>0
+                SearchAccount = null, // 只允許 null 或 長度>2的字串
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "account", // 只允許 account 或 name 或 null
+                RecordPerPage = 8 // 只允許 8 或 12 或 16
+            };
+            DateTime time = DateTime.Now;
+
+            List<Admin> admins = new List<Admin>();
+            int totalPage = 1;
+            List<ResponseGetAdminListDto> expectedMappedResult = new List<ResponseGetAdminListDto>();
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.GetAdmin(getAdminDto)).Returns((admins, totalPage));
+            mapperMock.Setup(m => m.Map<List<ResponseGetAdminListDto>>(admins)).Returns(expectedMappedResult);
+
+            // Act
+            ResponseGetAdminDto response = adminService.GetAdmin(getAdminDto);
+
+            // Assert
+            Assert.AreEqual(expectedMappedResult, response.AdminList);
         }
     }
 }

@@ -14,6 +14,9 @@ namespace DomainLayer.Models
         /// </summary>
         EditAdmin,
 
+        /// <summary>
+        /// 會員相關權限
+        /// </summary>
         EditMember,
     }
 

@@ -2,100 +2,98 @@
   <div>
     <TitleCard text="管理者清單"></TitleCard>
     <SubTitleCard text="新增管理者"></SubTitleCard>
-    <div class="card">
-      <div class="addInputContainer">
-        <div class="addInputLeft">
-          <span class="inputSpan">
-            <label class="label">請輸入帳號</label>
-            <input v-model="account"
-          /></span>
-          <span class="inputSpan">
-            <label class="label">請輸入密碼</label>
-            <input type="password" v-model="pwd"
-          /></span>
-          <span class="inputSpan">
-            <label class="label">請再輸入一次密碼</label>
-            <input type="password" v-model="pwdAgain"
-          /></span>
-        </div>
-        <div class="addInputRight">
-          <span class="inputSpan">
-            <label class="label">請選擇身份</label>
-            <div class="radioContainer">
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="None"
-                  v-model="selectIdentity"
-                  checked=""
-                />
-                <span class="textRadio">無</span>
-              </label>
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="Admin"
-                  v-model="selectIdentity"
-                />
-                <span class="textRadio">管理員</span>
-              </label>
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="Receptionist"
-                  v-model="selectIdentity"
-                />
-                <span class="textRadio">櫃檯人員</span>
-              </label>
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="Accountant"
-                  v-model="selectIdentity"
-                />
-                <span class="textRadio">會計</span>
-              </label>
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="CourseManager"
-                  v-model="selectIdentity"
-                />
-                <span class="textRadio">課程管理</span>
-              </label>
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="CoachManager"
-                  v-model="selectIdentity"
-                />
-                <span class="textRadio">教練管理</span>
-              </label>
-              <label class="labRadioBox">
-                <input
-                  type="radio"
-                  name="radioIdentity"
-                  value="SalesRepresentative"
-                  v-model="selectIdentity"
-                />
-                <span class="textRadio">業務</span>
-              </label>
-            </div>
-          </span>
-        </div>
+    <div class="addInputContainer">
+      <div class="addInputLeft">
+        <span class="inputSpan">
+          <label class="label">請輸入帳號</label>
+          <input v-model="account"
+        /></span>
+        <span class="inputSpan">
+          <label class="label">請輸入密碼</label>
+          <input type="password" v-model="pwd"
+        /></span>
+        <span class="inputSpan">
+          <label class="label">請再輸入一次密碼</label>
+          <input type="password" v-model="pwdAgain"
+        /></span>
       </div>
-      <div class="hintContainer">
-        <span v-if="addFail" class="hintSpan">{{ this.hintText }}</span>
+      <div class="addInputRight">
+        <span class="inputSpan">
+          <label class="label">請選擇身份</label>
+          <div class="radioContainer">
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="None"
+                v-model="selectIdentity"
+                checked=""
+              />
+              <span class="textRadio">無</span>
+            </label>
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="Admin"
+                v-model="selectIdentity"
+              />
+              <span class="textRadio">管理員</span>
+            </label>
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="Receptionist"
+                v-model="selectIdentity"
+              />
+              <span class="textRadio">櫃檯人員</span>
+            </label>
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="Accountant"
+                v-model="selectIdentity"
+              />
+              <span class="textRadio">會計</span>
+            </label>
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="CourseManager"
+                v-model="selectIdentity"
+              />
+              <span class="textRadio">課程管理</span>
+            </label>
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="CoachManager"
+                v-model="selectIdentity"
+              />
+              <span class="textRadio">教練管理</span>
+            </label>
+            <label class="labRadioBox">
+              <input
+                type="radio"
+                name="radioIdentity"
+                value="SalesRepresentative"
+                v-model="selectIdentity"
+              />
+              <span class="textRadio">業務</span>
+            </label>
+          </div>
+        </span>
       </div>
-      <div class="btnAddContainer">
-        <button class="btnAdd btn" @click="addAdmin()">創建</button>
-      </div>
+    </div>
+    <div class="hintContainer">
+      <span v-if="addFail" class="hintSpan">{{ this.hintText }}</span>
+    </div>
+    <div class="btnAddContainer">
+      <button class="btnAdd btn" @click="addAdmin()">創建</button>
     </div>
   </div>
 </template>
@@ -165,6 +163,19 @@ export default {
           this.$router.push("/admin");
           return;
         } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                this.$emit("afterConfirmEvent");
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =
@@ -282,13 +293,13 @@ export default {
   max-width: 350px;
   font-size: 16px;
   margin-left: 20px;
+  gap: 15px;
 }
 
 .labRadioBox {
   flex: 1 1 auto;
   text-align: center;
   justify-content: center;
-  margin-left: 15px;
   min-width: 50px;
 }
 

@@ -18,6 +18,7 @@ Vue.prototype.$notificationBox = Vue.observable({
   notificationBoxFlag: false,
   notificationBoxTitle: "",
   notificationBoxErrorCode: 0,
+  notificationBoxCancelFlag: false
 });
 Vue.config.productionTip = false
 Vue.use(VueRouter);

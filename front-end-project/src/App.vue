@@ -3,21 +3,30 @@
     <NotificationBox
       v-if="this.$notificationBox.notificationBoxFlag"
       class="notificationBox"
+      @notificationBoxConfirm="notificationBoxConfirm"
     ></NotificationBox>
     <AppSidebar
       v-if="this.$loginFlag"
       class="sidebar"
       :permissionList="permissionList"
+      :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
+      @afterConfirmEvent="afterConfirmEvent"
       @refreshPage="refreshRouterViewComponent"
     >
     </AppSidebar>
-    <AppHeader :title="title"></AppHeader>
+    <AppHeader
+      :title="title"
+      :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
+      @afterConfirmEvent="afterConfirmEvent"
+    ></AppHeader>
     <router-view
       :key="routerViewKey"
       :class="{ contentContainer: this.$loginFlag }"
       :title="title"
       @sendPermission="setPermission"
       @refreshPage="refreshRouterViewComponent"
+      :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
+      @afterConfirmEvent="afterConfirmEvent"
     ></router-view>
     <AppFooter />
   </div>
@@ -41,16 +50,24 @@ export default {
     return {
       title: "Healthope 健望館後台管理網站",
       permissionList: [],
-      routerViewKey:0
+      routerViewKey: 0,
+      notificationBoxConfirmFlag: false,
     };
   },
   methods: {
     setPermission(permissionList) {
       this.permissionList = permissionList;
     },
-    refreshRouterViewComponent(){
+    refreshRouterViewComponent() {
       this.routerViewKey += 1;
-    }
+    },
+    notificationBoxConfirm() {
+      this.notificationBoxConfirmFlag = true;
+    },
+    afterConfirmEvent() {
+      this.notificationBoxConfirmFlag = false;
+      this.refreshRouterViewComponent();
+    },
   },
 };
 </script>
@@ -68,7 +85,8 @@ export default {
   margin-left: 200px;
 }
 
-html, body {
+html,
+body {
   background-color: #f7f6f6;
   min-height: 100vh;
   margin: 0;

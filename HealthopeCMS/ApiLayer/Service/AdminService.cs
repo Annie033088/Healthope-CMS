@@ -91,13 +91,18 @@ namespace ApiLayer.Service
         /// <summary>
         /// 取得管理者清單(列表)
         /// </summary>
-        public List<AdminPermission> GetAdmin()
+        public ResponseGetAdminListDto GetAdmin(RequestGetAdminDto getAdminDto)
         {
             try
             {
-                AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
-                AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
-                return adminPermissionUtility.GetPermissions(adminSession.Identity);
+                (List<Admin> admins, int totalPage) = adminRepository.GetAdmin(getAdminDto);
+                ResponseGetAdminListDto responseGetAdminDto = new ResponseGetAdminListDto()
+                {
+                    AdminList = mapper.Map<List<ResponseGetAdminDto>>(admins),
+                    TotalPage = totalPage
+                };
+
+                return responseGetAdminDto;
             }
             catch (Exception)
             {
@@ -106,20 +111,31 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 取得管理者清單(列表)
+        /// 修改管理者
         /// </summary>
-        public ResponseGetAdminDto GetAdmin(RequestGetAdminDto getAdminDto)
+       public bool EditAdmin(RequestEditAdminDto editAdminDto)
         {
             try
             {
-                (List<Admin> admins, int totalPage) = adminRepository.GetAdmin(getAdminDto);
-                ResponseGetAdminDto responseGetAdminDto = new ResponseGetAdminDto()
-                {
-                    AdminList = mapper.Map<List<ResponseGetAdminListDto>>(admins),
-                    TotalPage = totalPage
-                };
 
-                return responseGetAdminDto;
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 根據 Id 取得管理者
+        /// </summary>
+        public ResponseGetAdminDto GetAdminById(RequestAdminIdDto getAdminIdDto)
+        {
+            try
+            {
+               Admin admin = adminRepository.GetAdminById(getAdminIdDto.AdminId);
+
+                return mapper.Map<ResponseGetAdminDto>(admin);
             }
             catch (Exception)
             {

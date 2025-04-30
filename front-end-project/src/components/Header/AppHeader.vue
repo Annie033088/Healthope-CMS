@@ -26,7 +26,13 @@
       </div>
     </header>
     <div v-if="popUpFlag" class="popUpWindowContainer">
-      <HeaderPopUp class="popUpWindow" ref="popUpWindow" @closePopUpWindow="closePopUpWindow()"></HeaderPopUp>
+      <HeaderPopUp
+        class="popUpWindow"
+        ref="popUpWindow"
+        @closePopUpWindow="closePopUpWindow()"
+        :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
+      @afterConfirmEvent="$emit('afterConfirmEvent')"
+      ></HeaderPopUp>
     </div>
   </div>
 </template>
@@ -40,6 +46,7 @@ export default {
     HeaderPopUp,
   },
   props: {
+    notificationBoxConfirmFlag: Boolean,
     title: String,
   },
   data() {
@@ -58,11 +65,11 @@ export default {
   },
   methods: {
     openPopUpWindow() {
-      if( this.popUpFlag == true){
+      if (this.popUpFlag == true) {
         this.popUpFlag == false;
         return;
       }
-      
+
       this.popUpFlag = true;
       this.$nextTick(() => {
         setTimeout(() => {
@@ -71,8 +78,8 @@ export default {
       });
     },
     closePopUpWindow() {
-      if( this.popUpFlag == false) return;
-      
+      if (this.popUpFlag == false) return;
+
       this.popUpFlag = false;
       document.removeEventListener("click", this.clickOutside);
     },
@@ -119,7 +126,7 @@ header .dropDownImg {
   position: fixed;
   top: 50px;
   right: 1%;
-  animation: fadeIn 0.7s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  animation: fadeIn 0.7s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
 
 @keyframes fadeIn {

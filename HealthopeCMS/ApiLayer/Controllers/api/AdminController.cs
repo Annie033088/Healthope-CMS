@@ -27,7 +27,7 @@ namespace ApiLayer.Controllers.api
         /// </summary>
         [HttpPost]
         [AdminPermissionAuthFilter]
-        public IHttpActionResult AddAdmin(RequestAddAdminDto addAdminDto)
+        public IHttpActionResult AddAdmin([FromBody] RequestAddAdminDto addAdminDto)
         {
             try
             {
@@ -89,19 +89,20 @@ namespace ApiLayer.Controllers.api
         }
 
         /// <summary>
-        /// 取得當前登入帳號權限
+        /// 取得管理者列表
         /// </summary>
         [HttpPost]
-        public IHttpActionResult GetAdmin(RequestGetAdminDto getAdminDto)
+        public IHttpActionResult GetAdmin([FromBody] RequestGetAdminDto getAdminDto)
         {
             try
             {
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
-                if (!((getAdminDto.SearchAccount.Length > 1) || (getAdminDto.SearchAccount == null))) modelValidFlag = false;
+                if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1))) modelValidFlag = false;
                 if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) modelValidFlag = false;
-                if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") || (getAdminDto.SortOption == ""))) modelValidFlag = false;
+                if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") || (getAdminDto.SortOption == null))) modelValidFlag = false;
                 if (!((getAdminDto.RecordPerPage == 8) || (getAdminDto.RecordPerPage == 12) || (getAdminDto.RecordPerPage == 16))) modelValidFlag = false;
+                if (getAdminDto.Page < 1) modelValidFlag = false;
 
                 ResultResponse response;
 
@@ -112,7 +113,75 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
+                ResponseGetAdminListDto responseGetAdminDto = adminService.GetAdmin(getAdminDto);
+                response = new ResultResponse<ResponseGetAdminListDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改管理者
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditAdmin([FromBody] RequestEditAdminDto editAdminDto)
+        {
+            try
+            {
+                // 驗證前端傳遞的參數是否合法
+                ResultResponse response;
+
+                // 未修改過 => 格式錯誤
+                if (editAdminDto.Status == null && editAdminDto.Identity == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                // 無法轉成現有定義的身份 => 格式錯誤
+                if (editAdminDto.Identity != null && !Enum.IsDefined(typeof(AdminIdentity), editAdminDto.Identity))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+
                 ResponseGetAdminDto responseGetAdminDto = adminService.GetAdmin(getAdminDto);
+                response = new ResultResponse<ResponseGetAdminDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 根據 Id 取得管理者
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetAdminById([FromBody] RequestAdminIdDto getAdminIdDto)
+        {
+            try
+            {
+                // 驗證前端傳遞的參數是否合法
+                ResultResponse response;
+
+                // 格式錯誤
+                if (getAdminIdDto.AdminId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetAdminDto responseGetAdminDto = adminService.GetAdminById(getAdminIdDto);
                 response = new ResultResponse<ResponseGetAdminDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
                 return Ok(response);
             }

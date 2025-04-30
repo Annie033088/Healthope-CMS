@@ -1,15 +1,22 @@
 <template>
   <div id="" class="notificationBox">
     <div class="notificationBoxContainer">
-      <span class="close" @click="colseNotificationBox">&times;</span>
+      <span class="close" @click="notificationCancel">&times;</span>
       <div class="notificationBoxTitle">
         <h2>{{ this.$notificationBox.notificationBoxTitle }}</h2>
       </div>
       <div class="notificationBoxContent">
-        <p>{{ this.$errorCodeToMessage( this.$notificationBox.notificationBoxErrorCode) }}</p>
+        <p>
+          {{
+            this.$errorCodeToMessage(
+              this.$notificationBox.notificationBoxErrorCode
+            )
+          }}
+        </p>
       </div>
       <div class="notificationBoxBtn">
-        <button class="btnConfirm" @click="colseNotificationBox">OK</button>
+        <button class="btnConfirm" @click="notificationBoxConfirm">OK</button>
+        <button v-if="this.$notificationBox.notificationBoxCancelFlag" class="btnCancel" @click="notificationCancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -19,10 +26,14 @@
 export default {
   name: "NotificationBox",
   methods: {
-    colseNotificationBox() {
+    notificationBoxConfirm(){
       this.$notificationBox.notificationBoxFlag = false;
-      // 刷新頁面
-      this.$router.go(0);
+      this.$notificationBox.notificationBoxCancelFlag = false;
+this.$emit('notificationBoxConfirm');
+    },
+    notificationCancel() {
+      this.$notificationBox.notificationBoxFlag = false;
+      this.$notificationBox.notificationBoxCancelFlag = false;
     },
   },
   created() {},
@@ -84,34 +95,43 @@ export default {
 .notificationBoxBtn {
   display: flex;
   justify-content: center;
+  gap: 5px;
 }
 
-.btnConfirm {
-  background-color: #eee;
+.notificationBoxBtn button {
   border: none;
   padding: 1rem;
   font-size: 1rem;
   width: 10em;
   border-radius: 1rem;
-  color: #58bc82;
   box-shadow: 0 0.4rem #dfd9d9;
   cursor: pointer;
 }
 
-.btnConfirm:active {
+.notificationBoxBtn button:active {
   color: white;
   box-shadow: 0 0.2rem #dfd9d9;
   transform: translateY(0.2rem);
 }
 
-.btnConfirm:hover:not(:disabled) {
-  background: #58bc82;
+.notificationBoxBtn button:hover {
   color: white;
   text-shadow: 0 0.1rem #bcb4b4;
 }
 
-.btnConfirm:disabled {
-  cursor: auto;
-  color: grey;
+.btnConfirm {
+  color: #58bc82;
+}
+
+.btnCancel {
+  color: #bc5858c0;
+}
+
+.btnConfirm:hover {
+  background: #58bc82;
+}
+
+.btnCancel:hover {
+  background: #bc5858c0;
 }
 </style>
