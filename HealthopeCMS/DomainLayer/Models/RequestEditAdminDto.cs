@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace ApiLayer.Models.Admin.RequestAdminDto
+namespace DomainLayer.Models
 {
     public class RequestEditAdminDto
     {

@@ -113,8 +113,46 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                ResponseGetAdminListDto responseGetAdminDto = adminService.GetAdmin(getAdminDto);
-                response = new ResultResponse<ResponseGetAdminListDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
+                ResponseGetAdminListDto responseGetAdminListDto = adminService.GetAdmin(getAdminDto);
+                response = new ResultResponse<ResponseGetAdminListDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminListDto };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 根據 Id 取得管理者
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetAdminById([FromBody] RequestAdminIdDto getAdminIdDto)
+        {
+            try
+            {
+                // 驗證前端傳遞的參數是否合法
+                ResultResponse response;
+
+                // 格式錯誤
+                if (getAdminIdDto.AdminId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetAdminDto responseGetAdminDto = adminService.GetAdminById(getAdminIdDto);
+
+                // 失敗 (無資料)
+                if (responseGetAdminDto == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse<ResponseGetAdminDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
                 return Ok(response);
             }
             catch (Exception ex)
@@ -150,9 +188,17 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
+                bool successFlag = adminService.EditAdmin(editAdminDto);
 
-                ResponseGetAdminDto responseGetAdminDto = adminService.GetAdmin(getAdminDto);
-                response = new ResultResponse<ResponseGetAdminDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
+                // 成功
+                if (successFlag)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.Success };
+                    return Ok(response);
+                }
+
+                // 失敗
+                response = new ResultResponse { ErrorCode = ErrorCodeDefine.HasBeenModified };
                 return Ok(response);
             }
             catch (Exception ex)
@@ -163,26 +209,35 @@ namespace ApiLayer.Controllers.api
             }
         }
 
+
         /// <summary>
-        /// 根據 Id 取得管理者
+        /// 刪除管理者
         /// </summary>
         [HttpPost]
-        public IHttpActionResult GetAdminById([FromBody] RequestAdminIdDto getAdminIdDto)
+        public IHttpActionResult DeleteAdmin([FromBody] RequestAdminIdDto adminIdDto)
         {
             try
             {
                 // 驗證前端傳遞的參數是否合法
                 ResultResponse response;
 
-                // 格式錯誤
-                if (getAdminIdDto.AdminId < 1)
+                if (adminIdDto.AdminId < 1)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                ResponseGetAdminDto responseGetAdminDto = adminService.GetAdminById(getAdminIdDto);
-                response = new ResultResponse<ResponseGetAdminDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetAdminDto };
+                bool successFlag = adminService.DeleteAdmin(adminIdDto);
+
+                // 成功
+                if (successFlag)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.Success };
+                    return Ok(response);
+                }
+
+                // 失敗
+                response = new ResultResponse { ErrorCode = ErrorCodeDefine.DeleteFailed };
                 return Ok(response);
             }
             catch (Exception ex)

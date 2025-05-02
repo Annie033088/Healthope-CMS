@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ApiLayer.Interface;
-using ApiLayer.Models;
 using ApiLayer.Models.Admin;
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
@@ -14,7 +12,6 @@ using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
-using PersistentLayer.Repository;
 
 namespace UnitTest.Test.AdminTest
 {
@@ -123,8 +120,7 @@ namespace UnitTest.Test.AdminTest
             List<AdminPermission> result = adminService.GetPermission();
 
             // Assert
-            if (adminPermissions.SequenceEqual(result)) return;
-            Assert.Fail();
+            CollectionAssert.AreEqual(result, adminPermissions); // MSTest 專用
         }
 
         [TestMethod]
@@ -147,8 +143,7 @@ namespace UnitTest.Test.AdminTest
             List<AdminPermission> result = adminService.GetPermission();
 
             // Assert
-            if (result == null) return;
-            Assert.Fail();
+            Assert.AreEqual(result, null);
         }
 
         [TestMethod]
@@ -178,24 +173,24 @@ namespace UnitTest.Test.AdminTest
                }
             };
             int totalPage = 1;
-            List<ResponseGetAdminListDto> expectedMappedResult = new List<ResponseGetAdminListDto>()
+            List<ResponseGetAdminDto> expectedMappedResult = new List<ResponseGetAdminDto>()
             {
-                new ResponseGetAdminListDto()
+                new ResponseGetAdminDto()
                 {
                    AdminId=1,
                    Account="wqekopqw111",
                    Identity=1,
                    Status=true,
                    UpdateTime=time
-                } 
+                }
             };
 
             // Mock 設定
             adminRepositoryMock.Setup(s => s.GetAdmin(getAdminDto)).Returns((admins, totalPage));
-            mapperMock.Setup(m => m.Map<List<ResponseGetAdminListDto>>(admins)).Returns(expectedMappedResult);
+            mapperMock.Setup(m => m.Map<List<ResponseGetAdminDto>>(admins)).Returns(expectedMappedResult);
 
             // Act
-            ResponseGetAdminDto response = adminService.GetAdmin(getAdminDto);
+            ResponseGetAdminListDto response = adminService.GetAdmin(getAdminDto);
 
             // Assert
             Assert.AreEqual(expectedMappedResult, response.AdminList);
@@ -218,17 +213,169 @@ namespace UnitTest.Test.AdminTest
 
             List<Admin> admins = new List<Admin>();
             int totalPage = 1;
-            List<ResponseGetAdminListDto> expectedMappedResult = new List<ResponseGetAdminListDto>();
+            List<ResponseGetAdminDto> expectedMappedResult = new List<ResponseGetAdminDto>();
 
             // Mock 設定
             adminRepositoryMock.Setup(s => s.GetAdmin(getAdminDto)).Returns((admins, totalPage));
-            mapperMock.Setup(m => m.Map<List<ResponseGetAdminListDto>>(admins)).Returns(expectedMappedResult);
+            mapperMock.Setup(m => m.Map<List<ResponseGetAdminDto>>(admins)).Returns(expectedMappedResult);
 
             // Act
-            ResponseGetAdminDto response = adminService.GetAdmin(getAdminDto);
+            ResponseGetAdminListDto response = adminService.GetAdmin(getAdminDto);
 
             // Assert
             Assert.AreEqual(expectedMappedResult, response.AdminList);
+        }
+
+        [TestMethod]
+        public void 根據Id取得管理員_成功_回傳管理員()
+        {
+            // Arrange
+            RequestAdminIdDto getAdminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 1
+            };
+
+            ResponseGetAdminDto responseGetAdminDto = new ResponseGetAdminDto()
+            {
+                AdminId = 1,
+                Account = "okwopekq122",
+                Identity = 1,
+                Status = true,
+                UpdateTime = DateTime.Now,
+            };
+
+            Admin admin = new Admin()
+            {
+                AdminId = 1,
+                Account = "okwopekq122",
+                Identity = 1,
+                Status = true,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.GetAdminById(getAdminIdDto.AdminId)).Returns(admin);
+            mapperMock.Setup(m => m.Map<ResponseGetAdminDto>(admin)).Returns(responseGetAdminDto);
+
+            // Act
+            ResponseGetAdminDto response = adminService.GetAdminById(getAdminIdDto);
+
+            // Assert
+            Assert.AreEqual(responseGetAdminDto, response);
+        }
+
+        [TestMethod]
+        public void 根據Id取得管理員_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestAdminIdDto getAdminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 999
+            };
+
+            ResponseGetAdminDto responseGetAdminDto = null;
+            Admin admin = null;
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.GetAdminById(getAdminIdDto.AdminId)).Returns(admin);
+            mapperMock.Setup(m => m.Map<ResponseGetAdminDto>(admin)).Returns(responseGetAdminDto);
+
+            // Act
+            ResponseGetAdminDto response = adminService.GetAdminById(getAdminIdDto);
+
+            // Assert
+            Assert.AreEqual(responseGetAdminDto, response);
+        }
+
+
+        [TestMethod]
+        public void 修改管理員_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditAdminDto editAdminDto = new RequestEditAdminDto()
+            {
+                AdminId = 10,
+                Identity = null,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.EditAdmin(editAdminDto)).Returns(successFlag);
+
+            // Act
+            bool result = adminService.EditAdmin(editAdminDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 修改管理員_失敗_回傳資料已被他人修改()
+        {
+            // Arrange
+            RequestEditAdminDto editAdminDto = new RequestEditAdminDto()
+            {
+                AdminId = 10,
+                Identity = null,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.EditAdmin(editAdminDto)).Returns(successFlag);
+
+            // Act
+            bool result = adminService.EditAdmin(editAdminDto);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void 刪除管理員_成功_回傳成功()
+        {
+            // Arrange
+            RequestAdminIdDto adminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 10,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.DeleteAdmin(adminIdDto.AdminId)).Returns(successFlag);
+
+            // Act
+            bool result = adminService.DeleteAdmin(adminIdDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 刪除管理員_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestAdminIdDto adminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 1000000000,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.DeleteAdmin(adminIdDto.AdminId)).Returns(successFlag);
+
+            // Act
+            bool result = adminService.DeleteAdmin(adminIdDto);
+
+            // Assert
+            Assert.IsFalse(result);
         }
     }
 }

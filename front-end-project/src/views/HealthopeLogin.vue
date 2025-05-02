@@ -119,15 +119,13 @@ export default {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  color: white;
+  align-items: center;;
 }
 
 .form {
   --clrLight: #efefef;
   --clrDark: #707070;
   --clrLabel: #58bc82;
-  --clrGrey: #9c9c9c60;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -148,9 +146,9 @@ export default {
   padding: 1rem 0.75rem;
   width: 100%;
   border: none;
-  background-color: var(--clrGrey);
+  background-color: #c7c7c760;
   outline: 2px solid var(--clrDark);
-  color: white;
+  color: black;
   font-size: 15px;
 }
 
@@ -203,7 +201,8 @@ export default {
   width: 400px;
   height: 380px;
   border-radius: 0.75rem;
-  background-color: rgb(36, 44, 59);
+  /* background-color: rgb(36, 44, 59); */
+  background-color: #eee;
 }
 
 .box {

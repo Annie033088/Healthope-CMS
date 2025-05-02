@@ -38,18 +38,23 @@ export const errorCodeDefine = {
     //刪除失敗
     DeleteFailed: 12,
 
-    //刪除失敗
-    GetFailed: 13
+    //取得特定資料失敗
+    GetFailed: 13,
+
+    // 資料已被異動
+    HasBeenModified: 14,
+
+    // 超級管理員不得修改
+    ModifySuperAdminFailed: 15,
 };
 
 //設定errorCode對應資料
 export function errorCodeToMessage(errorCode) {
-    console.log("!")
     let message;
 
     switch (errorCode) {
         case 1:
-            message = "請求成功";
+            message = "成功!";
             return message;
         case 2:
             message = "您的帳號已被其他使用者踢出";
@@ -87,7 +92,15 @@ export function errorCodeToMessage(errorCode) {
         case 13:
             message = "取得資料失敗，請再試一次";
             return message;
+        case 14:
+            message = "資料已被異動";
+            return message;
+        case 15:
+            message = "超級管理員資料不得修改";
+            return message;
         default:
+            message = "";
+            return message;
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
@@ -9,13 +10,15 @@ using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
+using ToDoListTest.utils;
 
 namespace UnitTest.Test.AccountAccessTest
 {
     [TestClass]
     public class AccountAccessServiceTest
     {
-        private AccountAccessService loginService;
+        private AccountAccessService accountAccessService;
         private Mock<IAdminRepository> adminRepositoryMock;
         private Mock<IAppSetting> appSettingMock;
         private Mock<IRedisService> redisServiceMock;
@@ -28,7 +31,7 @@ namespace UnitTest.Test.AccountAccessTest
             appSettingMock = new Mock<IAppSetting>();
             redisServiceMock = new Mock<IRedisService>();
             sessionServiceMock = new Mock<ISessionService>();
-            loginService = new AccountAccessService(adminRepositoryMock.Object, appSettingMock.Object, redisServiceMock.Object, sessionServiceMock.Object);
+            accountAccessService = new AccountAccessService(adminRepositoryMock.Object, appSettingMock.Object, redisServiceMock.Object, sessionServiceMock.Object);
         }
 
         [TestMethod]
@@ -57,7 +60,7 @@ namespace UnitTest.Test.AccountAccessTest
             redisServiceMock.Setup(s => s.SetValue(key, adminRedis, expiry));
 
             // ACT
-            (bool success, Admin returnAdmin) = loginService.AdminLogin(loginDto);
+            (bool success, Admin returnAdmin) = accountAccessService.AdminLogin(loginDto);
             Assert.AreEqual(success, true);
             Assert.AreEqual(returnAdmin.AdminId, 1);
             Assert.AreEqual(returnAdmin.Identity, (byte)AdminIdentity.SuperAdmin);
@@ -77,11 +80,111 @@ namespace UnitTest.Test.AccountAccessTest
             appSettingMock.Setup(s => s.GetSuperAdminHash()).Returns("5a4ca2d4-2f0b-42cd-9bc9-e91a59a4c897472b2d0896a0b59331c1e4b21306f62c046bcfc1eb60ae9603239b4aeb94bc8c");
 
             // ACT
-            (bool success, Admin admin) = loginService.AdminLogin(loginDto);
+            (bool success, Admin admin) = accountAccessService.AdminLogin(loginDto);
             Assert.AreEqual(success, false);
             Assert.AreEqual(admin, null);
         }
 
+
+        [TestMethod]
+        public void 修改密碼_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditSelfPwdDto editSelfPwdDto = new RequestEditSelfPwdDto()
+            {
+                OldPwd = "12qwekw23",
+                NewPwd = "qowkep9999"
+            };
+            AdminSession adminSession = new AdminSession()
+            {
+                AdminId = 2,
+                Identity = AdminIdentity.Admin
+            };
+            EditPwdDto editPwdDto = new EditPwdDto()
+            {
+                AdminId = adminSession.AdminId,
+                OldPwd = editSelfPwdDto.OldPwd,
+                NewPwd = editSelfPwdDto.NewPwd
+            };
+            string adminSessionKey = "AdminSession";
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.EditSelfPwd(It.Is<EditPwdDto>(dto =>
+            dto.AdminId == 2 &&
+            dto.OldPwd == "12qwekw23" &&
+            dto.NewPwd == "qowkep9999"
+            ))).Returns(true);
+            sessionServiceMock.Setup(s => s.GetSession<AdminSession>(adminSessionKey)).Returns(adminSession);
+
+            // Act
+            ErrorCodeDefine result = accountAccessService.EditSelfPwd(editSelfPwdDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改密碼_失敗_回傳修改超級管理員失敗()
+        {
+            // Arrange
+            RequestEditSelfPwdDto editSelfPwdDto = new RequestEditSelfPwdDto()
+            {
+                OldPwd = "12qwekw23",
+                NewPwd = "qowkep9999"
+            };
+            AdminSession adminSession = new AdminSession()
+            {
+                AdminId = 1,
+                Identity = AdminIdentity.Admin
+            };
+            string adminSessionKey = "AdminSession";
+
+            // Mock 設定
+            sessionServiceMock.Setup(s => s.GetSession<AdminSession>(adminSessionKey)).Returns(adminSession);
+
+            // Act
+            ErrorCodeDefine result = accountAccessService.EditSelfPwd(editSelfPwdDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.ModifySuperAdminFailed);
+        }
+
+        [TestMethod]
+        public void 修改密碼_失敗_回傳修改失敗()
+        {
+            // Arrange
+            RequestEditSelfPwdDto editSelfPwdDto = new RequestEditSelfPwdDto()
+            {
+                OldPwd = "12qwekw23",
+                NewPwd = "qowkep9999"
+            };
+            AdminSession adminSession = new AdminSession()
+            {
+                AdminId = 2,
+                Identity = AdminIdentity.Admin
+            };
+            EditPwdDto editPwdDto = new EditPwdDto()
+            {
+                AdminId = adminSession.AdminId,
+                OldPwd = editSelfPwdDto.OldPwd,
+                NewPwd = editSelfPwdDto.NewPwd
+            };
+            string adminSessionKey = "AdminSession";
+
+            // Mock 設定
+            adminRepositoryMock.Setup(s => s.EditSelfPwd(It.Is<EditPwdDto>(dto =>
+            dto.AdminId == 2 &&
+            dto.OldPwd == "12qwekw23" &&
+            dto.NewPwd == "qowkep9999"
+            ))).Returns(false);
+            sessionServiceMock.Setup(s => s.GetSession<AdminSession>(adminSessionKey)).Returns(adminSession);
+
+            // Act
+            ErrorCodeDefine result = accountAccessService.EditSelfPwd(editSelfPwdDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
+        }
         // TODO: 之後補上 HavePermission 檢查邏輯
 
         //[TestMethod]

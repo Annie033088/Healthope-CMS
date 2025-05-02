@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -195,6 +196,224 @@ namespace UnitTest.Test.AdminTest
             Assert.Fail("測試出錯");
         }
 
-        // TODO: 補上測試 getAdminId
+        [TestMethod]
+        public void 根據Id取得管理員_成功_回傳管理員()
+        {
+            // Arrange
+            RequestAdminIdDto getAdminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 1
+            };
+
+            ResponseGetAdminDto responseGetAdminDto = new ResponseGetAdminDto()
+            {
+                AdminId = 1,
+                Account = "okwopekq122",
+                Identity = 1,
+                Status = true,
+                UpdateTime = DateTime.Now,
+            };
+
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.GetAdminById(getAdminIdDto)).Returns(responseGetAdminDto);
+
+            // Act
+            IHttpActionResult result = adminController.GetAdminById(getAdminIdDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 根據Id取得管理員_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestAdminIdDto getAdminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 1
+            };
+
+            ResponseGetAdminDto responseGetAdminDto = null; // null
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.GetAdminById(getAdminIdDto)).Returns(responseGetAdminDto);
+
+            // Act
+            IHttpActionResult result = adminController.GetAdminById(getAdminIdDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.GetFailed) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 修改管理員_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditAdminDto editAdminDto = new RequestEditAdminDto()
+            {
+                AdminId = 10,
+                Identity = null,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.EditAdmin(editAdminDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = adminController.EditAdmin(editAdminDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 修改管理員_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditAdminDto editAdminDto = new RequestEditAdminDto()
+            {
+                AdminId = 10,
+                Identity = 200, // 沒有此身份 (無法轉換成功)
+                Status = null,
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.EditAdmin(editAdminDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = adminController.EditAdmin(editAdminDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.InvalidFormatOrEntry) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 修改管理員_失敗_回傳資料已被他人修改()
+        {
+            // Arrange
+            RequestEditAdminDto editAdminDto = new RequestEditAdminDto()
+            {
+                AdminId = 10,
+                Identity = null,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.EditAdmin(editAdminDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = adminController.EditAdmin(editAdminDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.HasBeenModified) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 刪除管理員_成功_回傳成功()
+        {
+            // Arrange
+            RequestAdminIdDto adminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 10,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.DeleteAdmin(adminIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = adminController.DeleteAdmin(adminIdDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 刪除管理員_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestAdminIdDto adminIdDto = new RequestAdminIdDto()
+            {
+                AdminId = 1000000000,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            adminServiceMock.Setup(s => s.DeleteAdmin(adminIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = adminController.DeleteAdmin(adminIdDto);
+
+            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
+            {
+                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
+                {
+                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.DeleteFailed) return;
+                }
+            }
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
     }
 }

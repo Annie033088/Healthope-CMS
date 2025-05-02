@@ -111,14 +111,17 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 修改管理者
+        /// 根據 Id 取得管理者
         /// </summary>
-       public bool EditAdmin(RequestEditAdminDto editAdminDto)
+        public ResponseGetAdminDto GetAdminById(RequestAdminIdDto getAdminIdDto)
         {
             try
             {
+                Admin admin = adminRepository.GetAdminById(getAdminIdDto.AdminId);
+                if (admin == null) return null;
 
-                return false;
+                ResponseGetAdminDto responseGetAdminDto = mapper.Map<ResponseGetAdminDto>(admin);
+                return responseGetAdminDto;
             }
             catch (Exception)
             {
@@ -127,15 +130,28 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 根據 Id 取得管理者
+        /// 修改管理者
         /// </summary>
-        public ResponseGetAdminDto GetAdminById(RequestAdminIdDto getAdminIdDto)
+        public bool EditAdmin(RequestEditAdminDto editAdminDto)
         {
             try
             {
-               Admin admin = adminRepository.GetAdminById(getAdminIdDto.AdminId);
+                return adminRepository.EditAdmin(editAdminDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-                return mapper.Map<ResponseGetAdminDto>(admin);
+        /// <summary>
+        /// 刪除管理者
+        /// </summary>
+        public bool DeleteAdmin(RequestAdminIdDto adminIdDto)
+        {
+            try
+            {
+                return adminRepository.DeleteAdmin(adminIdDto.AdminId);
             }
             catch (Exception)
             {

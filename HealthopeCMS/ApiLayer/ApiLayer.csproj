@@ -197,6 +197,7 @@
     <Compile Include="Interface\IHttpHelper.cs" />
     <Compile Include="Interface\IRedisService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
+    <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestEditSelfPwdDto.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestHavePermissionDto.cs" />
     <Compile Include="Models\Admin\AdminRedis.cs" />
     <Compile Include="Models\Admin\AdminSession.cs" />
@@ -228,13 +229,12 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.97a99245.css" />
+    <Content Include="wwwroot\css\app.a43ef76a.css" />
     <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
     <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.27e85348.js" />
+    <Content Include="wwwroot\js\app.bb0c2081.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
-    <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -242,7 +242,8 @@
   <ItemGroup>
     <Content Include="NLog.config" />
     <None Include="packages.config" />
-    <Content Include="wwwroot\js\app.27e85348.js.map" />
+    <Content Include="wwwroot\js\app.bb0c2081.js.map" />
+    <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj">

@@ -5,7 +5,6 @@ using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
 using DomainLayer.Models;
-using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ToDoListTest.utils;
@@ -15,15 +14,14 @@ namespace UnitTest.Test.AccountAccessTest
     [TestClass]
     public class AccountAccessControllerTest
     {
-        private readonly AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
         private AccountAccessController controller;
-        private Mock<IAccountAccessService> loginServiceMock;
+        private Mock<IAccountAccessService> accountAccessServiceMock;
 
         [TestInitialize]
         public void Setup()
         {
-            loginServiceMock = new Mock<IAccountAccessService>();
-            controller = new AccountAccessController(loginServiceMock.Object);
+            accountAccessServiceMock = new Mock<IAccountAccessService>();
+            controller = new AccountAccessController(accountAccessServiceMock.Object);
         }
 
         [TestMethod]
@@ -42,7 +40,7 @@ namespace UnitTest.Test.AccountAccessTest
                 Identity = 1,
                 Status = true
             };
-            loginServiceMock.Setup(s => s.AdminLogin(loginDto))
+            accountAccessServiceMock.Setup(s => s.AdminLogin(loginDto))
                 .Returns((success, admin));
 
             // Act
@@ -65,7 +63,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Mock 設定
             bool success = false;
             Admin admin = new Admin();
-            loginServiceMock.Setup(s => s.AdminLogin(loginDto))
+            accountAccessServiceMock.Setup(s => s.AdminLogin(loginDto))
                 .Returns((success, admin));
 
             // Act
@@ -94,7 +92,7 @@ namespace UnitTest.Test.AccountAccessTest
                 Identity = 5,
                 Status = false
             };
-            loginServiceMock.Setup(s => s.AdminLogin(loginDto))
+            accountAccessServiceMock.Setup(s => s.AdminLogin(loginDto))
                 .Returns((success, admin));
 
             // Act
@@ -102,6 +100,84 @@ namespace UnitTest.Test.AccountAccessTest
 
             ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Baned)) return;
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 修改密碼_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditSelfPwdDto editSelfPwdDto = new RequestEditSelfPwdDto()
+            {
+                OldPwd = "12qwekw23",
+                NewPwd = "qowkep9999"
+            };
+
+            // Mock 設定
+            ErrorCodeDefine errorCodeDefine = ErrorCodeDefine.Success;
+
+            accountAccessServiceMock.Setup(s => s.EditSelfPwd(editSelfPwdDto))
+                .Returns(errorCodeDefine);
+
+            // Act
+            IHttpActionResult result = controller.EditSelfPwd(editSelfPwdDto);
+
+            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success)) return;
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 修改密碼_失敗_回傳修改超級管理員失敗()
+        {
+            // Arrange
+            RequestEditSelfPwdDto editSelfPwdDto = new RequestEditSelfPwdDto()
+            {
+                OldPwd = "12qwekw23",
+                NewPwd = "qowkep9999"
+            };
+
+            // Mock 設定
+            ErrorCodeDefine errorCodeDefine = ErrorCodeDefine.ModifySuperAdminFailed;
+
+            accountAccessServiceMock.Setup(s => s.EditSelfPwd(editSelfPwdDto))
+                .Returns(errorCodeDefine);
+
+            // Act
+            IHttpActionResult result = controller.EditSelfPwd(editSelfPwdDto);
+
+            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifySuperAdminFailed)) return;
+
+            // Assert
+            Assert.Fail("測試出錯");
+        }
+
+        [TestMethod]
+        public void 修改密碼_失敗_回傳修改失敗()
+        {
+            // Arrange
+            RequestEditSelfPwdDto editSelfPwdDto = new RequestEditSelfPwdDto()
+            {
+                OldPwd = "12qwekw23",
+                NewPwd = "qowkep9999"
+            };
+
+            // Mock 設定
+            ErrorCodeDefine errorCodeDefine = ErrorCodeDefine.ModifiedFailed;
+
+            accountAccessServiceMock.Setup(s => s.EditSelfPwd(editSelfPwdDto))
+                .Returns(errorCodeDefine);
+
+            // Act
+            IHttpActionResult result = controller.EditSelfPwd(editSelfPwdDto);
+
+            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed)) return;
 
             // Assert
             Assert.Fail("測試出錯");

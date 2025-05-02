@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ApiLayer.Models.Admin.ResponseAdminDto
 {
     public class ResponseGetAdminListDto
     {
         public List<ResponseGetAdminDto> AdminList { get; set; }
-        public int TotalPage {  get; set; }
+        public int TotalPage { get; set; }
     }
 
     public class ResponseGetAdminDto
@@ -36,6 +34,6 @@ namespace ApiLayer.Models.Admin.ResponseAdminDto
         /// <summary>
         /// 最後更新時間
         /// </summary>
-        public string UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
     }
 }

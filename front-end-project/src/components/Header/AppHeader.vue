@@ -30,8 +30,8 @@
         class="popUpWindow"
         ref="popUpWindow"
         @closePopUpWindow="closePopUpWindow()"
-        :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
-      @afterConfirmEvent="$emit('afterConfirmEvent')"
+        :notificationBoxConfirmFlag="this.notificationBoxConfirmFlag"
+        @afterConfirmEvent="afterConfirmEvent"
       ></HeaderPopUp>
     </div>
   </div>
@@ -88,6 +88,9 @@ export default {
       if (popUpWindow && !popUpWindow.contains(event.target)) {
         this.closePopUpWindow();
       }
+    },
+    afterConfirmEvent(redirectRoute) {
+      this.$emit("afterConfirmEvent", redirectRoute);
     },
   },
 };

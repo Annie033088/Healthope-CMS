@@ -20,7 +20,7 @@ namespace DomainLayer.Models
         EditMember,
     }
 
-    public enum AdminIdentity
+    public enum AdminIdentity : byte
     {
         /// <summary>
         /// 無

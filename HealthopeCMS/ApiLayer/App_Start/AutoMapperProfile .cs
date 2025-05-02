@@ -1,5 +1,4 @@
-﻿using ApiLayer.Models.Admin.RequestAdminDto;
-using ApiLayer.Models.Admin.ResponseAdminDto;
+﻿using ApiLayer.Models.Admin.ResponseAdminDto;
 using AutoMapper;
 using DomainLayer.Models;
 

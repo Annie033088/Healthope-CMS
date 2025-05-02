@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
@@ -9,6 +8,7 @@ using DomainLayer.Interface;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Service
 {
@@ -148,7 +148,7 @@ namespace ApiLayer.Service
                 if (adminSession == null) return ErrorCodeDefine.UserNotLogin;
 
                 // 不需要權限
-                if(havePermissionDto == null) return ErrorCodeDefine.Success;
+                if (havePermissionDto == null) return ErrorCodeDefine.Success;
 
                 bool hasPermission = false;
                 AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();
@@ -167,6 +167,46 @@ namespace ApiLayer.Service
                 if (!hasPermission) return ErrorCodeDefine.NoPermission;
 
                 return ErrorCodeDefine.Success;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 管理者修改自己的密碼
+        /// </summary>
+        public ErrorCodeDefine EditSelfPwd(RequestEditSelfPwdDto editSelfPwdDto)
+        {
+            try
+            {
+                AdminSession adminSession = sessionService.GetSession<AdminSession>(adminSessionKey);
+
+                if (adminSession.AdminId == 1) return ErrorCodeDefine.ModifySuperAdminFailed;
+
+                EditPwdDto editPwdDto = new EditPwdDto()
+                {
+                    AdminId = adminSession.AdminId,
+                    OldPwd = editSelfPwdDto.OldPwd,
+                    NewPwd = editSelfPwdDto.NewPwd,
+                };
+
+                bool successFlag = adminRepository.EditSelfPwd(editPwdDto);
+
+                if (successFlag)
+                {
+                    string redisKey = "Admin" + adminSession.AdminId;
+
+                    // 清除會話
+                    sessionService.ClearSerssion();
+
+                    // 清除 redis 的登入後資料
+                    redisService.DeleteKey(redisKey);
+                    return ErrorCodeDefine.Success;
+                }
+
+                return ErrorCodeDefine.ModifiedFailed;
             }
             catch (Exception)
             {

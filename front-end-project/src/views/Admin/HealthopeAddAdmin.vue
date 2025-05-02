@@ -4,18 +4,9 @@
     <SubTitleCard text="新增管理者"></SubTitleCard>
     <div class="addInputContainer">
       <div class="addInputLeft">
-        <span class="inputSpan">
-          <label class="label">請輸入帳號</label>
-          <input v-model="account"
-        /></span>
-        <span class="inputSpan">
-          <label class="label">請輸入密碼</label>
-          <input type="password" v-model="pwd"
-        /></span>
-        <span class="inputSpan">
-          <label class="label">請再輸入一次密碼</label>
-          <input type="password" v-model="pwdAgain"
-        /></span>
+        <InputSpan labelText="請輸入帳號" v-model="account"></InputSpan>
+        <InputSpan labelText="請輸入密碼" v-model="pwd" inputType="password"></InputSpan>
+        <InputSpan labelText="請再輸入一次密碼" v-model="pwdAgain" inputType="password"></InputSpan>
       </div>
       <div class="addInputRight">
         <span class="inputSpan">
@@ -93,7 +84,7 @@
       <span v-if="addFail" class="hintSpan">{{ this.hintText }}</span>
     </div>
     <div class="btnAddContainer">
-      <button class="btnAdd btn" @click="addAdmin()">創建</button>
+      <BtnConfirm @click="addAdmin()" text="創建"></BtnConfirm>
     </div>
   </div>
 </template>
@@ -101,15 +92,20 @@
 <script>
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
+import InputSpan from "@/components/Input/InputSpan";
+import BtnConfirm from "@/components/Btn/BtnConfirm";
 
 export default {
   name: "HealthopeAddAdmin",
   components: {
     TitleCard,
     SubTitleCard,
+    InputSpan,
+    BtnConfirm
   },
   props: {
     text: String,
+    notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
@@ -168,7 +164,8 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.$emit("afterConfirmEvent");
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -191,8 +188,6 @@ export default {
 
 <style scoped>
 .addInputContainer {
-  --clrLight: #efefef;
-  --clrDark: #707070;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -206,57 +201,14 @@ export default {
   max-width: 350px;
 }
 
-.addInputLeft .inputSpan {
-  margin-top: 20px;
-}
-.addInputRight .inputSpan {
-  margin-top: 10px;
-}
-
-.addInputContainer .inputSpan {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.addInputContainer input {
-  border-radius: 0.5rem;
-  padding: 0.7rem 0.75rem;
-  width: 100%;
-  border: none;
-  background-color: white;
-  outline: 2px solid var(--clrLight);
-  font-size: 15px;
-  margin-left: 15px;
-}
-
-.addInputContainer input:focus {
-  outline: 2px solid var(--clrDark);
+.addInputRight .inputSpan  {
+  margin-top: 5%;
 }
 
 .btnAddContainer {
   display: flex;
   justify-content: center;
   margin-top: 15px;
-}
-
-.btnAdd {
-  width: 100%;
-  max-width: 400px;
-  height: 50px;
-  border-radius: 3rem;
-  background-color: #707070;
-  color: #efefef;
-  cursor: pointer;
-  transition: all 300ms;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.btnAdd:hover {
-  background-color: #eee;
-  color: #707070;
 }
 
 .hintContainer {

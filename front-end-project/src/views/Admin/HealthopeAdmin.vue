@@ -148,28 +148,18 @@
           </div>
         </div>
 
-        <div class="">
+        <div class="" @click.stop="delAdmin(admin.AdminId)">
           <svg
-            class="btn cardEditBtn"
-            width="30"
-            height="30"
+            class="btn btnDeleteAdmin"
+            width="40"
+            height="40"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M12 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V12"
-              stroke="#aa7f7f"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M18.375 2.625C18.7728 2.22717 19.3124 2.00368 19.875 2.00368C20.4376 2.00368 20.9772 2.22717 21.375 2.625C21.7728 3.02282 21.9963 3.56239 21.9963 4.125C21.9963 4.68761 21.7728 5.22717 21.375 5.625L12.362 14.639C12.1245 14.8762 11.8312 15.0499 11.509 15.144L8.636 15.984C8.54995 16.0091 8.45874 16.0106 8.37191 15.9884C8.28508 15.9661 8.20583 15.9209 8.14245 15.8576C8.07907 15.7942 8.03389 15.7149 8.01164 15.6281C7.9894 15.5413 7.9909 15.45 8.016 15.364L8.856 12.491C8.95053 12.169 9.12453 11.8761 9.362 11.639L18.375 2.625Z"
-              stroke="#aa7f7f"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              d="M7.616 20C7.168 20 6.78667 19.8426 6.472 19.528C6.15733 19.2133 6 18.8323 6 18.385V5.99998H5V4.99998H9V4.22998H15V4.99998H19V5.99998H18V18.385C18 18.845 17.846 19.2293 17.538 19.538C17.23 19.8466 16.8453 20.0006 16.384 20H7.616ZM17 5.99998H7V18.385C7 18.5643 7.05767 18.7116 7.173 18.827C7.28833 18.9423 7.436 19 7.616 19H16.385C16.5383 19 16.6793 18.936 16.808 18.808C16.9367 18.68 17.0007 18.5386 17 18.384V5.99998ZM9.808 17H10.808V7.99998H9.808V17ZM13.192 17H14.192V7.99998H13.192V17Z"
+              fill="#AA7F7F"
             />
           </svg>
         </div>
@@ -199,6 +189,7 @@ export default {
     PaginationComponent,
   },
   props: {
+    notificationBoxConfirmFlag: Boolean,
     text: String,
   },
   data() {
@@ -301,7 +292,8 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.$emit("afterConfirmEvent");
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -316,6 +308,71 @@ export default {
         }
       } catch (error) {
         console.error("取得管理者列表時發生錯誤", error);
+      }
+    },
+    delAdmin(id) {
+      // 添加監聽器，查看彈窗是否被按確認鍵
+      this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
+        if (newVal) {
+          let redirectRoute = "stop";
+          this.$emit("afterConfirmEvent", redirectRoute);
+
+          try {
+            this.submitDelAdmin(id);
+          } catch (error) {
+            console.error("刪除管理員時發生錯誤", error);
+          } finally {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+        }
+      });
+
+      // 設定彈窗資料
+      this.$notificationBox.notificationBoxFlag = true;
+      this.$notificationBox.notificationBoxTitle = "此操作不可修改，確認刪除?";
+      this.$notificationBox.notificationBoxCancelFlag = true;
+      this.$notificationBox.notificationBoxErrorCode = 0;
+    },
+    async submitDelAdmin(id) {
+      if (id < 1) return;
+
+      try {
+        // post
+        let adminIdDto = {
+          AdminId: id,
+        };
+
+        // post
+        const response = await this.$axios.post(
+          "/api/Admin/DeleteAdmin",
+          adminIdDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.$emit("refreshPage");
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("刪除失敗", error);
       }
     },
   },
@@ -498,7 +555,8 @@ export default {
   color: #aa7f7f;
 }
 
-.cardEditBtn {
-  color: #aa7f7f;
+.btnDeleteAdmin:hover {
+  background-color: #fffffffe;
+  border-radius: 50%;
 }
 </style>

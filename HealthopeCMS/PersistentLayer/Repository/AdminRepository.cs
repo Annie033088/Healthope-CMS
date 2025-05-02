@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Security.Principal;
-using ApiLayer.Models.Admin.RequestAdminDto;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace PersistentLayer.Repository
 {
@@ -52,6 +51,46 @@ namespace PersistentLayer.Repository
                 }
 
                 return (null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改自己的密碼
+        /// </summary>
+        public bool EditSelfPwd(EditPwdDto editPwdDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editSelfPwd @adminId, @oldPwd, @newPwd";
+
+                cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = editPwdDto.AdminId;
+                cmd.Parameters.Add("@oldPwd", SqlDbType.VarChar).Value = editPwdDto.OldPwd;
+                cmd.Parameters.Add("@newPwd", SqlDbType.VarChar).Value = editPwdDto.NewPwd;
+
+                cmd.Connection.Open();
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數為1代表成功
+                if (ExeCnt == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {
@@ -191,61 +230,8 @@ namespace PersistentLayer.Repository
         }
 
         /// <summary>
-        /// 修改管理者
+        /// 根據 Id 取得管理者
         /// </summary>
-        public bool EditAdmin(RequestEditAdminDto editAdminDto)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
-
-            try
-            {
-                cmd.CommandText = "EXEC pro_healthope_editAdmin @adminId, @status, @identity";
-
-                if (editAdminDto.Status == null)
-                {
-                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
-                }
-                else
-                {
-                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = editAdminDto.Status;
-                }
-                if (editAdminDto.Identity == null)
-                {
-                    cmd.Parameters.Add("@identity", SqlDbType.TinyInt).Value = DBNull.Value;
-                }
-                else
-                {
-                    cmd.Parameters.Add("@identity", SqlDbType.TinyInt).Value = editAdminDto.Identity;
-                }
-
-                cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = editAdminDto.AdminId;
-
-                cmd.Connection.Open();
-
-                int ExeCnt = cmd.ExecuteNonQuery();
-
-                // 受影響筆數為1代表成功
-                if (ExeCnt == 1)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
-            }
-        }
-        
         public Admin GetAdminById(int adminId)
         {
             SqlCommand cmd = new SqlCommand();
@@ -282,6 +268,101 @@ namespace PersistentLayer.Repository
                 }
 
                 return (null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改管理者
+        /// </summary>
+        public bool EditAdmin(RequestEditAdminDto editAdminDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editAdmin @adminId, @status, @identity, @updateTime";
+
+                if (editAdminDto.Status == null)
+                {
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = editAdminDto.Status;
+                }
+                if (editAdminDto.Identity == null)
+                {
+                    cmd.Parameters.Add("@identity", SqlDbType.TinyInt).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@identity", SqlDbType.TinyInt).Value = editAdminDto.Identity;
+                }
+
+                cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = editAdminDto.AdminId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editAdminDto.UpdateTime;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數為1代表成功
+                if (ExeCnt == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 刪除管理者
+        /// </summary>
+        public bool DeleteAdmin(int adminId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_delAdmin @adminId";
+                cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = adminId;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數為1代表成功
+                if (ExeCnt == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {

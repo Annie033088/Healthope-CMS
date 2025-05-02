@@ -4,6 +4,7 @@ namespace ApiLayer.Models.AccountAccess.RequestAccountAccessDto
 {
     public class RequestLoginDto
     {
+        // TODO: 把驗證移到 controller
         /// <summary>
         /// 管理員帳號
         /// </summary>

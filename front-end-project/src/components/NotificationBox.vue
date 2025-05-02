@@ -16,7 +16,13 @@
       </div>
       <div class="notificationBoxBtn">
         <button class="btnConfirm" @click="notificationBoxConfirm">OK</button>
-        <button v-if="this.$notificationBox.notificationBoxCancelFlag" class="btnCancel" @click="notificationCancel">Cancel</button>
+        <button
+          v-if="this.$notificationBox.notificationBoxCancelFlag"
+          class="btnCancel"
+          @click="notificationCancel"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </div>
@@ -26,10 +32,10 @@
 export default {
   name: "NotificationBox",
   methods: {
-    notificationBoxConfirm(){
+    notificationBoxConfirm() {
       this.$notificationBox.notificationBoxFlag = false;
       this.$notificationBox.notificationBoxCancelFlag = false;
-this.$emit('notificationBoxConfirm');
+      this.$emit("notificationBoxConfirm");
     },
     notificationCancel() {
       this.$notificationBox.notificationBoxFlag = false;

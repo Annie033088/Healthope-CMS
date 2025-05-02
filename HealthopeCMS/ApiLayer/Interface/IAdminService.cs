@@ -31,5 +31,10 @@ namespace ApiLayer.Interface
         /// 根據 Id 取得管理者
         /// </summary>
         ResponseGetAdminDto GetAdminById(RequestAdminIdDto getAdminDto);
+
+        /// <summary>
+        /// 刪除管理者
+        /// </summary>
+        bool DeleteAdmin(RequestAdminIdDto adminIdDto);
     }
 }

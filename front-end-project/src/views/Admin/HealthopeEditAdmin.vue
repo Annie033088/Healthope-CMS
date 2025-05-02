@@ -144,12 +144,21 @@ export default {
     TitleCard,
     SubTitleCard,
   },
+  props: {
+    notificationBoxConfirmFlag: Boolean,
+  },
   data() {
     return {
       addFail: false,
       selectIdentity: "None",
       selectStatus: "true",
-      admin: { AdminId: 0, Account: "", Status: true, Identity: 1 },
+      admin: {
+        AdminId: 0,
+        Account: "",
+        Status: true,
+        Identity: 1,
+        UpdateTime: "",
+      },
     };
   },
   methods: {
@@ -160,6 +169,7 @@ export default {
         let editFlag = false;
         let editAdminDto = {
           AdminId: this.admin.AdminId,
+          UpdateTime: this.admin.UpdateTime,
         };
 
         if (this.selectStatus !== originalStatus) {
@@ -168,7 +178,7 @@ export default {
             return;
           editAdminDto.Status = this.selectStatus;
           editFlag = true;
-        }else{
+        } else {
           editAdminDto.Status = null;
         }
 
@@ -180,8 +190,8 @@ export default {
 
           editAdminDto.Identity = identityNum;
           editFlag = true;
-        }else{
-          editAdminDto.Identity = null
+        } else {
+          editAdminDto.Identity = null;
         }
 
         if (!editFlag) return;
@@ -200,7 +210,8 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.$emit("afterConfirmEvent");
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -219,11 +230,15 @@ export default {
     },
     async getAdminById(id) {
       try {
-        let getAdminByIdDto={
-          AdminId:id
-        }
+        let getAdminByIdDto = {
+          AdminId: id,
+        };
+
         // post
-        const response = await this.$axios.post("/api/Admin/GetAdminById", getAdminByIdDto);
+        const response = await this.$axios.post(
+          "/api/Admin/GetAdminById",
+          getAdminByIdDto
+        );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.admin = response.data.ApiDataObject;
@@ -236,7 +251,8 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.$emit("afterConfirmEvent");
+                let redirectRoute = "/admin";
+                this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -248,7 +264,6 @@ export default {
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
-          this.$router.push("/admin");
         }
       } catch (error) {
         console.error("取得特定管理者時發生錯誤", error);

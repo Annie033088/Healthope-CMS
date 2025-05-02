@@ -20,8 +20,11 @@ export default function (mock) {
     })
 
     mock.onPost("/api/AccountAccess/AdminLogout").reply(() => {
-        Vue.prototype.$loginFlag = false;
-        return [200, { ErrorCode: 1 }]
+        let errorCode = 1
+        if (errorCode === 1)
+            Vue.prototype.$loginFlag = false;
+
+        return [200, { ErrorCode: errorCode }]
     })
 
     mock.onPost("/api/AccountAccess/HavePermission").reply(() => {
@@ -29,5 +32,13 @@ export default function (mock) {
             return [200, { ErrorCode: 1 }]
         }
         return [200, { ErrorCode: 8 }]
+    })
+
+    mock.onPost("/api/AccountAccess/EditSelfPwd").reply(() => {
+        let errorCode = 1;
+        if (errorCode === 1)
+            Vue.prototype.$loginFlag = false;
+
+        return [200, { ErrorCode: errorCode }]
     })
 }

@@ -64,9 +64,13 @@ export default {
     notificationBoxConfirm() {
       this.notificationBoxConfirmFlag = true;
     },
-    afterConfirmEvent() {
+    afterConfirmEvent(redirectRoute) {
       this.notificationBoxConfirmFlag = false;
-      this.refreshRouterViewComponent();
+      
+      if(redirectRoute === "stop") return;
+
+      if (redirectRoute) this.$router.push(redirectRoute);
+      else this.refreshRouterViewComponent();
     },
   },
 };

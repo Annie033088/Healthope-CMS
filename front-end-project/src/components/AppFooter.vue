@@ -1,6 +1,6 @@
 <template>
-  <footer>
-    <p>Healthope &copy; {{year}}</p>
+  <footer :class="{ loginFooter: !$loginFlag }">
+    <p >Healthope &copy; {{year}}</p>
   </footer>
 </template>
 
@@ -22,7 +22,13 @@ export default {
 a {
   color: #333;
 }
+
+.loginFooter{
+   margin-left: 0;
+}
+
 footer {
+   margin-left: 200px;
   text-align: center;
   margin-top: 5%;
 }

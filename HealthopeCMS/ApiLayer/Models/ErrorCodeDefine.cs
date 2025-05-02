@@ -70,6 +70,16 @@
         /// <summary>
         /// 取得特定資料失敗
         /// </summary>
-        GetFailed = 13
+        GetFailed = 13,
+
+        /// <summary>
+        /// 資料已被異動
+        /// </summary>
+        HasBeenModified = 14,
+
+        /// <summary>
+        /// 超級管理員不得修改
+        /// </summary>
+        ModifySuperAdminFailed = 15,
     }
 }

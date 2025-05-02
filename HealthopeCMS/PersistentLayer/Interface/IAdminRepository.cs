@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using ApiLayer.Models.Admin.RequestAdminDto;
 using DomainLayer.Models;
+using PersistentLayer.Models;
 
 namespace PersistentLayer.Interface
 {
@@ -10,6 +10,11 @@ namespace PersistentLayer.Interface
         /// 取得正要登入的管理員資料
         /// </summary>
         Admin GetLoggingInAdmin(string account);
+
+        /// <summary>
+        /// 修改自己的密碼
+        /// </summary>
+        bool EditSelfPwd(EditPwdDto editPwdDto);
 
         /// <summary>
         /// 新增管理員
@@ -22,13 +27,18 @@ namespace PersistentLayer.Interface
         (List<Admin> admins, int totalPage) GetAdmin(RequestGetAdminDto getAdminDto);
 
         /// <summary>
+        /// 根據 Id 取得管理者
+        /// </summary>
+        Admin GetAdminById(int adminId);
+
+        /// <summary>
         /// 修改管理者
         /// </summary>
         bool EditAdmin(RequestEditAdminDto editAdminDto);
 
         /// <summary>
-        /// 根據 Id 取得管理者
+        /// 刪除管理者
         /// </summary>
-        Admin GetAdminById(int adminId);
+        bool DeleteAdmin(int adminId);
     }
 }

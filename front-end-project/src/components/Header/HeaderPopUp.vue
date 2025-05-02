@@ -19,7 +19,7 @@
     <h3>管理員，你好！</h3>
     <div class="btnContainer">
       <button>
-        <span class="btnTop">修改密碼</span>
+        <span class="btnTop" @click="goEditSelfPwd">修改密碼</span>
       </button>
     </div>
     <div class="btnContainer">
@@ -50,7 +50,8 @@ export default {
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              this.$emit("afterConfirmEvent");
+              let redirectRoute = "/";
+              this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;
             }
@@ -63,6 +64,10 @@ export default {
         this.$notificationBox.notificationBoxErrorCode =
           response.data.ErrorCode;
       }
+    },
+    goEditSelfPwd() {
+      this.$emit("closePopUpWindow");
+      this.$router.push("/editSelfPwd");
     },
   },
 };

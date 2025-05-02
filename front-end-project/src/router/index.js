@@ -6,6 +6,7 @@ import HealthopeAdmin from '@/views/Admin/HealthopeAdmin';
 import HealthopeAddAdmin from '@/views/Admin/HealthopeAddAdmin';
 import HealthopeEditAdmin from '@/views/Admin/HealthopeEditAdmin';
 import HealthopeMember from '@/views/Member/HealthopeMember';
+import HealthopeEditSelfPwd from '@/views/Other/HealthopeEditSelfPwd';
 import axios from 'axios';
 import { errorCodeDefine, adminPermission } from '../utils/globalSetting';
 
@@ -20,6 +21,12 @@ const routes = [
         path: '/',
         name: 'HealthopeHome',
         component: HealthopeHome,
+        meta: { requireAuth: 'login' } // 主頁只要有登入就好
+    },
+    {
+        path: '/editSelfPwd',
+        name: 'HealthopeEditSelfPwd',
+        component: HealthopeEditSelfPwd,
         meta: { requireAuth: 'login' } // 主頁只要有登入就好
     },
     {
