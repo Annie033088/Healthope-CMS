@@ -9,11 +9,12 @@ using NLog;
 
 namespace ApiLayer.Filters
 {
-    public class AdminKickOutFilter : ActionFilterAttribute
+    public class VeriyLoginFilter : ActionFilterAttribute
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         public ISessionService sessionService { get; set; }
         public IRedisService redisService { get; set; }
+
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             try

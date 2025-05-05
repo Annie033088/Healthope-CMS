@@ -12,7 +12,8 @@ using NLog;
 namespace ApiLayer.Controllers.api
 {
     [RequestLoggerFilter]
-    [AdminKickOutFilter]
+    [VeriyLoginFilter]
+    [AdminPermissionAuthFilter]
     public class AdminController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -26,7 +27,6 @@ namespace ApiLayer.Controllers.api
         /// 新增管理者(帳密)
         /// </summary>
         [HttpPost]
-        [AdminPermissionAuthFilter]
         public IHttpActionResult AddAdmin([FromBody] RequestAddAdminDto addAdminDto)
         {
             try
@@ -87,7 +87,7 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
-
+        // TODO: 搜尋的帳號資料 加上截斷前後空隔
         /// <summary>
         /// 取得管理者列表
         /// </summary>

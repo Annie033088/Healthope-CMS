@@ -49,7 +49,7 @@ namespace ApiLayer.App_Start
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             // 註冊 filter
-            builder.RegisterType<AdminKickOutFilter>().InstancePerRequest();
+            builder.RegisterType<VeriyLoginFilter>().InstancePerRequest();
             builder.RegisterType<AdminPermissionAuthFilter>().InstancePerRequest();
 
             // 把 Autofac 的 FilterProvider 自動掛進 config

@@ -73,7 +73,7 @@ namespace ApiLayer.Controllers.api
         /// 管理者登出
         /// </summary>
         [HttpPost]
-        [AdminKickOutFilter]
+        [VeriyLoginFilter]
         public IHttpActionResult AdminLogout()
         {
             try
@@ -119,7 +119,7 @@ namespace ApiLayer.Controllers.api
         /// 管理者修改自己的密碼
         /// </summary>
         [HttpPost]
-        [AdminKickOutFilter]
+        [VeriyLoginFilter]
         public IHttpActionResult EditSelfPwd([FromBody] RequestEditSelfPwdDto editSelfPwdDto)
         {
             try

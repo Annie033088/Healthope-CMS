@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.AccountAccess.RequestAccountAccessDto;
@@ -11,7 +10,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using ToDoListTest.utils;
 
 namespace UnitTest.Test.AccountAccessTest
 {

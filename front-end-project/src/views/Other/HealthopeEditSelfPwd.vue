@@ -142,18 +142,11 @@ export default {
   max-width: 350px;
 }
 
-.btnAddContainer {
+.btnAddContainer, .hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 15px;
   margin-left: 55px;
-}
-
-.hintContainer {
-  margin-top: 15px;
-  margin-left: 55px;
-  display: flex;
-  justify-content: center;
 }
 
 .hintSpan {

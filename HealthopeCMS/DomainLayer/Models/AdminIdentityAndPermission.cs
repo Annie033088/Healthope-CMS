@@ -68,10 +68,13 @@ namespace DomainLayer.Models
         /// <summary>
         /// 字典 身份對照權限
         /// </summary>
-        public readonly Dictionary<AdminIdentity, List<AdminPermission>> IdentityPermission = new Dictionary<AdminIdentity, List<AdminPermission>>()
+        public readonly Dictionary<AdminIdentity, List<AdminPermission>> IdentityPermission
+            = new Dictionary<AdminIdentity, List<AdminPermission>>()
         {
-            { AdminIdentity.SuperAdmin, new List<AdminPermission> { AdminPermission.EditAdmin, AdminPermission.EditMember } },
-            { AdminIdentity.Admin, new List<AdminPermission> { AdminPermission.EditMember } },
+            { AdminIdentity.SuperAdmin, new List<AdminPermission> {
+                AdminPermission.EditAdmin, AdminPermission.EditMember } },
+            { AdminIdentity.Admin, new List<AdminPermission> {
+                AdminPermission.EditMember } },
         };
     }
 }

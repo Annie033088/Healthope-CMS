@@ -186,7 +186,7 @@
     <Compile Include="Controllers\api\AccountAccessController.cs" />
     <Compile Include="Controllers\api\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Filters\AdminKickOutFilter.cs" />
+    <Compile Include="Filters\VeriyLoginFilter.cs" />
     <Compile Include="Filters\AdminPermissionAuthFilter.cs" />
     <Compile Include="Filters\RequestLoggerFilter.cs" />
     <Compile Include="Global.asax.cs">

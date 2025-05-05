@@ -18,7 +18,7 @@ namespace UnitTest.Test.FilterTest
     {
         public Mock<ISessionService> sessionServiceMock;
         public Mock<IRedisService> redisServiceMock;
-        public AdminKickOutFilter adminKickOutFilter;
+        public VeriyLoginFilter adminKickOutFilter;
         private HttpActionContext actionContext;
         private HttpRequestMessage request;
 
@@ -27,7 +27,7 @@ namespace UnitTest.Test.FilterTest
         {
             sessionServiceMock = new Mock<ISessionService>();
             redisServiceMock = new Mock<IRedisService>();
-            adminKickOutFilter = new AdminKickOutFilter() { redisService = redisServiceMock.Object, sessionService = sessionServiceMock.Object };
+            adminKickOutFilter = new VeriyLoginFilter() { redisService = redisServiceMock.Object, sessionService = sessionServiceMock.Object };
 
             // 設定請求
             actionContext = new HttpActionContext();

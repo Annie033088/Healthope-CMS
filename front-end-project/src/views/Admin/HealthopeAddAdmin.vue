@@ -4,9 +4,9 @@
     <SubTitleCard text="新增管理者"></SubTitleCard>
     <div class="addInputContainer">
       <div class="addInputLeft">
-        <InputSpan labelText="請輸入帳號" v-model="account"></InputSpan>
-        <InputSpan labelText="請輸入密碼" v-model="pwd" inputType="password"></InputSpan>
-        <InputSpan labelText="請再輸入一次密碼" v-model="pwdAgain" inputType="password"></InputSpan>
+        <InputSpan labelText="帳號" v-model="account"></InputSpan>
+        <InputSpan labelText="密碼" v-model="pwd" inputType="password"></InputSpan>
+        <InputSpan labelText="再輸入一次密碼" v-model="pwdAgain" inputType="password"></InputSpan>
       </div>
       <div class="addInputRight">
         <span class="inputSpan">
@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     async addAdmin() {
-      // 帳號密碼驗證用的正規表達式
+      // 帳號密碼驗證用的正規表達式 ( 8~20 位英數字)
       const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
 
       if (!(regex.test(this.account) && regex.test(this.pwd))) {
@@ -128,14 +128,14 @@ export default {
         return;
       }
 
-      if (this.pwd !== this.pwdAgain) {
-        this.hintText = "兩次密碼輸入不一致";
+      if (this.account === this.pwd) {
+        this.hintText = "帳號密碼不可相同";
         this.addFail = true;
         return;
       }
 
-      if (this.account === this.pwd) {
-        this.hintText = "帳號密碼不可相同";
+      if (this.pwd !== this.pwdAgain) {
+        this.hintText = "兩次密碼輸入不一致";
         this.addFail = true;
         return;
       }

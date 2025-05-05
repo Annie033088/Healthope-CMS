@@ -8,12 +8,12 @@ import {errorCodeDefine, errorCodeToMessage, adminPermission} from './utils/glob
 if (process.env.NODE_ENV === 'development') {
   await import('./mock/mock.js')
 }
-
+// axios 攔截器
 Vue.prototype.$errorCodeDefine = errorCodeDefine;
 Vue.prototype.$errorCodeToMessage = errorCodeToMessage;
+Vue.prototype.$axios = axios;
 Vue.prototype.$adminPermission = adminPermission;
 Vue.prototype.$loginFlag = false;
-Vue.prototype.$axios = axios;
 Vue.prototype.$notificationBox = Vue.observable({
   notificationBoxFlag: false,
   notificationBoxTitle: "",
