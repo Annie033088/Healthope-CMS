@@ -20,6 +20,7 @@ namespace UnitTest.Test.AdminTest
     {
         private Mock<IAdminRepository> adminRepositoryMock;
         private Mock<ISessionService> sessionServiceMock;
+        private Mock<IRedisService> redisServiceMock;
         private Mock<IAppSetting> appSettingMock;
         private Mock<IMapper> mapperMock;
         private AdminService adminService;
@@ -30,8 +31,10 @@ namespace UnitTest.Test.AdminTest
             adminRepositoryMock = new Mock<IAdminRepository>();
             appSettingMock = new Mock<IAppSetting>();
             sessionServiceMock = new Mock<ISessionService>();
+            redisServiceMock = new Mock<IRedisService>();
             mapperMock = new Mock<IMapper>();
-            adminService = new AdminService(adminRepositoryMock.Object, appSettingMock.Object, sessionServiceMock.Object, mapperMock.Object);
+            adminService = new AdminService(adminRepositoryMock.Object, appSettingMock.Object,
+                sessionServiceMock.Object, mapperMock.Object, redisServiceMock.Object);
         }
 
         [TestMethod]
@@ -287,7 +290,6 @@ namespace UnitTest.Test.AdminTest
             Assert.AreEqual(responseGetAdminDto, response);
         }
 
-
         [TestMethod]
         public void 修改管理員_成功_回傳成功()
         {
@@ -299,11 +301,23 @@ namespace UnitTest.Test.AdminTest
                 Status = false,
                 UpdateTime = DateTime.Now,
             };
-
+            AdminRedis adminRedis = new AdminRedis()
+            {
+                SessionId = "kqowpekqw",
+                ErrorCode = ApiLayer.Models.ErrorCodeDefine.Success
+            };
+            string redisKey = "Admin" + editAdminDto.AdminId;
             bool successFlag = true;
 
             // Mock 設定
             adminRepositoryMock.Setup(s => s.EditAdmin(editAdminDto)).Returns(successFlag);
+            redisServiceMock.Setup(s => s.GetValue<AdminRedis>(redisKey))
+                .Returns(adminRedis);
+            adminRedis.ErrorCode = ApiLayer.Models.ErrorCodeDefine.PermissionModified;
+            redisServiceMock.Setup(s => s.SetValue<AdminRedis>(
+            It.Is<string>(k => k == redisKey),
+            It.Is<AdminRedis>(v => v == adminRedis),
+            It.IsAny<TimeSpan?>()));
 
             // Act
             bool result = adminService.EditAdmin(editAdminDto);

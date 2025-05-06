@@ -81,5 +81,20 @@
         /// 超級管理員不得修改
         /// </summary>
         ModifySuperAdminFailed = 15,
+
+        /// <summary>
+        /// 手機重複
+        /// </summary>
+        DuplicatePhone = 16,
+
+        /// <summary>
+        /// 帳號重複
+        /// </summary>
+        DuplicateAccount = 17,
+
+        /// <summary>
+        /// (手機)已驗證
+        /// </summary>
+        AlreadyVerify = 18,
     }
 }

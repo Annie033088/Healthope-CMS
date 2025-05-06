@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ApiLayer.Interface;
+using ApiLayer.Models;
 using ApiLayer.Models.Admin;
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
@@ -14,19 +15,21 @@ namespace ApiLayer.Service
 {
     public class AdminService : IAdminService
     {
+        private readonly string adminSessionKey = "AdminSession";
         private readonly IAdminRepository adminRepository;
         private readonly ISessionService sessionService;
+        private readonly IRedisService redisService;
         private readonly IAppSetting appSetting;
-        private readonly string adminSessionKey = "AdminSession";
         private readonly IMapper mapper;
 
-        public AdminService(IAdminRepository adminRepository, IAppSetting appSetting, ISessionService sessionService,
-          IMapper mapper)
+        public AdminService(IAdminRepository adminRepository, IAppSetting appSetting,
+            ISessionService sessionService, IMapper mapper, IRedisService redisService)
         {
             this.adminRepository = adminRepository;
             this.appSetting = appSetting;
             this.sessionService = sessionService;
             this.mapper = mapper;
+            this.redisService = redisService;
         }
 
         /// <summary>
@@ -136,7 +139,21 @@ namespace ApiLayer.Service
         {
             try
             {
-                return adminRepository.EditAdmin(editAdminDto);
+                bool successFlag = adminRepository.EditAdmin(editAdminDto);
+
+                // 將修改的管理員的 redis 狀態改為 PermissionModified( 權限已被修改 )
+                if (!successFlag) {
+                    string redisKey = "Admin" + editAdminDto.AdminId;
+                    AdminRedis adminRedis = redisService.GetValue<AdminRedis>(redisKey);
+
+                    if(adminRedis != null)
+                    {
+                        adminRedis.ErrorCode = ErrorCodeDefine.PermissionModified;
+                        redisService.SetValue(redisKey, adminRedis);
+                    }
+                }
+
+                return successFlag;
             }
             catch (Exception)
             {

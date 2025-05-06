@@ -209,7 +209,6 @@ namespace ApiLayer.Controllers.api
             }
         }
 
-
         /// <summary>
         /// 刪除管理者
         /// </summary>

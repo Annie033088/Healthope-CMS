@@ -2,7 +2,7 @@
 using System.Web.Http.Results;
 using ApiLayer.Models;
 
-namespace ToDoListTest.utils
+namespace UnitTest.utils
 {
     class ResponseErrorCodeIsEqual
     {

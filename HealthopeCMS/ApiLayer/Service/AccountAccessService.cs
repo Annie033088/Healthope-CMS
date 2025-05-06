@@ -20,7 +20,8 @@ namespace ApiLayer.Service
         private readonly IRedisService redisService;
         private readonly ISessionService sessionService;
 
-        public AccountAccessService(IAdminRepository adminRepository, IAppSetting appSetting, IRedisService redisService, ISessionService sessionService)
+        public AccountAccessService(IAdminRepository adminRepository, 
+            IAppSetting appSetting, IRedisService redisService, ISessionService sessionService)
         {
             this.appSetting = appSetting;
             this.adminRepository = adminRepository;
