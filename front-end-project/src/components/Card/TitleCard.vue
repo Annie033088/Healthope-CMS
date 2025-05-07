@@ -14,9 +14,15 @@ export default {
     redirect() {
       if (this.text === "管理者清單") {
         if (this.$route.path === "/admin") {
-        this.$emit("refreshPage")
+          this.$emit("refreshPage");
         } else {
           this.$router.push("/admin");
+        }
+      } else if (this.text === "會員清單") {
+        if (this.$route.path === "/member") {
+          this.$emit("refreshPage");
+        } else {
+          this.$router.push("/member");
         }
       }
     },

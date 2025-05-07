@@ -34,6 +34,16 @@ namespace ApiLayer.Filters
                 string redisKey = "Admin" + adminSession.AdminId;
                 AdminRedis adminRedis = redisService.GetValue<AdminRedis>(redisKey);
 
+                // redis 不見了
+                if(adminRedis == null)
+                {
+                    ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.UserNotLogin };
+                    actionContext.Response = actionContext.Request.CreateResponse(response);
+                    // 清掉 asp.net 會話相關資料
+                    sessionService.ClearSerssion();
+                    return;
+                }
+
                 //判斷現 sessionId 是否相同, 不同的話清除 session
                 if (adminRedis.SessionId != sessionService.GetSessionId())
                 {

@@ -1,5 +1,11 @@
 <template>
-      <button class="btnNormal" @click="$emit('click', $event)">{{text}}</button>
+  <button
+    class="btnNormal"
+    @click="$emit('click', $event)"
+    :disabled="disabled"
+  >
+    {{ text }}
+  </button>
 </template>
 
 <script>
@@ -7,8 +13,9 @@ export default {
   name: "BtnNormal",
   props: {
     text: [String, Number],
+    disabled: Boolean
   },
-}
+};
 </script>
 
 <style scoped>
@@ -29,5 +36,10 @@ export default {
 .btnNormal:active {
   background-color: #edeff2;
   transition: none 0.1s;
+}
+
+.btnNormal:disabled {
+  background-color: #ccc;
+  cursor: inherit;
 }
 </style>

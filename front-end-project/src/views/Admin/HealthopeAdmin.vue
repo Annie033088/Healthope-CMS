@@ -6,33 +6,11 @@
     ></TitleCard>
     <div class="funtionColumn">
       <BtnNormal text="新增管理者" @click="redirect('/admin/add')"></BtnNormal>
-      <div class="inputGroup">
-        <input
-          type="text"
-          required=""
-          autocomplete="off"
-          placeholder="Account..."
-          v-model="searchAccount"
-          @keydown.enter="selectAdmin()"
-        />
-        <svg
-          @click="selectAdmin()"
-          class="btnSearch"
-          width="30"
-          height="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16.893 16.92L19.973 20M19 11.5C19 13.4891 18.2098 15.3968 16.8033 16.8033C15.3968 18.2098 13.4891 19 11.5 19C9.51088 19 7.60322 18.2098 6.1967 16.8033C4.79018 15.3968 4 13.4891 4 11.5C4 9.51088 4.79018 7.60322 6.1967 6.1967C7.60322 4.79018 9.51088 4 11.5 4C13.4891 4 15.3968 4.79018 16.8033 6.1967C18.2098 7.60322 19 9.51088 19 11.5Z"
-            stroke="#B4B4B4"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
+      <SelectInput
+        @select="selectAdminByAccount()"
+        placeholder="Account..."
+        v-model="searchAccount"
+      ></SelectInput>
       <div class="statusContainer">
         <label class="labStatus">狀態： </label>
         <label class="labRadioBox">
@@ -41,7 +19,7 @@
             name="radioStatus"
             value=""
             v-model="selectStatus"
-            @change="selectAdmin()"
+            @change="selectAdminByStatus()"
           />
           <span class="textRadio">無</span>
         </label>
@@ -51,7 +29,7 @@
             name="radioStatus"
             value="true"
             v-model="selectStatus"
-            @change="selectAdmin()"
+            @change="selectAdminByStatus()"
           />
           <span class="textRadio">啟用</span>
         </label>
@@ -61,7 +39,7 @@
             name="radioStatus"
             value="false"
             v-model="selectStatus"
-            @change="selectAdmin()"
+            @change="selectAdminByStatus()"
           />
           <span class="textRadio">停用</span>
         </label>
@@ -179,6 +157,7 @@
 import BtnNormal from "@/components/Btn/BtnNormal";
 import TitleCard from "@/components/Card/TitleCard";
 import PaginationComponent from "@/components/PaginationComponent";
+import SelectInput from "@/components/Input/SelectInput";
 import adminIdentityToText from "../../utils/globalSetting";
 
 export default {
@@ -187,6 +166,7 @@ export default {
     BtnNormal,
     TitleCard,
     PaginationComponent,
+    SelectInput,
   },
   props: {
     notificationBoxConfirmFlag: Boolean,
@@ -200,8 +180,8 @@ export default {
       selectSortOption: "",
       recordPerPage: "8",
       searchAccount: "",
-      currentPage: 4,
-      totalPage: 3,
+      currentPage: 1,
+      totalPage: 1,
       searchingPage: 1,
     };
   },
@@ -220,7 +200,18 @@ export default {
       this.searchingPage = page;
       this.getAdminData();
     },
-    selectAdmin() {
+    selectAdminByAccount() {
+      this.searchingPage = 1;
+      this.searchAccount = this.searchAccount.trim();
+      if (this.searchAccount === "") {
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "輸入長度需至少 2 位數";
+        this.$notificationBox.notificationBoxErrorCode = 5;
+        return;
+      }
+      this.getAdminData();
+    },
+     selectAdminByStatus() {
       this.searchingPage = 1;
       this.getAdminData();
     },
@@ -389,48 +380,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
-}
-
-.inputGroup {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 200px;
-  border: 1px solid rgb(200, 200, 200);
-  background-color: transparent;
-  border-radius: 1rem;
-}
-
-.inputGroup input {
-  font-size: 100%;
-  padding: 0.6em;
-  outline: none;
-  border: none;
-  background-color: transparent;
-  border-radius: 1rem;
-  width: 100%;
-}
-
-.inputGroup input:hover {
-  background-color: #fafbfc;
-}
-
-.btnSearch {
-  border-end-end-radius: 20px;
-  border-top-right-radius: 20px;
-  border-left: 1.5px solid rgb(200, 200, 200);
-  margin-right: 4px;
-}
-
-.btnSearch:hover {
-  cursor: pointer;
-  background-color: #fafbfc;
-}
-
-.btnSearch:active {
-  background-color: #edeff2;
-  transition: none 0.1s;
 }
 
 .labRadioBox {

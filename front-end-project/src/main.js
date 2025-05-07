@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from "vue-router";
 import router from './router';
 import App from './App.vue'
-import axios from 'axios';
+// eslint-disable-next-line no-unused-vars
+import axios from './plugins/axios';
 import {errorCodeDefine, errorCodeToMessage, adminPermission} from './utils/globalSetting';
 
 if (process.env.NODE_ENV === 'development') {

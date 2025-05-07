@@ -7,7 +7,7 @@ import HealthopeAddAdmin from '@/views/Admin/HealthopeAddAdmin';
 import HealthopeEditAdmin from '@/views/Admin/HealthopeEditAdmin';
 import HealthopeMember from '@/views/Member/HealthopeMember';
 import HealthopeEditSelfPwd from '@/views/Other/HealthopeEditSelfPwd';
-import axios from 'axios';
+import axios from '../plugins/axios';
 import { errorCodeDefine, adminPermission } from '../utils/globalSetting';
 
 const routes = [

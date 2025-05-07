@@ -1,20 +1,20 @@
 <template>
   <footer :class="{ loginFooter: !$loginFlag }">
-    <p >Healthope &copy; {{year}}</p>
+    <p>Healthope &copy; {{ year }}</p>
   </footer>
 </template>
 
 <script>
 export default {
   name: "AppFooter",
-  data(){
-    return{
-      year:2025,
-    }
+  data() {
+    return {
+      year: 2025,
+    };
   },
-  created(){
+  created() {
     this.year = new Date().getFullYear();
-  }
+  },
 };
 </script>
 
@@ -23,12 +23,12 @@ a {
   color: #333;
 }
 
-.loginFooter{
-   margin-left: 0;
+.loginFooter {
+  margin-left: 0;
 }
 
 footer {
-   margin-left: 200px;
+  margin-left: 200px;
   text-align: center;
   margin-top: 5%;
 }
