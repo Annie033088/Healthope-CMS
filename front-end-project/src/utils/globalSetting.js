@@ -46,6 +46,21 @@ export const errorCodeDefine = {
 
     // 超級管理員不得修改
     ModifySuperAdminFailed: 15,
+
+    // 手機重複
+    DuplicatePhone: 16,
+
+    // 帳號重複
+    DuplicateAccount: 17,
+
+    // (手機)已驗證
+    AlreadyVerify: 18,
+
+    // OTP 還在冷卻時間不可發送
+    OtpCooldown: 19,
+
+    // 驗證失敗
+    VerifyFail: 20,
 };
 
 //設定errorCode對應資料
@@ -97,6 +112,21 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 15:
             message = "超級管理員資料不得修改";
+            return message;
+        case 16:
+            message = "輸入的手機號碼已被註冊";
+            return message;
+        case 17:
+            message = "輸入的帳號已被註冊";
+            return message;
+        case 18:
+            message = "已驗證，不需再驗證";
+            return message;
+        case 19:
+            message = "OTP 還在冷卻時間不可發送";
+            return message;
+        case 20:
+            message = "驗證失敗";
             return message;
         default:
             message = "";

@@ -49,8 +49,7 @@
     <Compile Include="Interface\IAppSetting.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminIdentityAndPermission.cs" />
-    <Compile Include="Models\RequestEditAdminDto.cs" />
-    <Compile Include="Models\RequestGetAdminDto.cs" />
+    <Compile Include="Models\Member.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AdminPermissionUtility.cs" />
     <Compile Include="Utility\AppSetting.cs" />

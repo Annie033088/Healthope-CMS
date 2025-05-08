@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DomainLayer.Models
+namespace PersistentLayer.Models
 {
     public class RequestEditAdminDto
     {

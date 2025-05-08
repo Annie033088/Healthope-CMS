@@ -185,6 +185,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\api\AccountAccessController.cs" />
     <Compile Include="Controllers\api\AdminController.cs" />
+    <Compile Include="Controllers\api\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\VeriyLoginFilter.cs" />
     <Compile Include="Filters\AdminPermissionAuthFilter.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Interface\IAdminService.cs" />
     <Compile Include="Interface\IAccountAccessService.cs" />
     <Compile Include="Interface\IHttpHelper.cs" />
+    <Compile Include="Interface\IMemberService.cs" />
     <Compile Include="Interface\IRedisService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestEditSelfPwdDto.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Models\Admin\ResponseAdminDto\ResponseGetAdminDto.cs" />
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestLoginDto.cs" />
+    <Compile Include="Models\Member\ResponseGetMemberListDto.cs" />
     <Compile Include="Models\ResultResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\AccountAccessService.cs" />

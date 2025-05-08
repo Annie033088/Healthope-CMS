@@ -10,6 +10,7 @@ using DomainLayer.Interface;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Service
 {
@@ -142,11 +143,12 @@ namespace ApiLayer.Service
                 bool successFlag = adminRepository.EditAdmin(editAdminDto);
 
                 // 將修改的管理員的 redis 狀態改為 PermissionModified( 權限已被修改 )
-                if (!successFlag) {
+                if (!successFlag)
+                {
                     string redisKey = "Admin" + editAdminDto.AdminId;
                     AdminRedis adminRedis = redisService.GetValue<AdminRedis>(redisKey);
 
-                    if(adminRedis != null)
+                    if (adminRedis != null)
                     {
                         adminRedis.ErrorCode = ErrorCodeDefine.PermissionModified;
                         redisService.SetValue(redisKey, adminRedis);

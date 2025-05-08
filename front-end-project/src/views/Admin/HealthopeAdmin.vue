@@ -4,91 +4,27 @@
       text="管理者清單"
       @refreshPage="$emit('refreshPage')"
     ></TitleCard>
-    <div class="funtionColumn">
+    <div class="functionColumn">
       <BtnNormal text="新增管理者" @click="redirect('/admin/add')"></BtnNormal>
       <SelectInput
         @select="selectAdminByAccount()"
         placeholder="Account..."
         v-model="searchAccount"
       ></SelectInput>
-      <div class="statusContainer">
-        <label class="labStatus">狀態： </label>
-        <label class="labRadioBox">
-          <input
-            type="radio"
-            name="radioStatus"
-            value=""
-            v-model="selectStatus"
-            @change="selectAdminByStatus()"
-          />
-          <span class="textRadio">無</span>
-        </label>
-        <label class="labRadioBox">
-          <input
-            type="radio"
-            name="radioStatus"
-            value="true"
-            v-model="selectStatus"
-            @change="selectAdminByStatus()"
-          />
-          <span class="textRadio">啟用</span>
-        </label>
-        <label class="labRadioBox">
-          <input
-            type="radio"
-            name="radioStatus"
-            value="false"
-            v-model="selectStatus"
-            @change="selectAdminByStatus()"
-          />
-          <span class="textRadio">停用</span>
-        </label>
-      </div>
-      <div class="sortContainer">
-        <label class="labSort">排序選項：</label>
-        <select
-          class="selectSortOrder"
-          v-model="selectSortOption"
-          @change="getAdminData()"
-        >
-          <option value="">無</option>
-          <option value="account">帳號</option>
-          <option value="status">狀態</option>
-        </select>
-        <label class="labRadioBox">
-          <input
-            type="radio"
-            name="radioSort"
-            value="ascending"
-            v-model="selectSortOrder"
-            @change="getAdminData()"
-          />
-          <span class="textRadio">升序</span>
-        </label>
-        <label class="labRadioBox">
-          <input
-            type="radio"
-            name="radioSort"
-            value="descending"
-            v-model="selectSortOrder"
-            @change="getAdminData()"
-          />
-          <span class="textRadio">降序</span>
-        </label>
-      </div>
-      <div class="selectRecordContainer">
-        <label class="labRecord">顯示：</label>
-        <select
-          class="selectRecord"
-          v-model="recordPerPage"
-          @change="getAdminData()"
-        >
-          <option value="8">8</option>
-          <option value="12">12</option>
-          <option value="16">16</option>
-        </select>
-        <label class="">筆</label>
-      </div>
+      <StatusSelector v-model="selectStatus" @change="selectAdminByStatus" />
+      <SortSelector
+        :options="[
+          { value: 'account', label: '帳號' },
+          { value: 'status', label: '狀態' },
+        ]"
+        :sortOption.sync="selectSortOption"
+        :sortOrder.sync="selectSortOrder"
+        @change="getAdminData"
+      />
+      <RecordSelector
+        :parentValue.sync="recordPerPage"
+        @change="getAdminData"
+      />
       <BtnNormal text="差異紀錄"></BtnNormal>
     </div>
     <div class="adminTable">
@@ -125,22 +61,7 @@
             <span>{{ adminIdentityToText(admin.Identity) }}</span>
           </div>
         </div>
-
-        <div class="" @click.stop="delAdmin(admin.AdminId)">
-          <svg
-            class="btn btnDeleteAdmin"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.616 20C7.168 20 6.78667 19.8426 6.472 19.528C6.15733 19.2133 6 18.8323 6 18.385V5.99998H5V4.99998H9V4.22998H15V4.99998H19V5.99998H18V18.385C18 18.845 17.846 19.2293 17.538 19.538C17.23 19.8466 16.8453 20.0006 16.384 20H7.616ZM17 5.99998H7V18.385C7 18.5643 7.05767 18.7116 7.173 18.827C7.28833 18.9423 7.436 19 7.616 19H16.385C16.5383 19 16.6793 18.936 16.808 18.808C16.9367 18.68 17.0007 18.5386 17 18.384V5.99998ZM9.808 17H10.808V7.99998H9.808V17ZM13.192 17H14.192V7.99998H13.192V17Z"
-              fill="#AA7F7F"
-            />
-          </svg>
-        </div>
+        <BtnDelete size="40" @click.stop="delAdmin(admin.AdminId)"></BtnDelete>
       </div>
     </div>
     <div>
@@ -155,18 +76,26 @@
 
 <script>
 import BtnNormal from "@/components/Btn/BtnNormal";
+import BtnDelete from "@/components/Btn/BtnDelete";
 import TitleCard from "@/components/Card/TitleCard";
-import PaginationComponent from "@/components/PaginationComponent";
+import SortSelector from "@/components/Selector/SortSelector";
+import RecordSelector from "@/components/Selector/RecordSelector";
+import StatusSelector from "@/components/Selector/StatusSelector";
 import SelectInput from "@/components/Input/SelectInput";
 import adminIdentityToText from "../../utils/globalSetting";
+import PaginationComponent from "@/components/PaginationComponent";
 
 export default {
   name: "HealthopeAdmin",
   components: {
     BtnNormal,
     TitleCard,
-    PaginationComponent,
     SelectInput,
+    BtnDelete,
+    SortSelector,
+    RecordSelector,
+    StatusSelector,
+    PaginationComponent,
   },
   props: {
     notificationBoxConfirmFlag: Boolean,
@@ -203,21 +132,16 @@ export default {
     selectAdminByAccount() {
       this.searchingPage = 1;
       this.searchAccount = this.searchAccount.trim();
-      if (this.searchAccount === "") {
-        this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需至少 2 位數";
-        this.$notificationBox.notificationBoxErrorCode = 5;
-        return;
-      }
       this.getAdminData();
     },
-     selectAdminByStatus() {
+    selectAdminByStatus() {
       this.searchingPage = 1;
       this.getAdminData();
     },
     async getAdminData() {
       // 驗證參數
       if (!(this.searchAccount.length > 1 || this.searchAccount === "")) {
+        this.searchAccount = "";
         this.$notificationBox.notificationBoxFlag = true;
         this.$notificationBox.notificationBoxTitle = "輸入長度需至少 2 位數";
         this.$notificationBox.notificationBoxErrorCode = 5;
@@ -375,77 +299,11 @@ export default {
 
 <style scoped>
 /* 功能列 樣式*/
-.funtionColumn {
+.functionColumn {
   margin: 15px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
-}
-
-.labRadioBox {
-  flex: 1 1 auto;
-  text-align: center;
-  justify-content: center;
-}
-
-.labRadioBox input {
-  display: none;
-}
-
-.labRadioBox .textRadio {
-  display: flex;
-  cursor: pointer;
-  justify-content: center;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0;
-  transition: all 0.15s ease-in-out;
-}
-
-.labRadioBox input:checked + .textRadio {
-  background-color: #fff;
-  font-weight: 600;
-}
-
-.labStatus,
-.labSort,
-.labRecord {
-  padding: 0.5rem 0.5rem;
-  border-radius: 0.5rem;
-  background-color: #fff;
-  font-weight: 500;
-  margin-right: 5px;
-}
-
-.sortContainer,
-.selectRecordContainer,
-.statusContainer {
-  display: flex;
-  align-items: center;
-  border-radius: 0.5rem;
-  background-color: #eee;
-  box-sizing: border-box;
-  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.25rem;
-  width: 300px;
-  font-size: 14px;
-}
-
-.selectSortOrder,
-.selectRecord {
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.5rem;
-  margin-right: 5px;
-  background-color: #fafbfc;
-}
-
-.selectSort:hover,
-.selectRecord:hover {
-  cursor: pointer;
-}
-
-.selectRecordContainer {
-  width: 150px;
 }
 </style>
 
@@ -461,9 +319,10 @@ export default {
   width: 50%;
   min-width: 300px;
   background: #ffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
   padding: 12px 10px;
-  margin: 5px;
+  margin: 3px;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
@@ -502,10 +361,5 @@ export default {
   margin-left: 30px;
   font-size: 18px;
   color: #aa7f7f;
-}
-
-.btnDeleteAdmin:hover {
-  background-color: #fffffffe;
-  border-radius: 50%;
 }
 </style>

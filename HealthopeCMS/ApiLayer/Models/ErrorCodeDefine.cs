@@ -96,5 +96,15 @@
         /// (手機)已驗證
         /// </summary>
         AlreadyVerify = 18,
+
+        /// <summary>
+        /// OTP 還在冷卻時間不可發送
+        /// </summary>
+        OtpCooldown = 19,
+
+        /// <summary>
+        /// 驗證失敗
+        /// </summary>
+        VerifyFail = 20,
     }
 }

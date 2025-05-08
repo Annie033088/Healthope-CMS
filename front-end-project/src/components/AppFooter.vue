@@ -23,7 +23,7 @@ a {
   color: #333;
 }
 
-.loginFooter {
+footer .loginFooter {
   margin-left: 0;
 }
 

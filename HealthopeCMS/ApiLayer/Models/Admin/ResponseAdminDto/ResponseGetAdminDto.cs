@@ -5,7 +5,14 @@ namespace ApiLayer.Models.Admin.ResponseAdminDto
 {
     public class ResponseGetAdminListDto
     {
+        /// <summary>
+        /// 管理者清單
+        /// </summary>
         public List<ResponseGetAdminDto> AdminList { get; set; }
+
+        /// <summary>
+        /// 總頁數
+        /// </summary>
         public int TotalPage { get; set; }
     }
 

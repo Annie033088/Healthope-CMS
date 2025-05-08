@@ -35,7 +35,7 @@ namespace ApiLayer.Filters
                 AdminRedis adminRedis = redisService.GetValue<AdminRedis>(redisKey);
 
                 // redis 不見了
-                if(adminRedis == null)
+                if (adminRedis == null)
                 {
                     ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.UserNotLogin };
                     actionContext.Response = actionContext.Request.CreateResponse(response);

@@ -8,6 +8,7 @@ using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using DomainLayer.Models;
 using NLog;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {
@@ -87,7 +88,7 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
-        // TODO: 搜尋的帳號資料 加上截斷前後空隔
+
         /// <summary>
         /// 取得管理者列表
         /// </summary>
@@ -98,6 +99,7 @@ namespace ApiLayer.Controllers.api
             {
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
+                getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();
                 if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1))) modelValidFlag = false;
                 if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) modelValidFlag = false;
                 if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") || (getAdminDto.SortOption == null))) modelValidFlag = false;

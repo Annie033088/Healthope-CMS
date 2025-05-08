@@ -2,6 +2,7 @@
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using DomainLayer.Models;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Interface
 {

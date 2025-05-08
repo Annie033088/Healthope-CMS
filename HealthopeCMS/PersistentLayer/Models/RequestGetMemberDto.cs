@@ -1,6 +1,6 @@
-﻿namespace DomainLayer.Models
+﻿namespace PersistentLayer.Models
 {
-    public class RequestGetAdminDto
+    public class RequestGetMemberDto
     {
         /// <summary>
         /// 篩選狀態
@@ -23,9 +23,14 @@
         public int RecordPerPage { get; set; }
 
         /// <summary>
-        /// 搜尋的帳號
+        /// 搜尋的名稱
         /// </summary>
-        public string SearchAccount { get; set; }
+        public string SearchName { get; set; }
+
+        /// <summary>
+        /// 搜尋的手機末三碼
+        /// </summary>
+        public int SearchPhone { get; set; }
 
         /// <summary>
         /// 搜尋的頁數
