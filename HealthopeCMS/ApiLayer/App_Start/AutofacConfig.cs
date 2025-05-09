@@ -28,6 +28,8 @@ namespace ApiLayer.App_Start
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
             builder.RegisterType<AdminService>().As<IAdminService>().InstancePerRequest();
             builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
+            builder.RegisterType<MemberService>().As<IMemberService>().InstancePerRequest();
+            builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

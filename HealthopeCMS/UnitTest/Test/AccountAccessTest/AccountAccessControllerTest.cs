@@ -46,7 +46,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Act
             IHttpActionResult result = controller.VerifyAdminLogin(loginDto);
 
-            ResponseErrorCodeIsEqual<List<AdminPermission>> errorCodeIsEqual = new ResponseErrorCodeIsEqual<List<AdminPermission>>();
+            ResponseIsEqual<List<AdminPermission>> errorCodeIsEqual = new ResponseIsEqual<List<AdminPermission>>();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success)) return;
 
             Assert.Fail();
@@ -69,7 +69,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Act
             IHttpActionResult result = controller.VerifyAdminLogin(loginDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            ResponseIsEqual errorCodeIsEqual = new ResponseIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.LoginFailed)) return;
 
             // Assert
@@ -98,7 +98,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Act
             IHttpActionResult result = controller.VerifyAdminLogin(loginDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            ResponseIsEqual errorCodeIsEqual = new ResponseIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Baned)) return;
 
             // Assert
@@ -124,7 +124,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Act
             IHttpActionResult result = controller.EditSelfPwd(editSelfPwdDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            ResponseIsEqual errorCodeIsEqual = new ResponseIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success)) return;
 
             // Assert
@@ -150,7 +150,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Act
             IHttpActionResult result = controller.EditSelfPwd(editSelfPwdDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            ResponseIsEqual errorCodeIsEqual = new ResponseIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifySuperAdminFailed)) return;
 
             // Assert
@@ -176,7 +176,7 @@ namespace UnitTest.Test.AccountAccessTest
             // Act
             IHttpActionResult result = controller.EditSelfPwd(editSelfPwdDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
+            ResponseIsEqual errorCodeIsEqual = new ResponseIsEqual();
             if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed)) return;
 
             // Assert

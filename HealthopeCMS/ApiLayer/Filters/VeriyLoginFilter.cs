@@ -33,7 +33,7 @@ namespace ApiLayer.Filters
                 //取得 redis 的 admin 資料(包括 sessionId 跟 errorCode)
                 string redisKey = "Admin" + adminSession.AdminId;
                 AdminRedis adminRedis = redisService.GetValue<AdminRedis>(redisKey);
-
+                
                 // redis 不見了
                 if (adminRedis == null)
                 {

@@ -4,6 +4,7 @@ using ApiLayer.Interface;
 using ApiLayer.Models.Admin;
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
+using ApiLayer.Models.Member;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Interface;
@@ -12,6 +13,7 @@ using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace UnitTest.Test.AdminTest
 {

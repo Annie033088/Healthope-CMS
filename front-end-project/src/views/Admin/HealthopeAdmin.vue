@@ -26,6 +26,7 @@
         @change="getAdminData"
       />
       <BtnNormal text="差異紀錄"></BtnNormal>
+      <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <div class="adminTable">
       <div
@@ -61,7 +62,7 @@
             <span>{{ adminIdentityToText(admin.Identity) }}</span>
           </div>
         </div>
-        <BtnDelete size="40" @click.stop="delAdmin(admin.AdminId)"></BtnDelete>
+        <SvgDelete size="40" @click.stop="delAdmin(admin.AdminId)"></SvgDelete>
       </div>
     </div>
     <div>
@@ -76,7 +77,8 @@
 
 <script>
 import BtnNormal from "@/components/Btn/BtnNormal";
-import BtnDelete from "@/components/Btn/BtnDelete";
+import SvgReset from "@/components/Btn/SvgReset";
+import SvgDelete from "@/components/Btn/SvgDelete";
 import TitleCard from "@/components/Card/TitleCard";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
@@ -91,7 +93,8 @@ export default {
     BtnNormal,
     TitleCard,
     SelectInput,
-    BtnDelete,
+    SvgDelete,
+    SvgReset,
     SortSelector,
     RecordSelector,
     StatusSelector,
@@ -116,7 +119,7 @@ export default {
   },
   methods: {
     adminIdentityToText,
-    async goEditAdmin(adminId) {
+     goEditAdmin(adminId) {
       if (adminId < 1) return;
       this.$router.push({ path: "/admin/edit", query: { id: adminId } });
     },
@@ -132,6 +135,12 @@ export default {
     selectAdminByAccount() {
       this.searchingPage = 1;
       this.searchAccount = this.searchAccount.trim();
+      if (this.searchAccount === "") {
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "搜尋不得為空";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
       this.getAdminData();
     },
     selectAdminByStatus() {
@@ -289,6 +298,15 @@ export default {
       } catch (error) {
         console.error("刪除失敗", error);
       }
+    },
+    resetSearchingRecord() {
+      this.selectStatus = "";
+      this.selectSortOrder = "ascending";
+      this.selectSortOption = "";
+      this.recordPerPage = "8";
+      this.searchAccount = "";
+      this.searchingPage = 1;
+      this.getAdminData();
     },
   },
   created() {

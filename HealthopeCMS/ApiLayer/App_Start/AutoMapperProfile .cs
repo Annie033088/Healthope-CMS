@@ -1,4 +1,6 @@
 ﻿using ApiLayer.Models.Admin.ResponseAdminDto;
+using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Response;
 using AutoMapper;
 using DomainLayer.Models;
 
@@ -12,6 +14,8 @@ namespace ApiLayer.App_Start
             //CreateMap<RequestAddTaskDto, ToDoTask>();
             //CreateMap<RequestEditTaskDto, ToDoTask>();
             CreateMap<Admin, ResponseGetAdminDto>();
+            CreateMap<Member, ResponseGetMemberDto>();
+            CreateMap<Member, ResponseGetMemberEditDataByIdDto>();
         }
     }
 }

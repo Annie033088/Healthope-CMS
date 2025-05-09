@@ -16,12 +16,12 @@
               {{ row[col.key] }}
             </td>
             <td v-if="operationFlag" class="editBtnContainer">
-              <BtnEdit v-if="editBtnFlag" size="28" @click.stop=""></BtnEdit>
-              <BtnDelete
+              <SvgEdit v-if="editBtnFlag" size="28" @click.stop="$emit('goEdit', row)"></SvgEdit>
+              <SvgDelete
                 v-if="deleteBtnFlag"
                 size="32"
                 @click.stop=""
-              ></BtnDelete>
+              ></SvgDelete>
             </td>
           </tr>
           <tr
@@ -40,14 +40,14 @@
 </template>
 
 <script>
-import BtnEdit from "@/components/Btn/BtnEdit";
-import BtnDelete from "@/components/Btn/BtnDelete";
+import SvgEdit from "@/components/Btn/SvgEdit";
+import SvgDelete from "@/components/Btn/SvgDelete";
 
 export default {
   name: "TableNormal",
   components: {
-    BtnEdit,
-    BtnDelete,
+    SvgEdit,
+    SvgDelete,
   },
   props: {
     columns: {

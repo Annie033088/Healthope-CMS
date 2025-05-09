@@ -28,34 +28,12 @@
       </div>
     </div>
     <div class="editInputContainer">
-      <div class="editInputLeft">
-        <span class="inputSpan">
-          <label class="lab">請選擇狀態</label>
-          <div class="radioContainer">
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioStatus"
-                value="true"
-                v-model="selectStatus"
-              />
-              <span class="textRadio">啟用</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioStatus"
-                value="false"
-                v-model="selectStatus"
-              />
-              <span class="textRadio">停用</span>
-            </label>
-          </div>
-        </span>
+      <div class="editInputTop">
+        <EditStatusInput v-model="selectStatus" />
       </div>
-      <div class="editInputRight">
+      <div class="editInputBotton">
         <span class="inputSpan">
-          <label class="lab">請選擇身份</label>
+          <label class="lab">請修改身份</label>
           <div class="radioContainer">
             <label class="labRadioBox">
               <input
@@ -128,8 +106,8 @@
     <div class="hintContainer">
       <span v-if="addFail" class="hintSpan">{{ this.hintText }}</span>
     </div>
-    <div class="btnAddContainer">
-      <button class="btnAdd btn" @click="editAdmin()">確認修改</button>
+    <div class="btnEditContainer">
+      <BtnConfirm @click="editAdmin()" text="確認修改"></BtnConfirm>
     </div>
   </div>
 </template>
@@ -137,12 +115,16 @@
 <script>
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
+import BtnConfirm from "@/components/Btn/BtnConfirm";
+import EditStatusInput from "@/components/Input/EditStatusInput";
 
 export default {
   name: "HealthopeEditAdmin",
   components: {
     TitleCard,
     SubTitleCard,
+    BtnConfirm,
+    EditStatusInput
   },
   props: {
     notificationBoxConfirmFlag: Boolean,
@@ -186,7 +168,7 @@ export default {
           let identityNum = this.identityTextToNumber(this.selectIdentity);
 
           // 轉換失敗的話代表格式錯誤
-          if (typeof identityNum !== "number") return;
+          if (identityNum === -1) return;
 
           editAdminDto.Identity = identityNum;
           editFlag = true;
@@ -322,7 +304,7 @@ export default {
           identity = 7;
           return identity;
         default:
-          return identityText;
+          return -1;
       }
     },
   },
@@ -341,45 +323,20 @@ export default {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-evenly;
+  flex-direction: column;
   margin-top: 25px;
 }
 
-.editInputLeft,
-.editInputRight {
-  width: 60%;
-  max-width: 350px;
+.editInputBotton,
+.editInputTop {
+  max-width: 60%;
+  width: 550px;
 }
 
-.editInputLeft .inputSpan {
-  margin-top: 20px;
-}
-.editInputRight .inputSpan {
-  margin-top: 10px;
-}
-
-.btnAddContainer {
+.btnEditContainer {
   display: flex;
   justify-content: center;
   margin-top: 25px;
-}
-
-.btnAdd {
-  width: 100%;
-  max-width: 400px;
-  height: 50px;
-  border-radius: 3rem;
-  background-color: #707070;
-  color: #efefef;
-  cursor: pointer;
-  transition: all 300ms;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.btnAdd:hover {
-  background-color: #eee;
-  color: #707070;
 }
 
 .inputSpan {
@@ -397,7 +354,6 @@ export default {
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
   padding: 0.35rem;
   width: 100%;
-  max-width: 350px;
   font-size: 16px;
   margin-left: 20px;
   gap: 15px;
@@ -407,6 +363,7 @@ export default {
   flex: 1 1 auto;
   text-align: center;
   justify-content: center;
+  flex-wrap: wrap;
   min-width: 50px;
 }
 

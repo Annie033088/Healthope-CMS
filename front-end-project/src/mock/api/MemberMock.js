@@ -3,7 +3,7 @@ export default function (mock) {
         {
             MemberId: 1,
             Name: "王小明",
-            Phone: "0912345678",
+            Phone: 912345678,
             MembershipExpiry: "2025-12-01T00:00:00",
             Status: true,
             AbsenceTime: 2,
@@ -14,18 +14,18 @@ export default function (mock) {
         {
             MemberId: 2,
             Name: "林小華",
-            Phone: "0987654321",
+            Phone: 987654321,
             MembershipExpiry: "2025-06-15T00:00:00",
             Status: false,
             AbsenceTime: 0,
             Email: "",
-            AllowGroupClass: "2025-07-01T00:00:00",
+            AllowGroupClass: "2025-05-01T00:00:00",
             PhoneVerified: false
         },
         {
             MemberId: 3,
             Name: "張偉",
-            Phone: "0955111222",
+            Phone: 955111222,
             MembershipExpiry: "2025-11-30T00:00:00",
             Status: true,
             AbsenceTime: 1,
@@ -36,7 +36,7 @@ export default function (mock) {
         {
             MemberId: 4,
             Name: "陳美麗",
-            Phone: "0966333444",
+            Phone: 966333444,
             MembershipExpiry: "2025-09-01T00:00:00",
             Status: true,
             AbsenceTime: 0,
@@ -47,8 +47,8 @@ export default function (mock) {
         {
             MemberId: 5,
             Name: "李志強",
-            Phone: "0933222111",
-            MembershipExpiry: "2026-01-01T00:00:00",
+            Phone: 933222111,
+            MembershipExpiry: "2025-01-01T00:00:00",
             Status: true,
             AbsenceTime: 3,
             Email: "li@example.com",
@@ -58,7 +58,7 @@ export default function (mock) {
         {
             MemberId: 6,
             Name: "吳小美",
-            Phone: "0922666888",
+            Phone: 922666888,
             MembershipExpiry: "2025-05-31T00:00:00",
             Status: false,
             AbsenceTime: 4,
@@ -69,7 +69,7 @@ export default function (mock) {
         {
             MemberId: 7,
             Name: "周文豪",
-            Phone: "0911888999",
+            Phone: 911888999,
             MembershipExpiry: "2025-10-15T00:00:00",
             Status: true,
             AbsenceTime: 1,
@@ -80,7 +80,7 @@ export default function (mock) {
         {
             MemberId: 8,
             Name: "鄭大同",
-            Phone: "0977555333",
+            Phone: 977555333,
             MembershipExpiry: "2025-08-01T00:00:00",
             Status: false,
             AbsenceTime: 2,
@@ -91,7 +91,7 @@ export default function (mock) {
         {
             MemberId: 9,
             Name: "趙天宇",
-            Phone: "0939444777",
+            Phone: 939444777,
             MembershipExpiry: "2025-07-01T00:00:00",
             Status: true,
             AbsenceTime: 0,
@@ -102,7 +102,7 @@ export default function (mock) {
         {
             MemberId: 10,
             Name: "曾雅文",
-            Phone: "0981999000",
+            Phone: 981999000,
             MembershipExpiry: "2026-03-01T00:00:00",
             Status: true,
             AbsenceTime: 5,
@@ -113,7 +113,7 @@ export default function (mock) {
         {
             MemberId: 11,
             Name: "馮思涵",
-            Phone: "0900222444",
+            Phone: 900222444,
             MembershipExpiry: "2025-12-01T00:00:00",
             Status: false,
             AbsenceTime: 2,
@@ -127,19 +127,19 @@ export default function (mock) {
         return [200, { ErrorCode: 1, ApiDataObject: [1, 2] }]
     })
 
-    mock.onPost("/api/Member/GetMemberById").reply(config => {
-        let getAdminByIdDto = JSON.parse(config.data);
-        let adminTarget = members.find(admin => admin.AdminId === Number(getAdminByIdDto.AdminId));
+    mock.onPost("/api/Member/GetMemberEditDataById").reply(config => {
+        let getMemberByIdDto = JSON.parse(config.data);
+        let memberTarget = members.find(member => member.MemberId === Number(getMemberByIdDto.MemberId));
 
-        if (adminTarget) {
-            return [200, { ErrorCode: 1, ApiDataObject: adminTarget }]
+        if (memberTarget) {
+            return [200, { ErrorCode: 1, ApiDataObject: memberTarget }]
         } else {
             return [200, { ErrorCode: 13 }]
         }
     })
 
     mock.onPost("/api/Member/EditMember").reply(() => {
-        return [200, { ErrorCode: 14 }]
+        return [200, { ErrorCode: 1 }]
     })
 
     mock.onPost("/api/Member/GetMember").reply(config => {

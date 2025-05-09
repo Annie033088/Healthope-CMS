@@ -27,6 +27,7 @@
         :parentValue.sync="recordPerPage"
         @change="getMemberData"
       />
+      <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
       :columns="columns"
@@ -34,6 +35,7 @@
       :expandable="true"
       :editBtnFlag="true"
       :resetDetailIndexFlag="resetDetailIndexFlag"
+      @goEdit="goEditMember"
     >
       <template #detail="{ row }">
         <div class="detailRowContainer">
@@ -51,9 +53,9 @@
               <div><strong>未出席團課：</strong>{{ row.AbsenceTime }} 次</div>
               <div>
                 <strong>可否預約團課：</strong>
-                {{ AllowGroupClassFlag ? "是" : "否" }}
+                {{ row.AllowGroupClassFlag ? "是" : "否" }}
               </div>
-              <div v-if="!AllowGroupClassFlag">
+              <div v-if="!row.AllowGroupClassFlag">
                 <strong>允許開始日：</strong>{{ row.AllowGroupClass }}
               </div>
             </div>
@@ -87,6 +89,7 @@ import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import StatusSelector from "@/components/Selector/StatusSelector";
 import PaginationComponent from "@/components/PaginationComponent";
+import SvgReset from "@/components/Btn/SvgReset";
 
 export default {
   name: "HealthopeMember",
@@ -99,6 +102,7 @@ export default {
     RecordSelector,
     StatusSelector,
     PaginationComponent,
+    SvgReset,
   },
   props: {
     text: String,
@@ -127,6 +131,10 @@ export default {
     };
   },
   methods: {
+    goEditMember(row) {
+      if (row.MemberId < 1) return;
+      this.$router.push({ path: "/member/edit", query: { id: row.MemberId } });
+    },
     selectMemberByStatus() {
       this.searchingPage = 1;
       this.getMemberData();
@@ -134,11 +142,23 @@ export default {
     selectMemberByPhone() {
       this.searchingPage = 1;
       this.searchPhone = this.searchPhone.trim();
+      if (this.searchPhone === "") {
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "搜尋不得為空";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
       this.getMemberData();
     },
     selectMemberByName() {
       this.searchingPage = 1;
       this.searchName = this.searchName.trim();
+      if (this.searchName === "") {
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "搜尋不得為空";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
       this.getMemberData();
     },
     searchPage(page) {
@@ -161,10 +181,10 @@ export default {
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
-      if (!(this.searchName.length > 1 || this.searchName === "")) {
+      if (this.searchName.length > 50) {
         this.searchName = "";
         this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需至少 2 位數";
+        this.$notificationBox.notificationBoxTitle = "輸入長度不得超過 50 位數";
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
@@ -185,7 +205,8 @@ export default {
         return;
       if (
         !(
-          this.selectSortOption === "account" ||
+          this.selectSortOption === "name" ||
+          this.selectSortOption === "membershipExpiry" ||
           this.selectSortOption === "status" ||
           this.selectSortOption === ""
         )
@@ -222,7 +243,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.currentPage = this.searchingPage;
           this.resetDetailIndexFlag = !this.resetDetailIndexFlag;
-          // 用來計算會員是否被禁止預約團課
+          // 用來計算會員是否被禁止預約團課 及 會籍是否到期
           const today = new Date();
           const current = new Date(
             today.getFullYear(),
@@ -236,17 +257,30 @@ export default {
           response.data.ApiDataObject.MemberList.forEach((member) => {
             if (member.Status === true) member.Status = "啟用中";
             else member.Status = "停用";
-
+            member.Phone = "0" + member.Phone;
             member.MembershipExpiry = member.MembershipExpiry.substring(0, 10);
             member.AllowGroupClass = member.AllowGroupClass.substring(0, 10);
-            const targetDate = new Date(member.AllowGroupClass);
-            const target = new Date(
-              targetDate.getFullYear(),
-              targetDate.getMonth(),
-              targetDate.getDate()
+            const membershipExpiryTargetDate = new Date(
+              member.MembershipExpiry
+            );
+            const membershipExpiryDate = new Date(
+              membershipExpiryTargetDate.getFullYear(),
+              membershipExpiryTargetDate.getMonth(),
+              membershipExpiryTargetDate.getDate()
             );
 
-            if (target > current) member.AllowGroupClassFlag = false;
+            if (membershipExpiryDate < current)
+              member.MembershipExpiry = "無會籍";
+
+            const allowGroupClassTargetDate = new Date(member.AllowGroupClass);
+            const allowGroupClassDate = new Date(
+              allowGroupClassTargetDate.getFullYear(),
+              allowGroupClassTargetDate.getMonth(),
+              allowGroupClassTargetDate.getDate()
+            );
+
+            if (allowGroupClassDate > current)
+              member.AllowGroupClassFlag = false;
             else member.AllowGroupClassFlag = true;
 
             this.memberList.push(member);
@@ -275,6 +309,16 @@ export default {
       } catch (error) {
         console.error("取得管理者列表時發生錯誤", error);
       }
+    },
+    resetSearchingRecord() {
+      this.selectStatus = "";
+      this.selectSortOrder = "ascending";
+      this.selectSortOption = "";
+      this.recordPerPage = "8";
+      this.searchPhone = "";
+      this.searchName = "";
+      this.searchingPage = 1;
+      this.getMemberData();
     },
   },
   created() {

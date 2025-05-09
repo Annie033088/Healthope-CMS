@@ -29,6 +29,11 @@ namespace DomainLayer.Models
         public int Phone { get; set; }
 
         /// <summary>
+        /// 信箱
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
         /// 手機 OTP 是否驗證
         /// </summary>
         public bool PhoneVerified { get; set; }

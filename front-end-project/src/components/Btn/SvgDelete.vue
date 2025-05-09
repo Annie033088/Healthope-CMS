@@ -1,6 +1,6 @@
 
 <template>
-  <div @click="$emit('click', $event)">
+  <div @click="$emit('click', $event)" class="svgDeleteContainer">
     <svg
       class="btn btnDelete"
       :width="size"
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "BtnDelete",
+  name: "SvgDelete",
   props: {
     size: { Number, default: 24 },
   },
@@ -30,5 +30,11 @@ export default {
 .btnDelete:hover {
   background-color: #fffffffe;
   border-radius: 50%;
+}
+
+.svgDeleteContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

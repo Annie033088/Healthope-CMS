@@ -11,6 +11,7 @@ using ApiLayer.Models.Admin.ResponseAdminDto;
 using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using PersistentLayer.Models;
 using UnitTest.utils;
 
 namespace UnitTest.Test.AdminTest
@@ -46,11 +47,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.AddAdmin(addAdminDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
-            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success)) return;
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
         }
 
         [TestMethod]
@@ -71,11 +70,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.AddAdmin(addAdminDto);
 
-            ResponseErrorCodeIsEqual errorCodeIsEqual = new ResponseErrorCodeIsEqual();
-            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.CreateFailed)) return;
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.CreateFailed));
         }
 
         [TestMethod]
@@ -90,16 +87,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.GetPermission();
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse<List<AdminPermission>> resultWithoutData)
-                {
-                    if ((resultWithoutData.ErrorCode == ErrorCodeDefine.Success) & (adminPermissions.SequenceEqual(resultWithoutData.ApiDataObject))) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual<List<AdminPermission>> responseIsEqual = new ResponseIsEqual<List<AdminPermission>>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, adminPermissions));
         }
 
         [TestMethod]
@@ -114,20 +104,13 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.GetPermission();
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.NoPermission) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.NoPermission));
         }
 
         [TestMethod]
-        public void 取得管理員列表_失敗_請求參數格式錯誤()
+        public void 取得管理員清單_失敗_請求參數格式錯誤()
         {
             // Arrange
             RequestGetAdminDto getAdminDto = new RequestGetAdminDto()
@@ -145,16 +128,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.GetAdmin(getAdminDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.InvalidFormatOrEntry) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
 
         [TestMethod]
@@ -184,16 +160,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.GetAdmin(getAdminDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual<ResponseGetAdminListDto> responseIsEqual = new ResponseIsEqual<ResponseGetAdminListDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, responseGetAdminDto));
         }
 
         [TestMethod]
@@ -221,16 +190,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.GetAdminById(getAdminIdDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual<ResponseGetAdminDto> responseIsEqual = new ResponseIsEqual<ResponseGetAdminDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, responseGetAdminDto));
         }
 
         [TestMethod]
@@ -250,16 +212,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.GetAdminById(getAdminIdDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.GetFailed) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
         }
 
         [TestMethod]
@@ -282,16 +237,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.EditAdmin(editAdminDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
         }
 
         [TestMethod]
@@ -314,16 +262,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.EditAdmin(editAdminDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.InvalidFormatOrEntry) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
 
         [TestMethod]
@@ -346,16 +287,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.EditAdmin(editAdminDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.HasBeenModified) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.HasBeenModified));
         }
 
         [TestMethod]
@@ -375,16 +309,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.DeleteAdmin(adminIdDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.Success) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
         }
 
         [TestMethod]
@@ -404,16 +331,9 @@ namespace UnitTest.Test.AdminTest
             // Act
             IHttpActionResult result = adminController.DeleteAdmin(adminIdDto);
 
-            if (result is OkNegotiatedContentResult<ResultResponse> okResultWithoutData)
-            {
-                if (okResultWithoutData.Content is ResultResponse resultWithoutData)
-                {
-                    if (resultWithoutData.ErrorCode == ErrorCodeDefine.DeleteFailed) return;
-                }
-            }
-
             // Assert
-            Assert.Fail("測試出錯");
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DeleteFailed));
         }
     }
 }

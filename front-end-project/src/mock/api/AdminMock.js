@@ -99,7 +99,7 @@ export default function (mock) {
     })
 
     mock.onPost("/api/Admin/EditAdmin").reply(() => {
-        return [200, { ErrorCode: 14 }]
+        return [200, { ErrorCode: 1 }]
     })
 
     mock.onPost("/api/Admin/GetAdmin").reply(config => {

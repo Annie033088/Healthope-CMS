@@ -99,7 +99,7 @@ namespace ApiLayer.Controllers.api
             {
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
-                getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();
+                if(!string.IsNullOrEmpty(getAdminDto.SearchAccount)) getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();
                 if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1))) modelValidFlag = false;
                 if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) modelValidFlag = false;
                 if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") || (getAdminDto.SortOption == null))) modelValidFlag = false;

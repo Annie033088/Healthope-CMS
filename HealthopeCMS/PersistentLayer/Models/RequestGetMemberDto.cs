@@ -30,7 +30,7 @@
         /// <summary>
         /// 搜尋的手機末三碼
         /// </summary>
-        public int SearchPhone { get; set; }
+        public int? SearchPhone { get; set; }
 
         /// <summary>
         /// 搜尋的頁數

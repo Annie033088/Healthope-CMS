@@ -188,7 +188,9 @@
     <Compile Include="Test\AdminTest\AdminServiceTest.cs" />
     <Compile Include="Test\FilterTest\AdminKickOutFilterTest.cs" />
     <Compile Include="Test\FilterTest\AdminPermissionAuthFilterTest.cs" />
-    <Compile Include="utils\ResponseErrorCodeIsEqual.cs" />
+    <Compile Include="Test\MemberTest\MemberControllerTest.cs" />
+    <Compile Include="Test\MemberTest\MemberServiceTest.cs" />
+    <Compile Include="utils\ResponseIsEqual.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

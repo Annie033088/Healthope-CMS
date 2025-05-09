@@ -10,7 +10,7 @@ namespace ApiLayer.Models.Member
         /// <summary>
         /// 會員清單
         /// </summary>
-        public List<ResponseGetMemberDto> AdminList { get; set; }
+        public List<ResponseGetMemberDto> MemberList { get; set; }
 
         /// <summary>
         /// 總頁數
@@ -33,6 +33,11 @@ namespace ApiLayer.Models.Member
         /// 手機 OTP 是否驗證
         /// </summary>
         public bool PhoneVerified { get; set; }
+
+        /// <summary>
+        /// 信箱
+        /// </summary>
+        public string Email { get; set; }
 
         /// <summary>
         /// 名稱

@@ -167,7 +167,7 @@ export default {
   mounted() {
     // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
     if(!this.permissionList) return;
-    if (!(this.permissionList.length > 0) && this.$loginFlag) {
+    if (this.permissionList.length <1 && this.$loginFlag) {
       this.getPermission();
     }
   },
