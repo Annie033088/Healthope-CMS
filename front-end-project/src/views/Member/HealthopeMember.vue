@@ -62,9 +62,7 @@
           </div>
           <div class="detailRowRight">
             <strong>查看：</strong>
-            <BtnNormal text="方案"></BtnNormal>
-            <BtnNormal text="教練課程"></BtnNormal>
-            <BtnNormal text="會員資料"></BtnNormal>
+            <BtnNormal @click="redirect('/member/detail')" text="會員資料"></BtnNormal>
           </div>
         </div>
       </template>
@@ -106,6 +104,7 @@ export default {
   },
   props: {
     text: String,
+    notificationBoxConfirmFlag:Boolean
   },
   data() {
     return {
@@ -131,6 +130,9 @@ export default {
     };
   },
   methods: {
+    redirect(path){
+      this.$router.push(path);
+    },
     goEditMember(row) {
       if (row.MemberId < 1) return;
       this.$router.push({ path: "/member/edit", query: { id: row.MemberId } });
@@ -257,7 +259,7 @@ export default {
           response.data.ApiDataObject.MemberList.forEach((member) => {
             if (member.Status === true) member.Status = "啟用中";
             else member.Status = "停用";
-            member.Phone = "0" + member.Phone;
+            member.Phone = ("0" + member.Phone).replace(/^(\d{4})\d{3}(\d{3})$/, '$1-xxx-$2');
             member.MembershipExpiry = member.MembershipExpiry.substring(0, 10);
             member.AllowGroupClass = member.AllowGroupClass.substring(0, 10);
             const membershipExpiryTargetDate = new Date(

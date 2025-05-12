@@ -50,6 +50,7 @@
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Models\EditPwdDto.cs" />
     <Compile Include="Models\RequestEditAdminDto.cs" />
+    <Compile Include="Models\RequestEditMemberDto.cs" />
     <Compile Include="Models\RequestGetAdminDto.cs" />
     <Compile Include="Models\RequestGetMemberDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

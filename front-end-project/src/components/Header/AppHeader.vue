@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <link rel="icon" href="@/assets/logo/HealthopeLogo-circle-removebg-preview">
+      <link rel="icon" href="@/assets/logo/HealthopeLogo-circle-removebg-preview.png">
       <div class="headerContainer">
         <div class="logoContainer">
           <router-link to="/" class="">

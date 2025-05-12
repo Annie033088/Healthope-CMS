@@ -18,6 +18,7 @@ using PersistentLayer.Models;
 using DomainLayer.Models;
 using ApiLayer.Models.Member.Response;
 using ApiLayer.Models.Admin.ResponseAdminDto;
+using ApiLayer.Interface;
 
 namespace UnitTest.Test.MemberTest
 {
@@ -27,13 +28,15 @@ namespace UnitTest.Test.MemberTest
         private MemberService memberService;
         private Mock<IMemberRepository> memberRepositoryMock;
         private Mock<IMapper> mapperMock;
+        private Mock<IRedisService> redisServiceMock;
 
         [TestInitialize]
         public void Setup()
         {
             memberRepositoryMock = new Mock<IMemberRepository>();
             mapperMock = new Mock<IMapper>();
-            memberService = new MemberService(memberRepositoryMock.Object, mapperMock.Object);
+            redisServiceMock = new Mock<IRedisService>();
+            memberService = new MemberService(memberRepositoryMock.Object, mapperMock.Object, redisServiceMock.Object);
         }
 
         [TestMethod]
@@ -185,6 +188,78 @@ namespace UnitTest.Test.MemberTest
             // Assert
             ResponseIsEqual<ResponseGetMemberEditDataByIdDto> responseIsEqual = new ResponseIsEqual<ResponseGetMemberEditDataByIdDto>();
             Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 修改會員_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMemberDto editMemberDto = new RequestEditMemberDto()
+            {
+                MemberId = 10,
+                Phone = 987654321,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.EditMember(editMemberDto)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = memberService.EditMember(editMemberDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 修改會員_失敗_回傳資料已被他人修改()
+        {
+            // Arrange
+            RequestEditMemberDto editMemberDto = new RequestEditMemberDto()
+            {
+                MemberId = 10,
+                Phone = 987654321,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.EditMember(editMemberDto)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = memberService.EditMember(editMemberDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 修改會員_失敗_回傳修改的手機號碼重複()
+        {
+            // Arrange
+            RequestEditMemberDto editMemberDto = new RequestEditMemberDto()
+            {
+                MemberId = 10,
+                Phone = 987654321,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.DuplicatePhone;
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.EditMember(editMemberDto)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = memberService.EditMember(editMemberDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
         }
     }
 }

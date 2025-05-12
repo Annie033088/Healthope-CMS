@@ -146,5 +146,75 @@ namespace UnitTest.Test.MemberTest
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
         }
+
+        [TestMethod]
+        public void 修改會員_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMemberDto editMemberDto = new RequestEditMemberDto()
+            {
+                MemberId = 10,
+                Phone = 987654321,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCdoe = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            memberServiceMock.Setup(s => s.EditMember(editMemberDto)).Returns(errorCdoe);
+
+            // Act
+            IHttpActionResult result = memberController.EditMember(editMemberDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改會員_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditMemberDto editMemberDto = new RequestEditMemberDto()
+            {
+                MemberId = 10,
+                Phone = 97654321,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = memberController.EditMember(editMemberDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改會員_失敗_回傳資料已被他人修改()
+        {
+            // Arrange
+            RequestEditMemberDto editMemberDto = new RequestEditMemberDto()
+            {
+                MemberId = 10,
+                Phone = 987654321,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCdoe = ErrorCodeDefine.HasBeenModified;
+
+            // Mock 設定
+            memberServiceMock.Setup(s => s.EditMember(editMemberDto)).Returns(errorCdoe);
+
+            // Act
+            IHttpActionResult result = memberController.EditMember(editMemberDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.HasBeenModified));
+        }
     }
 }

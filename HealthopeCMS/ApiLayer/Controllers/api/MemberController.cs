@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Web.Http;
+using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Admin.ResponseAdminDto;
@@ -10,6 +12,9 @@ using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {
+    [RequestLoggerFilter]
+    [VeriyLoginFilter]
+    [AdminPermissionAuthFilter]
     public class MemberController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -83,15 +88,52 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                ResponseGetMemberEditDataByIdDto ResponseGetMemberEditDataByIdDto = memberService.GetMemberEditDataById(getMemberByIdDto);
+                ResponseGetMemberEditDataByIdDto responseGetMemberEditDataByIdDto = memberService.GetMemberEditDataById(getMemberByIdDto);
                 
-                if (ResponseGetMemberEditDataByIdDto == null)
+                if (responseGetMemberEditDataByIdDto == null)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
                     return Ok(response);
                 }
 
-                response = new ResultResponse<ResponseGetMemberEditDataByIdDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = ResponseGetMemberEditDataByIdDto };
+                response = new ResultResponse<ResponseGetMemberEditDataByIdDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetMemberEditDataByIdDto };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改會員資料
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditMember([FromBody] RequestEditMemberDto editMemberDto)
+        {
+            try
+            {
+                // 驗證前端傳遞的參數是否合法
+                bool modelValidFlag = true;
+                ResultResponse response;
+
+                // 驗證前端傳遞的參數是否合法
+                if (editMemberDto.MemberId < 1) modelValidFlag = false;
+                if(editMemberDto.Phone == null && editMemberDto.Status ==null) modelValidFlag = false;
+
+                string phoneRegex = "^9\\d{8}$";
+                if (editMemberDto.Phone != null && !Regex.IsMatch(editMemberDto.Phone.ToString(), phoneRegex))
+                    modelValidFlag = false;
+
+                if (!modelValidFlag)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse { ErrorCode = memberService.EditMember(editMemberDto) };
                 return Ok(response);
             }
             catch (Exception ex)

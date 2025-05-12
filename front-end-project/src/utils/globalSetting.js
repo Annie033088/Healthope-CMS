@@ -141,8 +141,11 @@ export const adminPermission = {
     // 管理者相關權限
     EditAdmin: 1,
 
-    // 
-    EditMember: 2
+    // 查詢會員權限
+    SelectMember: 2,
+
+    // 修改會員權限
+    EditMember: 3,
 }
 
 export default function adminIdentityToText(identity) {

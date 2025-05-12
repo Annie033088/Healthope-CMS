@@ -20,7 +20,7 @@
         <b>管理員</b>
       </button>
     </div>
-    <div class="sidebarRow" v-if="permissionMap.EditMember">
+    <div class="sidebarRow" v-if="permissionMap.EditMember || permissionMap.SelectMember">
       <button class="btnSidebar" @click="redirect('/member')">
         <svg
           class="sidebarIcon"

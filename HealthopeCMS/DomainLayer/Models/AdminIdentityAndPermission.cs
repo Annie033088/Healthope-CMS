@@ -15,7 +15,12 @@ namespace DomainLayer.Models
         EditAdmin,
 
         /// <summary>
-        /// 會員相關權限
+        /// 查詢會員權限
+        /// </summary>
+        SelectMember,
+
+        /// <summary>
+        /// 修改會員權限
         /// </summary>
         EditMember,
     }
@@ -72,9 +77,21 @@ namespace DomainLayer.Models
             = new Dictionary<AdminIdentity, List<AdminPermission>>()
         {
             { AdminIdentity.SuperAdmin, new List<AdminPermission> {
-                AdminPermission.EditAdmin, AdminPermission.EditMember } },
+                AdminPermission.EditAdmin, AdminPermission.EditMember,
+                AdminPermission.SelectMember, AdminPermission.EditMember
+            } },
             { AdminIdentity.Admin, new List<AdminPermission> {
-                AdminPermission.EditMember } },
+                AdminPermission.SelectMember, AdminPermission.EditMember 
+            } },
+            {AdminIdentity.Receptionist, new List<AdminPermission>{
+                AdminPermission.SelectMember 
+            } },
+            {AdminIdentity.CoachManager, new List<AdminPermission>{
+                AdminPermission.SelectMember
+            } },
+            {AdminIdentity.SalesRepresentative, new List<AdminPermission>{
+                AdminPermission.SelectMember
+            } }
         };
     }
 }

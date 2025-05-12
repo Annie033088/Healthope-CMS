@@ -7,6 +7,7 @@ import HealthopeAddAdmin from '@/views/Admin/HealthopeAddAdmin';
 import HealthopeEditAdmin from '@/views/Admin/HealthopeEditAdmin';
 import HealthopeMember from '@/views/Member/HealthopeMember';
 import HealthopeEditMember from '@/views/Member/HealthopeEditMember';
+import HealthopeMemberDetail from '@/views/Member/HealthopeMemberDetail';
 import HealthopeEditSelfPwd from '@/views/Other/HealthopeEditSelfPwd';
 import axios from '../plugins/axios';
 import { errorCodeDefine, adminPermission } from '../utils/globalSetting';
@@ -52,12 +53,18 @@ const routes = [
         path: '/member',
         name: 'HealthopeMember',
         component: HealthopeMember,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditMember }] }
+        meta: { requireAuth: [{ adminPermission: [adminPermission.EditMember, adminPermission.SelectMember] }] }
     },
     {
         path: '/member/edit',
         name: 'HealthopeEditMember',
         component: HealthopeEditMember,
+        meta: { requireAuth: [{ adminPermission: adminPermission.EditMember }] }
+    },
+    {
+        path: '/member/detail',
+        name: 'HealthopeMemberDetail',
+        component: HealthopeMemberDetail,
         meta: { requireAuth: [{ adminPermission: adminPermission.EditMember }] }
     },
     {

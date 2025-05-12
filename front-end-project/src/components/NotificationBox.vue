@@ -42,7 +42,9 @@ export default {
       this.$notificationBox.notificationBoxCancelFlag = false;
     },
   },
-  created() {},
+  created() {
+    this.$emit('created');
+  },
 };
 </script>
 

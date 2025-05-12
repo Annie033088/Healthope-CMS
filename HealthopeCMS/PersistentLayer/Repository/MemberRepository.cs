@@ -151,5 +151,61 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 修改會員手機或狀態
+        /// </summary>
+        public int EditMember(RequestEditMemberDto editMemberDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editMember @memberId, @status, @phone, @updateTime, @errorCode OUTPUT";
+
+                if (editMemberDto.Status == null)
+                {
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = editMemberDto.Status;
+                }
+
+                if (editMemberDto.Phone == null)
+                {
+                    cmd.Parameters.Add("@phone", SqlDbType.Int).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@phone", SqlDbType.Int).Value = editMemberDto.Phone;
+                }
+
+                cmd.Parameters.Add("@memberId", SqlDbType.Int).Value = editMemberDto.MemberId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editMemberDto.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

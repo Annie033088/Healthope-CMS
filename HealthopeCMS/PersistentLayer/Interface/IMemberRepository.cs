@@ -19,5 +19,10 @@ namespace PersistentLayer.Interface
         /// 根據 id 取得修改會員時需要的資料
         /// </summary>
         Member GetMemberEditDataById(int memberId);
+
+        /// <summary>
+        /// 修改會員手機或狀態
+        /// </summary>
+        int EditMember(RequestEditMemberDto editMemberDto);
     }
 }

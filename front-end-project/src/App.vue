@@ -4,6 +4,7 @@
       v-if="this.$notificationBox.notificationBoxFlag"
       class="notificationBox"
       @notificationBoxConfirm="notificationBoxConfirm"
+      @created="notificationBoxCreated"
     ></NotificationBox>
     <AppSidebar
       v-if="this.$loginFlag"
@@ -66,12 +67,15 @@ export default {
     },
     afterConfirmEvent(redirectRoute) {
       this.notificationBoxConfirmFlag = false;
-      
-      if(redirectRoute === "stop") return;
+
+      if (redirectRoute === "stop") return;
 
       if (redirectRoute) this.$router.push(redirectRoute);
       else this.refreshRouterViewComponent();
     },
+    notificationBoxCreated(){
+      this.notificationBoxConfirmFlag = false;
+    }
   },
 };
 </script>

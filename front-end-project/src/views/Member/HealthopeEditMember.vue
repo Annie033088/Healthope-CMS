@@ -89,7 +89,7 @@ export default {
           editMemberDto.Phone = null;
         }
 
-        // 沒修改過的話就不觸發 post
+        // 沒修改過 或 格式錯誤就不觸發 post
         if (!editFlag) return;
 
         // post
