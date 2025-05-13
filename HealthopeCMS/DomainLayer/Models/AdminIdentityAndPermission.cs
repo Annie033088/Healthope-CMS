@@ -23,6 +23,16 @@ namespace DomainLayer.Models
         /// 修改會員權限
         /// </summary>
         EditMember,
+
+        /// <summary>
+        /// 查詢教練權限
+        /// </summary>
+        SelectCoach,
+
+        /// <summary>
+        /// 新增教練權限
+        /// </summary>
+        AddCoach,
     }
 
     public enum AdminIdentity : byte
@@ -78,16 +88,19 @@ namespace DomainLayer.Models
         {
             { AdminIdentity.SuperAdmin, new List<AdminPermission> {
                 AdminPermission.EditAdmin, AdminPermission.EditMember,
-                AdminPermission.SelectMember, AdminPermission.EditMember
+                AdminPermission.SelectMember, AdminPermission.EditMember,
+                AdminPermission.SelectCoach, AdminPermission.AddCoach,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
-                AdminPermission.SelectMember, AdminPermission.EditMember 
+                AdminPermission.SelectMember, AdminPermission.EditMember,
+                AdminPermission.SelectCoach, AdminPermission.AddCoach,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember 
             } },
             {AdminIdentity.CoachManager, new List<AdminPermission>{
-                AdminPermission.SelectMember
+                AdminPermission.SelectMember,
+                AdminPermission.SelectCoach, AdminPermission.AddCoach,
             } },
             {AdminIdentity.SalesRepresentative, new List<AdminPermission>{
                 AdminPermission.SelectMember

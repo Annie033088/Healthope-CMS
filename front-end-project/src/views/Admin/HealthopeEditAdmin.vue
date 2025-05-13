@@ -2,106 +2,45 @@
   <div>
     <TitleCard text="管理者清單"></TitleCard>
     <SubTitleCard text="修改管理者"></SubTitleCard>
-    <div class="adminCardContainer">
-      <div class="adminCard">
-        <div class="adminText">管理者</div>
-        <div class="admin">
-          <div class="cardImage">
-            <svg
-              width="50"
-              height="50"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 4C13.0609 4 14.0783 4.42143 14.8284 5.17157C15.5786 5.92172 16 6.93913 16 8C16 9.06087 15.5786 10.0783 14.8284 10.8284C14.0783 11.5786 13.0609 12 12 12C10.9391 12 9.92172 11.5786 9.17157 10.8284C8.42143 10.0783 8 9.06087 8 8C8 6.93913 8.42143 5.92172 9.17157 5.17157C9.92172 4.42143 10.9391 4 12 4ZM12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z"
-                fill="white"
-              />
-            </svg>
+    <div class="editAdminBox">
+      <div class="editAdminContainer">
+        <div class="editAdminContent">
+          <div class="top">
+            <div class="contentTextBox">
+              <label class="lab">管理者</label><br />
+              <span>{{ admin.Account }}</span>
+            </div>
           </div>
-          <div class="adminName">
-            <!-- <span>qweqwk90ek!</span> -->
-            <span>{{ admin.Account }}</span>
+          <div class="bottom">
+            <RadioInput
+              v-model="selectStatus"
+              :options="[
+                { value: 'true', text: '啟用' },
+                { value: 'false', text: '停用' },
+              ]"
+              inputTitle="請選擇狀態"
+              inputType="statusInput"
+            /><RadioInput
+              v-model="selectIdentity"
+              :options="[
+                { value: 'None', text: '無' },
+                { value: 'Admin', text: '管理員' },
+                { value: 'Receptionist', text: '櫃檯人員' },
+                { value: 'Accountant', text: '會計' },
+                { value: 'CourseManager', text: '課程管理' },
+                { value: 'CoachManager', text: '教練管理' },
+                { value: 'SalesRepresentative', text: '業務' },
+              ]"
+              inputTitle="請選擇身份"
+              inputType="identityInput"
+            />
           </div>
         </div>
       </div>
     </div>
     <div class="editInputContainer">
-      <div class="editInputTop">
-        <EditStatusInput v-model="selectStatus" />
-      </div>
-      <div class="editInputBotton">
-        <span class="inputSpan">
-          <label class="lab">請修改身份</label>
-          <div class="radioContainer">
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="None"
-                v-model="selectIdentity"
-                checked=""
-              />
-              <span class="textRadio">無</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="Admin"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">管理員</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="Receptionist"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">櫃檯人員</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="Accountant"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">會計</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="CourseManager"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">課程管理</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="CoachManager"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">教練管理</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="SalesRepresentative"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">業務</span>
-            </label>
-          </div>
-        </span>
-      </div>
+      <div class="editInputTop"></div>
+      <div class="editInputBotton"></div>
     </div>
     <div class="hintContainer">
       <span v-if="addFail" class="hintSpan">{{ this.hintText }}</span>
@@ -116,7 +55,7 @@
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import BtnConfirm from "@/components/Btn/BtnConfirm";
-import EditStatusInput from "@/components/Input/EditStatusInput";
+import RadioInput from "@/components/Input/RadioInput";
 
 export default {
   name: "HealthopeEditAdmin",
@@ -124,7 +63,7 @@ export default {
     TitleCard,
     SubTitleCard,
     BtnConfirm,
-    EditStatusInput
+    RadioInput,
   },
   props: {
     notificationBoxConfirmFlag: Boolean,
@@ -226,6 +165,7 @@ export default {
           this.admin = response.data.ApiDataObject;
           this.admin.AdminId = id;
           this.selectStatus = this.admin.Status ? "true" : "false";
+          console.log(this.selectStatus)
           this.selectIdentity = this.identityToText(this.admin.Identity);
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
@@ -319,20 +259,6 @@ export default {
 </script>
 
 <style scoped>
-.editInputContainer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 25px;
-}
-
-.editInputBotton,
-.editInputTop {
-  max-width: 60%;
-  width: 550px;
-}
-
 .btnEditContainer {
   display: flex;
   justify-content: center;
@@ -352,10 +278,9 @@ export default {
   background-color: #eee;
   box-sizing: border-box;
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.35rem;
+  padding: 0.2rem;
   width: 100%;
   font-size: 16px;
-  margin-left: 20px;
   gap: 15px;
 }
 
@@ -386,59 +311,69 @@ export default {
 }
 </style>
 
-
 <style scoped>
-/* 管理員 樣式*/
-.adminCardContainer {
-  width: 100%;
+.editAdminBox {
   display: flex;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 5%;
 }
 
-.adminCard {
-  width: 30%;
-  min-width: 300px;
-  background-color: white;
-  box-shadow: rgba(216, 216, 216, 0.962) 0px 0px 3px 0px inset;
-  border-radius: 5%;
-}
-
-.adminText {
+.editAdminContainer {
   display: flex;
-  justify-content: center;
-  background-color: rgb(237, 232, 232);
-  font-size: 25px;
-  border-radius: 5% 5% 0% 0%;
-}
-
-.admin {
-  padding: 12px 10px;
-  margin: 5px;
-  display: flex;
-  justify-content: center;
-}
-
-.cardContent {
-  display: flex;
-}
-
-.cardImage {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #727272e7;
-}
-
-.adminName {
-  margin-left: 20px;
-  font-size: 25px;
-  display: flex;
-  justify-content: center;
+  position: relative;
   align-items: center;
+  padding: 9px;
+  width: 1000px;
+  max-width: 80%;
+  background-color: #fcfcfc;
+  border-radius: 35px;
+  box-shadow: rgba(10, 37, 64, 0.35) 0px -1px 5px 0px inset;
 }
 
-.cardEditBtn {
-  color: #aa7f7f;
+.editAdminContent {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  width: 1000px;
+  max-width: 100%;
+  min-height: 220px;
+  border-radius: 30px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 3px 0px inset;
+}
+
+.editAdminContent .top,
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  gap: 10px 20%;
+  word-break: break-word;
+}
+
+.editAdminContent .top {
+  padding-bottom: 10px;
+  border-bottom: solid #c5c5c5 1px;
+}
+
+.contentTextBox {
+  width: 150px;
+}
+
+.contentTextBox label {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1c1c1c;
+  font-family: "Microsoft JhengHei";
+}
+
+.contentTextBox span {
+  font-size: 18px;
+  font-family: "Microsoft JhengHei";
 }
 </style>

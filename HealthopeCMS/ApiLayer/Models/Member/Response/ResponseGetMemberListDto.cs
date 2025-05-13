@@ -52,7 +52,7 @@ namespace ApiLayer.Models.Member
         /// <summary>
         /// 今年團課缺席次數
         /// </summary>
-        public short AbsenceTime { get; set; }
+        public byte AbsenceTime { get; set; }
 
         /// <summary>
         /// 允許預約團課的時間(在那之前被禁止了)

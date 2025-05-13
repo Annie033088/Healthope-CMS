@@ -160,7 +160,6 @@ namespace UnitTest.Test.MemberTest
             ResponseGetMemberEditDataByIdDto result = memberService.GetMemberEditDataById(memberIdDto);
 
             // Assert
-            ResponseIsEqual<ResponseGetMemberEditDataByIdDto> responseIsEqual = new ResponseIsEqual<ResponseGetMemberEditDataByIdDto>();
             Assert.AreEqual(result, response);
         }
 
@@ -186,7 +185,6 @@ namespace UnitTest.Test.MemberTest
             ResponseGetMemberEditDataByIdDto result = memberService.GetMemberEditDataById(memberIdDto);
 
             // Assert
-            ResponseIsEqual<ResponseGetMemberEditDataByIdDto> responseIsEqual = new ResponseIsEqual<ResponseGetMemberEditDataByIdDto>();
             Assert.AreEqual(result, response);
         }
 
@@ -260,6 +258,63 @@ namespace UnitTest.Test.MemberTest
 
             // Assert
             Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+       
+        [TestMethod]
+        public void 根據Id取得會員詳細資料_成功_回傳會員資料()
+        {
+            // Arrange
+            RequestMemberIdDto memberIdDto = new RequestMemberIdDto()
+            {
+                MemberId = 1
+            };
+
+            Member member = new Member()
+            {
+                Name = "okwopekq122",
+                Phone = 987654342,
+                Status = true,
+            };
+
+            ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto()
+            {
+                Name = "okwopekq122",
+                Phone = 987654342,
+                Status = true,
+            };
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId)).Returns(member);
+            mapperMock.Setup(s=>s.Map<ResponseGetMemberDetailDto>(member)).Returns(response);
+
+            // Act
+            ResponseGetMemberDetailDto result = memberService.GetMemberDetail(memberIdDto);
+
+            // Assert
+            Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 根據Id取得會員詳細資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestMemberIdDto memberIdDto = new RequestMemberIdDto()
+            {
+                MemberId = 1
+            };
+
+            Member member = null;
+
+            ResponseGetMemberDetailDto response = null;
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId)).Returns(member);
+
+            // Act
+            ResponseGetMemberDetailDto result = memberService.GetMemberDetail(memberIdDto);
+
+            // Assert
+            Assert.AreEqual(result, response);
         }
     }
 }

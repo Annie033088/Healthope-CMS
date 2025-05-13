@@ -20,7 +20,10 @@
         <b>管理員</b>
       </button>
     </div>
-    <div class="sidebarRow" v-if="permissionMap.EditMember || permissionMap.SelectMember">
+    <div
+      class="sidebarRow"
+      v-if="permissionMap.EditMember || permissionMap.SelectMember"
+    >
       <button class="btnSidebar" @click="redirect('/member')">
         <svg
           class="sidebarIcon"
@@ -40,8 +43,11 @@
         <b>會員</b>
       </button>
     </div>
-    <div class="sidebarRow">
-      <button class="btnSidebar">
+    <div
+      class="sidebarRow"
+      v-if="permissionMap.AddCoach || permissionMap.SelectCoach"
+    >
+      <button class="btnSidebar" @click="redirect('/coach')">
         <svg
           class="sidebarIcon"
           width="26"
@@ -92,8 +98,11 @@ export default {
     return {
       // 用來儲存權限對照結果
       permissionMap: {
-        EditAdmin: false, // 初始設置為 false 或你希望的初始狀態
+        EditAdmin: false, // 初始設置為 false 或希望的初始狀態
         EditMember: false,
+        SelectMember: false,
+        SelectCoach: false,
+        AddCoach: false,
         None: true,
       },
     };
@@ -132,7 +141,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.$emit("afterConfirmEvent")
+                this.$emit("afterConfirmEvent");
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -166,8 +175,8 @@ export default {
   },
   mounted() {
     // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
-    if(!this.permissionList) return;
-    if (this.permissionList.length <1 && this.$loginFlag) {
+    if (!this.permissionList) return;
+    if (this.permissionList.length < 1 && this.$loginFlag) {
       this.getPermission();
     }
   },

@@ -1,31 +1,31 @@
 <template>
-      <span class="statusInputSpan">
-          <label class="lab">請修改狀態</label>
-          <div class="statusRadioContainer">
+      <span class="typeInputSpan">
+          <label class="lab">請選擇類別</label>
+          <div class="typeRadioContainer">
             <label class="labRadioBox">
               <input
                 type="radio"
-                name="radioStatus"
-                value="true"
-                v-model="localStatus"
+                name="radioType"
+                value="1"
+                v-model="localType"
               />
-              <span class="textRadio">啟用</span>
+              <span class="textRadio">私人教練</span>
             </label>
             <label class="labRadioBox">
               <input
                 type="radio"
-                name="radioStatus"
-                value="false"
-                v-model="localStatus"
+                name="radioType"
+                value="2"
+                v-model="localType"
               />
-              <span class="textRadio">停用</span>
+              <span class="textRadio">約聘教練</span>
             </label>
           </div>
         </span>
 </template>
 <script>
 export default {
-  name: "EditStatusInput",
+  name: "CoachTypeInput",
   props: {
     value: {
       type: String,
@@ -34,39 +34,37 @@ export default {
   },
   data() {
     return {
-      localStatus: this.value
+      localType: this.value
     };
   },
   watch: {
-    localStatus(newVal) {
+    localType(newVal) {
       this.$emit("input", newVal);  
     },
     value(newVal) {
-      this.localStatus = newVal;
+      this.localType = newVal;
     }
   }
 };
 </script>
 
 <style scoped>
-.statusInputSpan {
+.typeInputSpan {
   display: flex;
   gap: 0.5rem;
   flex-direction: column;
-  margin-bottom: 20px;
 }
 
-.statusRadioContainer {
+.typeRadioContainer {
   display: flex;
   flex-wrap: wrap;
   border-radius: 0.5rem;
   background-color: #eee;
   box-sizing: border-box;
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.35rem;
-  width: 150px;
+  padding: 0.2rem;
+  width: 250px;
   font-size: 16px;
-  margin-left: 20px;
   gap: 15px;
 }
 

@@ -47,7 +47,7 @@
                 phoneVerifiedText: row.PhoneVerified,
                 phoneUnverifiedText: !row.PhoneVerified,
               }"
-              >{{ row.PhoneVerified ? "通過" : "待審核" }} </span
+              >{{ row.PhoneVerified ? "通過" : "未驗證" }} </span
             ><br />
             <div class="groupClassRecordContainer">
               <div><strong>未出席團課：</strong>{{ row.AbsenceTime }} 次</div>
@@ -62,7 +62,7 @@
           </div>
           <div class="detailRowRight">
             <strong>查看：</strong>
-            <BtnNormal @click="redirect('/member/detail')" text="會員資料"></BtnNormal>
+            <BtnNormal @click="goMemberDetail(row)" text="會員資料"></BtnNormal>
           </div>
         </div>
       </template>
@@ -108,7 +108,6 @@ export default {
   },
   data() {
     return {
-      hintText: "",
       searchName: "",
       searchPhone: "",
       selectStatus: "",
@@ -130,12 +129,13 @@ export default {
     };
   },
   methods: {
-    redirect(path){
-      this.$router.push(path);
-    },
     goEditMember(row) {
       if (row.MemberId < 1) return;
       this.$router.push({ path: "/member/edit", query: { id: row.MemberId } });
+    },
+    goMemberDetail(row) {
+      if (row.MemberId < 1) return;
+      this.$router.push({ path: "/member/detail", query: { id: row.MemberId } });
     },
     selectMemberByStatus() {
       this.searchingPage = 1;
@@ -247,11 +247,6 @@ export default {
           this.resetDetailIndexFlag = !this.resetDetailIndexFlag;
           // 用來計算會員是否被禁止預約團課 及 會籍是否到期
           const today = new Date();
-          const current = new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate()
-          );
 
           // 顯示資料
           this.memberList = [];
@@ -265,23 +260,13 @@ export default {
             const membershipExpiryTargetDate = new Date(
               member.MembershipExpiry
             );
-            const membershipExpiryDate = new Date(
-              membershipExpiryTargetDate.getFullYear(),
-              membershipExpiryTargetDate.getMonth(),
-              membershipExpiryTargetDate.getDate()
-            );
 
-            if (membershipExpiryDate < current)
+            if (membershipExpiryTargetDate < today)
               member.MembershipExpiry = "無會籍";
 
             const allowGroupClassTargetDate = new Date(member.AllowGroupClass);
-            const allowGroupClassDate = new Date(
-              allowGroupClassTargetDate.getFullYear(),
-              allowGroupClassTargetDate.getMonth(),
-              allowGroupClassTargetDate.getDate()
-            );
 
-            if (allowGroupClassDate > current)
+            if (allowGroupClassTargetDate > today)
               member.AllowGroupClassFlag = false;
             else member.AllowGroupClassFlag = true;
 

@@ -216,5 +216,55 @@ namespace UnitTest.Test.MemberTest
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.HasBeenModified));
         }
+
+        [TestMethod]
+        public void 根據Id取得會員詳細資料_成功_回傳會員資料()
+        {
+            // Arrange
+            RequestMemberIdDto memberIdDto = new RequestMemberIdDto()
+            {
+                MemberId = 1
+            };
+
+            ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto()
+            {
+                Name = "okwopekq122",
+                Phone = 987654342,
+                Status = true,
+            };
+
+            // Mock 設定
+            memberServiceMock.Setup(s => s.GetMemberDetail(memberIdDto)).Returns(response);
+
+            // Act
+            IHttpActionResult result = memberController.GetMemberDetail(memberIdDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetMemberDetailDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetMemberDetailDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, response));
+        }
+
+        [TestMethod]
+        public void 根據Id取得會員詳細資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestMemberIdDto memberIdDto = new RequestMemberIdDto()
+            {
+                MemberId = 1
+            };
+
+            ResponseGetMemberDetailDto response = null;
+
+            // Mock 設定
+            memberServiceMock.Setup(s => s.GetMemberDetail(memberIdDto)).Returns(response);
+
+            // Act
+            IHttpActionResult result = memberController.GetMemberDetail(memberIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
+        }
     }
 }

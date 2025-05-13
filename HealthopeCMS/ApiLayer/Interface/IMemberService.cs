@@ -21,5 +21,10 @@ namespace ApiLayer.Interface
         /// 修改會員手機或狀態
         /// </summary>
         ErrorCodeDefine EditMember(RequestEditMemberDto editMemberDto);
+
+        /// <summary>
+        /// 取得會員詳細資料
+        /// </summary>
+        ResponseGetMemberDetailDto GetMemberDetail(RequestMemberIdDto memberIdDto);
     }
 }

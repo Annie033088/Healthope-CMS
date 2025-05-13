@@ -1,5 +1,5 @@
 <template>
-  <div  class="svgResetContainer">
+  <div @click="$emit('click', $event)" class="svgResetContainer">
     <svg
     class="btn svgReset"
       :width="size"

@@ -105,7 +105,8 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
-                return Json(new ResultResponse() { ErrorCode = accountAccessService.AdminHavePermission(havePermissionDto) });
+                ErrorCodeDefine errorCode = accountAccessService.AdminHavePermission(havePermissionDto);
+                return Json(new ResultResponse() { ErrorCode = errorCode });
             }
             catch (Exception)
             {

@@ -1,28 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace DomainLayer.Models
+namespace ApiLayer.Models.Member.Response
 {
-    public class Member
+    public class ResponseGetMemberDetailDto
     {
-        /// <summary>
-        /// 會員 Id
-        /// </summary>
-        public int MemberId { get; set; }
-
-        /// <summary>
-        /// 帳號
-        /// </summary>
-        public string Account { get; set; }
-
-        /// <summary>
-        /// 密碼雜湊後
-        /// </summary>
-        public string Hash { get; set; }
-
         /// <summary>
         /// 手機
         /// </summary>
@@ -91,7 +75,7 @@ namespace DomainLayer.Models
         /// <summary>
         /// 緊急聯絡人姓名
         /// </summary>
-        public string EmergencyContactName {  get; set; }
+        public string EmergencyContactName { get; set; }
 
         /// <summary>
         /// 緊急聯絡人手機
@@ -101,16 +85,11 @@ namespace DomainLayer.Models
         /// <summary>
         /// 緊急聯絡人關係
         /// </summary>
-        public string EmergencyContactRelation {  get; set; }
+        public string EmergencyContactRelation { get; set; }
 
         /// <summary>
         /// 創建日
         /// </summary>
         public DateTime CreateTime { get; set; }
-
-        /// <summary>
-        /// 最後更新時間
-        /// </summary>
-        public DateTime UpdateTime { get; set; }
     }
 }

@@ -7,13 +7,13 @@ export default function (mock) {
         // 模擬超級管理員登入
         if (loginDto.Account === "superAdmin123" && loginDto.Pwd === "superAdmin456") {
             Vue.prototype.$loginFlag = true;
-            return [200, { ErrorCode: 1, ApiDataObject: [1, 2, 3] }];
+            return [200, { ErrorCode: 1, ApiDataObject: [1, 2, 3, 4, 5] }];
         }
 
         // 模擬一般管理員登入
         if (loginDto.Account === "generalAdmin123" && loginDto.Pwd === "generalAdmin456") {
             Vue.prototype.$loginFlag = true;
-            return [200, { ErrorCode: 1, ApiDataObject: [2, 3] }];
+            return [200, { ErrorCode: 1, ApiDataObject: [2, 3, 4, 5] }];
         }
 
         // 模擬接待員(櫃檯)登入

@@ -16,6 +16,7 @@ namespace ApiLayer.App_Start
             CreateMap<Admin, ResponseGetAdminDto>();
             CreateMap<Member, ResponseGetMemberDto>();
             CreateMap<Member, ResponseGetMemberEditDataByIdDto>();
+            CreateMap<Member, ResponseGetMemberDetailDto>();
         }
     }
 }

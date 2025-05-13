@@ -4,80 +4,38 @@
     <SubTitleCard text="新增管理者"></SubTitleCard>
     <div class="addInputContainer">
       <div class="addInputLeft">
-        <InputSpan labelText="帳號" v-model="account"></InputSpan>
-        <InputSpan labelText="密碼" v-model="pwd" inputType="password"></InputSpan>
-        <InputSpan labelText="再輸入一次密碼" v-model="pwdAgain" inputType="password"></InputSpan>
+        <InputSpan
+          class="inputSpan"
+          labelText="帳號"
+          v-model="account"
+        ></InputSpan>
+        <InputSpan
+          class="inputSpan"
+          labelText="密碼"
+          v-model="pwd"
+          inputType="password"
+        ></InputSpan>
+        <InputSpan
+          class="inputSpan"
+          labelText="再輸入一次密碼"
+          v-model="pwdAgain"
+          inputType="password"
+        ></InputSpan>
       </div>
       <div class="addInputRight">
-        <span class="inputSpan">
-          <label class="label">請選擇身份</label>
-          <div class="radioContainer">
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="None"
-                v-model="selectIdentity"
-                checked=""
-              />
-              <span class="textRadio">無</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="Admin"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">管理員</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="Receptionist"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">櫃檯人員</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="Accountant"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">會計</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="CourseManager"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">課程管理</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="CoachManager"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">教練管理</span>
-            </label>
-            <label class="labRadioBox">
-              <input
-                type="radio"
-                name="radioIdentity"
-                value="SalesRepresentative"
-                v-model="selectIdentity"
-              />
-              <span class="textRadio">業務</span>
-            </label>
-          </div>
-        </span>
+        <RadioInput
+          v-model="selectIdentity"
+          :options="[
+            { value: 'None', text: '無' },
+            { value: 'Admin', text: '管理員' },
+            { value: 'Receptionist', text: '櫃檯人員' },
+            { value: 'Accountant', text: '會計' },
+            { value: 'CourseManager', text: '課程管理' },
+            { value: 'CoachManager', text: '教練管理' },
+            { value: 'SalesRepresentative', text: '業務' },
+          ]"
+          inputTitle="請選擇身份"
+        />
       </div>
     </div>
     <div class="hintContainer">
@@ -93,6 +51,7 @@
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import InputSpan from "@/components/Input/InputSpan";
+import RadioInput from "@/components/Input/RadioInput";
 import BtnConfirm from "@/components/Btn/BtnConfirm";
 
 export default {
@@ -101,7 +60,8 @@ export default {
     TitleCard,
     SubTitleCard,
     InputSpan,
-    BtnConfirm
+    BtnConfirm,
+    RadioInput,
   },
   props: {
     text: String,
@@ -201,20 +161,14 @@ export default {
   max-width: 350px;
 }
 
-.addInputRight .inputSpan  {
+.inputSpan {
   margin-top: 5%;
 }
 
-.btnAddContainer {
+.btnAddContainer, .hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 15px;
-}
-
-.hintContainer {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
 }
 
 .hintSpan {
@@ -240,11 +194,11 @@ export default {
   background-color: #eee;
   box-sizing: border-box;
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.35rem;
+  padding: 0.2rem;
   width: 100%;
   max-width: 350px;
   font-size: 16px;
-  margin-left: 20px;
+  margin-top: 5px;
   gap: 15px;
 }
 

@@ -207,5 +207,75 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 取得會員詳細資料
+        /// </summary>
+        public Member GetMemberDetail(int memberId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getMemberDetail @memberId";
+
+                cmd.Parameters.Add("@memberId", SqlDbType.Int).Value = memberId;
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    Member member = new Member()
+                    {
+                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
+                        Phone = dr.IsNull("f_phone") ? 0 : dr.Field<int>("f_phone"),
+                        Email = dr.IsNull("f_email") ? string.Empty : dr.Field<string>("f_email"),
+                        PhoneVerified = dr.IsNull("f_phoneVerified") ? false : dr.Field<bool>("f_phoneVerified"),
+                        PhotoUrl = dr.IsNull("f_photoUrl") ? string.Empty : dr.Field<string>("f_photoUrl"),
+                        Gender = (byte)(dr.IsNull("f_gender") ? 0 : dr.Field<byte>("f_gender")),
+                        Height = dr.IsNull("f_height") ? 0 : dr.Field<int>("f_height"),
+                        Weight = dr.IsNull("f_weight") ? 0 : dr.Field<int>("f_weight"),
+                        Status = dr.IsNull("f_status") ? false : dr.Field<bool>("f_status"),
+                        AbsenceTime = (byte)(dr.IsNull("f_gender") ? 0 : dr.Field<byte>("f_gender")),
+                        EmergencyContactName = dr.IsNull("f_emergencyContactName") ?
+                            string.Empty : dr.Field<string>("f_emergencyContactName"),
+                        EmergencyContactPhone = dr.IsNull("f_emergencyContactPhone") ?
+                            0 : dr.Field<int>("f_emergencyContactPhone"),
+                        EmergencyContactRelation = dr.IsNull("f_emergencyContactRelation") ?
+                            string.Empty : dr.Field<string>("f_emergencyContactRelation"),
+                        Birthday = dr.IsNull("f_birthday") ? DateTime.MinValue
+                            : dr.Field<DateTime>("f_birthday"),
+                        AllowGroupClass = dr.IsNull("f_allowGroupClass") ? DateTime.MinValue
+                            : dr.Field<DateTime>("f_allowGroupClass"),
+                        MembershipExpiry = dr.IsNull("f_membershipExpiry") ? DateTime.MinValue
+                            : dr.Field<DateTime>("f_membershipExpiry"),
+                        CreateTime = dr.IsNull("f_createTime") ? DateTime.MinValue
+                            : dr.Field<DateTime>("f_createTime"),
+                    };
+
+                    return member;
+                }
+
+                return (null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

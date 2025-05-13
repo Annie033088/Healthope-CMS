@@ -99,5 +99,21 @@ namespace ApiLayer.Service
                 throw;
             }
         }
+
+        /// <summary>
+        /// 取得會員詳細資料
+        /// </summary>
+        public ResponseGetMemberDetailDto GetMemberDetail(RequestMemberIdDto memberIdDto)
+        {
+            try
+            {
+                Member member = memberRepository.GetMemberDetail(memberIdDto.MemberId);
+                return mapper.Map<ResponseGetMemberDetailDto>(member);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

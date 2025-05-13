@@ -46,7 +46,8 @@ namespace ApiLayer.Controllers.api
                     if (getMemberDto.SearchName.Length > 50) modelValidFlag = false;
                 }
                 if (!((getMemberDto.SortOrder == "ascending") || (getMemberDto.SortOrder == "descending"))) modelValidFlag = false;
-                if (!((getMemberDto.SortOption == "account") || (getMemberDto.SortOption == "status") || (getMemberDto.SortOption == null))) modelValidFlag = false;
+                if (!((getMemberDto.SortOption == "name") || (getMemberDto.SortOption == "status")
+                    || (getMemberDto.SortOption == "membershipExpiry") || (getMemberDto.SortOption == null) )) modelValidFlag = false;
                 if (!((getMemberDto.RecordPerPage == 8) || (getMemberDto.RecordPerPage == 12) || (getMemberDto.RecordPerPage == 16))) modelValidFlag = false;
                 if (getMemberDto.Page < 1) modelValidFlag = false;
 
@@ -75,28 +76,34 @@ namespace ApiLayer.Controllers.api
         /// 根據 id 取得修改會員時需要的資料
         /// </summary>
         [HttpPost]
-        public IHttpActionResult GetMemberEditDataById([FromBody] RequestMemberIdDto getMemberByIdDto)
+        public IHttpActionResult GetMemberEditDataById([FromBody] RequestMemberIdDto memberIdDto)
         {
             try
             {
                 ResultResponse response;
 
                 // 驗證前端傳遞的參數是否合法
-                if (getMemberByIdDto.MemberId < 1)
+                if (memberIdDto.MemberId < 1)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                ResponseGetMemberEditDataByIdDto responseGetMemberEditDataByIdDto = memberService.GetMemberEditDataById(getMemberByIdDto);
-                
+                ResponseGetMemberEditDataByIdDto responseGetMemberEditDataByIdDto =
+                    memberService.GetMemberEditDataById(memberIdDto);
+
                 if (responseGetMemberEditDataByIdDto == null)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
                     return Ok(response);
                 }
 
-                response = new ResultResponse<ResponseGetMemberEditDataByIdDto> { ErrorCode = ErrorCodeDefine.Success, ApiDataObject = responseGetMemberEditDataByIdDto };
+                response = new ResultResponse<ResponseGetMemberEditDataByIdDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGetMemberEditDataByIdDto
+                };
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -121,7 +128,7 @@ namespace ApiLayer.Controllers.api
 
                 // 驗證前端傳遞的參數是否合法
                 if (editMemberDto.MemberId < 1) modelValidFlag = false;
-                if(editMemberDto.Phone == null && editMemberDto.Status ==null) modelValidFlag = false;
+                if (editMemberDto.Phone == null && editMemberDto.Status == null) modelValidFlag = false;
 
                 string phoneRegex = "^9\\d{8}$";
                 if (editMemberDto.Phone != null && !Regex.IsMatch(editMemberDto.Phone.ToString(), phoneRegex))
@@ -134,6 +141,48 @@ namespace ApiLayer.Controllers.api
                 }
 
                 response = new ResultResponse { ErrorCode = memberService.EditMember(editMemberDto) };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 取得會員詳細資料
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetMemberDetail([FromBody] RequestMemberIdDto memberIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 驗證前端傳遞的參數是否合法
+                if (memberIdDto.MemberId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetMemberDetailDto responseGetMemberDetail =
+                    memberService.GetMemberDetail(memberIdDto);
+
+                if (responseGetMemberDetail == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse<ResponseGetMemberDetailDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGetMemberDetail
+                };
+
                 return Ok(response);
             }
             catch (Exception ex)

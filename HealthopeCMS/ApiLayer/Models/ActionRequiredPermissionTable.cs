@@ -16,6 +16,7 @@ namespace ApiLayer.Models
             { "Member,GetMember", new List<AdminPermission> { AdminPermission.SelectMember, AdminPermission.EditMember } },
             { "Member,GetMemberEditDataById", new List<AdminPermission> { AdminPermission.EditMember} },
             { "Member,EditMember", new List<AdminPermission> { AdminPermission.EditMember} },
+            { "Member,GetMemberDetail", new List<AdminPermission> { AdminPermission.SelectMember} },
         };
     }
 }

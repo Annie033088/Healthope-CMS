@@ -8,6 +8,8 @@ import HealthopeEditAdmin from '@/views/Admin/HealthopeEditAdmin';
 import HealthopeMember from '@/views/Member/HealthopeMember';
 import HealthopeEditMember from '@/views/Member/HealthopeEditMember';
 import HealthopeMemberDetail from '@/views/Member/HealthopeMemberDetail';
+import HealthopeCoach from '@/views/Coach/HealthopeCoach';
+import HealthopeAddCoach from '@/views/Coach/HealthopeAddCoach';
 import HealthopeEditSelfPwd from '@/views/Other/HealthopeEditSelfPwd';
 import axios from '../plugins/axios';
 import { errorCodeDefine, adminPermission } from '../utils/globalSetting';
@@ -35,25 +37,25 @@ const routes = [
         path: '/admin',
         name: 'HealthopeAdmin',
         component: HealthopeAdmin,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] }
+        meta:  { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] } 
     },
     {
         path: '/admin/add',
         name: 'HealthopeAddAdmin',
         component: HealthopeAddAdmin,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] }
+        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] } 
     },
     {
         path: '/admin/edit',
         name: 'HealthopeEditAdmin',
         component: HealthopeEditAdmin,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] }
+        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] } 
     },
     {
         path: '/member',
         name: 'HealthopeMember',
         component: HealthopeMember,
-        meta: { requireAuth: [{ adminPermission: [adminPermission.EditMember, adminPermission.SelectMember] }] }
+        meta:  {requireAuth: [{adminPermission:adminPermission.EditMember}, {adminPermission:adminPermission.SelectMember}] }  
     },
     {
         path: '/member/edit',
@@ -65,7 +67,19 @@ const routes = [
         path: '/member/detail',
         name: 'HealthopeMemberDetail',
         component: HealthopeMemberDetail,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditMember }] }
+        meta: { requireAuth: [{ adminPermission: adminPermission.SelectMember }, { adminPermission: adminPermission.EditMember }] }
+    },
+    {
+        path: '/coach',
+        name: 'HealthopeCoach',
+        component: HealthopeCoach,
+        meta: { requireAuth: [{ adminPermission: adminPermission.SelectCoach }, {adminPermission: adminPermission.AddCoach}] }
+    },
+    {
+        path: '/coach/add',
+        name: 'HealthopeAddCoach',
+        component: HealthopeAddCoach,
+        meta: { requireAuth: [{ adminPermission: adminPermission.AddCoach }] }
     },
     {
         path: '*',

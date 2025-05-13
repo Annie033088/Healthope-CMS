@@ -146,6 +146,12 @@ export const adminPermission = {
 
     // 修改會員權限
     EditMember: 3,
+
+    // 查詢教練權限
+    SelectCoach: 4,
+
+    // 新增教練權限
+    AddCoach: 5,
 }
 
 export default function adminIdentityToText(identity) {

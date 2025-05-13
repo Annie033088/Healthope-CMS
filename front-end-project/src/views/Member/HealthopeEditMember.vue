@@ -2,15 +2,31 @@
   <div>
     <TitleCard text="會員清單"></TitleCard>
     <SubTitleCard text="修改會員"></SubTitleCard>
-    <div class="memberCardContainer">
-      <EditTitleCard title="會員" :content="member.Name"></EditTitleCard>
-    </div>
-    <div class="editInputContainer">
-      <div class="editInputTop">
-        <EditStatusInput v-model="selectStatus" />
-      </div>
-      <div class="editInputBotton">
-        <InputSpan labelText="手機號碼" v-model="phone"></InputSpan>
+    <div class="editMemberBox">
+      <div class="editMemberContainer">
+        <div class="editMemberContent">
+          <div class="top">
+            <div class="contentTextBox">
+              <label class="lab">會員</label><br />
+              <span>{{ member.Name }}</span>
+            </div>
+          </div>
+          <div class="bottom">
+            <RadioInput
+              v-model="selectStatus"
+              :options="[
+                { value: 'true', text: '啟用' },
+                { value: 'false', text: '停用' },
+              ]"
+              inputTitle="請選擇狀態"
+            />
+            <InputSpan
+              class="editInput editInputPhone"
+              labelText="手機號碼"
+              v-model="phone"
+            ></InputSpan>
+          </div>
+        </div>
       </div>
     </div>
     <div class="hintContainer">
@@ -26,8 +42,7 @@
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import BtnConfirm from "@/components/Btn/BtnConfirm";
-import EditStatusInput from "@/components/Input/EditStatusInput";
-import EditTitleCard from "@/components/Card/EditTitleCard";
+import RadioInput from "@/components/Input/RadioInput";
 import InputSpan from "@/components/Input/InputSpan";
 
 export default {
@@ -36,8 +51,7 @@ export default {
     TitleCard,
     SubTitleCard,
     BtnConfirm,
-    EditStatusInput,
-    EditTitleCard,
+    RadioInput,
     InputSpan,
   },
   props: {
@@ -175,35 +189,75 @@ export default {
 </script>
 
 <style scoped>
-.editInputContainer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 25px;
-}
-
-.editInputBotton,
-.editInputTop {
-  max-width: 60%;
-  width: 150px;
-  margin-right: 50px;
-}
-
 .btnEditContainer {
   display: flex;
   justify-content: center;
   margin-top: 25px;
 }
-</style>
 
-
-<style scoped>
-/* 會員 樣式*/
-.memberCardContainer {
-  width: 100%;
+.editMemberBox {
   display: flex;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 5%;
+}
+
+.editMemberContainer {
+  display: flex;
+  position: relative;
+  align-items: center;
+  padding: 9px;
+  width: 1000px;
+  max-width: 80%;
+  background-color: #fcfcfc;
+  border-radius: 35px;
+  box-shadow: rgba(10, 37, 64, 0.35) 0px -1px 5px 0px inset;
+}
+
+.editMemberContent {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  width: 1000px;
+  max-width: 100%;
+  min-height: 220px;
+  border-radius: 30px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 3px 0px inset;
+}
+
+.editMemberContent .top,
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  gap: 10px 20%;
+  word-break: break-word;
+}
+
+.editMemberContent .top {
+  padding-bottom: 10px;
+  border-bottom: solid #c5c5c5 1px;
+}
+
+.contentTextBox label {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1c1c1c;
+  font-family: "Microsoft JhengHei";
+}
+
+.contentTextBox span {
+  font-size: 18px;
+  font-family: "Microsoft JhengHei";
+}
+
+.editInput {
+  max-width: 60%;
+  width: 150px;
 }
 </style>
