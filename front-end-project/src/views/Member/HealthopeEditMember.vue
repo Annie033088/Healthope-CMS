@@ -74,6 +74,7 @@ export default {
   methods: {
     async editMember() {
       try {
+        this.phone = this.phone.trim();
         // 若無修改則返回 // 若格式錯誤則返回
         let originalStatus = this.member.Status ? "true" : "false";
         let editFlag = false;

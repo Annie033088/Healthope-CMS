@@ -61,6 +61,9 @@ export default {
   },
   methods: {
     async editSelfPwd() {
+      this.oldPwd = this.oldPwd.trim();
+      this.newPwd = this.newPwd.trim();
+      this.newAgainPwd = this.newAgainPwd.trim();
       // 帳號密碼驗證用的正規表達式
       const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
 
@@ -146,11 +149,21 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 15px;
-  margin-left: 55px;
 }
 
 .hintSpan {
-  color: #707070;
+  color: #c07878;
   animation: slideInTop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slideInTop {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

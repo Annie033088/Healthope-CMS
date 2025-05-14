@@ -185,6 +185,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\api\AccountAccessController.cs" />
     <Compile Include="Controllers\api\AdminController.cs" />
+    <Compile Include="Controllers\api\CoachController.cs" />
     <Compile Include="Controllers\api\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\VeriyLoginFilter.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Models\ActionRequiredPermissionTable.cs" />
     <Compile Include="Models\Admin\RequestAdminDto\RequestAdminIdDto.cs" />
     <Compile Include="Models\Admin\ResponseAdminDto\ResponseGetAdminDto.cs" />
+    <Compile Include="Models\Coach\Request\RequestAddCoachDto.cs" />
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestLoginDto.cs" />
     <Compile Include="Models\Member\Request\RequestMemberIdDto.cs" />
@@ -236,15 +238,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.6a2d65d2.css" />
-    <Content Include="wwwroot\img\avatar1.ca19a3cf.png" />
-    <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
-    <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
-    <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.3ed49020.js" />
-    <Content Include="wwwroot\js\app.55cb014a.js.map" />
-    <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
-    <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -252,7 +245,6 @@
   <ItemGroup>
     <Content Include="NLog.config" />
     <None Include="packages.config" />
-    <Content Include="wwwroot\js\app.3ed49020.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj">

@@ -33,8 +33,14 @@ namespace ApiLayer.Controllers.api
             try
             {
                 ResultResponse response;
+                FormatValidation formatValidation = new FormatValidation();
+                loginDto.Account = loginDto.Account.Trim();
+                loginDto.Pwd = loginDto.Pwd.Trim();
 
-                if (!ModelState.IsValid || loginDto.Account == loginDto.Pwd)
+                // 格式驗證
+                if (!formatValidation.ValidAccount(loginDto.Account)
+                    || !formatValidation.ValidPwd(loginDto.Pwd)
+                    || loginDto.Account == loginDto.Pwd)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
@@ -126,10 +132,13 @@ namespace ApiLayer.Controllers.api
             try
             {
                 ResultResponse response;
-                // 格式需為 8~20 位英文數字
-                string pattern = @"^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,20}$";
+                FormatValidation formatValidation = new FormatValidation();
+                editSelfPwdDto.OldPwd = editSelfPwdDto.OldPwd.Trim();
+                editSelfPwdDto.NewPwd = editSelfPwdDto.NewPwd.Trim();
 
-                if (!Regex.IsMatch(editSelfPwdDto.OldPwd, pattern) || !Regex.IsMatch(editSelfPwdDto.NewPwd, pattern))
+                // 格式需為 8~20 位英文數字
+                if (!formatValidation.ValidPwd(editSelfPwdDto.OldPwd) 
+                    || !formatValidation.ValidPwd(editSelfPwdDto.NewPwd))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);

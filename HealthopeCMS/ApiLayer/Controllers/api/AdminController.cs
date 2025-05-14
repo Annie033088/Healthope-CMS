@@ -7,6 +7,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using DomainLayer.Models;
+using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
 
@@ -33,9 +34,15 @@ namespace ApiLayer.Controllers.api
             try
             {
                 ResultResponse response;
+                FormatValidation formatValidation = new FormatValidation();
+                addAdminDto.Account = addAdminDto.Account.Trim();
+                addAdminDto.Pwd = addAdminDto.Pwd.Trim();
+                addAdminDto.Identity = addAdminDto.Identity.Trim();
 
-                // 帳號密碼不可相同
-                if (!ModelState.IsValid || addAdminDto.Account == addAdminDto.Pwd)
+                // 格式驗證
+                if (!formatValidation.ValidAccount(addAdminDto.Account)
+                    || !formatValidation.ValidPwd(addAdminDto.Pwd)
+                    || addAdminDto.Account == addAdminDto.Pwd)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
@@ -97,6 +104,10 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
+                getAdminDto.SortOption = getAdminDto.SortOption.Trim();
+                getAdminDto.SortOrder = getAdminDto.SortOrder.Trim();
+                getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();
+
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
                 if(!string.IsNullOrEmpty(getAdminDto.SearchAccount)) getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();

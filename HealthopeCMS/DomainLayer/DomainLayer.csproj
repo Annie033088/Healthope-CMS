@@ -49,10 +49,12 @@
     <Compile Include="Interface\IAppSetting.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminIdentityAndPermission.cs" />
+    <Compile Include="Models\Coach.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AdminPermissionUtility.cs" />
     <Compile Include="Utility\AppSetting.cs" />
+    <Compile Include="Utility\FormatValidation.cs" />
     <Compile Include="Utility\Hash.cs" />
   </ItemGroup>
   <ItemGroup>

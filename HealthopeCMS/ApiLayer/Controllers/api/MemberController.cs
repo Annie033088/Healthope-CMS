@@ -7,6 +7,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Member;
 using ApiLayer.Models.Member.Response;
+using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
 
@@ -24,7 +25,7 @@ namespace ApiLayer.Controllers.api
         {
             this.memberService = memberService;
         }
-
+        // TODO: 查詢會籍/查詢教練課程
         /// <summary>
         /// 取得會員列表
         /// </summary>
@@ -33,6 +34,10 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
+                getMemberDto.SortOption = getMemberDto.SortOption.Trim();
+                getMemberDto.SortOrder = getMemberDto.SortOrder.Trim();
+                getMemberDto.SearchName = getMemberDto.SearchName.Trim();
+
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
                 // 手機號碼搜尋格視為末 3 碼
@@ -122,6 +127,7 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
+                FormatValidation formatValidation = new FormatValidation();
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
                 ResultResponse response;
@@ -130,8 +136,7 @@ namespace ApiLayer.Controllers.api
                 if (editMemberDto.MemberId < 1) modelValidFlag = false;
                 if (editMemberDto.Phone == null && editMemberDto.Status == null) modelValidFlag = false;
 
-                string phoneRegex = "^9\\d{8}$";
-                if (editMemberDto.Phone != null && !Regex.IsMatch(editMemberDto.Phone.ToString(), phoneRegex))
+                if (editMemberDto.Phone != null && !formatValidation.ValidPhone(editMemberDto.Phone.Value))
                     modelValidFlag = false;
 
                 if (!modelValidFlag)

@@ -24,6 +24,12 @@ export default {
         } else {
           this.$router.push("/member");
         }
+      }else if(this.text === "教練清單"){
+        if (this.$route.path === "/coach") {
+          this.$emit("refreshPage");
+        } else {
+          this.$router.push("/coach");
+        }
       }
     },
   },

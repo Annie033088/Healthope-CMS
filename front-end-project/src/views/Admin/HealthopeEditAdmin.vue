@@ -265,53 +265,6 @@ export default {
   margin-top: 25px;
 }
 
-.inputSpan {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.radioContainer {
-  display: flex;
-  flex-wrap: wrap;
-  border-radius: 0.5rem;
-  background-color: #eee;
-  box-sizing: border-box;
-  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.2rem;
-  width: 100%;
-  font-size: 16px;
-  gap: 15px;
-}
-
-.labRadioBox {
-  flex: 1 1 auto;
-  text-align: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  min-width: 50px;
-}
-
-.labRadioBox input {
-  display: none;
-}
-
-.labRadioBox .textRadio {
-  display: flex;
-  cursor: pointer;
-  justify-content: center;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0;
-  transition: all 0.15s ease-in-out;
-}
-
-.labRadioBox input:checked + .textRadio {
-  background-color: #fff;
-  font-weight: 600;
-}
-</style>
-
-<style scoped>
 .editAdminBox {
   display: flex;
   justify-content: center;
@@ -359,10 +312,6 @@ export default {
 .editAdminContent .top {
   padding-bottom: 10px;
   border-bottom: solid #c5c5c5 1px;
-}
-
-.contentTextBox {
-  width: 150px;
 }
 
 .contentTextBox label {

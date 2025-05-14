@@ -8,18 +8,21 @@
           class="inputSpan"
           labelText="帳號"
           v-model="account"
+          @enter="addAdmin"
         ></InputSpan>
         <InputSpan
           class="inputSpan"
           labelText="密碼"
           v-model="pwd"
           inputType="password"
+          @enter="addAdmin"
         ></InputSpan>
         <InputSpan
           class="inputSpan"
           labelText="再輸入一次密碼"
           v-model="pwdAgain"
           inputType="password"
+          @enter="addAdmin"
         ></InputSpan>
       </div>
       <div class="addInputRight">
@@ -79,6 +82,10 @@ export default {
   },
   methods: {
     async addAdmin() {
+      this.account = this.account.trim();
+      this.pwd = this.pwd.trim();
+      this.pwdAgain = this.pwdAgain.trim();
+      this.selectIdentity = this.selectIdentity.trim();
       // 帳號密碼驗證用的正規表達式 ( 8~20 位英數字)
       const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
 
@@ -165,14 +172,15 @@ export default {
   margin-top: 5%;
 }
 
-.btnAddContainer, .hintContainer {
+.btnAddContainer,
+.hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 15px;
 }
 
 .hintSpan {
-  color: #707070;
+  color: #c07878;
   animation: slideInTop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
