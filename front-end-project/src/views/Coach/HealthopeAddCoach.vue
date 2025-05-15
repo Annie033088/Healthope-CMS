@@ -273,7 +273,7 @@ export default {
 
         // 考量到效率, 採用 form data 型式傳輸資料/檔案
         const formData = new FormData();
-        formData.append("addCoachDto", JSON.stringify(addCoachDto));
+        formData.append("dataObject", JSON.stringify(addCoachDto));
 
         if (this.avatarFile) formData.append("avatarFile", this.avatarFile);
 
@@ -293,19 +293,6 @@ export default {
           this.$router.push("/coach");
           return;
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
@@ -313,7 +300,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("修改密碼時發生錯誤", error);
+        console.error("新增教練時發生錯誤", error);
       }
     },
     handleImage(file) {

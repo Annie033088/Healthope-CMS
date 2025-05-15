@@ -60,11 +60,11 @@ export default {
       const allowExtension = [".jpg", ".jpeg", ".png", ".webp"];
 
       const isValidType = allowType.includes(file.type);
-      const isValidExt = allowExtension.some((ext) =>
+      const isValidExtension = allowExtension.some((ext) =>
         file.name.toLowerCase().endsWith(ext)
       );
 
-      if (!isValidType || !isValidExt) {
+      if (!isValidType || !isValidExtension) {
         this.$notificationBox.notificationBoxFlag = true;
         this.$notificationBox.notificationBoxTitle =
           "請上傳 .jpg、.jpeg、.png 或 .webp 圖片!";
@@ -75,11 +75,60 @@ export default {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.previewUrl = e.target.result;
-        this.$emit('imageSelected', file)
+        const arrayBuffer = e.target.result;
+        const bytes = new Uint8Array(arrayBuffer);
+
+        if (!this.isValidMagicNumber(bytes)) {
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle =
+            "請上傳 .jpg、.jpeg、.png 或 .webp 圖片!";
+          this.$notificationBox.notificationBoxErrorCode = 0;
+          this.$refs.fileInput.value = ""; // 清除選取
+          return;
+        }
+
+        // 釋放前一個顯示的檔案
+        this.revokePreviewUrl();
+
+        // 用 ObjectURL 顯示預覽，不用 DataUR，效能較好
+        this.previewUrl = URL.createObjectURL(file);
+        this.$emit("imageSelected", file);
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     },
+    isValidMagicNumber(bytes) {
+      // 定義 magic number 檢查邏輯
+      const isJPEG =
+        bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+      const isPNG =
+        bytes[0] === 0x89 &&
+        bytes[1] === 0x50 &&
+        bytes[2] === 0x4e &&
+        bytes[3] === 0x47 &&
+        bytes[4] === 0x0d &&
+        bytes[5] === 0x0a &&
+        bytes[6] === 0x1a &&
+        bytes[7] === 0x0a;
+      const isWEBP =
+        bytes[0] === 0x52 && // "RIFF"
+        bytes[1] === 0x49 &&
+        bytes[2] === 0x46 &&
+        bytes[3] === 0x46 &&
+        bytes[8] === 0x57 && // "WEBP"
+        bytes[9] === 0x45 &&
+        bytes[10] === 0x42 &&
+        bytes[11] === 0x50;
+      return isJPEG || isPNG || isWEBP;
+    },
+    revokePreviewUrl() {
+      if (this.previewUrl) {
+        URL.revokeObjectURL(this.previewUrl);
+        this.previewUrl = null;
+      }
+    },
+  },
+  beforeDestroy() {
+    this.revokePreviewUrl();
   },
 };
 </script>

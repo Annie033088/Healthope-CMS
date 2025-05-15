@@ -49,7 +49,7 @@ export default {
       this.$emit("input", newVal);
     },
     value(newVal) {
-      this.localStatus = newVal;
+      this.localValue = newVal;
     },
   },
 };

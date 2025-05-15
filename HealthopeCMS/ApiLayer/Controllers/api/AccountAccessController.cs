@@ -34,8 +34,6 @@ namespace ApiLayer.Controllers.api
             {
                 ResultResponse response;
                 FormatValidation formatValidation = new FormatValidation();
-                loginDto.Account = loginDto.Account.Trim();
-                loginDto.Pwd = loginDto.Pwd.Trim();
 
                 // 格式驗證
                 if (!formatValidation.ValidAccount(loginDto.Account)
@@ -133,8 +131,6 @@ namespace ApiLayer.Controllers.api
             {
                 ResultResponse response;
                 FormatValidation formatValidation = new FormatValidation();
-                editSelfPwdDto.OldPwd = editSelfPwdDto.OldPwd.Trim();
-                editSelfPwdDto.NewPwd = editSelfPwdDto.NewPwd.Trim();
 
                 // 格式需為 8~20 位英文數字
                 if (!formatValidation.ValidPwd(editSelfPwdDto.OldPwd) 

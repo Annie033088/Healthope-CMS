@@ -280,18 +280,5 @@ export default function (mock) {
         }
 
         return [200, { ErrorCode: 1, ApiDataObject }]
-        // return [200, { ErrorCode: 1, ApiDataObject }]
     })
-
-    // mock.onPost("/api/Member/DeleteMember").reply(config => {
-    //     let adminIdDto = JSON.parse(config.data);
-    //     const index = members.findIndex(admin => admin.AdminId === Number(adminIdDto.AdminId));
-
-    //     if (index !== -1) {
-    //         members.splice(index, 1); // 從陣列中移除那個 member
-    //         return [200, { ErrorCode: 1 }]
-    //     }
-
-    //     return [200, { ErrorCode: 12 }]
-    // })
 }

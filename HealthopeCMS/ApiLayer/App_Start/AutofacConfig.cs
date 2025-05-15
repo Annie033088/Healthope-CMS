@@ -30,7 +30,11 @@ namespace ApiLayer.App_Start
             builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
             builder.RegisterType<MemberService>().As<IMemberService>().InstancePerRequest();
             builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
-
+            builder.RegisterType<CoachService>().As<ICoachService>().InstancePerRequest();
+            builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
+            builder.RegisterGeneric(typeof(MultipartRequestService<>))
+                    .As(typeof(IMultipartRequestService<>))
+                    .InstancePerRequest();
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>
             {

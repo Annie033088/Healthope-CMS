@@ -35,9 +35,6 @@ namespace ApiLayer.Controllers.api
             {
                 ResultResponse response;
                 FormatValidation formatValidation = new FormatValidation();
-                addAdminDto.Account = addAdminDto.Account.Trim();
-                addAdminDto.Pwd = addAdminDto.Pwd.Trim();
-                addAdminDto.Identity = addAdminDto.Identity.Trim();
 
                 // 格式驗證
                 if (!formatValidation.ValidAccount(addAdminDto.Account)
@@ -104,13 +101,8 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
-                getAdminDto.SortOption = getAdminDto.SortOption.Trim();
-                getAdminDto.SortOrder = getAdminDto.SortOrder.Trim();
-                getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();
-
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
-                if(!string.IsNullOrEmpty(getAdminDto.SearchAccount)) getAdminDto.SearchAccount = getAdminDto.SearchAccount.Trim();
                 if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1))) modelValidFlag = false;
                 if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) modelValidFlag = false;
                 if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") || (getAdminDto.SortOption == null))) modelValidFlag = false;

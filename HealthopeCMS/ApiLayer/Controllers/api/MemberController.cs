@@ -34,22 +34,17 @@ namespace ApiLayer.Controllers.api
         {
             try
             {
-                getMemberDto.SortOption = getMemberDto.SortOption.Trim();
-                getMemberDto.SortOrder = getMemberDto.SortOrder.Trim();
-                getMemberDto.SearchName = getMemberDto.SearchName.Trim();
-
+                FormatValidation formatValidation = new FormatValidation(); 
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
                 // 手機號碼搜尋格視為末 3 碼
                 if (getMemberDto.SearchPhone != null)
                     if (getMemberDto.SearchPhone < 100 || getMemberDto.SearchPhone > 999)
                         modelValidFlag = false;
-                if (!string.IsNullOrEmpty(getMemberDto.SearchName))
-                {
-                    getMemberDto.SearchName = getMemberDto.SearchName.Trim();
-
-                    if (getMemberDto.SearchName.Length > 50) modelValidFlag = false;
-                }
+                if(!formatValidation.ValidInput(
+                    requireNonNull: false, null, maxLength:50, getMemberDto.SearchName))
+                 modelValidFlag = false;
+                
                 if (!((getMemberDto.SortOrder == "ascending") || (getMemberDto.SortOrder == "descending"))) modelValidFlag = false;
                 if (!((getMemberDto.SortOption == "name") || (getMemberDto.SortOption == "status")
                     || (getMemberDto.SortOption == "membershipExpiry") || (getMemberDto.SortOption == null) )) modelValidFlag = false;

@@ -163,7 +163,8 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editMember @memberId, @status, @phone, @updateTime, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_editMember @memberId, @status, @phone, @updateTime, " +
+                    "@errorCode OUTPUT";
 
                 if (editMemberDto.Status == null)
                 {

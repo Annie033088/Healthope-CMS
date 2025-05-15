@@ -66,7 +66,10 @@ namespace DomainLayer.Utility
             return Regex.IsMatch(phone.ToString(), phoneRegex);
         }
 
-        public bool ValidImageFile(byte[] fileData, HttpContent fileContent)
+        /// <summary>
+        /// 驗證有效圖片檔案
+        /// </summary>
+        public bool ValidImageFile(byte[] fileData, string mimeType)
         {
             // 設定允許的最大檔案大小（以 byte 為單位）
             const int maxFileSizeByte = 2 * 1024 * 1024; // 2MB
@@ -81,15 +84,70 @@ namespace DomainLayer.Utility
 
             // 驗證檔案是否存在
             if (fileData == null || fileData.Length < 0) return false;
-            
+
             // 檢查檔案大小
             if (fileData.Length > maxFileSizeByte) return false;
 
-            // 嘗試判斷 MIME 類型（需透過副檔名或 magic number）
-            // 這裡簡單示範：透過 Content-Type header（如果有）檢查
-            string fileMimeType = fileContent.Headers.ContentType?.MediaType;
+            // 嘗試判斷 MIME 類型
+            if (mimeType == null || !allowedMimeTypes.Contains(mimeType)) return false;
 
-            if (fileMimeType == null || !allowedMimeTypes.Contains(fileMimeType)) return false;
+            // 根據檔案開頭的 magic number（檔案格式標識）判斷檔案類型
+            bool isJPEG = fileData[0] == 0xff && fileData[1] == 0xd8 && fileData[2] == 0xff;
+            bool isPNG =
+                fileData[0] == 0x89 &&
+                fileData[1] == 0x50 &&
+                fileData[2] == 0x4e &&
+                fileData[3] == 0x47 &&
+                fileData[4] == 0x0d &&
+                fileData[5] == 0x0a &&
+                fileData[6] == 0x1a &&
+                fileData[7] == 0x0a;
+            bool isWEBP =
+                fileData[0] == 0x52 && // "RIFF"
+                fileData[1] == 0x49 &&
+                fileData[2] == 0x46 &&
+                fileData[3] == 0x46 &&
+                fileData[8] == 0x57 && // "WEBP"
+                fileData[9] == 0x45 &&
+                fileData[10] == 0x42 &&
+                fileData[11] == 0x50;
+
+            return isJPEG || isPNG || isWEBP;
+        }
+
+        /// <summary>
+        /// 驗證有效合約日期
+        /// </summary>
+        public bool ValidContractTime(DateTime? startTime, DateTime? endTime)
+        {
+            if (startTime == null && endTime != null) return false;
+            else if (startTime != null && endTime == null) return false;
+            else if (startTime > endTime) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// 驗證教練類別
+        /// </summary>
+        public bool ValidCoachType(byte type)
+        {
+            // 私人
+            if (type == 1) return true;
+            // 約聘
+            if (type == 2) return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// 驗證通用格式： null / 最短 / 最長 
+        /// </summary>
+        public bool ValidInput(bool requireNonNull, int? minLength, int? maxLength, string input)
+        {
+            if (requireNonNull && (input == null)) return false;
+            if (minLength != null && input != null && input.Length < minLength) return false;
+            if (maxLength != null && input != null && input.Length > maxLength) return false;
 
             return true;
         }

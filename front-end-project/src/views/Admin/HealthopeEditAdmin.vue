@@ -165,7 +165,6 @@ export default {
           this.admin = response.data.ApiDataObject;
           this.admin.AdminId = id;
           this.selectStatus = this.admin.Status ? "true" : "false";
-          console.log(this.selectStatus)
           this.selectIdentity = this.identityToText(this.admin.Identity);
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵

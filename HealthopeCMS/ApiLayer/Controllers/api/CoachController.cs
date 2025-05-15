@@ -14,91 +14,95 @@ using System.Web;
 using ApiLayer.Models.Coach.Request;
 using System.Collections.ObjectModel;
 using DomainLayer.Utility;
+using ApiLayer.Service;
+using ApiLayer.Models.Other;
+using System.Threading.Tasks;
 
 namespace ApiLayer.Controllers.api
 {
     public class CoachController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly IMultipartRequestService<RequestAddCoachDto> multipartRequestService;
+        private readonly ICoachService coachService;
+
+        public CoachController(IMultipartRequestService<RequestAddCoachDto> multipartRequestService, ICoachService coachService)
+        {
+            this.multipartRequestService = multipartRequestService;
+            this.coachService = coachService;
+        }
 
         /// <summary>
-        /// 新增管理者(帳密)
+        /// 新增教練
         /// </summary>
         [HttpPost]
-        public IHttpActionResult AddAdmin()
+        public async Task<IHttpActionResult> AddCoach()
         {
             try
             {
                 ResultResponse response;
                 FormatValidation formatValidation = new FormatValidation();
+                RequestAddCoachDto addCoachDto = new RequestAddCoachDto();
+                List<FileDto> files = new List<FileDto>();
+                HttpRequestMessage request = Request;
+
+                // 檢查請求是否為 multipart/form-data ( MIME 類型，表明這是「多部分資料」的格式 )
+                if (!multipartRequestService.IsMultipartRequest(request))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
 
                 // 取得請求的 form data 包括 1.addCoachDto, 2.file
-                // 並做格式驗證
+                (addCoachDto, files) = await multipartRequestService.GetObjectAndFile(request);
 
-                if (!Request.Content.IsMimeMultipartContent())
+                // 沒取到資料
+                if (addCoachDto == default)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                MultipartMemoryStreamProvider provider = new MultipartMemoryStreamProvider();
-                Request.Content.ReadAsMultipartAsync(provider).Wait();
-
-                RequestAddCoachDto addCoachDto = null;
-                byte[] fileData = null;
-                string filename = null;
-
-                foreach (HttpContent content in provider.Contents)
-                {
-                    string key = content.Headers.ContentDisposition.Name?.Trim('"');
-                    bool isFile = content.Headers.ContentDisposition.FileName != null;
-
-                    if (isFile)
-                    {
-                        filename = content.Headers.ContentDisposition.FileName.Trim('"');
-                        fileData = content.ReadAsByteArrayAsync().Result;
-
-                        if (fileData.Length < 1 || !formatValidation.ValidImageFile(fileData, content))
-                        {
-                            response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
-                            return Ok(response);
-                        }
-                    }
-                    else
-                    {
-                        string value = content.ReadAsStringAsync().Result;
-
-                        if (key == "addCoachDto")
-                        {
-                            addCoachDto = JsonConvert.DeserializeObject<RequestAddCoachDto>(value);
-                        }
-                    }
-                }
-
-
-                // 帳號密碼不可相同
-                if (!ModelState.IsValid || addAdminDto.Account == addAdminDto.Pwd)
+                // 格式驗證
+                if (!formatValidation.ValidAccount(addCoachDto.Account)
+                    || !formatValidation.ValidPwd(addCoachDto.Pwd)
+                    || addCoachDto.Account == addCoachDto.Pwd
+                    || !formatValidation.ValidPhone(addCoachDto.Phone)
+                    || !formatValidation.ValidEmail(addCoachDto.Email)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: true, minLength: 1, maxLength: 15, addCoachDto.Name)
+                    || !formatValidation.ValidContractTime(addCoachDto.ContractStartTime, addCoachDto.ContractEndTime)
+                    || !formatValidation.ValidCoachType(addCoachDto.Type)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: true, minLength: null, maxLength: 50, addCoachDto.Introduction)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: true, minLength: null, maxLength: 200, addCoachDto.Specialty)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: true, minLength: null, maxLength: 200, addCoachDto.Certification)
+                   )
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                if (adminService.AddAdmin(addAdminDto))
+                if (files != null && !formatValidation.ValidImageFile(files[0].FileData, files[0].MimeType))
                 {
-                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.Success };
-                    return Ok(response);
-                }
-                else
-                {
-                    response = new ResultResponse() { ErrorCode = ErrorCodeDefine.CreateFailed };
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                //if (fileData != null)
-                //{
-                //    var savePath = HttpContext.Current.Server.MapPath("~/UploadedFiles/" + filename);
-                //    File.WriteAllBytes(savePath, fileData);
-                //}
+                (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, files == null ? null : files[0]);
+
+                // 如果有例外
+                if (exception != null)
+                {
+                    logger.Error(exception);
+                    response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse() { ErrorCode = errorCode };
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -107,5 +111,7 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+    
+        
     }
 }
