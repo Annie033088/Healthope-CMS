@@ -172,14 +172,14 @@ export default {
       if (isNaN(this.searchPhone)) {
         this.searchPhone = "";
         this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需為 3 位數字";
+        this.$notificationBox.notificationBoxTitle = "輸入需為 3 位數字";
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
       if (!(this.searchPhone.length === 3 || this.searchPhone === "")) {
         this.searchPhone = "";
         this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需為 3 位數字";
+        this.$notificationBox.notificationBoxTitle = "輸入需為 3 位數字";
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
@@ -294,7 +294,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得管理者列表時發生錯誤", error);
+        console.error("取得會員列表時發生錯誤", error);
       }
     },
     resetSearchingRecord() {

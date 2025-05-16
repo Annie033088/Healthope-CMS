@@ -1,6 +1,12 @@
-﻿namespace PersistentLayer.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PersistentLayer.Models
 {
-    public class RequestGetMemberDto
+    public class RequestGetCoachDto
     {
         /// <summary>
         /// 篩選狀態
@@ -25,7 +31,7 @@
         /// <summary>
         /// 搜尋的名稱
         /// </summary>
-        public string SearchName { get; set; } 
+        public string SearchName { get; set; }
 
         /// <summary>
         /// 搜尋的手機末三碼

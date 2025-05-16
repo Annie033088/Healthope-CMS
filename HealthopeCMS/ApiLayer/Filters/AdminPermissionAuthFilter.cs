@@ -16,7 +16,7 @@ namespace ApiLayer.Filters
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         public ISessionService sessionService { get; set; }
-        public IHttpHelper httpHelper { get; set; }
+        public IHttpService httpHelper { get; set; }
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {

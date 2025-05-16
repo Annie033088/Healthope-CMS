@@ -197,7 +197,8 @@
     <Compile Include="Interface\IAdminService.cs" />
     <Compile Include="Interface\IAccountAccessService.cs" />
     <Compile Include="Interface\ICoachService.cs" />
-    <Compile Include="Interface\IHttpHelper.cs" />
+    <Compile Include="Interface\IFileService.cs" />
+    <Compile Include="Interface\IHttpService.cs" />
     <Compile Include="Interface\IMemberService.cs" />
     <Compile Include="Interface\IMultipartRequestService.cs" />
     <Compile Include="Interface\IRedisService.cs" />
@@ -211,6 +212,9 @@
     <Compile Include="Models\Admin\RequestAdminDto\RequestAdminIdDto.cs" />
     <Compile Include="Models\Admin\ResponseAdminDto\ResponseGetAdminDto.cs" />
     <Compile Include="Models\Coach\Request\RequestAddCoachDto.cs" />
+    <Compile Include="Models\Coach\Request\RequestCoachIdDto.cs" />
+    <Compile Include="Models\Coach\Response\ResponseGetCoachEditDataByIdDto.cs" />
+    <Compile Include="Models\Coach\Response\ResponseGetCoachListDto.cs" />
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestLoginDto.cs" />
     <Compile Include="Models\Member\Request\RequestMemberIdDto.cs" />
@@ -223,7 +227,8 @@
     <Compile Include="Service\AccountAccessService.cs" />
     <Compile Include="Service\AdminService.cs" />
     <Compile Include="Service\CoachService.cs" />
-    <Compile Include="Service\HttpHelpter.cs" />
+    <Compile Include="Service\FileService.cs" />
+    <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\MemberService.cs" />
     <Compile Include="Service\MultipartRequestService.cs" />
     <Compile Include="Service\RedisService.cs" />
@@ -243,12 +248,12 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.961569d9.css" />
+    <Content Include="wwwroot\css\app.19070c37.css" />
     <Content Include="wwwroot\img\avatar1.ca19a3cf.png" />
     <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
     <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.860d2b1a.js" />
+    <Content Include="wwwroot\js\app.c1658bf0.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
@@ -258,7 +263,7 @@
   <ItemGroup>
     <Content Include="NLog.config" />
     <None Include="packages.config" />
-    <Content Include="wwwroot\js\app.860d2b1a.js.map" />
+    <Content Include="wwwroot\js\app.c1658bf0.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj">

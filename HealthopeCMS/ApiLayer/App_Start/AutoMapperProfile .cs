@@ -1,6 +1,7 @@
 ﻿using System;
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Coach.Request;
+using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.Member;
 using ApiLayer.Models.Member.Response;
 using AutoMapper;
@@ -19,6 +20,8 @@ namespace ApiLayer.App_Start
             CreateMap<Member, ResponseGetMemberDto>();
             CreateMap<Member, ResponseGetMemberEditDataByIdDto>();
             CreateMap<Member, ResponseGetMemberDetailDto>();
+            CreateMap<Coach, ResponseGetCoachEditDataByIdDto>();
+            CreateMap<Coach, ResponseGetCoachDto>();
             CreateMap<RequestAddCoachDto, Coach>()
                 .ForMember(dest => dest.ContractStartTime, opt => 
                     opt.MapFrom(src => src.ContractStartTime ?? DateTime.MinValue))

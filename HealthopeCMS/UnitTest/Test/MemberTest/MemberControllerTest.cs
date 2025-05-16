@@ -41,7 +41,7 @@ namespace UnitTest.Test.MemberTest
                 Status = null,
                 Page = 1, // 必須>0
                 SortOrder = "descending", // 只允許 descending 或 ascending
-                SortOption = "account", // 只允許 account 或 name 或 null
+                SortOption = "membershipExpiry", // 只允許 membershipExpiry 或 name 或 status 或 null
                 RecordPerPage = 8, // 只允許 8 或 12 或 16
                 SearchName = null, // 只允許 < 50 位數
                 SearchPhone = null, // 只允許 null 或是 3 位數字
@@ -74,10 +74,10 @@ namespace UnitTest.Test.MemberTest
                 Status = null,
                 Page = 1, // 必須>0
                 SortOrder = "descending", // 只允許 descending 或 ascending
-                SortOption = "account", // 只允許 account 或 name 或 null
+                SortOption = "account", // 只允許 membershipExpiry 或 name 或 status 或 null
                 RecordPerPage = 8, // 只允許 8 或 12 或 16
                 SearchName = null, // 只允許 < 50 位數
-                SearchPhone = 012, // 只允許 null 或是 3 位數字
+                SearchPhone = "012", // 只允許 null 或是 3 位數字
             };
 
             ResponseGetMemberListDto responseGetMemberDto = new ResponseGetMemberListDto()

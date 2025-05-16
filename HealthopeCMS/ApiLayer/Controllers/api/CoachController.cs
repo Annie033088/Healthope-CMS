@@ -17,6 +17,9 @@ using DomainLayer.Utility;
 using ApiLayer.Service;
 using ApiLayer.Models.Other;
 using System.Threading.Tasks;
+using ApiLayer.Models.Member;
+using PersistentLayer.Models;
+using ApiLayer.Models.Coach.Response;
 
 namespace ApiLayer.Controllers.api
 {
@@ -85,13 +88,13 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                if (files != null && !formatValidation.ValidImageFile(files[0].FileData, files[0].MimeType))
+                if (files.Any() && !formatValidation.ValidImageFile(files[0].FileData, files[0].MimeType))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, files == null ? null : files[0]);
+                (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, files.Any() ? files[0] : null);
 
                 // 如果有例外
                 if (exception != null)
@@ -111,7 +114,92 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
-    
-        
+
+        /// <summary>
+        /// 取得教練
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetCoach([FromBody] RequestGetCoachDto getCoachDto)
+        {
+            try
+            {
+                FormatValidation formatValidation = new FormatValidation();
+                // 驗證前端傳遞的參數是否合法
+                bool modelValidFlag = true;
+
+                // 手機號碼搜尋格視為末 3 碼
+                if (!formatValidation.ValidSearchPhone(getCoachDto.SearchPhone))
+                    modelValidFlag = false;
+                if (getCoachDto.SearchName != null && getCoachDto.SearchName.Length > 50)
+                    modelValidFlag = false;
+                if (!((getCoachDto.SortOrder == "ascending") || (getCoachDto.SortOrder == "descending")))
+                    modelValidFlag = false;
+                if (!((getCoachDto.SortOption == "name") || (getCoachDto.SortOption == "status")
+                    || (getCoachDto.SortOption == "contractEndTime") || (getCoachDto.SortOption == null)))
+                    modelValidFlag = false;
+                if (!((getCoachDto.RecordPerPage == 8) || (getCoachDto.RecordPerPage == 12)
+                    || (getCoachDto.RecordPerPage == 16))) 
+                    modelValidFlag = false;
+                if (getCoachDto.Page < 1) 
+                    modelValidFlag = false;
+
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!modelValidFlag)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetCoachListDto responseGetCoachListDto = coachService.GetCoach(getCoachDto);
+                response = new ResultResponse<ResponseGetCoachListDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGetCoachListDto
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 取得修改教練頁面的資料
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetCoachEditDataById([FromBody] RequestCoachIdDto coachIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (coachIdDto.CoachId <1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetCoachEditDataByIdDto responseGetCoachDto = 
+                    coachService.GetCoachEditDataById(coachIdDto);
+                response = new ResultResponse<ResponseGetCoachEditDataByIdDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGetCoachDto
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

@@ -109,9 +109,8 @@ namespace UnitTest.Test.MemberTest
                 SearchName = null, // 只允許 < 50 位數
                 SearchPhone = null, // 只允許 null 或是 3 位數字
             };
-            DateTime time = DateTime.Now;
-            List<Member> members = new List<Member>();
 
+            List<Member> members = new List<Member>();
             int totalPage = 1;
             List<ResponseGetMemberDto> expectedMappedResult = new List<ResponseGetMemberDto>();
 

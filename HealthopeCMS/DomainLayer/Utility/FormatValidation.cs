@@ -67,6 +67,17 @@ namespace DomainLayer.Utility
         }
 
         /// <summary>
+        /// 手機末三碼搜尋 格式驗證
+        /// </summary>
+        public bool ValidSearchPhone(string phone)
+        {
+            if (phone == null) return true;
+
+            string regex = "^\\d{3}$"; // 3 位數
+            return Regex.IsMatch(phone, regex);
+        }
+
+        /// <summary>
         /// 驗證有效圖片檔案
         /// </summary>
         public bool ValidImageFile(byte[] fileData, string mimeType)

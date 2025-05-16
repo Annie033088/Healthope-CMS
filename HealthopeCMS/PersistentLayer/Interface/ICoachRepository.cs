@@ -13,6 +13,16 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 新增教練
         /// </summary>
-        OperationResult addCoach(Coach coach);
+        OperationResult AddCoach(Coach coach);
+
+        /// <summary>
+        /// 取得教練清單
+        /// </summary>
+        (List<Coach> coaches, int totalPage) GetCoach(RequestGetCoachDto getCoachDto);
+
+        /// <summary>
+        /// 取得修改教練頁面的資料
+        /// </summary>
+        Coach GetCoachEditDataById(int coachId);
     }
 }

@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="hintContainer">
-      <span v-if="addFail" class="hintSpan">{{ this.hintText }}</span>
+      <span v-if="editFail" class="hintSpan">{{ this.hintText }}</span>
     </div>
     <div class="btnEditContainer">
       <BtnConfirm @click="editMember()" text="確認修改"></BtnConfirm>
@@ -59,7 +59,8 @@ export default {
   },
   data() {
     return {
-      addFail: false,
+      hintText: "",
+      editFail: false,
       phone: "0987654321",
       selectStatus: "true",
       member: {
@@ -85,8 +86,13 @@ export default {
 
         if (this.selectStatus !== originalStatus) {
           // 只允許 true / false
-          if (!(this.selectStatus === "true" || this.selectStatus === "false"))
+          if (
+            !(this.selectStatus === "true" || this.selectStatus === "false")
+          ) {
+            this.editFail = true;
+            this.hintText = "狀態格式錯誤";
             return;
+          }
           editMemberDto.Status = this.selectStatus;
           editFlag = true;
         } else {
@@ -96,7 +102,11 @@ export default {
         // 手機格式驗證
         let phone = Number(this.phone);
         let regex = /^[9]\d{8}$/;
-        if (Number.isNaN(phone) || !regex.test(phone)) return;
+        if (Number.isNaN(phone) || !regex.test(phone)) {
+          this.editFail = true;
+          this.hintText = "手機格式錯誤";
+          return;
+        }
         if (phone !== this.member.Phone) {
           editMemberDto.Phone = phone;
           editFlag = true;
@@ -105,13 +115,20 @@ export default {
         }
 
         // 沒修改過 或 格式錯誤就不觸發 post
-        if (!editFlag) return;
+        if (!editFlag) {
+          this.editFail = true;
+          this.hintText = "請修改資料或返回";
+          return
+        }
 
         // post
         const response = await this.$axios.post(
           "/api/Member/EditMember",
           editMemberDto
         );
+
+          this.editFail = false;
+
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$router.push("/member");
         } else {
@@ -190,7 +207,7 @@ export default {
 </script>
 
 <style scoped>
-.btnEditContainer {
+.btnEditContainer, .hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 25px;
@@ -260,5 +277,21 @@ export default {
 .editInput {
   max-width: 60%;
   width: 150px;
+}
+
+.hintSpan {
+  color: #c07878;
+  animation: slideInTop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slideInTop {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

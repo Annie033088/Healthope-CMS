@@ -2,7 +2,7 @@
 
 namespace ApiLayer.Interface
 {
-    public interface IHttpHelper
+    public interface IHttpService
     {
         /// <summary>
         /// 取得 controller 名

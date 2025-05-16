@@ -237,7 +237,7 @@ export default function (mock) {
         let filtered = members.filter(item => {
             const matchStatus = Status === null || item.Status === Status;
             const matchName = !SearchName || item.Name.includes(SearchName);
-            const matchPhone = !SearchPhone || item.Phone.slice(-3) === SearchPhone;
+            const matchPhone = !SearchPhone || item.Phone.toString().slice(-3) === SearchPhone;
             return matchStatus && matchName && matchPhone;
         });
 

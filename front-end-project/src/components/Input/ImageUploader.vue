@@ -30,10 +30,11 @@
 <script>
 export default {
   name: "ImageUploader",
+  props: {
+    previewUrl: { String, default: "" },
+  },
   data() {
-    return {
-      previewUrl: null,
-    };
+    return {};
   },
   methods: {
     triggerFileInput() {
@@ -87,11 +88,6 @@ export default {
           return;
         }
 
-        // 釋放前一個顯示的檔案
-        this.revokePreviewUrl();
-
-        // 用 ObjectURL 顯示預覽，不用 DataUR，效能較好
-        this.previewUrl = URL.createObjectURL(file);
         this.$emit("imageSelected", file);
       };
       reader.readAsArrayBuffer(file);
@@ -120,16 +116,9 @@ export default {
         bytes[11] === 0x50;
       return isJPEG || isPNG || isWEBP;
     },
-    revokePreviewUrl() {
-      if (this.previewUrl) {
-        URL.revokeObjectURL(this.previewUrl);
-        this.previewUrl = null;
-      }
-    },
   },
-  beforeDestroy() {
-    this.revokePreviewUrl();
-  },
+  created(){
+  }
 };
 </script>
 

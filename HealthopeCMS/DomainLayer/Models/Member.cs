@@ -91,7 +91,7 @@ namespace DomainLayer.Models
         /// <summary>
         /// 緊急聯絡人姓名
         /// </summary>
-        public string EmergencyContactName {  get; set; }
+        public string EmergencyContactName { get; set; }
 
         /// <summary>
         /// 緊急聯絡人手機
@@ -101,7 +101,7 @@ namespace DomainLayer.Models
         /// <summary>
         /// 緊急聯絡人關係
         /// </summary>
-        public string EmergencyContactRelation {  get; set; }
+        public string EmergencyContactRelation { get; set; }
 
         /// <summary>
         /// 創建日

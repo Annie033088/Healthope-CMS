@@ -1,12 +1,14 @@
+import avatar1 from '@/assets/mockImage/avatar1.png'
+
 export default function (mock) {
-    let coachs=[
+    let coaches=[
   {
     CoachId: 1,
     Account: "coachAlice",
     Email: "alice@example.com",
     Phone: 912345678,
     Name: "Alice",
-    PhotoUrl: "https://example.com/photo1.jpg",
+    PhotoUrl: avatar1,
     Introduction: "熱愛健身，擅長塑形。",
     Specialty: "重訓、有氧、TRX、體態雕塑",
     Certification: "ACE私人教練證照、TRX認證",
@@ -18,12 +20,12 @@ export default function (mock) {
     UpdateTime: "2025-05-15T10:00:00"
   },
   {
-    Coach: 2,
+    CoachId: 2,
     Account: "coachBob",
     Email: "bob@example.com",
     Phone: 923456781,
     Name: "Bob",
-    Photo: "https://example.com/photo2.jpg",
+    PhotoUrl: avatar1,
     Introduction: "注重學術背景的教練。",
     Specialty: "運動科學、體能訓練、姿勢調整",
     Certification: "NSCA認證、運動傷害預防課程",
@@ -35,12 +37,12 @@ export default function (mock) {
     UpdateTime: "2025-05-15T10:00:00"
   },
   {
-    Coach: 3,
+    CoachId: 3,
     Account: "coachCathy",
     Email: "cathy@example.com",
     Phone: 934567892,
     Name: "Cathy",
-    Photo: "https://example.com/photo3.jpg",
+    PhotoUrl: avatar1,
     Introduction: "專攻女性體態與飲食調整。",
     Specialty: "孕婦運動、飲食控制、塑身",
     Certification: "CPR認證、孕婦運動專業證書",
@@ -52,12 +54,12 @@ export default function (mock) {
     UpdateTime: "2025-05-15T10:00:00"
   },
   {
-    Coach: 4,
+    CoachId: 4,
     Account: "coachDaniel",
     Email: "daniel@example.com",
     Phone: 945678903,
     Name: "Daniel",
-    Photo: "https://example.com/photo4.jpg",
+    PhotoUrl: avatar1,
     Introduction: "擁有豐富比賽經驗的選手。",
     Specialty: "CrossFit、比賽備賽、爆發力訓練",
     Certification: "CrossFit L1證照、運動營養學證書",
@@ -69,12 +71,12 @@ export default function (mock) {
     UpdateTime: "2025-05-15T10:00:00"
   },
   {
-    Coach: 5,
+    CoachId: 5,
     Account: "coachEmma",
     Email: "emma@example.com",
     Phone: 956789014,
     Name: "Emma",
-    Photo: "https://example.com/photo5.jpg",
+    PhotoUrl: avatar1,
     Introduction: "親切又有效率的教學風格。",
     Specialty: "初學者教學、塑形、營養諮詢",
     Certification: "體適能C級證照、營養諮詢師",
@@ -88,11 +90,20 @@ export default function (mock) {
 ]
 
     mock.onPost("/api/Coach/AddCoach").reply(() => {
+        // 可用這方式查看傳輸的資料
         // for (let [key, value] of config.data.entries()) {
         //     console.log(key, value);
         // }
         return [200, { ErrorCode: 1 }]
     })
+
+    mock.onPost("/api/Coach/EditCoach").reply(() => {
+        // for (let [key, value] of config.data.entries()) {
+        //     console.log(key, value);
+        // }
+        return [200, { ErrorCode: 1 }]
+    })
+
     mock.onPost("/api/Coach/GetCoach").reply((config) => {
         let {
             Status,
@@ -108,10 +119,10 @@ export default function (mock) {
         Status = Status === "false" ? false : Status;
 
         // 1️⃣ 篩選
-        let filtered = coachs.filter(item => {
+        let filtered = coaches.filter(item => {
             const matchStatus = Status === null || item.Status === Status;
             const matchName = !SearchName || item.Name.includes(SearchName);
-            const matchPhone = !SearchPhone || item.Phone.slice(-3) === SearchPhone;
+            const matchPhone = !SearchPhone || item.Phone.toString().slice(-3) === SearchPhone;
             return matchStatus && matchName && matchPhone;
         });
 
@@ -154,5 +165,16 @@ export default function (mock) {
         }
 
         return [200, { ErrorCode: 1, ApiDataObject }]
+    })
+
+     mock.onPost("/api/Coach/GetCoachEditDataById").reply(config => {
+        let coachIdDto = JSON.parse(config.data);
+        let coachTarget = coaches.find(coach => coach.CoachId === Number(coachIdDto.CoachId));
+
+        if (coachTarget) {
+            return [200, { ErrorCode: 1, ApiDataObject: coachTarget }]
+        } else {
+            return [200, { ErrorCode: 13 }]
+        }
     })
 }

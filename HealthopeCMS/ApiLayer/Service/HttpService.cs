@@ -4,7 +4,7 @@ using ApiLayer.Interface;
 
 namespace ApiLayer.Service
 {
-    public class HttpHelpter : IHttpHelper
+    public class HttpService : IHttpService
     {
 
         public string GetControllerName(HttpActionContext actionContext)

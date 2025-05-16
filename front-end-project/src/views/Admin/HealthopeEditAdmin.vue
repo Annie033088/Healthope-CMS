@@ -95,8 +95,13 @@ export default {
 
         if (this.selectStatus !== originalStatus) {
           // 只允許 true / false
-          if (!(this.selectStatus === "true" || this.selectStatus === "false"))
+          if (
+            !(this.selectStatus === "true" || this.selectStatus === "false")
+          ) {
+            this.addFail = true;
+            this.hintText = "狀態格式錯誤";
             return;
+          }
           editAdminDto.Status = this.selectStatus;
           editFlag = true;
         } else {
@@ -107,7 +112,11 @@ export default {
           let identityNum = this.identityTextToNumber(this.selectIdentity);
 
           // 轉換失敗的話代表格式錯誤
-          if (identityNum === -1) return;
+          if (identityNum === -1)  {
+            this.addFail = true;
+            this.hintText = "身份格式錯誤";
+            return;
+          }
 
           editAdminDto.Identity = identityNum;
           editFlag = true;
@@ -115,7 +124,11 @@ export default {
           editAdminDto.Identity = null;
         }
 
-        if (!editFlag) return;
+        if (!editFlag)  {
+            this.addFail = true;
+            this.hintText = "請修改資料或返回";
+            return;
+          }
 
         // post
         const response = await this.$axios.post(
@@ -258,7 +271,8 @@ export default {
 </script>
 
 <style scoped>
-.btnEditContainer {
+.btnEditContainer,
+.hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 25px;
@@ -323,5 +337,21 @@ export default {
 .contentTextBox span {
   font-size: 18px;
   font-family: "Microsoft JhengHei";
+}
+
+.hintSpan {
+  color: #c07878;
+  animation: slideInTop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slideInTop {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

@@ -10,6 +10,7 @@ import HealthopeEditMember from '@/views/Member/HealthopeEditMember';
 import HealthopeMemberDetail from '@/views/Member/HealthopeMemberDetail';
 import HealthopeCoach from '@/views/Coach/HealthopeCoach';
 import HealthopeAddCoach from '@/views/Coach/HealthopeAddCoach';
+import HealthopeEditCoach from '@/views/Coach/HealthopeEditCoach';
 import HealthopeEditSelfPwd from '@/views/Other/HealthopeEditSelfPwd';
 import axios from '../plugins/axios';
 import { errorCodeDefine, adminPermission } from '../utils/globalSetting';
@@ -73,13 +74,20 @@ const routes = [
         path: '/coach',
         name: 'HealthopeCoach',
         component: HealthopeCoach,
-        meta: { requireAuth: [{ adminPermission: adminPermission.SelectCoach }, {adminPermission: adminPermission.AddCoach}] }
+        meta: { requireAuth: [{ adminPermission: adminPermission.SelectCoach },
+             {adminPermission: adminPermission.AddCoach}, { adminPermission: adminPermission.EditCoach }] }
     },
     {
         path: '/coach/add',
         name: 'HealthopeAddCoach',
         component: HealthopeAddCoach,
         meta: { requireAuth: [{ adminPermission: adminPermission.AddCoach }] }
+    },
+    {
+        path: '/coach/edit',
+        name: 'HealthopeEditCoach',
+        component: HealthopeEditCoach,
+        meta: { requireAuth: [{ adminPermission: adminPermission.EditCoach }] }
     },
     {
         path: '*',

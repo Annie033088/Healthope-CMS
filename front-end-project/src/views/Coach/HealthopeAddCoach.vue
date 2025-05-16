@@ -25,7 +25,7 @@
             @enter="addCoach"
           ></InputSpan>
           <RadioInput
-            class="coachTyoe"
+            class="coachType"
             v-model="selectType"
             :options="[
               { value: '1', text: '私人教練' },
@@ -35,12 +35,14 @@
           />
           <div class="contractInputContainer">
             <InputSpan
+            class="left"
               labelText="合約開始日"
               v-model="contractStartTime"
               inputType="date"
               @enter="addCoach"
             ></InputSpan>
             <InputSpan
+            class="right"
               labelText="合約到期日"
               v-model="contractEndTime"
               inputType="date"
@@ -107,7 +109,7 @@
     <div class="sectionTitle"><p>圖片上傳區</p></div>
     <div class="imageUploadContainer">
       <label for="" class="labAvatar">請上傳頭像</label>
-      <ImageUploader class="imageUpload" @imageSelected="handleImage" />
+      <ImageUploader :previewUrl="previewUrl" class="imageUpload" @imageSelected="handleImage" />
     </div>
     <div class="hintContainer">
       <span v-if="verifyFail" class="hintSpan">{{ this.hintText }}</span>
@@ -155,6 +157,7 @@ export default {
       specialty: "",
       certification: "",
       avatarFile: "",
+      previewUrl: "",
       verifyFail: false,
     };
   },
@@ -304,7 +307,20 @@ export default {
       }
     },
     handleImage(file) {
+      // 釋放前一個顯示的檔案
+      this.revokePreviewUrl();
+
+      // 用 ObjectURL 顯示預覽，不用 DataUR，效能較好
+      this.previewUrl = URL.createObjectURL(file);
+
+      // 設定上傳用檔案
       this.avatarFile = file;
+    },
+    revokePreviewUrl() {
+      if (this.previewUrl) {
+        URL.revokeObjectURL(this.previewUrl);
+        this.previewUrl = null;
+      }
     },
     validEmail(email) {
       // 可空
@@ -328,6 +344,9 @@ export default {
       }
 
       return emailRegex.test(email);
+    },
+    beforeDestroy() {
+      this.revokePreviewUrl();
     },
   },
 };
@@ -353,17 +372,22 @@ export default {
 
 .leftInputBox,
 .rightInputBox {
-  width: 60%;
+  width: 80%;
   max-width: 350px;
 }
 
-.coachTyoe {
+.coachType {
   margin-bottom: 3%;
 }
 
 .contractInputContainer {
   display: flex;
   gap: 5px;
+  width: 100%;
+}
+.contractInputContainer .left, .contractInputContainer .right{
+  display: flex;
+  width: 50%;
 }
 </style>
 

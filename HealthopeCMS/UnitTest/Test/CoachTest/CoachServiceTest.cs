@@ -1,0 +1,230 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using ApiLayer.Controllers.api;
+using ApiLayer.Models.Coach.Request;
+using ApiLayer.Models.Other;
+using ApiLayer.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Web.Http;
+using UnitTest.utils;
+using AutoMapper;
+using PersistentLayer.Interface;
+using Moq;
+using ApiLayer.Service;
+using DomainLayer.Models;
+using ApiLayer.Interface;
+using PersistentLayer.Models;
+using ApiLayer.Models.Coach.Response;
+
+namespace UnitTest.Test.CoachTest
+{
+    [TestClass]
+    public class CoachServiceTest
+    {
+        private  Mock<IMapper> mapperMock;
+        private  Mock<ICoachRepository> coachRepositoryMock;
+        private Mock<IFileService> fileServiceMock;
+        private  CoachService coachService;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            mapperMock = new Mock<IMapper>();
+            coachRepositoryMock = new Mock<ICoachRepository>();
+            fileServiceMock = new Mock<IFileService>();
+            coachService = new CoachService(mapperMock.Object, coachRepositoryMock.Object, fileServiceMock.Object);
+        }
+
+        [TestMethod]
+        public  void 新增不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestAddCoachDto addCoachDto = new RequestAddCoachDto()
+            {
+                Account = "eqweqw123",
+                Pwd = "g4556fgerger",
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                Type = 1,
+                ContractEndTime = null,
+                ContractStartTime = null,
+            };
+            Coach coach = new Coach()
+            {
+                Account = "eqweqw123",
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                Type = 1,
+                ContractEndTime = DateTime.MinValue,
+                ContractStartTime = DateTime.MinValue,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            OperationResult operationResult = new OperationResult()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.AddCoach(coach)).Returns(operationResult);
+            mapperMock.Setup(s=>s.Map<Coach>(addCoachDto)).Returns(coach);
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.Success);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 新增_失敗_帳號重複()
+        {
+            // Arrange
+            RequestAddCoachDto addCoachDto = new RequestAddCoachDto()
+            {
+                Account = "eqweqw123",
+                Pwd = "g4556fgerger",
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                Type = 1,
+                ContractEndTime = null,
+                ContractStartTime = null,
+            };
+            Coach coach = new Coach()
+            {
+                Account = "eqweqw123",
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                Type = 1,
+                ContractEndTime = DateTime.MinValue,
+                ContractStartTime = DateTime.MinValue,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.DuplicateAccount;
+            OperationResult operationResult = new OperationResult()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.AddCoach(coach)).Returns(operationResult);
+            mapperMock.Setup(s => s.Map<Coach>(addCoachDto)).Returns(coach);
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.DuplicateAccount);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 取得教練清單_成功_回傳教練清單()
+        {
+            // Arrange
+            RequestGetCoachDto getCoachDto = new RequestGetCoachDto()
+            {
+                Status = null,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "contractEndTime", // 只允許 contractEndTime | name | status | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+                SearchName = null, // 只允許 null 或 < 15 位
+                SearchPhone = null, // 只允許 null 或是 3 位數字
+            };
+
+
+            List<Coach> coaches = new List<Coach>()
+            {
+                new Coach()
+                {
+                     CoachId = 1,
+                     ContractEndTime = DateTime.MinValue,
+                     ContractStartTime = DateTime.MinValue,
+                     Name = "草莓族",
+                     Phone = 978678521,
+                     Status = true,
+                     Type = 1
+                }
+            };
+            int totalPage = 1;
+
+            List<ResponseGetCoachDto> responseGetCoachDto = new List<ResponseGetCoachDto>()
+             {
+                 new ResponseGetCoachDto()
+                 {
+                     CoachId = 1,
+                     ContractEndTime = DateTime.MinValue,
+                     ContractStartTime = DateTime.MinValue,
+                     Name = "草莓族",
+                     Phone = 978678521,
+                     Status = true,
+                     Type = 1
+                 }
+             };
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.GetCoach(getCoachDto)).Returns((coaches, totalPage));
+            mapperMock.Setup(s=>s.Map<List<ResponseGetCoachDto>>(coaches)).Returns(responseGetCoachDto);
+
+            // Act
+            ResponseGetCoachListDto response = coachService.GetCoach(getCoachDto);
+
+            // Assert
+            Assert.IsTrue(response.CoachList.SequenceEqual(responseGetCoachDto));
+        }
+
+        [TestMethod]
+        public void 取得會員清單_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetCoachDto getCoachDto = new RequestGetCoachDto()
+            {
+                Status = null,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "contractEndTime", // 只允許 contractEndTime | name | status | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+                SearchName = null, // 只允許 null 或 < 15 位
+                SearchPhone = null, // 只允許 null 或是 3 位數字
+            };
+
+            List<Coach> coaches = new List<Coach>();
+            int totalPage = 1;
+            List<ResponseGetCoachDto> responseGetCoachDto = new List<ResponseGetCoachDto>();
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.GetCoach(getCoachDto)).Returns((coaches, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetCoachDto>>(coaches)).Returns(responseGetCoachDto);
+
+            // Act
+            ResponseGetCoachListDto response = coachService.GetCoach(getCoachDto);
+
+            // Assert
+            Assert.IsTrue(response.CoachList.SequenceEqual(responseGetCoachDto));
+        }
+    }
+}

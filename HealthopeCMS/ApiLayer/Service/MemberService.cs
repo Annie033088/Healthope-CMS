@@ -87,7 +87,7 @@ namespace ApiLayer.Service
                     // 該會員被禁用
                     if (editMemberDto.Status != null && editMemberDto.Status == false)
                     {
-                        string memberRedisKey = "Member" + editMemberDto.MemberId;
+                        string memberRedisKey = "Coach" + editMemberDto.MemberId;
                         redisService.DeleteKey(memberRedisKey);
                     }
                 }

@@ -22,7 +22,7 @@ namespace ApiLayer.App_Start
 
             //註冊 service 跟 repository
             builder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
-            builder.RegisterType<HttpHelpter>().As<IHttpHelper>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpService>().As<IHttpService>().InstancePerLifetimeScope();
             builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
             builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
@@ -32,6 +32,8 @@ namespace ApiLayer.App_Start
             builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
             builder.RegisterType<CoachService>().As<ICoachService>().InstancePerRequest();
             builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
+            builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
+            builder.RegisterType<FileService>().As<IFileService>().InstancePerRequest();
             builder.RegisterGeneric(typeof(MultipartRequestService<>))
                     .As(typeof(IMultipartRequestService<>))
                     .InstancePerRequest();

@@ -7,7 +7,7 @@
       <div class="memberBasicInformationContainer">
         <div class="avatar">
           <div class="avatarInner">
-            <img src="@/assets/logo/avatar1.png" />
+            <img src="@/assets/mockImage/avatar1.png" />
           </div>
         </div>
         <div class="basicInformationContent">

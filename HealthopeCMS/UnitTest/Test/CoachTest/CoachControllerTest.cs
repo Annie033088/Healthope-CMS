@@ -16,6 +16,9 @@ using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Other;
 using System.Net.Http;
 using System.IO;
+using ApiLayer.Models.Member.Response;
+using PersistentLayer.Models;
+using ApiLayer.Models.Coach.Response;
 
 namespace UnitTest.Test.CoachTest
 {
@@ -58,8 +61,8 @@ namespace UnitTest.Test.CoachTest
 
             // Mock 設定
             bool success = true;
-            multipartRequestServiceMock.Setup(s=>s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestServiceMock.Setup(s=>s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, null));
+            multipartRequestServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, null));
             coachServiceMock.Setup(s => s.AddCoach(addCoachDto, null)).Returns((errorCode, exception));
 
             // Act
@@ -125,7 +128,7 @@ namespace UnitTest.Test.CoachTest
                 ContractStartTime = null,
             };
             HttpRequestMessage request = new HttpRequestMessage();
-            List<FileDto> files= new List<FileDto>() { 
+            List<FileDto> files = new List<FileDto>() {
                 new FileDto(){
                     FileData = File.ReadAllBytes("C:\\Users\\User\\Pictures\\改開頭btye測試png.png"),
                     MimeType = "image/png",
@@ -139,6 +142,73 @@ namespace UnitTest.Test.CoachTest
 
             // Act
             IHttpActionResult result = await coachController.AddCoach();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 取得教練清單_成功_回傳教練清單()
+        {
+            // Arrange
+            RequestGetCoachDto getCoachDto = new RequestGetCoachDto()
+            {
+                Status = null,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "contractEndTime", // 只允許 contractEndTime | name | status | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+                SearchName = null, // 只允許 null 或 < 15 位
+                SearchPhone = null, // 只允許 null 或是 3 位數字
+            };
+
+            ResponseGetCoachListDto responseGetCoachDto = new ResponseGetCoachListDto()
+            {
+                CoachList = null,
+                TotalPage = 1,
+            };
+
+
+            // Mock 設定
+            coachServiceMock.Setup(s => s.GetCoach(getCoachDto)).Returns(responseGetCoachDto);
+
+            // Act
+            IHttpActionResult result = coachController.GetCoach(getCoachDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetCoachListDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetCoachListDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, responseGetCoachDto));
+        }
+
+        [TestMethod]
+        public void 取得會員清單_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestGetCoachDto getCoachDto = new RequestGetCoachDto()
+            {
+                Status = null,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "name", // 只允許 contractEndTime | name | status | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+                SearchName = null, // 只允許 null 或 < 15 位
+                SearchPhone = "null", // 只允許 null 或是 3 位數字
+            };
+
+            ResponseGetCoachListDto responseGetCoachDto = new ResponseGetCoachListDto()
+            {
+                CoachList = null,
+                TotalPage = 1,
+            };
+
+            // Mock 設定
+            coachServiceMock.Setup(s => s.GetCoach(getCoachDto)).Returns(responseGetCoachDto);
+
+            // Act
+            IHttpActionResult result = coachController.GetCoach(getCoachDto);
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();

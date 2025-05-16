@@ -17,7 +17,7 @@ namespace UnitTest.Test.FilterTest
     public class AdminPermissionAuthFilterTest
     {
         public Mock<ISessionService> sessionServiceMock;
-        public Mock<IHttpHelper> httpHelper;
+        public Mock<IHttpService> httpHelper;
         public AdminPermissionAuthFilter adminPermissionAuthFilter;
         private HttpActionContext actionContext;
         private HttpRequestMessage request;
@@ -25,7 +25,7 @@ namespace UnitTest.Test.FilterTest
         public void Setup()
         {
             sessionServiceMock = new Mock<ISessionService>();
-            httpHelper = new Mock<IHttpHelper>();
+            httpHelper = new Mock<IHttpService>();
             adminPermissionAuthFilter = new AdminPermissionAuthFilter() { sessionService = sessionServiceMock.Object, httpHelper = httpHelper.Object };
 
             // 設定請求

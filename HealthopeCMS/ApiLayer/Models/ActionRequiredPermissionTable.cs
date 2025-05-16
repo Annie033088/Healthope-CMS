@@ -13,10 +13,10 @@ namespace ApiLayer.Models
             { "Admin,GetAdminById", new List<AdminPermission> { AdminPermission.EditAdmin} },
             { "Admin,EditAdmin", new List<AdminPermission> { AdminPermission.EditAdmin} },
             { "Admin,DeleteAdmin", new List<AdminPermission> { AdminPermission.EditAdmin} },
-            { "Member,GetMember", new List<AdminPermission> { AdminPermission.SelectMember, AdminPermission.EditMember } },
-            { "Member,GetMemberEditDataById", new List<AdminPermission> { AdminPermission.EditMember} },
-            { "Member,EditMember", new List<AdminPermission> { AdminPermission.EditMember} },
-            { "Member,GetMemberDetail", new List<AdminPermission> { AdminPermission.SelectMember} },
+            { "Coach,GetMember", new List<AdminPermission> { AdminPermission.SelectMember, AdminPermission.EditMember } },
+            { "Coach,GetMemberEditDataById", new List<AdminPermission> { AdminPermission.EditMember} },
+            { "Coach,EditMember", new List<AdminPermission> { AdminPermission.EditMember} },
+            { "Coach,GetMemberDetail", new List<AdminPermission> { AdminPermission.SelectMember} },
             { "Coach,AddCoach", new List<AdminPermission> { AdminPermission.AddCoach} },
         };
     }

@@ -33,8 +33,8 @@
     <TableNormal
       :columns="columns"
       :rows="coachList"
-      :expandable="true"
       :editBtnFlag="true"
+      @goEdit="goEditCoach"
     >
     </TableNormal>
     <div>
@@ -98,6 +98,10 @@ export default {
     };
   },
   methods: {
+    goEditCoach(row) {
+      if (row.CoachId < 1) return;
+      this.$router.push({ path: "/coach/edit", query: { id: row.CoachId } });
+      },
     searchPage(page) {
       this.searchingPage = page;
       this.getCoachData();
@@ -141,19 +145,19 @@ export default {
       this.searchingPage = 1;
       this.getCoachData();
     },
-   async getCoachData() {
+    async getCoachData() {
       // 驗證參數
       if (isNaN(this.searchPhone)) {
         this.searchPhone = "";
         this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需為 3 位數字";
+        this.$notificationBox.notificationBoxTitle = "輸入需為 3 位數字";
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
       if (!(this.searchPhone.length === 3 || this.searchPhone === "")) {
         this.searchPhone = "";
         this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需為 3 位數字";
+        this.$notificationBox.notificationBoxTitle = "輸入需為 3 位數字";
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
@@ -225,7 +229,20 @@ export default {
           response.data.ApiDataObject.CoachList.forEach((coach) => {
             if (coach.Status === true) coach.Status = "啟用中";
             else coach.Status = "停用";
-            coach.Phone = ("0" + coach.Phone).replace(/^(\d{4})\d{3}(\d{3})$/, '$1-xxx-$2');
+
+            coach.ContractStartTime = coach.ContractStartTime.substring(0, 10);
+            coach.ContractEndTime = coach.ContractEndTime.substring(0, 10);
+
+            if (coach.ContractStartTime === "0001-01-01")
+              coach.ContractStartTime = "X";
+            if (coach.ContractEndTime === "0001-01-01")
+              coach.ContractEndTime = "X";
+
+            coach.Phone = ("0" + coach.Phone).replace(
+              /^(\d{4})\d{3}(\d{3})$/,
+              "$1-xxx-$2"
+            );
+            coach.Type = coach.Type === 1 ? "私人" : "約聘";
             this.coachList.push(coach);
           });
 
@@ -251,7 +268,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得管理者列表時發生錯誤", error);
+        console.error("取得教練列表時發生錯誤", error);
       }
     },
   },
