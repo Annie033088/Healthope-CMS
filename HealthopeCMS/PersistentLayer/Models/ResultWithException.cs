@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PersistentLayer.Models
 {
-    public class OperationResult
+    public class ResultWithException
     {
         /// <summary>
         /// 狀態碼 (參考 enum ErrorCodeDerine)

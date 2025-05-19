@@ -19,7 +19,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 新增教練
         /// </summary>
-        public OperationResult AddCoach(Coach coach)
+        public ResultWithException AddCoach(Coach coach)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -54,7 +54,7 @@ namespace PersistentLayer.Repository
                 int ExeCnt = cmd.ExecuteNonQuery();
                 errorCodeNumber = (int)errorCodeOutput.Value;
 
-                OperationResult result = new OperationResult()
+                ResultWithException result = new ResultWithException()
                 {
                     ErrorCodeNumber = errorCodeNumber,
                     Exception = null
@@ -64,7 +64,7 @@ namespace PersistentLayer.Repository
             catch (Exception ex)
             {
                 int serverError = 6;
-                OperationResult result = new OperationResult()
+                ResultWithException result = new ResultWithException()
                 {
                     ErrorCodeNumber = serverError,
                     Exception = ex
@@ -200,9 +200,9 @@ namespace PersistentLayer.Repository
                             DateTime.MinValue : dr.Field<DateTime>("f_contractStartTime"),
                         ContractEndTime = dr.IsNull("f_contractEndTime") ?
                             DateTime.MinValue : dr.Field<DateTime>("f_contractEndTime"),
-                        Introduction =dr.IsNull("f_introduction") ? string.Empty : dr.Field<string>("f_introduction"),
+                        Introduction = dr.IsNull("f_introduction") ? string.Empty : dr.Field<string>("f_introduction"),
                         Specialty = dr.IsNull("f_specialty") ? string.Empty : dr.Field<string>("f_specialty"),
-                        Certification = dr.IsNull("f_certification") ? 
+                        Certification = dr.IsNull("f_certification") ?
                             string.Empty : dr.Field<string>("f_certification"),
                         PhotoUrl = dr.IsNull("f_photoUrl") ? string.Empty : dr.Field<string>("f_photoUrl"),
                         UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
@@ -216,6 +216,113 @@ namespace PersistentLayer.Repository
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改教練
+        /// </summary>
+        public (ResultWithException result, string oldPhotoUrl) EditCoach(RequestEditCoachDto editCoachDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editCoach @coachId, @name, @phone, @email," +
+                    "@contractStartTime, @contractEndTime, @introduction, @specialty," +
+                    "@certification, @photoUrl, @status, @updateTime, @errorCode OUTPUT";
+
+                if (editCoachDto.Status == null)
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = editCoachDto.Status;
+
+                if (editCoachDto.Name == null)
+                    cmd.Parameters.Add("@name", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@name", SqlDbType.NVarChar).Value = editCoachDto.Name;
+
+                if (editCoachDto.Phone == null)
+                    cmd.Parameters.Add("@phone", SqlDbType.Int).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@phone", SqlDbType.Int).Value = editCoachDto.Phone;
+
+                if (editCoachDto.Email == null)
+                    cmd.Parameters.Add("@email", SqlDbType.VarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@email", SqlDbType.VarChar).Value = editCoachDto.Email;
+
+                if (editCoachDto.ContractStartTime == null)
+                    cmd.Parameters.Add("@contractStartTime", SqlDbType.Date).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@contractStartTime", SqlDbType.Date).Value = editCoachDto.ContractStartTime;
+
+                if (editCoachDto.ContractEndTime == null)
+                    cmd.Parameters.Add("@contractEndTime", SqlDbType.Date).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@contractEndTime", SqlDbType.Date).Value = editCoachDto.ContractEndTime;
+
+                if (editCoachDto.Introduction == null)
+                    cmd.Parameters.Add("@introduction", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@introduction", SqlDbType.NVarChar).Value = editCoachDto.Introduction;
+
+                if (editCoachDto.Specialty == null)
+                    cmd.Parameters.Add("@specialty", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@specialty", SqlDbType.NVarChar).Value = editCoachDto.Specialty;
+
+                if (editCoachDto.Certification == null)
+                    cmd.Parameters.Add("@certification", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@certification", SqlDbType.NVarChar).Value = editCoachDto.Certification;
+
+                if (editCoachDto.PhotoUrl == null)
+                    cmd.Parameters.Add("@photoUrl", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@photoUrl", SqlDbType.NVarChar).Value = editCoachDto.PhotoUrl;
+
+                cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = editCoachDto.CoachId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editCoachDto.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                object photoUrlObj = cmd.ExecuteScalar();
+                string photoUrl = string.Empty;
+
+                if (photoUrlObj != null && photoUrlObj != DBNull.Value)
+                    photoUrl = photoUrlObj.ToString();
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                ResultWithException result = new ResultWithException()
+                {
+                    ErrorCodeNumber = errorCodeNumber,
+                    Exception = null
+                };
+                return (result, photoUrl);
+            }
+            catch (Exception ex)
+            {
+                int serverError = 6;
+                ResultWithException result = new ResultWithException()
+                {
+                    ErrorCodeNumber = serverError,
+                    Exception = ex
+                };
+                return (result, string.Empty);
             }
             finally
             {

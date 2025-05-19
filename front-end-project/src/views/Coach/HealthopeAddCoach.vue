@@ -35,14 +35,14 @@
           />
           <div class="contractInputContainer">
             <InputSpan
-            class="left"
+              class="left"
               labelText="合約開始日"
               v-model="contractStartTime"
               inputType="date"
               @enter="addCoach"
             ></InputSpan>
             <InputSpan
-            class="right"
+              class="right"
               labelText="合約到期日"
               v-model="contractEndTime"
               inputType="date"
@@ -109,7 +109,11 @@
     <div class="sectionTitle"><p>圖片上傳區</p></div>
     <div class="imageUploadContainer">
       <label for="" class="labAvatar">請上傳頭像</label>
-      <ImageUploader :previewUrl="previewUrl" class="imageUpload" @imageSelected="handleImage" />
+      <ImageUploader
+        :previewUrl="previewUrl"
+        class="imageUpload"
+        @imageSelected="handleImage"
+      />
     </div>
     <div class="hintContainer">
       <span v-if="verifyFail" class="hintSpan">{{ this.hintText }}</span>
@@ -203,11 +207,22 @@ export default {
         return;
       }
 
-      // 只填合約開始日 或 只填合約結束日 或 結束日早於開始日
+      // 只填合約開始日 或 只填合約結束日 或 結束日早於開始日 或 範圍超過 100 年
+      const selectedStartDate = new Date(this.contractStartTime);
+      const selectedStartYear = selectedStartDate.getFullYear();
+      const selectedEndDate = new Date(this.contractEndTime);
+      const selectedEndYear = selectedEndDate.getFullYear();
+      const currentYear = new Date().getFullYear();
+      const minYear = currentYear - 100;
+      const maxYear = currentYear + 100;
       if (
-        (!this.contractStartTime && this.contractStartTime) ||
+        (!this.contractStartTime && this.contractEndTime) || 
         (this.contractStartTime && !this.contractEndTime) ||
-        new Date(this.contractEndTime) < new Date(this.contractStartTime)
+        selectedEndDate < selectedStartDate ||
+        selectedStartYear < minYear ||
+        selectedStartYear > maxYear ||
+        selectedEndYear < minYear ||
+        selectedEndYear > maxYear
       ) {
         this.hintText = "合約日期錯誤";
         this.verifyFail = true;
@@ -385,7 +400,8 @@ export default {
   gap: 5px;
   width: 100%;
 }
-.contractInputContainer .left, .contractInputContainer .right{
+.contractInputContainer .left,
+.contractInputContainer .right {
   display: flex;
   width: 50%;
 }

@@ -13,7 +13,7 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 新增教練
         /// </summary>
-        OperationResult AddCoach(Coach coach);
+        ResultWithException AddCoach(Coach coach);
 
         /// <summary>
         /// 取得教練清單
@@ -24,5 +24,10 @@ namespace PersistentLayer.Interface
         /// 取得修改教練頁面的資料
         /// </summary>
         Coach GetCoachEditDataById(int coachId);
+
+        /// <summary>
+        /// 修改教練
+        /// </summary>
+        (ResultWithException result, string oldPhotoUrl) EditCoach(RequestEditCoachDto editCoachDto);
     }
 }

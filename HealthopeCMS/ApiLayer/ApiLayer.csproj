@@ -248,12 +248,14 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.19070c37.css" />
+    <Content Include="wwwroot\css\app.53e002ce.css" />
     <Content Include="wwwroot\img\avatar1.ca19a3cf.png" />
     <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
     <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.c1658bf0.js" />
+    <Content Include="wwwroot\js\app.a5881ce2.js" />
+    <Content Include="wwwroot\js\app.fb6b8302.js" />
+    <Content Include="wwwroot\js\app.fb6b8302.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
@@ -263,7 +265,7 @@
   <ItemGroup>
     <Content Include="NLog.config" />
     <None Include="packages.config" />
-    <Content Include="wwwroot\js\app.c1658bf0.js.map" />
+    <Content Include="wwwroot\js\app.a5881ce2.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj">

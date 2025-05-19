@@ -103,11 +103,20 @@ namespace ApiLayer.Controllers.api
             {
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
-                if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1))) modelValidFlag = false;
-                if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) modelValidFlag = false;
-                if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") || (getAdminDto.SortOption == null))) modelValidFlag = false;
-                if (!((getAdminDto.RecordPerPage == 8) || (getAdminDto.RecordPerPage == 12) || (getAdminDto.RecordPerPage == 16))) modelValidFlag = false;
-                if (getAdminDto.Page < 1) modelValidFlag = false;
+                if(!ModelState.IsValid)
+                    modelValidFlag = false;
+                if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1)))
+                    modelValidFlag = false;
+                if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) 
+                    modelValidFlag = false;
+                if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") 
+                    || (getAdminDto.SortOption == null))) 
+                    modelValidFlag = false;
+                if (!((getAdminDto.RecordPerPage == 8) || (getAdminDto.RecordPerPage == 12) ||
+                    (getAdminDto.RecordPerPage == 16))) 
+                    modelValidFlag = false;
+                if (getAdminDto.Page < 1)
+                    modelValidFlag = false;
 
                 ResultResponse response;
 
@@ -179,6 +188,12 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
                 ResultResponse response;
 
+                if (!ModelState.IsValid)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
                 // 未修改過 => 格式錯誤
                 if (editAdminDto.Status == null && editAdminDto.Identity == null)
                 {
@@ -188,6 +203,12 @@ namespace ApiLayer.Controllers.api
 
                 // 無法轉成現有定義的身份 => 格式錯誤
                 if (editAdminDto.Identity != null && !Enum.IsDefined(typeof(AdminIdentity), editAdminDto.Identity))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                if(editAdminDto.AdminId < 1)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);

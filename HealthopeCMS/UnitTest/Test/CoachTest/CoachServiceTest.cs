@@ -25,10 +25,10 @@ namespace UnitTest.Test.CoachTest
     [TestClass]
     public class CoachServiceTest
     {
-        private  Mock<IMapper> mapperMock;
-        private  Mock<ICoachRepository> coachRepositoryMock;
+        private Mock<IMapper> mapperMock;
+        private Mock<ICoachRepository> coachRepositoryMock;
         private Mock<IFileService> fileServiceMock;
-        private  CoachService coachService;
+        private CoachService coachService;
 
         [TestInitialize]
         public void Setup()
@@ -40,7 +40,7 @@ namespace UnitTest.Test.CoachTest
         }
 
         [TestMethod]
-        public  void 新增不包括圖檔_成功_回傳成功()
+        public void 新增不包括圖檔_成功_回傳成功()
         {
             // Arrange
             RequestAddCoachDto addCoachDto = new RequestAddCoachDto()
@@ -72,7 +72,7 @@ namespace UnitTest.Test.CoachTest
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
-            OperationResult operationResult = new OperationResult()
+            ResultWithException operationResult = new ResultWithException()
             {
                 ErrorCodeNumber = errorCodeNumber,
                 Exception = null
@@ -80,7 +80,7 @@ namespace UnitTest.Test.CoachTest
 
             // Mock 設定
             coachRepositoryMock.Setup(s => s.AddCoach(coach)).Returns(operationResult);
-            mapperMock.Setup(s=>s.Map<Coach>(addCoachDto)).Returns(coach);
+            mapperMock.Setup(s => s.Map<Coach>(addCoachDto)).Returns(coach);
 
             // Act
             (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, null);
@@ -123,7 +123,7 @@ namespace UnitTest.Test.CoachTest
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.DuplicateAccount;
-            OperationResult operationResult = new OperationResult()
+            ResultWithException operationResult = new ResultWithException()
             {
                 ErrorCodeNumber = errorCodeNumber,
                 Exception = null
@@ -188,7 +188,7 @@ namespace UnitTest.Test.CoachTest
 
             // Mock 設定
             coachRepositoryMock.Setup(s => s.GetCoach(getCoachDto)).Returns((coaches, totalPage));
-            mapperMock.Setup(s=>s.Map<List<ResponseGetCoachDto>>(coaches)).Returns(responseGetCoachDto);
+            mapperMock.Setup(s => s.Map<List<ResponseGetCoachDto>>(coaches)).Returns(responseGetCoachDto);
 
             // Act
             ResponseGetCoachListDto response = coachService.GetCoach(getCoachDto);
@@ -225,6 +225,75 @@ namespace UnitTest.Test.CoachTest
 
             // Assert
             Assert.IsTrue(response.CoachList.SequenceEqual(responseGetCoachDto));
+        }
+
+        [TestMethod]
+        public void 取得教練修改頁面需要的資料_成功_回傳資料()
+        {
+            // Arrange
+            RequestCoachIdDto coachIdDto = new RequestCoachIdDto()
+            {
+                CoachId = 1
+            };
+            Coach coach = new Coach()
+            {
+                Email = "",
+                Certification = "",
+                ContractStartTime = DateTime.Now,
+                ContractEndTime = DateTime.Now.AddDays(DateTime.DaysInMonth(1, 6)),
+                Specialty = "",
+                Introduction = "",
+                Name = "Jack",
+                Status = true,
+                Phone = 987896543,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ResponseGetCoachEditDataByIdDto responseDto = new ResponseGetCoachEditDataByIdDto()
+            {
+                Email = "",
+                Certification = "",
+                ContractStartTime = DateTime.Now,
+                ContractEndTime = DateTime.Now.AddDays(DateTime.DaysInMonth(1, 6)),
+                Specialty = "",
+                Introduction = "",
+                Name = "Jack",
+                Status = true,
+                Phone = 987896543,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.GetCoachEditDataById(coachIdDto.CoachId)).Returns(coach);
+            mapperMock.Setup(s => s.Map<ResponseGetCoachEditDataByIdDto>(coach)).Returns(responseDto);
+
+            // Act
+            ResponseGetCoachEditDataByIdDto response = coachService.GetCoachEditDataById(coachIdDto);
+            responseDto.PhotoUrl = "/" + responseDto.PhotoUrl.Replace("\\", "/"); ;
+
+            // Assert
+            Assert.IsTrue(response == responseDto);
+        }
+
+        [TestMethod]
+        public void 取得教練修改頁面需要的資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestCoachIdDto coachIdDto = new RequestCoachIdDto()
+            {
+                CoachId = 1
+            };
+            Coach coach = null;
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.GetCoachEditDataById(coachIdDto.CoachId)).Returns(coach);
+
+            // Act
+            ResponseGetCoachEditDataByIdDto response = coachService.GetCoachEditDataById(coachIdDto);
+
+            // Assert
+            Assert.IsTrue(response == null);
         }
     }
 }

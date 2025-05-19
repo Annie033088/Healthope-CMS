@@ -20,19 +20,27 @@ using System.Threading.Tasks;
 using ApiLayer.Models.Member;
 using PersistentLayer.Models;
 using ApiLayer.Models.Coach.Response;
+using ApiLayer.Filters;
 
 namespace ApiLayer.Controllers.api
 {
+    [RequestLoggerFilter]
+    [VeriyLoginFilter]
+    [AdminPermissionAuthFilter]
     public class CoachController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IMultipartRequestService<RequestAddCoachDto> multipartRequestService;
+        private readonly IMultipartRequestService<RequestAddCoachDto> multipartRequestAddService;
+        private readonly IMultipartRequestService<RequestEditCoachDto> multipartRequestEditService;
         private readonly ICoachService coachService;
 
-        public CoachController(IMultipartRequestService<RequestAddCoachDto> multipartRequestService, ICoachService coachService)
+        public CoachController(IMultipartRequestService<RequestAddCoachDto> multipartRequestAddService,
+            ICoachService coachService,
+            IMultipartRequestService<RequestEditCoachDto> multipartRequestEditService)
         {
-            this.multipartRequestService = multipartRequestService;
+            this.multipartRequestAddService = multipartRequestAddService;
             this.coachService = coachService;
+            this.multipartRequestEditService = multipartRequestEditService;
         }
 
         /// <summary>
@@ -50,14 +58,14 @@ namespace ApiLayer.Controllers.api
                 HttpRequestMessage request = Request;
 
                 // 檢查請求是否為 multipart/form-data ( MIME 類型，表明這是「多部分資料」的格式 )
-                if (!multipartRequestService.IsMultipartRequest(request))
+                if (!multipartRequestAddService.IsMultipartRequest(request))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
                 // 取得請求的 form data 包括 1.addCoachDto, 2.file
-                (addCoachDto, files) = await multipartRequestService.GetObjectAndFile(request);
+                (addCoachDto, files) = await multipartRequestAddService.GetObjectAndFile(request);
 
                 // 沒取到資料
                 if (addCoachDto == default)
@@ -74,7 +82,8 @@ namespace ApiLayer.Controllers.api
                     || !formatValidation.ValidEmail(addCoachDto.Email)
                     || !formatValidation.ValidInput(
                         requireNonNull: true, minLength: 1, maxLength: 15, addCoachDto.Name)
-                    || !formatValidation.ValidContractTime(addCoachDto.ContractStartTime, addCoachDto.ContractEndTime)
+                    || !formatValidation.ValidContractTime(addCoachDto.ContractStartTime,
+                    addCoachDto.ContractEndTime)
                     || !formatValidation.ValidCoachType(addCoachDto.Type)
                     || !formatValidation.ValidInput(
                         requireNonNull: true, minLength: null, maxLength: 50, addCoachDto.Introduction)
@@ -94,7 +103,8 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto, files.Any() ? files[0] : null);
+                (ErrorCodeDefine errorCode, Exception exception) = coachService.AddCoach(addCoachDto,
+                    files.Any() ? files[0] : null);
 
                 // 如果有例外
                 if (exception != null)
@@ -127,7 +137,8 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
 
-                // 手機號碼搜尋格視為末 3 碼
+                if(!ModelState.IsValid) 
+                    modelValidFlag = false;
                 if (!formatValidation.ValidSearchPhone(getCoachDto.SearchPhone))
                     modelValidFlag = false;
                 if (getCoachDto.SearchName != null && getCoachDto.SearchName.Length > 50)
@@ -138,9 +149,9 @@ namespace ApiLayer.Controllers.api
                     || (getCoachDto.SortOption == "contractEndTime") || (getCoachDto.SortOption == null)))
                     modelValidFlag = false;
                 if (!((getCoachDto.RecordPerPage == 8) || (getCoachDto.RecordPerPage == 12)
-                    || (getCoachDto.RecordPerPage == 16))) 
+                    || (getCoachDto.RecordPerPage == 16)))
                     modelValidFlag = false;
-                if (getCoachDto.Page < 1) 
+                if (getCoachDto.Page < 1)
                     modelValidFlag = false;
 
                 ResultResponse response;
@@ -179,19 +190,99 @@ namespace ApiLayer.Controllers.api
                 ResultResponse response;
 
                 // 格式錯誤
-                if (coachIdDto.CoachId <1)
+                if (coachIdDto.CoachId < 1)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                ResponseGetCoachEditDataByIdDto responseGetCoachDto = 
+                ResponseGetCoachEditDataByIdDto responseGetCoachDto =
                     coachService.GetCoachEditDataById(coachIdDto);
                 response = new ResultResponse<ResponseGetCoachEditDataByIdDto>
                 {
                     ErrorCode = ErrorCodeDefine.Success,
                     ApiDataObject = responseGetCoachDto
                 };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改教練
+        /// </summary>
+        [HttpPost]
+        public async Task<IHttpActionResult> EditCoach()
+        {
+            try
+            {
+                ResultResponse response;
+                FormatValidation formatValidation = new FormatValidation();
+                RequestEditCoachDto editCoachDto = new RequestEditCoachDto();
+                List<FileDto> files = new List<FileDto>();
+                HttpRequestMessage request = Request;
+
+                // 檢查請求是否為 multipart/form-data ( MIME 類型，表明這是「多部分資料」的格式 )
+                if (!multipartRequestEditService.IsMultipartRequest(request))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                // 取得請求的 form data 包括 1.addCoachDto, 2.file
+                (editCoachDto, files) = await multipartRequestEditService.GetObjectAndFile(request);
+
+                // 沒取到資料
+                if (editCoachDto == default)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                // 格式驗證
+                if (!ModelState.IsValid
+                    || editCoachDto.CoachId < 1
+                    || !formatValidation.ValidEmail(editCoachDto.Email)
+                    || (editCoachDto.Phone != null && !formatValidation.ValidPhone(editCoachDto.Phone.Value))
+                    || !formatValidation.ValidInput(
+                        requireNonNull: false, minLength: 1, maxLength: 15, editCoachDto.Name)
+                    || !formatValidation.ValidContractTime(editCoachDto.ContractStartTime,
+                    editCoachDto.ContractEndTime)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: false, minLength: null, maxLength: 50, editCoachDto.Introduction)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: false, minLength: null, maxLength: 200, editCoachDto.Specialty)
+                    || !formatValidation.ValidInput(
+                        requireNonNull: false, minLength: null, maxLength: 200, editCoachDto.Certification)
+                   )
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                if (files.Any() && !formatValidation.ValidImageFile(files[0].FileData, files[0].MimeType))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, Exception exception) = coachService.EditCoach(editCoachDto,
+                    files.Any() ? files[0] : null);
+
+                // 如果有例外
+                if (exception != null)
+                {
+                    logger.Error(exception);
+                    response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse() { ErrorCode = errorCode };
                 return Ok(response);
             }
             catch (Exception ex)

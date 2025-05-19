@@ -1,100 +1,32 @@
 import VueRouter from "vue-router";
 import Vue from 'vue';
-import HealthopeHome from '@/views/HealthopeHome';
-import HealthopeLogin from '@/views/HealthopeLogin';
-import HealthopeAdmin from '@/views/Admin/HealthopeAdmin';
-import HealthopeAddAdmin from '@/views/Admin/HealthopeAddAdmin';
-import HealthopeEditAdmin from '@/views/Admin/HealthopeEditAdmin';
-import HealthopeMember from '@/views/Member/HealthopeMember';
-import HealthopeEditMember from '@/views/Member/HealthopeEditMember';
-import HealthopeMemberDetail from '@/views/Member/HealthopeMemberDetail';
-import HealthopeCoach from '@/views/Coach/HealthopeCoach';
-import HealthopeAddCoach from '@/views/Coach/HealthopeAddCoach';
-import HealthopeEditCoach from '@/views/Coach/HealthopeEditCoach';
-import HealthopeEditSelfPwd from '@/views/Other/HealthopeEditSelfPwd';
+import homeRoutes from './routes/home';
+import loginRoutes from './routes/login';
+import otherRoutes from './routes/other';
+import adminRoutes from './routes/admin';
+import memberRoutes from './routes/member';
+import coachRoutes from './routes/coach';
+
+import courseRoutes from './routes/course';
+
 import axios from '../plugins/axios';
-import { errorCodeDefine, adminPermission } from '../utils/globalSetting';
+import { errorCodeDefine } from '../utils/globalSetting';
 
 const routes = [
-    {
-        path: '/login',
-        name: 'HealthopeLogin',
-        component: HealthopeLogin,
-        meta: { requireAuth: null } // 登入頁面不需要權限
-    },
-    {
-        path: '/',
-        name: 'HealthopeHome',
-        component: HealthopeHome,
-        meta: { requireAuth: 'login' } // 主頁只要有登入就好
-    },
-    {
-        path: '/editSelfPwd',
-        name: 'HealthopeEditSelfPwd',
-        component: HealthopeEditSelfPwd,
-        meta: { requireAuth: 'login' } // 主頁只要有登入就好
-    },
-    {
-        path: '/admin',
-        name: 'HealthopeAdmin',
-        component: HealthopeAdmin,
-        meta:  { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] } 
-    },
-    {
-        path: '/admin/add',
-        name: 'HealthopeAddAdmin',
-        component: HealthopeAddAdmin,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] } 
-    },
-    {
-        path: '/admin/edit',
-        name: 'HealthopeEditAdmin',
-        component: HealthopeEditAdmin,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditAdmin }] } 
-    },
-    {
-        path: '/member',
-        name: 'HealthopeMember',
-        component: HealthopeMember,
-        meta:  {requireAuth: [{adminPermission:adminPermission.EditMember}, {adminPermission:adminPermission.SelectMember}] }  
-    },
-    {
-        path: '/member/edit',
-        name: 'HealthopeEditMember',
-        component: HealthopeEditMember,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditMember }] }
-    },
-    {
-        path: '/member/detail',
-        name: 'HealthopeMemberDetail',
-        component: HealthopeMemberDetail,
-        meta: { requireAuth: [{ adminPermission: adminPermission.SelectMember }, { adminPermission: adminPermission.EditMember }] }
-    },
-    {
-        path: '/coach',
-        name: 'HealthopeCoach',
-        component: HealthopeCoach,
-        meta: { requireAuth: [{ adminPermission: adminPermission.SelectCoach },
-             {adminPermission: adminPermission.AddCoach}, { adminPermission: adminPermission.EditCoach }] }
-    },
-    {
-        path: '/coach/add',
-        name: 'HealthopeAddCoach',
-        component: HealthopeAddCoach,
-        meta: { requireAuth: [{ adminPermission: adminPermission.AddCoach }] }
-    },
-    {
-        path: '/coach/edit',
-        name: 'HealthopeEditCoach',
-        component: HealthopeEditCoach,
-        meta: { requireAuth: [{ adminPermission: adminPermission.EditCoach }] }
-    },
-    {
-        path: '*',
-        name: 'HealthopeDefault',
-        component: HealthopeHome,
-        meta: { requireAuth: 'login' }
-    }
+    // login
+    ...loginRoutes,
+    // 其他 route ( 包括修改自己密碼 )
+    ...otherRoutes,
+    // 管理者相關
+   ...adminRoutes,
+    // 會員相關
+    ...memberRoutes,
+    // 教練相關
+    ...coachRoutes,
+    // 課程相關
+    ...courseRoutes,
+    // home
+    ...homeRoutes,
 ]
 
 const router = new VueRouter({

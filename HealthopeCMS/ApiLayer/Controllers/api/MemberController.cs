@@ -38,7 +38,8 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
 
-                // 手機號碼搜尋格視為末 3 碼
+                if(!ModelState.IsValid) 
+                    modelValidFlag = false;
                 if (!formatValidation.ValidSearchPhone(getMemberDto.SearchPhone))
                     modelValidFlag = false;
                 if (getMemberDto.SearchName != null && getMemberDto.SearchName.Length > 50)
@@ -131,6 +132,7 @@ namespace ApiLayer.Controllers.api
                 ResultResponse response;
 
                 // 驗證前端傳遞的參數是否合法
+                if (!ModelState.IsValid) modelValidFlag = false;
                 if (editMemberDto.MemberId < 1) modelValidFlag = false;
                 if (editMemberDto.Phone == null && editMemberDto.Status == null) modelValidFlag = false;
 

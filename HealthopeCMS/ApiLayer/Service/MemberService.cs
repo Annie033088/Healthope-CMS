@@ -21,7 +21,8 @@ namespace ApiLayer.Service
         private readonly IRedisService redisService;
         private readonly IMapper mapper;
 
-        public MemberService(IMemberRepository memberRepository, IMapper mapper, IRedisService redisService)
+        public MemberService(IMemberRepository memberRepository, IMapper mapper, 
+            IRedisService redisService)
         {
             this.memberRepository = memberRepository;
             this.mapper = mapper;
@@ -53,7 +54,8 @@ namespace ApiLayer.Service
         /// <summary>
         /// 根據 id 取得修改會員時需要的資料
         /// </summary>
-        public ResponseGetMemberEditDataByIdDto GetMemberEditDataById(RequestMemberIdDto getMemberByIdDto)
+        public ResponseGetMemberEditDataByIdDto GetMemberEditDataById(
+            RequestMemberIdDto getMemberByIdDto)
         {
             try
             {
@@ -77,7 +79,8 @@ namespace ApiLayer.Service
                 int errorCodeNumber = memberRepository.EditMember(editMemberDto);
 
                 // 如果沒有被定義在 enum 裡
-                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber)) return ErrorCodeDefine.ServerError;
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return ErrorCodeDefine.ServerError;
 
                 ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
 
@@ -85,9 +88,9 @@ namespace ApiLayer.Service
                 if (errorCode == ErrorCodeDefine.Success)
                 {
                     // 該會員被禁用
-                    if (editMemberDto.Status != null && editMemberDto.Status == false)
+                    if (editMemberDto.Status == false)
                     {
-                        string memberRedisKey = "Coach" + editMemberDto.MemberId;
+                        string memberRedisKey = "Member" + editMemberDto.MemberId;
                         redisService.DeleteKey(memberRedisKey);
                     }
                 }

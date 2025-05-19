@@ -166,8 +166,9 @@ export default {
 }
 
 .previewImage {
-  max-height: 100%;
   max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 59 / 62;
   object-fit: contain;
   border-radius: 8px;
 }

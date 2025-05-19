@@ -27,14 +27,20 @@ namespace UnitTest.Test.CoachTest
     {
         private CoachController coachController;
         private Mock<ICoachService> coachServiceMock;
-        private Mock<IMultipartRequestService<RequestAddCoachDto>> multipartRequestServiceMock;
+        private Mock<IMultipartRequestService<RequestAddCoachDto>> multipartRequestAddServiceMock;
+        private Mock<IMultipartRequestService<RequestEditCoachDto>> multipartRequestEditServiceMock;
 
         [TestInitialize]
         public void Setup()
         {
             coachServiceMock = new Mock<ICoachService>();
-            multipartRequestServiceMock = new Mock<IMultipartRequestService<RequestAddCoachDto>>();
-            coachController = new CoachController(multipartRequestServiceMock.Object, coachServiceMock.Object);
+            multipartRequestAddServiceMock = 
+                new Mock<IMultipartRequestService<RequestAddCoachDto>>();
+            multipartRequestEditServiceMock = 
+                new Mock<IMultipartRequestService<RequestEditCoachDto>>();
+            coachController = new CoachController(
+                multipartRequestAddServiceMock.Object, coachServiceMock.Object, 
+                multipartRequestEditServiceMock.Object);
         }
 
         [TestMethod]
@@ -58,12 +64,13 @@ namespace UnitTest.Test.CoachTest
             HttpRequestMessage request = new HttpRequestMessage();
             ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
             Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
 
             // Mock 設定
             bool success = true;
-            multipartRequestServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, null));
-            coachServiceMock.Setup(s => s.AddCoach(addCoachDto, null)).Returns((errorCode, exception));
+            multipartRequestAddServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestAddServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, files));
+            coachServiceMock.Setup(s => s.AddCoach(addCoachDto, files.Any() ? files[0] : null)).Returns((errorCode, exception));
 
             // Act
             IHttpActionResult result = await coachController.AddCoach();
@@ -94,12 +101,13 @@ namespace UnitTest.Test.CoachTest
             HttpRequestMessage request = new HttpRequestMessage();
             ErrorCodeDefine errorCode = ErrorCodeDefine.DuplicateAccount;
             Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
 
             // Mock 設定
             bool success = true;
-            multipartRequestServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, null));
-            coachServiceMock.Setup(s => s.AddCoach(addCoachDto, null)).Returns((errorCode, exception));
+            multipartRequestAddServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestAddServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, files));
+            coachServiceMock.Setup(s => s.AddCoach(addCoachDto, files.Any() ? files[0] : null)).Returns((errorCode, exception));
 
             // Act
             IHttpActionResult result = await coachController.AddCoach();
@@ -137,8 +145,8 @@ namespace UnitTest.Test.CoachTest
 
             // Mock 設定
             bool success = true;
-            multipartRequestServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, files));
+            multipartRequestAddServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestAddServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addCoachDto, files));
 
             // Act
             IHttpActionResult result = await coachController.AddCoach();
@@ -209,6 +217,194 @@ namespace UnitTest.Test.CoachTest
 
             // Act
             IHttpActionResult result = coachController.GetCoach(getCoachDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 取得教練修改頁面需要的資料_成功_回傳資料()
+        {
+            // Arrange
+            RequestCoachIdDto coachIdDto = new RequestCoachIdDto()
+            {
+                CoachId = 1
+            };
+
+            ResponseGetCoachEditDataByIdDto responseDto = new ResponseGetCoachEditDataByIdDto()
+            {
+                Email = "",
+                Certification = "",
+                ContractStartTime = DateTime.Now,
+                ContractEndTime = DateTime.Now.AddDays(DateTime.DaysInMonth(1, 6)),
+                Specialty = "",
+                Introduction = "",
+                Name = "Jack",
+                Status = true,
+                Phone = 987896543,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            coachServiceMock.Setup(s => s.GetCoachEditDataById(coachIdDto)).Returns(responseDto);
+
+            // Act
+            IHttpActionResult result = coachController.GetCoachEditDataById(coachIdDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetCoachEditDataByIdDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetCoachEditDataByIdDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, responseDto));
+        }
+
+        [TestMethod]
+        public void 取得教練修改頁面需要的資料_失敗_請求參數格是錯誤()
+        {
+            // Arrange
+            RequestCoachIdDto coachIdDto = new RequestCoachIdDto()
+            {
+                CoachId = 0
+            };
+
+            ResponseGetCoachEditDataByIdDto responseDto = new ResponseGetCoachEditDataByIdDto()
+            {
+                Email = "",
+                Certification = "",
+                ContractStartTime = DateTime.Now,
+                ContractEndTime = DateTime.Now.AddDays(DateTime.DaysInMonth(1, 6)),
+                Specialty = "",
+                Introduction = "",
+                Name = "Jack",
+                Status = true,
+                Phone = 987896543,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            coachServiceMock.Setup(s => s.GetCoachEditDataById(coachIdDto)).Returns(responseDto);
+
+            // Act
+            IHttpActionResult result = coachController.GetCoachEditDataById(coachIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public async Task 修改教練不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditCoachDto editCoachDto = new RequestEditCoachDto()
+            {
+                CoachId=1,
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                ContractEndTime = null,
+                ContractStartTime = null,
+                Status = true,
+                PhotoUrl="",
+                UpdateTime= DateTime.Now,
+            };
+            HttpRequestMessage request = new HttpRequestMessage();
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestEditServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((editCoachDto, files));
+            coachServiceMock.Setup(s => s.EditCoach(editCoachDto, files.Any() ? files[0] : null)).Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await coachController.EditCoach();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public async Task 修改_失敗_手機重複()
+        {
+            // Arrange
+            RequestEditCoachDto editCoachDto = new RequestEditCoachDto()
+            {
+                CoachId = 1,
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                ContractEndTime = null,
+                ContractStartTime = null,
+                Status = true,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            HttpRequestMessage request = new HttpRequestMessage();
+            ErrorCodeDefine errorCode = ErrorCodeDefine.DuplicatePhone;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestEditServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((editCoachDto, files));
+            coachServiceMock.Setup(s => s.EditCoach(editCoachDto, files.Any() ? files[0] : null)).Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await coachController.EditCoach();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DuplicatePhone));
+        }
+
+        [TestMethod]
+        public async Task 修改_失敗_格式錯誤()
+        {
+            // Arrange
+            RequestEditCoachDto editCoachDto = new RequestEditCoachDto()
+            {
+                CoachId = 1,
+                Email = "",
+                Phone = 98765432,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                ContractEndTime = null,
+                ContractStartTime = null,
+                Status = null,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            HttpRequestMessage request = new HttpRequestMessage();
+            ErrorCodeDefine errorCode = ErrorCodeDefine.InvalidFormatOrEntry;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
+            multipartRequestEditServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((editCoachDto, files));
+            coachServiceMock.Setup(s => s.EditCoach(editCoachDto, files.Any() ? files[0] : null)).Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await coachController.EditCoach();
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();

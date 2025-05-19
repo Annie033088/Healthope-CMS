@@ -39,7 +39,6 @@ namespace ApiLayer.Service
             {
                 throw;
             }
-            throw new NotImplementedException();
         }
 
         /// <summary>

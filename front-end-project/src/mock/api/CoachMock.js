@@ -86,7 +86,24 @@ export default function (mock) {
     ContractEndTime: "2025-08-20",
     CreateTime: "2025-05-15T10:00:00",
     UpdateTime: "2025-05-15T10:00:00"
-  }
+  },
+  {
+    CoachId: 6,
+    Account: "coachChaCha",
+    Email: "",
+    Phone: 989056744,
+    Name: "ChaCha",
+    PhotoUrl: avatar1,
+    Introduction: "熱愛健身，擅長塑形。",
+    Specialty: "重訓、有氧、TRX、體態雕塑",
+    Certification: "ACE私人教練證照、TRX認證",
+    Status: true,
+    Type: 1,
+    ContractStartTime: "0001-01-01",
+    ContractEndTime: "0001-01-01",
+    CreateTime: "2025-05-15T10:00:00",
+    UpdateTime: "2025-05-15T10:00:00"
+  },
 ]
 
     mock.onPost("/api/Coach/AddCoach").reply(() => {

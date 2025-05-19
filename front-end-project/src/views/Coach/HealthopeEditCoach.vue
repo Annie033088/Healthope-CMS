@@ -164,7 +164,7 @@ export default {
       if (!this.validInput()) return;
 
       try {
-        // 傳輸新增資料
+        // 傳輸修改資料
         const editCoachDto = {
           CoachId: this.currentCoachData.CoachId,
           UpdateTime: this.currentCoachData.UpdateTime,
@@ -209,6 +209,12 @@ export default {
               ? null
               : this.currentCoachData.Certification,
         };
+
+        // 空日期代表設為預設(Min Value)
+        if (editCoachDto.ContractStartTime === "")
+          editCoachDto.ContractStartTime = "0001-01-01";
+        if (editCoachDto.ContractEndTime === "")
+          editCoachDto.ContractEndTime = "0001-01-01";
 
         // 考量到效率, 採用 form data 型式傳輸資料/檔案
         const formData = new FormData();
@@ -295,7 +301,9 @@ export default {
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.originalCoachData = response.data.ApiDataObject;
+          this.originalCoachData.CoachId = id;
           this.originalCoachData.Phone = "0" + this.originalCoachData.Phone;
+          this.originalCoachData = this.cleanData(this.originalCoachData);
           this.currentCoachData = this.cleanData(this.originalCoachData);
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
@@ -361,13 +369,26 @@ export default {
       }
 
       // 只填合約開始日 或 只填合約結束日 或 結束日早於開始日
+      const selectedStartDate = new Date(
+        this.currentCoachData.ContractStartTime
+      );
+      const selectedStartYear = selectedStartDate.getFullYear();
+      const selectedEndDate = new Date(this.currentCoachData.ContractEndTime);
+      const selectedEndYear = selectedEndDate.getFullYear();
+      const currentYear = new Date().getFullYear();
+      const minYear = currentYear - 100;
+      const maxYear = currentYear + 100;
+
       if (
         (!this.currentCoachData.ContractStartTime &&
           this.currentCoachData.ContractStartTime) ||
         (this.currentCoachData.ContractStartTime &&
           !this.currentCoachData.ContractEndTime) ||
-        new Date(this.currentCoachData.ContractEndTime) <
-          new Date(this.currentCoachData.ContractStartTime)
+        selectedEndDate < selectedStartDate ||
+        selectedStartYear < minYear ||
+        selectedStartYear > maxYear ||
+        selectedEndYear < minYear ||
+        selectedEndYear > maxYear
       ) {
         this.hintText = "合約日期錯誤";
         this.verifyFail = true;
@@ -395,14 +416,18 @@ export default {
       return true;
     },
     cleanData(data) {
+      let contractStartTime = data.ContractStartTime.trim().substring(0, 10);
+      let contractEndTime = data.ContractEndTime.trim().substring(0, 10);
       return {
         ...data,
         Name: data.Name.trim(),
         Status: String(data.Status).trim(),
         Phone: String(data.Phone).trim(),
         Email: data.Email.trim(),
-        ContractStartTime: data.ContractStartTime.trim().substring(0, 10),
-        ContractEndTime: data.ContractEndTime.trim().substring(0, 10),
+        ContractStartTime:
+          contractStartTime === "0001-01-01" ? "" : contractStartTime,
+        ContractEndTime:
+          contractEndTime === "0001-01-01" ? "" : contractEndTime,
         Introduction: data.Introduction.trim(),
         Specialty: data.Specialty.trim(),
         Certification: data.Certification.trim(),

@@ -27,5 +27,10 @@ namespace ApiLayer.Interface
         /// 取得修改教練頁面的資料
         /// </summary>
         ResponseGetCoachEditDataByIdDto GetCoachEditDataById(RequestCoachIdDto coachIdDto);
+
+        /// <summary>
+        /// 修改教練
+        /// </summary>
+        (ErrorCodeDefine errorCode, Exception exception) EditCoach(RequestEditCoachDto editCoachDto, FileDto file);
     }
 }

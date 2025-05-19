@@ -45,7 +45,11 @@
     </div>
     <div
       class="sidebarRow"
-      v-if="permissionMap.AddCoach || permissionMap.SelectCoach"
+      v-if="
+        permissionMap.AddCoach ||
+        permissionMap.SelectCoach ||
+        permissionMap.EditCoach
+      "
     >
       <button class="btnSidebar" @click="redirect('/coach')">
         <svg
@@ -65,6 +69,45 @@
         </svg>
         <b>教練</b>
       </button>
+    </div>
+    <div>
+      <div class="sidebarRow" v-if="permissionMap.AddGroupClassShowcase">
+        <button class="btnDropDownSidebar" @click="toggleDropDown('course')">
+          <svg
+            v-if="!dropDownCourseFlag"
+            class="sidebarIcon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 12.998H13V18.998H11V12.998H5V10.998H11V4.99799H13V10.998H19V12.998Z"
+              fill="black"
+            />
+          </svg>
+          <svg
+            v-else
+            class="sidebarIcon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M19 12.998H5V10.998H19V12.998Z" fill="black" />
+          </svg>
+          <b>課程</b>
+        </button>
+      </div>
+      <div class="btnSubContainer" v-if="dropDownCourseFlag">
+        <BtnSubSideBar
+          v-if="permissionMap.AddGroupClassShowcase"
+          text="展示用團課"
+          @click="redirect('/groupClass/showcase')"
+        ></BtnSubSideBar>
+      </div>
     </div>
     <div class="sidebarRow">
       <button class="btnSidebar">
@@ -88,8 +131,13 @@
 </template>
 
 <script>
+import BtnSubSideBar from "@/components/Btn/BtnSubSideBar";
+
 export default {
   name: "AppSidebar",
+  components: {
+    BtnSubSideBar,
+  },
   props: {
     permissionList: [],
     notificationBoxConfirmFlag: Boolean,
@@ -105,6 +153,7 @@ export default {
         AddCoach: false,
         None: true,
       },
+      dropDownCourseFlag: false,
     };
   },
   created() {
@@ -112,6 +161,11 @@ export default {
     this.setScrollWithWindow();
   },
   methods: {
+    toggleDropDown(openDropDownText) {
+      if (openDropDownText === "course") {
+        this.dropDownCourseFlag = !this.dropDownCourseFlag;
+      }
+    },
     redirect(page) {
       if (this.$route.path === page) {
         this.$emit("refreshPage");
@@ -194,6 +248,23 @@ export default {
   background: #e0e0e0;
 }
 
+.btnSubContainer {
+  margin-left: 30px;
+  margin-right: 15px;
+  animation: slide-in-top 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+@keyframes slide-in-top {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .sidebarRow {
   display: flex;
   align-items: center;
@@ -206,7 +277,8 @@ export default {
   margin-right: 8px;
 }
 
-.btnSidebar {
+.btnSidebar,
+.btnDropDownSidebar {
   background-color: #e0e0e0;
   border: none;
   padding: 5px;
@@ -222,7 +294,8 @@ export default {
   transform: translateY(0.2rem);
 }
 
-.btnSidebar:hover:not(:disabled) {
+.btnSidebar:hover,
+.btnDropDownSidebar:hover {
   background: #eee;
 }
 </style>
