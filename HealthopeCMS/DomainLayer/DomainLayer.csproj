@@ -50,6 +50,7 @@
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminIdentityAndPermission.cs" />
     <Compile Include="Models\Coach.cs" />
+    <Compile Include="Models\GroupClassShowcase.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AdminPermissionUtility.cs" />

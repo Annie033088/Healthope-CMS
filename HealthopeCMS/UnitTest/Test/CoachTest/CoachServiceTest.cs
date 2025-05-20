@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Controllers.api;
-using ApiLayer.Models.Coach.Request;
-using ApiLayer.Models.Other;
-using ApiLayer.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Web.Http;
-using UnitTest.utils;
-using AutoMapper;
-using PersistentLayer.Interface;
-using Moq;
-using ApiLayer.Service;
-using DomainLayer.Models;
 using ApiLayer.Interface;
-using PersistentLayer.Models;
+using ApiLayer.Models;
+using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
+using ApiLayer.Service;
+using AutoMapper;
+using DomainLayer.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace UnitTest.Test.CoachTest
 {

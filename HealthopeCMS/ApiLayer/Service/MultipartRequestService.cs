@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Mime;
 using System.Threading.Tasks;
-using System.Web;
 using ApiLayer.Interface;
-using ApiLayer.Models;
-using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Other;
-using DomainLayer.Utility;
 using Newtonsoft.Json;
 
 namespace ApiLayer.Service
@@ -23,7 +17,7 @@ namespace ApiLayer.Service
         {
             try
             {
-            return request.Content?.IsMimeMultipartContent() ?? false;
+                return request.Content?.IsMimeMultipartContent() ?? false;
             }
             catch (Exception)
             {

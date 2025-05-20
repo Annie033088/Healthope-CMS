@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Interface\IAdminRepository.cs" />
     <Compile Include="Interface\ICoachRepository.cs" />
+    <Compile Include="Interface\IGroupClassShowcaseRepository.cs" />
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Models\EditPwdDto.cs" />
     <Compile Include="Models\ResultWithException.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AdminRepository.cs" />
     <Compile Include="Repository\CoachRepository.cs" />
+    <Compile Include="Repository\GroupClassShowcaseRepository.cs" />
     <Compile Include="Repository\MemberRepository.cs" />
   </ItemGroup>
   <ItemGroup>

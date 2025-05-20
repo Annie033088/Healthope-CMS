@@ -1,7 +1,7 @@
 <template>
   <div>
-    <TitleCard text="管理者清單"></TitleCard>
-    <SubTitleCard text="新增管理者"></SubTitleCard>
+    <TitleCard text="管理員"></TitleCard>
+    <SubTitleCard text="新增管理員"></SubTitleCard>
     <div class="addInputContainer">
       <div class="addInputLeft">
         <InputSpan

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentLayer.Models
 {
@@ -16,6 +12,6 @@ namespace PersistentLayer.Models
         /// <summary>
         /// 例外狀況
         /// </summary>
-        public Exception Exception { get; set; } 
+        public Exception Exception { get; set; }
     }
 }

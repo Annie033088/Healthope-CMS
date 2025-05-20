@@ -2,18 +2,21 @@
   <span class="inputSpan">
     <label class="lab">{{ inputTitle }}</label>
     <div class="radioContainer">
-      <label
-        class="labRadioBox"
-        v-for="option in options"
-        :key="option.value"
-      >
+      <label class="labRadioBox" v-for="option in options" :key="option.value">
         <input
           type="radio"
           :name="inputType"
           :value="option.value"
           v-model="localValue"
         />
-        <span class="textRadio">{{ option.text }}</span>
+        <span
+          class="textRadio"
+          :class="{
+            checked: option.value == localValue,
+            highlight: option.value == localValue && hightlightFlag,
+          }"
+          >{{ option.text }}</span
+        >
       </label>
     </div>
   </span>
@@ -38,6 +41,10 @@ export default {
       type: String,
       default: "radioInput",
     },
+    hightlightFlag:{
+      type:Boolean,
+      default:false
+    }
   },
   data() {
     return {
@@ -96,8 +103,12 @@ export default {
   transition: all 0.15s ease-in-out;
 }
 
-.labRadioBox input:checked + .textRadio {
+.textRadio.checked {
   background-color: #fff;
   font-weight: 600;
+}
+
+.textRadio.highlight {
+  font-size: 24px;
 }
 </style>

@@ -103,17 +103,17 @@ namespace ApiLayer.Controllers.api
             {
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                     modelValidFlag = false;
                 if (!((getAdminDto.SearchAccount == null) || (getAdminDto.SearchAccount.Length > 1)))
                     modelValidFlag = false;
-                if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending"))) 
+                if (!((getAdminDto.SortOrder == "ascending") || (getAdminDto.SortOrder == "descending")))
                     modelValidFlag = false;
-                if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status") 
-                    || (getAdminDto.SortOption == null))) 
+                if (!((getAdminDto.SortOption == "account") || (getAdminDto.SortOption == "status")
+                    || (getAdminDto.SortOption == null)))
                     modelValidFlag = false;
                 if (!((getAdminDto.RecordPerPage == 8) || (getAdminDto.RecordPerPage == 12) ||
-                    (getAdminDto.RecordPerPage == 16))) 
+                    (getAdminDto.RecordPerPage == 16)))
                     modelValidFlag = false;
                 if (getAdminDto.Page < 1)
                     modelValidFlag = false;
@@ -208,7 +208,7 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                if(editAdminDto.AdminId < 1)
+                if (editAdminDto.AdminId < 1)
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);

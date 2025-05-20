@@ -1,7 +1,7 @@
 <template>
   <div>
     <TitleCard
-      text="管理者清單"
+      text="管理員"
       @refreshPage="$emit('refreshPage')"
     ></TitleCard>
     <div class="functionColumn">
@@ -11,7 +11,18 @@
         placeholder="Account..."
         v-model="searchAccount"
       ></SelectInput>
-      <StatusSelector v-model="selectStatus" @change="selectAdminByStatus" />
+      <RadioSelector
+        class="statusSelector"
+        v-model="selectStatus"
+        @change="selectAdminByStatus"
+        inputTitle="狀態："
+        inputType="radioStatus"
+        :options="[
+          { value: '', text: '無' },
+          { value: 'true', text: '啟用' },
+          { value: 'false', text: '停用' },
+        ]"
+      />
       <SortSelector
         :options="[
           { value: 'account', label: '帳號' },
@@ -82,7 +93,7 @@ import SvgDelete from "@/components/Btn/SvgDelete";
 import TitleCard from "@/components/Card/TitleCard";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
-import StatusSelector from "@/components/Selector/StatusSelector";
+import RadioSelector from "@/components/Selector/RadioSelector";
 import SelectInput from "@/components/Input/SelectInput";
 import adminIdentityToText from "../../utils/globalSetting";
 import PaginationComponent from "@/components/PaginationComponent";
@@ -97,7 +108,7 @@ export default {
     SvgReset,
     SortSelector,
     RecordSelector,
-    StatusSelector,
+    RadioSelector,
     PaginationComponent,
   },
   props: {
@@ -119,7 +130,7 @@ export default {
   },
   methods: {
     adminIdentityToText,
-     goEditAdmin(adminId) {
+    goEditAdmin(adminId) {
       if (adminId < 1) return;
       this.$router.push({ path: "/admin/edit", query: { id: adminId } });
     },
@@ -322,6 +333,9 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
+}
+.statusSelector {
+  width: 300px;
 }
 </style>
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
@@ -133,7 +132,7 @@ namespace ApiLayer.Controllers.api
                 FormatValidation formatValidation = new FormatValidation();
 
                 // 格式需為 8~20 位英文數字
-                if (!formatValidation.ValidPwd(editSelfPwdDto.OldPwd) 
+                if (!formatValidation.ValidPwd(editSelfPwdDto.OldPwd)
                     || !formatValidation.ValidPwd(editSelfPwdDto.NewPwd))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };

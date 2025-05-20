@@ -22,9 +22,10 @@ namespace ApiLayer.App_Start
 
             //註冊 service 跟 repository
             builder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
-            builder.RegisterType<HttpService>().As<IHttpService>().InstancePerLifetimeScope();
-            builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
             builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpService>().As<IHttpService>().InstancePerLifetimeScope();
+            builder.RegisterType<FileService>().As<IFileService>().InstancePerRequest();
+            builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
             builder.RegisterType<AdminService>().As<IAdminService>().InstancePerRequest();
             builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
@@ -32,8 +33,8 @@ namespace ApiLayer.App_Start
             builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
             builder.RegisterType<CoachService>().As<ICoachService>().InstancePerRequest();
             builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
-            builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
-            builder.RegisterType<FileService>().As<IFileService>().InstancePerRequest();
+            builder.RegisterType<GroupClassShowcaseService>().As<IGroupClassShowcaseService>().InstancePerRequest();
+            builder.RegisterType<GroupClassShowcaseRepository>().As<IGroupClassShowcaseRepository>().InstancePerRequest();
             builder.RegisterGeneric(typeof(MultipartRequestService<>))
                     .As(typeof(IMultipartRequestService<>))
                     .InstancePerRequest();

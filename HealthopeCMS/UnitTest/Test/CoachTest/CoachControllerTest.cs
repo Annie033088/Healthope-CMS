@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Controllers.api;
-using ApiLayer.Models.Admin.RequestAdminDto;
-using ApiLayer.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Web.Http;
-using UnitTest.utils;
-using ApiLayer.Interface;
-using Moq;
-using ApiLayer.Service;
-using ApiLayer.Models.Coach.Request;
-using ApiLayer.Models.Other;
-using System.Net.Http;
 using System.IO;
-using ApiLayer.Models.Member.Response;
-using PersistentLayer.Models;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
+using ApiLayer.Controllers.api;
+using ApiLayer.Interface;
+using ApiLayer.Models;
+using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
+using ApiLayer.Models.Other;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using PersistentLayer.Models;
+using UnitTest.utils;
 
 namespace UnitTest.Test.CoachTest
 {
@@ -34,12 +30,12 @@ namespace UnitTest.Test.CoachTest
         public void Setup()
         {
             coachServiceMock = new Mock<ICoachService>();
-            multipartRequestAddServiceMock = 
+            multipartRequestAddServiceMock =
                 new Mock<IMultipartRequestService<RequestAddCoachDto>>();
-            multipartRequestEditServiceMock = 
+            multipartRequestEditServiceMock =
                 new Mock<IMultipartRequestService<RequestEditCoachDto>>();
             coachController = new CoachController(
-                multipartRequestAddServiceMock.Object, coachServiceMock.Object, 
+                multipartRequestAddServiceMock.Object, coachServiceMock.Object,
                 multipartRequestEditServiceMock.Object);
         }
 
@@ -301,7 +297,7 @@ namespace UnitTest.Test.CoachTest
             // Arrange
             RequestEditCoachDto editCoachDto = new RequestEditCoachDto()
             {
-                CoachId=1,
+                CoachId = 1,
                 Email = "",
                 Phone = 987654321,
                 Name = "蘑菇",
@@ -311,8 +307,8 @@ namespace UnitTest.Test.CoachTest
                 ContractEndTime = null,
                 ContractStartTime = null,
                 Status = true,
-                PhotoUrl="",
-                UpdateTime= DateTime.Now,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
             };
             HttpRequestMessage request = new HttpRequestMessage();
             ErrorCodeDefine errorCode = ErrorCodeDefine.Success;

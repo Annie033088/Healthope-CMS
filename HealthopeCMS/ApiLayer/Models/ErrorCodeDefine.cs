@@ -106,5 +106,10 @@
         /// 驗證失敗
         /// </summary>
         VerifyFail = 20,
+
+        /// <summary>
+        /// 名稱重複
+        /// </summary>
+        DuplicateName = 21,
     }
 }

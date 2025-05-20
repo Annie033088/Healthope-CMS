@@ -25,7 +25,7 @@
         /// <summary>
         /// 搜尋的名稱
         /// </summary>
-        public string SearchName { get; set; } 
+        public string SearchName { get; set; }
 
         /// <summary>
         /// 搜尋的手機末三碼

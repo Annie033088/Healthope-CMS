@@ -186,6 +186,7 @@
     <Compile Include="Controllers\api\AccountAccessController.cs" />
     <Compile Include="Controllers\api\AdminController.cs" />
     <Compile Include="Controllers\api\CoachController.cs" />
+    <Compile Include="Controllers\api\GroupClassShowcaseController.cs" />
     <Compile Include="Controllers\api\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\VeriyLoginFilter.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Interface\IMemberService.cs" />
     <Compile Include="Interface\IMultipartRequestService.cs" />
     <Compile Include="Interface\IRedisService.cs" />
+    <Compile Include="Interface\IGroupClassShowcaseService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestEditSelfPwdDto.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestHavePermissionDto.cs" />
@@ -217,6 +219,8 @@
     <Compile Include="Models\Coach\Response\ResponseGetCoachListDto.cs" />
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestLoginDto.cs" />
+    <Compile Include="Models\GroupClassCategory.cs" />
+    <Compile Include="Models\GroupClassShowcase\Request\RequestAddShowcaseDto.cs" />
     <Compile Include="Models\Member\Request\RequestMemberIdDto.cs" />
     <Compile Include="Models\Member\Response\ResponseGetMemberDetailDto.cs" />
     <Compile Include="Models\Member\Response\ResponseGetMemberEditDataByIdDto.cs" />
@@ -228,6 +232,7 @@
     <Compile Include="Service\AdminService.cs" />
     <Compile Include="Service\CoachService.cs" />
     <Compile Include="Service\FileService.cs" />
+    <Compile Include="Service\GroupClassShowcaseService.cs" />
     <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\MemberService.cs" />
     <Compile Include="Service\MultipartRequestService.cs" />

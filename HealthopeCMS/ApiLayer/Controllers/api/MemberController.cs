@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Member;
 using ApiLayer.Models.Member.Response;
 using DomainLayer.Utility;
@@ -38,18 +36,18 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
 
-                if(!ModelState.IsValid) 
+                if (!ModelState.IsValid)
                     modelValidFlag = false;
                 if (!formatValidation.ValidSearchPhone(getMemberDto.SearchPhone))
                     modelValidFlag = false;
                 if (getMemberDto.SearchName != null && getMemberDto.SearchName.Length > 50)
                     modelValidFlag = false;
-                if (!((getMemberDto.SortOrder == "ascending") || (getMemberDto.SortOrder == "descending"))) 
+                if (!((getMemberDto.SortOrder == "ascending") || (getMemberDto.SortOrder == "descending")))
                     modelValidFlag = false;
                 if (!((getMemberDto.SortOption == "name") || (getMemberDto.SortOption == "status")
-                    || (getMemberDto.SortOption == "membershipExpiry") || (getMemberDto.SortOption == null))) 
+                    || (getMemberDto.SortOption == "membershipExpiry") || (getMemberDto.SortOption == null)))
                     modelValidFlag = false;
-                if (!((getMemberDto.RecordPerPage == 8) || (getMemberDto.RecordPerPage == 12) 
+                if (!((getMemberDto.RecordPerPage == 8) || (getMemberDto.RecordPerPage == 12)
                     || (getMemberDto.RecordPerPage == 16)))
                     modelValidFlag = false;
                 if (getMemberDto.Page < 1)

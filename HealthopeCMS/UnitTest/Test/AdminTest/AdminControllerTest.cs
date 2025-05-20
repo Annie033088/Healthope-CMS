@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
-using System.Web.Http.Results;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;

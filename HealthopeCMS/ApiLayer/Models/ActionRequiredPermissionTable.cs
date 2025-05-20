@@ -8,13 +8,13 @@ namespace ApiLayer.Models
         // 字典的 key：controller 跟 action  ; value：需要的任一權限 (List)
         public readonly Dictionary<string, List<AdminPermission>> actionRequiredPermission = new Dictionary<string, List<AdminPermission>>()
         {
-            { "Admin,AddAdmin", new List<AdminPermission> { 
+            { "Admin,AddAdmin", new List<AdminPermission> {
                 AdminPermission.EditAdmin} },
-            { "Admin,GetAdmin", new List<AdminPermission> { 
+            { "Admin,GetAdmin", new List<AdminPermission> {
                 AdminPermission.EditAdmin} },
-            { "Admin,GetAdminById", new List<AdminPermission> { 
+            { "Admin,GetAdminById", new List<AdminPermission> {
                 AdminPermission.EditAdmin} },
-            { "Admin,EditAdmin", new List<AdminPermission> { 
+            { "Admin,EditAdmin", new List<AdminPermission> {
                 AdminPermission.EditAdmin} },
             { "Admin,DeleteAdmin", new List<AdminPermission> {
                 AdminPermission.EditAdmin} },
@@ -24,11 +24,11 @@ namespace ApiLayer.Models
                 AdminPermission.EditMember} },
             { "Coach,EditMember", new List<AdminPermission> {
                 AdminPermission.EditMember} },
-            { "Coach,GetMemberDetail", new List<AdminPermission> { 
+            { "Coach,GetMemberDetail", new List<AdminPermission> {
                 AdminPermission.SelectMember} },
             { "Coach,GetCoach", new List<AdminPermission> {
                 AdminPermission.AddCoach, AdminPermission.SelectCoach, AdminPermission.EditCoach} },
-            { "Coach,AddCoach", new List<AdminPermission> { 
+            { "Coach,AddCoach", new List<AdminPermission> {
                 AdminPermission.AddCoach} },
             { "Coach,GetCoachEditDataById", new List<AdminPermission> {
                 AdminPermission.EditCoach} },

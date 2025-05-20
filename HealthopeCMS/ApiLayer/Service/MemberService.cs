@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Member;
 using ApiLayer.Models.Member.Response;
 using AutoMapper;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using PersistentLayer.Repository;
 
 namespace ApiLayer.Service
 {
@@ -21,7 +17,7 @@ namespace ApiLayer.Service
         private readonly IRedisService redisService;
         private readonly IMapper mapper;
 
-        public MemberService(IMemberRepository memberRepository, IMapper mapper, 
+        public MemberService(IMemberRepository memberRepository, IMapper mapper,
             IRedisService redisService)
         {
             this.memberRepository = memberRepository;

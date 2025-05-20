@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
-using System.Web.Caching;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
-using ApiLayer.Models.Member;
 using ApiLayer.Models.Other;
 using AutoMapper;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using PersistentLayer.Repository;
-using static StackExchange.Redis.Role;
 
 namespace ApiLayer.Service
 {
@@ -172,7 +166,7 @@ namespace ApiLayer.Service
                 else if (!string.IsNullOrEmpty(oldPhotoUrl))
                     fileService.DeleteFile(Path.Combine(rootUrl, oldPhotoUrl.Replace('/', Path.DirectorySeparatorChar)));
                 // 成功根據修改狀態, 清除教練會話
-                else if (editCoachDto.Status == false)
+                else if (editCoachDto.Status == false) // TODO: 完成 Client 登入後回來補清除會話相關邏輯
                 {
                     string coachRedisKey = "Coach" + editCoachDto.CoachId;
                     redisService.DeleteKey(coachRedisKey);

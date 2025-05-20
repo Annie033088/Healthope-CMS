@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;

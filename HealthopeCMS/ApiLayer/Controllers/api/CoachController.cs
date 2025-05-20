@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Web.Http;
-using ApiLayer.Interface;
-using ApiLayer.Models.Admin.RequestAdminDto;
-using ApiLayer.Models;
-using NLog;
-using Newtonsoft.Json;
-using System.IO;
-using System.Web;
-using ApiLayer.Models.Coach.Request;
-using System.Collections.ObjectModel;
-using DomainLayer.Utility;
-using ApiLayer.Service;
-using ApiLayer.Models.Other;
 using System.Threading.Tasks;
-using ApiLayer.Models.Member;
-using PersistentLayer.Models;
-using ApiLayer.Models.Coach.Response;
+using System.Web.Http;
 using ApiLayer.Filters;
+using ApiLayer.Interface;
+using ApiLayer.Models;
+using ApiLayer.Models.Coach.Request;
+using ApiLayer.Models.Coach.Response;
+using ApiLayer.Models.Other;
+using DomainLayer.Utility;
+using NLog;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {
@@ -137,7 +129,7 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
                 bool modelValidFlag = true;
 
-                if(!ModelState.IsValid) 
+                if (!ModelState.IsValid)
                     modelValidFlag = false;
                 if (!formatValidation.ValidSearchPhone(getCoachDto.SearchPhone))
                     modelValidFlag = false;

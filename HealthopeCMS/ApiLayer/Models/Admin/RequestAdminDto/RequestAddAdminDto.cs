@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ApiLayer.Models.Admin.RequestAdminDto
+﻿namespace ApiLayer.Models.Admin.RequestAdminDto
 {
     public class RequestAddAdminDto
     {

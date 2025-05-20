@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using ApiLayer.Controllers.api;
-using ApiLayer.Models.Admin.RequestAdminDto;
+using ApiLayer.Interface;
 using ApiLayer.Models;
+using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Response;
 using ApiLayer.Service;
 using AutoMapper;
+using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
-using UnitTest.utils;
-using ApiLayer.Models.Member;
 using PersistentLayer.Models;
-using DomainLayer.Models;
-using ApiLayer.Models.Member.Response;
-using ApiLayer.Models.Admin.ResponseAdminDto;
-using ApiLayer.Interface;
 
 namespace UnitTest.Test.MemberTest
 {
@@ -82,7 +75,7 @@ namespace UnitTest.Test.MemberTest
                     Status = true,
                     AbsenceTime = 5,
                     AllowGroupClass = time,
-                } 
+                }
             };
             // Mock 設定
             memberRepositoryMock.Setup(s => s.GetMember(getMemberDto)).Returns((members, totalPage));
@@ -153,7 +146,7 @@ namespace UnitTest.Test.MemberTest
 
             // Mock 設定
             memberRepositoryMock.Setup(s => s.GetMemberEditDataById(memberIdDto.MemberId)).Returns(member);
-            mapperMock.Setup(s=>s.Map<ResponseGetMemberEditDataByIdDto>(member)).Returns(response);
+            mapperMock.Setup(s => s.Map<ResponseGetMemberEditDataByIdDto>(member)).Returns(response);
 
             // Act
             ResponseGetMemberEditDataByIdDto result = memberService.GetMemberEditDataById(memberIdDto);
@@ -258,7 +251,7 @@ namespace UnitTest.Test.MemberTest
             // Assert
             Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
         }
-       
+
         [TestMethod]
         public void 根據Id取得會員詳細資料_成功_回傳會員資料()
         {
@@ -284,7 +277,7 @@ namespace UnitTest.Test.MemberTest
 
             // Mock 設定
             memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId)).Returns(member);
-            mapperMock.Setup(s=>s.Map<ResponseGetMemberDetailDto>(member)).Returns(response);
+            mapperMock.Setup(s => s.Map<ResponseGetMemberDetailDto>(member)).Returns(response);
 
             // Act
             ResponseGetMemberDetailDto result = memberService.GetMemberDetail(memberIdDto);

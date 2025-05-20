@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TitleCard text="教練清單" @refreshPage="$emit('refreshPage')" />
+    <TitleCard text="教練" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
       <BtnNormal text="新增教練" @click="redirect('/coach/add')"></BtnNormal>
       <SelectInput
@@ -13,7 +13,18 @@
         v-model="searchPhone"
         @select="selectCoachByPhone"
       ></SelectInput>
-      <StatusSelector v-model="selectStatus" @change="selectCoachByStatus" />
+       <RadioSelector
+       class="statusSelector"
+        v-model="selectStatus"
+        @change="selectCoachByStatus"
+        inputTitle="狀態："
+        inputType="radioStatus"
+        :options="[
+          { value: '', text: '無' },
+          { value: 'true', text: '啟用' },
+          { value: 'false', text: '停用' },
+        ]"
+      />
       <SortSelector
         :options="[
           { value: 'name', label: '姓名' },
@@ -54,7 +65,7 @@ import BtnNormal from "@/components/Btn/BtnNormal";
 import SelectInput from "@/components/Input/SelectInput";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
-import StatusSelector from "@/components/Selector/StatusSelector";
+import RadioSelector from "@/components/Selector/RadioSelector";
 import PaginationComponent from "@/components/PaginationComponent";
 import SvgReset from "@/components/Btn/SvgReset";
 
@@ -66,7 +77,7 @@ export default {
     BtnNormal,
     SortSelector,
     RecordSelector,
-    StatusSelector,
+    RadioSelector,
     SvgReset,
     TableNormal,
     PaginationComponent,
@@ -284,5 +295,9 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
+}
+
+.statusSelector{
+  width: 300px;
 }
 </style>

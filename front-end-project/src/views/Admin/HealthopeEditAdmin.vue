@@ -1,7 +1,7 @@
 <template>
   <div>
-    <TitleCard text="管理者清單"></TitleCard>
-    <SubTitleCard text="修改管理者"></SubTitleCard>
+    <TitleCard text="管理員"></TitleCard>
+    <SubTitleCard text="修改管理員"></SubTitleCard>
     <div class="editAdminBox">
       <div class="editAdminContainer">
         <div class="editAdminContent">

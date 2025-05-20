@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TitleCard text="會員清單" @refreshPage="$emit('refreshPage')" />
+    <TitleCard text="會員" @refreshPage="$emit('refreshPage')" />
     <SubTitleCard text="會員資料" />
     <div class="sectionTitle"><h3>基本資訊</h3></div>
     <div class="memberBasicInformationBox">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TitleCard text="會員清單" @refreshPage="$emit('refreshPage')"></TitleCard>
+    <TitleCard text="會員" @refreshPage="$emit('refreshPage')"></TitleCard>
     <div class="functionColumn">
       <SelectInput
         placeholder="Name..."
@@ -12,7 +12,18 @@
         v-model="searchPhone"
         @select="selectMemberByPhone"
       ></SelectInput>
-      <StatusSelector v-model="selectStatus" @change="selectMemberByStatus" />
+       <RadioSelector
+       class="statusSelector"
+        v-model="selectStatus"
+        @change="selectMemberByStatus"
+        inputTitle="狀態："
+        inputType="radioStatus"
+        :options="[
+          { value: '', text: '無' },
+          { value: 'true', text: '啟用' },
+          { value: 'false', text: '停用' },
+        ]"
+      />
       <SortSelector
         :options="[
           { value: 'name', label: '姓名' },
@@ -85,7 +96,7 @@ import BtnNormal from "@/components/Btn/BtnNormal";
 import SelectInput from "@/components/Input/SelectInput";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
-import StatusSelector from "@/components/Selector/StatusSelector";
+import RadioSelector from "@/components/Selector/RadioSelector";
 import PaginationComponent from "@/components/PaginationComponent";
 import SvgReset from "@/components/Btn/SvgReset";
 
@@ -98,7 +109,7 @@ export default {
     BtnNormal,
     SortSelector,
     RecordSelector,
-    StatusSelector,
+    RadioSelector,
     PaginationComponent,
     SvgReset,
   },
@@ -320,6 +331,10 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 20px;
+}
+
+.statusSelector{
+  width: 300px;
 }
 
 .detailRowContainer {

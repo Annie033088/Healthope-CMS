@@ -2,7 +2,7 @@
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
-using ApiLayer.Models.Member;
+using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.Member.Response;
 using AutoMapper;
 using DomainLayer.Models;
@@ -23,10 +23,11 @@ namespace ApiLayer.App_Start
             CreateMap<Coach, ResponseGetCoachEditDataByIdDto>();
             CreateMap<Coach, ResponseGetCoachDto>();
             CreateMap<RequestAddCoachDto, Coach>()
-                .ForMember(dest => dest.ContractStartTime, opt => 
+                .ForMember(dest => dest.ContractStartTime, opt =>
                     opt.MapFrom(src => src.ContractStartTime ?? DateTime.MinValue))
                 .ForMember(dest => dest.ContractEndTime, opt =>
                     opt.MapFrom(src => src.ContractEndTime ?? DateTime.MinValue));
+            CreateMap<RequestAddShowcaseDto, GroupClassShowcase>();
         }
     }
 }

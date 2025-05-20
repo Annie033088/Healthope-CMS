@@ -1,7 +1,7 @@
 <template>
   <div class="addContainer">
-    <TitleCard text="教練清單" @refreshPage="$emit('refreshPage')" />
-    <SubTitleCard text="新增教練"></SubTitleCard>
+    <TitleCard text="教練" @refreshPage="$emit('refreshPage')" />
+    <SubTitleCard text="修改教練"></SubTitleCard>
     <div class="sectionTitle"><p>基本資料區</p></div>
     <div class="basicInputContainer">
       <div class="leftInputBox">

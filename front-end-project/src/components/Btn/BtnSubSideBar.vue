@@ -1,8 +1,7 @@
 <template>
-  <div class="sidebarRow">
+  <div class="subSidebarRow">
     <button class="btnSidebar" @click="$emit('click', $event)">
-      <b class="sidebarIcon">●</b>
-      <b>{{ text }}</b>
+      <b class="subSidebarText">{{ text }}</b>
     </button>
   </div>
 </template>
@@ -10,21 +9,31 @@
 <script>
 export default {
   name: "BtnSubSideBar",
-  props:{
-    text:String,
-  }
+  props: {
+    text: String,
+  },
 };
 </script>
 
 <style scoped>
-.sidebarRow {
+.subSidebarRow {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px;
 }
 
 .sidebarIcon {
   margin-right: 8px;
+}
+
+.subSidebarText {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(100, 42, 42);
 }
 
 .btnSidebar {

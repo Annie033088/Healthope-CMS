@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ApiLayer.Models.AccountAccess.RequestAccountAccessDto
+﻿namespace ApiLayer.Models.AccountAccess.RequestAccountAccessDto
 {
     public class RequestLoginDto
     {

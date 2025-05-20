@@ -1,6 +1,6 @@
 <template>
-  <div class="addContainer">
-    <TitleCard text="教練清單" @refreshPage="$emit('refreshPage')" />
+  <div class="">
+    <TitleCard text="教練" @refreshPage="$emit('refreshPage')" />
     <SubTitleCard text="新增教練"></SubTitleCard>
     <div class="sectionTitle"><p>基本資料區</p></div>
     <div class="basicInputContainer">
@@ -216,7 +216,7 @@ export default {
       const minYear = currentYear - 100;
       const maxYear = currentYear + 100;
       if (
-        (!this.contractStartTime && this.contractEndTime) || 
+        (!this.contractStartTime && this.contractEndTime) ||
         (this.contractStartTime && !this.contractEndTime) ||
         selectedEndDate < selectedStartDate ||
         selectedStartYear < minYear ||
@@ -360,9 +360,9 @@ export default {
 
       return emailRegex.test(email);
     },
-    beforeDestroy() {
-      this.revokePreviewUrl();
-    },
+  },
+  beforeDestroy() {
+    this.revokePreviewUrl();
   },
 };
 </script>

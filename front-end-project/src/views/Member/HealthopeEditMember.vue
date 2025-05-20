@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TitleCard text="會員清單"></TitleCard>
+    <TitleCard text="會員"></TitleCard>
     <SubTitleCard text="修改會員"></SubTitleCard>
     <div class="editMemberBox">
       <div class="editMemberContainer">

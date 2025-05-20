@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 
 namespace DomainLayer.Utility
@@ -131,9 +130,9 @@ namespace DomainLayer.Utility
         /// </summary>
         public bool ValidContractTime(DateTime? startTime, DateTime? endTime)
         {
-            if(startTime == null && endTime == null) return true;
+            if (startTime == null && endTime == null) return true;
             // 預設值 "0001-01-01" 給過
-            else if(startTime == DateTime.MinValue || endTime == DateTime.MinValue) return true;
+            else if (startTime == DateTime.MinValue || endTime == DateTime.MinValue) return true;
             else if (startTime == null && endTime != null) return false;
             else if (startTime != null && endTime == null) return false;
             else if (startTime > endTime) return false;
@@ -143,11 +142,11 @@ namespace DomainLayer.Utility
                 DateTime minDate = new DateTime(currentYear - 100, 1, 1);
                 DateTime maxDate = new DateTime(currentYear + 100, 12, 31);
 
-                if (startTime < minDate || startTime > maxDate||
-                    endTime < minDate || endTime > maxDate ) return false;
+                if (startTime < minDate || startTime > maxDate ||
+                    endTime < minDate || endTime > maxDate) return false;
             }
 
-                return true;
+            return true;
         }
 
         /// <summary>

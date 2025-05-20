@@ -12,23 +12,29 @@ export default {
   },
   methods: {
     redirect() {
-      if (this.text === "管理者清單") {
+      if (this.text === "管理員") {
         if (this.$route.path === "/admin") {
           this.$emit("refreshPage");
         } else {
           this.$router.push("/admin");
         }
-      } else if (this.text === "會員清單") {
+      } else if (this.text === "會員") {
         if (this.$route.path === "/member") {
           this.$emit("refreshPage");
         } else {
           this.$router.push("/member");
         }
-      }else if(this.text === "教練清單"){
+      }else if(this.text === "教練"){
         if (this.$route.path === "/coach") {
           this.$emit("refreshPage");
         } else {
           this.$router.push("/coach");
+        }
+      }else if(this.text === "團課展示"){
+        if (this.$route.path === "/gorupClass/showcase") {
+          this.$emit("refreshPage");
+        } else {
+          this.$router.push("/gorupClass/showcase");
         }
       }
     },

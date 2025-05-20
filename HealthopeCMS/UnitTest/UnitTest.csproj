@@ -190,6 +190,7 @@
     <Compile Include="Test\CoachTest\CoachServiceTest.cs" />
     <Compile Include="Test\FilterTest\AdminKickOutFilterTest.cs" />
     <Compile Include="Test\FilterTest\AdminPermissionAuthFilterTest.cs" />
+    <Compile Include="Test\GroupClassShowcaseTest\GroupClassShowcaseControllerTest.cs" />
     <Compile Include="Test\MemberTest\MemberControllerTest.cs" />
     <Compile Include="Test\MemberTest\MemberServiceTest.cs" />
     <Compile Include="utils\ResponseIsEqual.cs" />

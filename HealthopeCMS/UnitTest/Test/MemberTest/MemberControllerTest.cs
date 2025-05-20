@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
 using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
-using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models;
+using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;
-using ApiLayer.Models.Member;
 using UnitTest.utils;
-using ApiLayer.Models.Admin.RequestAdminDto;
-using ApiLayer.Models.Member.Response;
 
 namespace UnitTest.Test.MemberTest
 {

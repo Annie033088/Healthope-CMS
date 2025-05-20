@@ -61,6 +61,9 @@ export const errorCodeDefine = {
 
     // 驗證失敗
     VerifyFail: 20,
+
+    // 名稱重複
+    DuplicateName:21
 };
 
 //設定errorCode對應資料
@@ -127,6 +130,9 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 20:
             message = "驗證失敗";
+            return message;
+        case 21:
+            message = "輸入的名稱重複";
             return message;
         default:
             message = "";
