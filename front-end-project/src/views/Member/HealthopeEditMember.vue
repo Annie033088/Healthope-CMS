@@ -24,6 +24,7 @@
               class="editInput editInputPhone"
               labelText="手機號碼"
               v-model="phone"
+              @enter="editMember"
             ></InputSpan>
           </div>
         </div>

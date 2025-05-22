@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Models.Other;
 using Newtonsoft.Json;
+using NLog;
 
 namespace ApiLayer.Service
 {
     public class MultipartRequestService<T> : IMultipartRequestService<T>
     {
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// 檢查 request content 類型
         /// </summary>
@@ -59,6 +61,11 @@ namespace ApiLayer.Service
                 }
 
                 return (dataObject, files);
+            }
+            catch (JsonReaderException jsonEx)
+            {
+                logger.Error(jsonEx);
+                return (default, null);
             }
             catch (Exception)
             {

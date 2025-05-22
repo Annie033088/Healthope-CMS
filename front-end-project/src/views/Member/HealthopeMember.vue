@@ -45,8 +45,10 @@
       :rows="memberList"
       :expandable="true"
       :editBtnFlag="true"
+      :checkDetailBtnFlag="true"
       :resetDetailIndexFlag="resetDetailIndexFlag"
       @goEdit="goEditMember"
+      @goCheckDetail="goDetail"
     >
       <template #detail="{ row }">
         <div class="detailRowContainer">
@@ -71,10 +73,6 @@
               </div>
             </div>
           </div>
-          <div class="detailRowRight">
-            <strong>查看：</strong>
-            <BtnNormal @click="goMemberDetail(row)" text="會員資料"></BtnNormal>
-          </div>
         </div>
       </template>
     </TableNormal>
@@ -92,7 +90,6 @@
 <script>
 import TitleCard from "@/components/Card/TitleCard";
 import TableNormal from "@/components/Table/TableNormal.vue";
-import BtnNormal from "@/components/Btn/BtnNormal";
 import SelectInput from "@/components/Input/SelectInput";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
@@ -106,7 +103,6 @@ export default {
     TitleCard,
     TableNormal,
     SelectInput,
-    BtnNormal,
     SortSelector,
     RecordSelector,
     RadioSelector,
@@ -144,7 +140,7 @@ export default {
       if (row.MemberId < 1) return;
       this.$router.push({ path: "/member/edit", query: { id: row.MemberId } });
     },
-    goMemberDetail(row) {
+    goDetail(row) {
       if (row.MemberId < 1) return;
       this.$router.push({ path: "/member/detail", query: { id: row.MemberId } });
     },
@@ -290,7 +286,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                let redirectRoute = "/";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -342,14 +338,6 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-}
-
-.detailRowRight {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px;
-  font-size: 15px;
 }
 
 .groupClassRecordContainer {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Web.Http.Controllers;
 using ApiLayer.Interface;
 
@@ -24,6 +25,18 @@ namespace ApiLayer.Service
             try
             {
                 return actionContext.ActionDescriptor.ActionName;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public string GetRootPath()
+        {
+            try
+            {
+                return HttpContext.Current.Server.MapPath("~/");
             }
             catch (Exception)
             {

@@ -51,6 +51,8 @@
     <Compile Include="Interface\IGroupClassShowcaseRepository.cs" />
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Models\EditPwdDto.cs" />
+    <Compile Include="Models\RequestEditShowcaseDto.cs" />
+    <Compile Include="Models\RequestGetShowcaseDto.cs" />
     <Compile Include="Models\ResultWithException.cs" />
     <Compile Include="Models\RequestEditAdminDto.cs" />
     <Compile Include="Models\RequestEditCoachDto.cs" />

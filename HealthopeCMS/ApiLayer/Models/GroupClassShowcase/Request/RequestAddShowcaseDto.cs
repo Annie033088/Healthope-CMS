@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ApiLayer.Models.GroupClassShowcase.Request
+﻿namespace ApiLayer.Models.GroupClassShowcase.Request
 {
     public class RequestAddShowcaseDto
     {

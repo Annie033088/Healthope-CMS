@@ -41,9 +41,20 @@ export default {
       this.$notificationBox.notificationBoxFlag = false;
       this.$notificationBox.notificationBoxCancelFlag = false;
     },
+    handleKeydown(e) {
+      if (e.key === "Enter") {
+        this.notificationBoxConfirm(); 
+      }
+    },
   },
   created() {
-    this.$emit('created');
+    this.$emit("created");
+  },
+  mounted() {
+    window.addEventListener("keydown", this.handleKeydown);
+  },
+  destroyed() {
+    window.removeEventListener("keydown", this.handleKeydown);
   },
 };
 </script>

@@ -50,7 +50,7 @@ export default {
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              let redirectRoute = "/";
+              let redirectRoute = null;
               this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;

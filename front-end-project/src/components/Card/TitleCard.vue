@@ -30,11 +30,11 @@ export default {
         } else {
           this.$router.push("/coach");
         }
-      }else if(this.text === "團課展示"){
-        if (this.$route.path === "/gorupClass/showcase") {
+      }else if(this.text === "展示用團課"){
+        if (this.$route.path === "/groupClass/showcase") {
           this.$emit("refreshPage");
         } else {
-          this.$router.push("/gorupClass/showcase");
+          this.$router.push("/groupClass/showcase");
         }
       }
     },

@@ -3,6 +3,7 @@ using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.GroupClassShowcase.Request;
+using ApiLayer.Models.GroupClassShowcase.Response;
 using ApiLayer.Models.Member.Response;
 using AutoMapper;
 using DomainLayer.Models;
@@ -28,6 +29,9 @@ namespace ApiLayer.App_Start
                 .ForMember(dest => dest.ContractEndTime, opt =>
                     opt.MapFrom(src => src.ContractEndTime ?? DateTime.MinValue));
             CreateMap<RequestAddShowcaseDto, GroupClassShowcase>();
+            CreateMap<GroupClassShowcase, ResponseGetShowcaseDto>();
+            CreateMap<GroupClassShowcase, ResponseGetShowcaseDetailDto>();
+            CreateMap<GroupClassShowcase, ResponseGetShowcaseEditDataDto>();
         }
     }
 }

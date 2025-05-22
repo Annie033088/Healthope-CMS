@@ -12,32 +12,52 @@ namespace DomainLayer.Models
         /// <summary>
         /// 管理者相關權限
         /// </summary>
-        EditAdmin,
+        EditAdmin = 1,
 
         /// <summary>
         /// 查詢會員權限
         /// </summary>
-        SelectMember,
+        SelectMember = 2,
 
         /// <summary>
         /// 修改會員權限
         /// </summary>
-        EditMember,
+        EditMember = 3,
 
         /// <summary>
         /// 查詢教練權限
         /// </summary>
-        SelectCoach,
+        SelectCoach = 4,
 
         /// <summary>
         /// 新增教練權限
         /// </summary>
-        AddCoach,
+        AddCoach = 5,
 
         /// <summary>
         /// 修改教練權限
         /// </summary>
-        EditCoach,
+        EditCoach = 6,
+
+        /// <summary>
+        /// 增刪修 展示團課 權限
+        /// </summary>
+        EditGroupClassShowcase = 7,
+
+        /// <summary>
+        /// 查詢 展示團課 權限
+        /// </summary>
+        SelectGroupClassShowcase = 8,
+
+        /// <summary>
+        /// 增刪修 團課表 權限
+        /// </summary>
+        EditGroupClassSchedule = 9,
+
+        /// <summary>
+        /// 查詢 團課表 權限
+        /// </summary>
+        SelectGroupClassSchedule = 10,
     }
 
     public enum AdminIdentity : byte
@@ -92,20 +112,30 @@ namespace DomainLayer.Models
             = new Dictionary<AdminIdentity, List<AdminPermission>>()
         {
             { AdminIdentity.SuperAdmin, new List<AdminPermission> {
-                AdminPermission.EditAdmin, AdminPermission.EditMember,
+                AdminPermission.EditAdmin,
                 AdminPermission.SelectMember, AdminPermission.EditMember,
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
+                AdminPermission.EditGroupClassShowcase, AdminPermission.SelectGroupClassShowcase,
+                AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
+                AdminPermission.EditGroupClassShowcase, AdminPermission.SelectGroupClassShowcase,
+                AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,
+                AdminPermission.SelectGroupClassShowcase,
+                AdminPermission.SelectGroupClassSchedule,
             } },
             {AdminIdentity.CoachManager, new List<AdminPermission>{
                 AdminPermission.SelectMember,
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
+            } },
+            {AdminIdentity.CourseManager, new List<AdminPermission>{
+                AdminPermission.EditGroupClassShowcase,AdminPermission.SelectGroupClassShowcase,
+                AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
             } },
             {AdminIdentity.SalesRepresentative, new List<AdminPermission>{
                 AdminPermission.SelectMember

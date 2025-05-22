@@ -188,7 +188,7 @@ namespace UnitTest.Test.CoachTest
         }
 
         [TestMethod]
-        public void 取得會員清單_失敗_請求參數格式錯誤()
+        public void 取得教練清單_失敗_請求參數格式錯誤()
         {
             // Arrange
             RequestGetCoachDto getCoachDto = new RequestGetCoachDto()
@@ -310,7 +310,6 @@ namespace UnitTest.Test.CoachTest
                 PhotoUrl = "",
                 UpdateTime = DateTime.Now,
             };
-            HttpRequestMessage request = new HttpRequestMessage();
             ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
             Exception exception = null;
             List<FileDto> files = new List<FileDto>();
@@ -348,7 +347,6 @@ namespace UnitTest.Test.CoachTest
                 PhotoUrl = "",
                 UpdateTime = DateTime.Now,
             };
-            HttpRequestMessage request = new HttpRequestMessage();
             ErrorCodeDefine errorCode = ErrorCodeDefine.DuplicatePhone;
             Exception exception = null;
             List<FileDto> files = new List<FileDto>();
@@ -387,7 +385,6 @@ namespace UnitTest.Test.CoachTest
                 PhotoUrl = "",
                 UpdateTime = DateTime.Now,
             };
-            HttpRequestMessage request = new HttpRequestMessage();
             ErrorCodeDefine errorCode = ErrorCodeDefine.InvalidFormatOrEntry;
             Exception exception = null;
             List<FileDto> files = new List<FileDto>();

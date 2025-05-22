@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ApiLayer.Controllers.api;
+using System.Threading.Tasks;
+using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
+using ApiLayer.Models.Other;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Models;
@@ -12,6 +16,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
+using UnitTest.utils;
 
 namespace UnitTest.Test.CoachTest
 {
@@ -20,7 +25,9 @@ namespace UnitTest.Test.CoachTest
     {
         private Mock<IMapper> mapperMock;
         private Mock<ICoachRepository> coachRepositoryMock;
+        private Mock<IRedisService> redisServiceMock;
         private Mock<IFileService> fileServiceMock;
+        private  Mock<IHttpService> httpServiceMock;
         private CoachService coachService;
 
         [TestInitialize]
@@ -29,7 +36,10 @@ namespace UnitTest.Test.CoachTest
             mapperMock = new Mock<IMapper>();
             coachRepositoryMock = new Mock<ICoachRepository>();
             fileServiceMock = new Mock<IFileService>();
-            coachService = new CoachService(mapperMock.Object, coachRepositoryMock.Object, fileServiceMock.Object);
+            redisServiceMock = new Mock<IRedisService>();
+            httpServiceMock = new Mock<IHttpService>();
+            coachService = new CoachService(mapperMock.Object, coachRepositoryMock.Object, 
+                fileServiceMock.Object, redisServiceMock.Object, httpServiceMock.Object);
         }
 
         [TestMethod]
@@ -149,7 +159,6 @@ namespace UnitTest.Test.CoachTest
                 SearchPhone = null, // 只允許 null 或是 3 位數字
             };
 
-
             List<Coach> coaches = new List<Coach>()
             {
                 new Coach()
@@ -263,7 +272,7 @@ namespace UnitTest.Test.CoachTest
 
             // Act
             ResponseGetCoachEditDataByIdDto response = coachService.GetCoachEditDataById(coachIdDto);
-            responseDto.PhotoUrl = "/" + responseDto.PhotoUrl.Replace("\\", "/"); ;
+            responseDto.PhotoUrl = "/" + responseDto.PhotoUrl;
 
             // Assert
             Assert.IsTrue(response == responseDto);
@@ -287,6 +296,86 @@ namespace UnitTest.Test.CoachTest
 
             // Assert
             Assert.IsTrue(response == null);
+        }
+
+        [TestMethod]
+        public void  修改教練不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditCoachDto editCoachDto = new RequestEditCoachDto()
+            {
+                CoachId = 1,
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                ContractEndTime = null,
+                ContractStartTime = null,
+                Status = true,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            ResultWithException operationResult = new ResultWithException()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+            string oldPhotoUrl = "";
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.EditCoach(editCoachDto)).Returns((operationResult, oldPhotoUrl));
+            httpServiceMock.Setup(s=>s.GetRootPath()).Returns("/");
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = coachService.EditCoach(editCoachDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.Success);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 修改_失敗_手機重複()
+        {
+            // Arrange
+            RequestEditCoachDto editCoachDto = new RequestEditCoachDto()
+            {
+                CoachId = 1,
+                Email = "",
+                Phone = 987654321,
+                Name = "蘑菇",
+                Introduction = "",
+                Specialty = "",
+                Certification = "",
+                ContractEndTime = null,
+                ContractStartTime = null,
+                Status = true,
+                PhotoUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.DuplicatePhone;
+            ResultWithException operationResult = new ResultWithException()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+            string oldPhotoUrl = "";
+
+            // Mock 設定
+            coachRepositoryMock.Setup(s => s.EditCoach(editCoachDto)).Returns((operationResult, oldPhotoUrl));
+            httpServiceMock.Setup(s => s.GetRootPath()).Returns("/");
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = coachService.EditCoach(editCoachDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.DuplicatePhone);
+            Assert.IsTrue(exception == null);
         }
     }
 }

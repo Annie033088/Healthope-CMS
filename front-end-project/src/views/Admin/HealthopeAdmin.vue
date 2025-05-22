@@ -201,7 +201,7 @@ export default {
       if (this.searchingPage < 1) return;
 
       // post 的 dto 變數
-      let getADminDto = {
+      let getAdminDto = {
         Status: this.selectStatus || null,
         SortOrder: this.selectSortOrder,
         SortOption: this.selectSortOption || null,
@@ -214,7 +214,7 @@ export default {
         // post
         const response = await this.$axios.post(
           "/api/Admin/GetAdmin",
-          getADminDto
+          getAdminDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
@@ -227,7 +227,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                let redirectRoute = "/";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;

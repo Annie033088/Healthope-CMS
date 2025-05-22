@@ -1,5 +1,5 @@
 <template>
-  <div  @click="$emit('click', $event)" class="svgEditContainer">
+  <div  @click="$emit('click', $event)" class="">
     <svg
       class="btn btnEdit"
       :width="size"
@@ -29,11 +29,5 @@ export default {
 .btnEdit:hover {
   background-color: #fffffffe;
   border-radius: 50%;
-}
-
-.svgEditContainer{
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

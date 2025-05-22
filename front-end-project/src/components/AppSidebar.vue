@@ -71,7 +71,7 @@
       </button>
     </div>
     <div>
-      <div class="sidebarRow" v-if="permissionMap.AddGroupClassShowcase">
+      <div class="sidebarRow" v-if="groupClassFlag">
         <button
           class="btnDropDownSidebar"
           @click="dropDownFlag.Course ? closeDropdown() : openDropdown()"
@@ -131,9 +131,20 @@
         v-if="showElement.Course"
       >
         <BtnSubSideBar
-          v-if="permissionMap.AddGroupClassShowcase"
+          v-if="
+            permissionMap.EditGroupClassShowcase ||
+            permissionMap.SelectGroupClassShowcase
+          "
           text="展示用團課"
           @click="redirect('/groupClass/showcase')"
+        ></BtnSubSideBar>
+        <BtnSubSideBar
+          v-if="
+            permissionMap.EditGroupClassSchedule ||
+            permissionMap.SelectGroupClassSchedule
+          "
+          text="團體課程表"
+          @click="redirect('/groupClass/schedule')"
         ></BtnSubSideBar>
       </div>
     </div>
@@ -180,6 +191,11 @@ export default {
         SelectCoach: false,
         AddCoach: false,
         None: true,
+        EditCoach: false,
+        EditGroupClassShowcase: false,
+        SelectGroupClassShowcase: false,
+        EditGroupClassSchedule:false,
+        SelectGroupClassSchedule:false,
       },
       dropDownFlag: {
         Course: false,
@@ -268,6 +284,14 @@ export default {
       });
     },
   },
+  computed:{
+    groupClassFlag(){
+      return this.permissionMap.EditGroupClassShowcase ||  
+      this.permissionMap.SelectGroupClassShowcase || 
+      this.permissionMap.EditGroupClassSchedule || 
+       this.permissionMap.SelectGroupClassSchedule 
+    }
+  },
   mounted() {
     // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
     if (!this.permissionList) return;
@@ -331,11 +355,11 @@ export default {
 
 <style scoped>
 .showDropdown {
-  animation: flip-in-hor-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: flip-in-hor-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .hideDropdown {
-  animation: flip-out-hor-top 0.45s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+  animation: flip-out-hor-top 0.45s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
 }
 
 @keyframes flip-in-hor-bottom {

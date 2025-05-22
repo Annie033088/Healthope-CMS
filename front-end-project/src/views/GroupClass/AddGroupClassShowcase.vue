@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <TitleCard text="團課展示" @refreshPage="$emit('refreshPage')" />
+    <TitleCard text="展示用團課" @refreshPage="$emit('refreshPage')" />
     <SubTitleCard text="新增課程"></SubTitleCard>
     <div class="sectionTitle"><p>課程基本資料區</p></div>
     <div class="basicInputBox">
@@ -23,7 +23,7 @@
       <div class="categoryInputContainer">
         <RadioInput
           v-model="selectCategory"
-          :options="groupClassCategory"
+          :options="groupClassCategoryAndText"
           inputTitle="選擇課程類別"
           inputType="selectCategory"
         />
@@ -81,7 +81,7 @@ import InputSpan from "@/components/Input/InputSpan";
 import RadioInput from "@/components/Input/RadioInput";
 import ImageUploader from "@/components/Input/ImageUploader";
 import BtnConfirm from "@/components/Btn/BtnConfirm";
-import { groupClassIcon, groupClassCategory } from "@/utils/groupClass";
+import { groupClassIcon, groupClassCategoryAndText, groupClassCategoryReverse } from "@/utils/groupClass";
 
 export default {
   name: "AddGroupClassShowcase",
@@ -93,11 +93,14 @@ export default {
     ImageUploader,
     BtnConfirm,
   },
+  props: {
+    notificationBoxConfirmFlag: Boolean,
+  },
   data() {
     return {
       verifyFail: false,
       hintText: "",
-      selectCategory: "other",
+      selectCategory: "7",
       selectIcon: "1",
       sort: "",
       name: "",
@@ -139,7 +142,7 @@ export default {
 
         // post後回傳
         const response = await this.$axios.post(
-          "/api/GroupClass/AddShowcase",
+          "/api/GroupClassShowcase/AddShowcase",
           formData,
           {
             headers: {
@@ -160,7 +163,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("新增教練時發生錯誤", error);
+        console.error("新增展示課時發生錯誤", error);
       }
     },
     validInput() {
@@ -170,25 +173,31 @@ export default {
         return false;
       }
 
+      const IntMax = 2147483647;
       let sort = Number(this.sort);
-      if (!sort || Number.isNaN(sort)) {
+      if (
+        !Number.isInteger(sort) ||
+        sort < 1 ||
+        // 超出安全整數範圍
+        sort > IntMax
+      ) {
         this.hintText = "順序格式錯誤";
         return false;
       }
 
-      let existCategory = false;
 
-      groupClassCategory.forEach((category) => {
-        if (this.selectCategory === category.value) existCategory = true;
-      });
-
-      if (!existCategory) {
+      if (!(this.selectCategory in groupClassCategoryReverse)) {
         this.hintText = "分類格式錯誤";
         return false;
       }
 
       let icon = Number(this.selectIcon);
-      if (Number.isNaN(icon)) {
+      if (
+        !Number.isInteger(icon) || // 不是整數
+        icon < 1 ||
+        // 超出安全整數範圍
+        icon > IntMax
+      ) {
         this.hintText = "icon 格式錯誤";
         return false;
       }
@@ -229,8 +238,8 @@ export default {
     groupClassIcon() {
       return groupClassIcon;
     },
-    groupClassCategory() {
-      return groupClassCategory;
+    groupClassCategoryAndText() {
+      return groupClassCategoryAndText;
     },
   },
 };

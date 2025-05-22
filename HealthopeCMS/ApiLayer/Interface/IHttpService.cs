@@ -13,5 +13,10 @@ namespace ApiLayer.Interface
         /// 取得 action 名
         /// </summary>
         string GetActionName(HttpActionContext actionContext);
+
+        /// <summary>
+        /// 取得當前源地址
+        /// </summary>
+        string GetRootPath();
     }
 }

@@ -3,33 +3,62 @@
     <table>
       <thead>
         <tr>
-          <th v-for="col in columns" :key="col.key">
+          <th
+            v-for="col in columns"
+            :key="col.key"
+            :style="{ width: avgWidth + '%' }"
+          >
             {{ col.label }}
           </th>
-          <th v-if="operationFlag">操作</th>
+          <th
+            v-if="operationFlag"
+            class="editHeadContainer"
+            :style="{ width: '10%' }"
+          >
+            操作
+          </th>
+          <th v-if="checkDetailBtnFlag" :style="{ width: '10%' }">
+            查看
+          </th>
         </tr>
       </thead>
       <tbody>
         <template v-for="(row, index) in rows">
           <tr :key="'main-' + index" @click="toggleDetail(index)">
             <td v-for="col in columns" :key="col.key">
-              {{ row[col.key] }}
+              <div>
+                {{ row[col.key] }}
+              </div>
             </td>
-            <td v-if="operationFlag" class="editBtnContainer">
-              <SvgEdit v-if="editBtnFlag" size="28" @click.stop="$emit('goEdit', row)"></SvgEdit>
-              <SvgDelete
-                v-if="deleteBtnFlag"
-                size="32"
-                @click.stop=""
-              ></SvgDelete>
+            <td v-if="operationFlag" class="">
+              <div class="editBtnContainer">
+                <SvgEdit
+                  v-if="editBtnFlag"
+                  size="28"
+                  @click.stop="$emit('goEdit', row)"
+                ></SvgEdit>
+                <SvgDelete
+                  v-if="deleteBtnFlag"
+                  size="30"
+                  @click.stop="$emit('goDelete', row)"
+                ></SvgDelete>
+              </div>
+            </td>
+            <td v-if="checkDetailBtnFlag">
+              <div class="editBtnContainer">
+              <SvgCheckDetail
+                size="24"
+                @click.stop="$emit('goCheckDetail', row)"
+              />
+              </div>
             </td>
           </tr>
           <tr
-            v-if="expandedIndex === index"
+            v-if="expandable && expandedIndex === index"
             :key="'detail-' + index"
             class="detailContainer"
           >
-            <td :colspan="columns.length + 1">
+            <td :colspan="columns.length + 2">
               <slot name="detail" :row="row" />
             </td>
           </tr>
@@ -42,12 +71,14 @@
 <script>
 import SvgEdit from "@/components/Btn/SvgEdit";
 import SvgDelete from "@/components/Btn/SvgDelete";
+import SvgCheckDetail from "@/components/Btn/SvgCheckDetail";
 
 export default {
   name: "TableNormal",
   components: {
     SvgEdit,
     SvgDelete,
+    SvgCheckDetail,
   },
   props: {
     columns: {
@@ -70,6 +101,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    checkDetailBtnFlag: {
+      type: Boolean,
+      default: false,
+    },
     resetDetailIndexFlag: Boolean,
   },
   data() {
@@ -82,13 +117,17 @@ export default {
       if (!this.expandable) return;
       this.expandedIndex = this.expandedIndex === index ? null : index;
     },
-    onEdit(row) {
-      console.log(row);
-    },
   },
   computed: {
     operationFlag() {
       return this.editBtnFlag || this.deleteBtnFlag;
+    },
+    avgWidth() {
+      let column = this.columns.length;
+      let width = 100;
+      if (this.operationFlag) width-=10
+      if (this.checkDetailBtnFlag) width-=10
+      return width / column;
     },
   },
   watch: {
@@ -102,7 +141,7 @@ export default {
 <style scoped>
 .tableContainer {
   overflow-x: auto;
-  max-width: 1000px; /* 限制表格最大寬度 */
+  max-width: 1000px;
   margin: 0 auto; /* 置中 */
 }
 
@@ -152,64 +191,7 @@ tbody td {
 
 .editBtnContainer {
   display: flex;
-  align-items: center;
+  justify-content: start;
 }
 
-/* RWD - 手機版卡片樣式 */
-/* @media (max-width: 640px) {
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-    border: none 
-    }
-
-    thead {
-      display: none;
-    }
-
-    tbody tr {
-      margin-bottom: 1rem;
-      border: 1px solid #e5e7eb;
-      border-radius: 0.5rem;
-      padding: 0.5rem;
-      background-color: #fff;
-    }
-
-    tbody td {
-      white-space: normal;
-      padding: 0.5rem 0;
-      position: relative;
-      padding-left: 50%;
-    }
-
-    tbody td::before {
-      position: absolute;
-      top: 0.5rem;
-      left: 0.75rem;
-      width: 45%;
-      padding-right: 0.5rem;
-      white-space: nowrap;
-      font-weight: 600;
-      color: #6b7280;
-    }
-
-    tbody td:nth-child(1)::before {
-      content: "Name";
-    }
-
-    tbody td:nth-child(2)::before {
-      content: "DoB";
-    }
-
-    tbody td:nth-child(3)::before {
-      content: "Role";
-    }
-
-    tbody td:nth-child(4)::before {
-      content: "Salary";
-    } 
-  }*/
 </style>

@@ -123,6 +123,9 @@ export default {
   },
   data() {
     return {
+      props: {
+        notificationBoxConfirmFlag: Boolean,
+      },
       member: {
         MemberId: 1,
         Name: "王小小",
@@ -192,7 +195,10 @@ export default {
             10
           );
 
-          this.member.CreateTime = (this.member.CreateTime.replace("T", " ")).split('.')[0];
+          this.member.CreateTime = this.member.CreateTime.replace(
+            "T",
+            " "
+          ).split(".")[0];
 
           const today = new Date();
           const membershipExpiryTargetDate = new Date(

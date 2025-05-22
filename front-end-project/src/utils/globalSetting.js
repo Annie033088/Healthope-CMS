@@ -162,8 +162,17 @@ export const adminPermission = {
     // 修改教練權限
     EditCoach: 6,
 
-    // 新增 展示團課 權限
-    AddGroupClassShowcase : 7,
+    // 增刪修 展示團課 權限
+    EditGroupClassShowcase : 7,
+
+    // 查詢 展示團課 權限
+    SelectGroupClassShowcase : 8,
+
+    // 增刪修 團課表 權限
+    EditGroupClassSchedule : 9,
+
+    // 查詢 團課表 權限
+    SelectGroupClassSchedule : 10,
 }
 
 export default function adminIdentityToText(identity) {

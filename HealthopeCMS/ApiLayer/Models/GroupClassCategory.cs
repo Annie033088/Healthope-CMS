@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ApiLayer.Models
+﻿namespace ApiLayer.Models
 {
     public enum GroupClassCategory
     {
@@ -12,36 +7,36 @@ namespace ApiLayer.Models
         /// <summary>
         /// 有氧
         /// </summary>
-        Cardio,
+        Cardio = 1,
 
         /// <summary>
         /// 肌力
         /// </summary>
-        Force,
+        Force = 2,
 
         /// <summary>
         /// 瑜伽
         /// </summary>
-        Yoga,
+        Yoga = 3,
 
         /// <summary>
         /// 舞蹈
         /// </summary>
-        Dance,
+        Dance = 4,
 
         /// <summary>
         /// 飛輪
         /// </summary>
-        Flywheel,
+        Flywheel = 5,
 
         /// <summary>
         /// 基礎
         /// </summary>
-        Basic,
+        Basic = 6,
 
         /// <summary>
         /// 其他
         /// </summary>
-        Other,
+        Other = 7,
     }
 }

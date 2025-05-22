@@ -55,7 +55,6 @@ export default {
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
   padding: 0.25rem;
   font-size: 14px;
-  width: 100%;
 }
 
 .lab {

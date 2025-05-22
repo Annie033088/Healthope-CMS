@@ -21,14 +21,16 @@ namespace ApiLayer.Service
         private readonly ICoachRepository coachRepository;
         private readonly IRedisService redisService;
         private readonly IFileService fileService;
+        private readonly IHttpService httpService;
 
         public CoachService(IMapper mapper, ICoachRepository coachRepository,
-            IFileService fileService, IRedisService redisService)
+            IFileService fileService, IRedisService redisService, IHttpService httpService)
         {
             this.mapper = mapper;
             this.coachRepository = coachRepository;
             this.fileService = fileService;
             this.redisService = redisService;
+            this.httpService = httpService;
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace ApiLayer.Service
                 {
                     string imageExtension = fileService.GetImageExtension(file.MimeType);
                     string fileName = Guid.NewGuid().ToString() + imageExtension;
-                    string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "assets", "images", "coach");
+                    string folderPath = Path.Combine(httpService.GetRootPath(), "assets", "images", "coach");
                     savePath = Path.Combine(folderPath, fileName);
                     coach.PhotoUrl = Path.Combine("assets", "images", "coach", fileName)
                         .Replace(Path.DirectorySeparatorChar, '/');
@@ -87,13 +89,13 @@ namespace ApiLayer.Service
             try
             {
                 (List<Coach> coaches, int totalPage) = coachRepository.GetCoach(getCoachDto);
-                ResponseGetCoachListDto responseGetMemberDto = new ResponseGetCoachListDto()
+                ResponseGetCoachListDto responseGetCoachDto = new ResponseGetCoachListDto()
                 {
                     CoachList = mapper.Map<List<ResponseGetCoachDto>>(coaches),
                     TotalPage = totalPage
                 };
 
-                return responseGetMemberDto;
+                return responseGetCoachDto;
             }
             catch (Exception)
             {
@@ -114,7 +116,7 @@ namespace ApiLayer.Service
 
                 ResponseGetCoachEditDataByIdDto response = mapper.Map<ResponseGetCoachEditDataByIdDto>(coach);
 
-                if (!string.IsNullOrEmpty(response.PhotoUrl))
+                if (response!=null && !string.IsNullOrEmpty(response.PhotoUrl))
                     response.PhotoUrl = "/" + response.PhotoUrl;
 
                 return response;
@@ -134,7 +136,7 @@ namespace ApiLayer.Service
             {
                 editCoachDto.PhotoUrl = null;
                 string savePath = "";
-                string rootUrl = HttpContext.Current.Server.MapPath("~/");
+                string rootUrl = httpService.GetRootPath();
 
                 if (file != null)
                 {
