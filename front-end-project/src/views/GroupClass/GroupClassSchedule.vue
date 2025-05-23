@@ -4,7 +4,7 @@
     <div class="functionColumn">
       <BtnNormal
         text="新增課程"
-        @click="redirect('/groupClass/showcase/add')"
+        @click="redirect('/groupClass/schedule/add')"
       ></BtnNormal>
       <DateSelector
         class="timeSelector"
@@ -19,12 +19,17 @@
         ]"
       />
       <RadioSelector
-        class="categorySelector"
+        class="statusSelector"
         v-model="selectCategory"
         @change="selectClassByCategory"
-        inputTitle="分類："
+        inputTitle="狀態："
         inputType="radioCategory"
-        :options="groupClassCategoryAndText"
+        :options="[
+          { value: '1', text: '未開放' },
+          { value: '2', text: '開放' },
+          { value: '3', text: '結束' },
+          { value: '4', text: '取消' },
+        ]"
       />
       <SortSelector
         :options="[
@@ -361,11 +366,11 @@ export default {
   gap: 10px 20px;
 }
 
-.categorySelector {
-  width: 600px;
+.statusSelector {
+  width: 440px;
 }
 .timeSelector{
-  width: 500px;
+  width: 450px;
 }
 
 .detailRowContainer {

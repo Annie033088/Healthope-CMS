@@ -78,6 +78,7 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   min-width: 50px;
+  margin-right: 5px;
 }
 
 .labRadioBox input {
@@ -109,25 +110,16 @@ export default {
 }
 
 .txbDate{
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  background-color: #fafbfc;
   border: 1px solid #ccc;
   border-radius: 0.5rem;
+  background-color: #fff;
 
   padding: 0.5rem 0.5rem;
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 15px;
   color: #333;
 
   max-width: 150px;
   box-sizing: border-box;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5); /* 修改 icon 顏色以匹配文字 */
-  cursor: pointer;
+  height: 36px;
 }
 </style>

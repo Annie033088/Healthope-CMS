@@ -1,6 +1,6 @@
 <template>
   <div class="titleCard">
-    <h2 class="title" @click="redirect()">{{ text }}</h2>
+    <h3 class="title" @click="redirect()">{{ text }}</h3>
   </div>
 </template>
 

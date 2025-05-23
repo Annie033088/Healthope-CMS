@@ -1,0 +1,74 @@
+<template>
+  <div class="selectorContainer">
+    <label class="lab">{{labelText}}</label>
+    <select class="normalSelector" v-model="localValue" @change="handleChange">
+      <option v-for="opt in options" :key="opt.value" :value="opt.value">
+        {{ opt.text }}
+      </option>
+    </select>
+  </div>
+</template>
+<script>
+export default {
+  name: "NormalSelector",
+  props: {
+    parentValue: {
+      type: [String, Number],
+      required: true
+    },
+    options: {
+      type: Array,
+    },
+    labelText:{
+        type:String
+    }
+  },
+  data() {
+    return {
+      localValue: this.parentValue
+    };
+  },
+  watch: {
+    parentValue(val) {
+      this.localValue = val;
+    }
+  },
+  methods: {
+    handleChange() {
+      this.$emit("update:parentValue", this.localValue);
+      this.$emit("change");
+    }
+  }
+};
+</script>
+
+<style scoped>
+.selectorContainer{
+  display: inline-block;
+  border-radius: 0.5rem;
+  background-color: #eee;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  font-size: 14px;
+}
+
+.lab {
+  padding: 0.5rem 0.5rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+.normalSelector {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.5rem;
+  background-color: #fafbfc;
+}
+
+.normalSelector:hover {
+  cursor: pointer;
+}
+
+</style>

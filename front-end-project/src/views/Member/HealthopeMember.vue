@@ -2,16 +2,16 @@
   <div>
     <TitleCard text="會員" @refreshPage="$emit('refreshPage')"></TitleCard>
     <div class="functionColumn">
-      <SelectInput
+      <SearchInput
         placeholder="Name..."
         v-model="searchName"
-        @select="selectMemberByName"
-      ></SelectInput>
-      <SelectInput
+        @search="selectMemberByName"
+      ></SearchInput>
+      <SearchInput
         placeholder="手機末三碼..."
         v-model="searchPhone"
-        @select="selectMemberByPhone"
-      ></SelectInput>
+        @search="selectMemberByPhone"
+      ></SearchInput>
        <RadioSelector
        class="statusSelector"
         v-model="selectStatus"
@@ -90,7 +90,7 @@
 <script>
 import TitleCard from "@/components/Card/TitleCard";
 import TableNormal from "@/components/Table/TableNormal.vue";
-import SelectInput from "@/components/Input/SelectInput";
+import SearchInput from "@/components/Input/SearchInput";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import RadioSelector from "@/components/Selector/RadioSelector";
@@ -102,7 +102,7 @@ export default {
   components: {
     TitleCard,
     TableNormal,
-    SelectInput,
+    SearchInput,
     SortSelector,
     RecordSelector,
     RadioSelector,

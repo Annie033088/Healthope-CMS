@@ -42,5 +42,12 @@ export default [
             { adminPermission: adminPermission.SelectGroupClassSchedule }]
         }
     },
-
+    {
+        path: '/groupClass/schedule/add',
+        name: 'AddGroupClassSchedule',
+        component: () => import('@/views/GroupClass/AddGroupClassSchedule'),
+        meta: {
+            requireAuth: [{ adminPermission: adminPermission.EditGroupClassSchedule }]
+        }
+    },
 ];

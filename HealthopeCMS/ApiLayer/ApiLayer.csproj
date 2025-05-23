@@ -186,6 +186,7 @@
     <Compile Include="Controllers\api\AccountAccessController.cs" />
     <Compile Include="Controllers\api\AdminController.cs" />
     <Compile Include="Controllers\api\CoachController.cs" />
+    <Compile Include="Controllers\api\GroupClassScheduleController.cs" />
     <Compile Include="Controllers\api\GroupClassShowcaseController.cs" />
     <Compile Include="Controllers\api\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestLoginDto.cs" />
     <Compile Include="Models\GroupClassCategory.cs" />
+    <Compile Include="Models\GroupClassSchedule\Request\RequestGetShowcaseAndCoachDto.cs" />
     <Compile Include="Models\GroupClassShowcase\Request\RequestAddShowcaseDto.cs" />
     <Compile Include="Models\GroupClassShowcase\Request\RequestShowcaseIdDto.cs" />
     <Compile Include="Models\GroupClassShowcase\Response\ResponseGetShowcaseDetailDto.cs" />

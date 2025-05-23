@@ -39,7 +39,7 @@ export default {
 <style scoped>
 .subTitle {
   margin-left: 3%;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -52,8 +52,8 @@ export default {
 }
 
 .goBack{
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;

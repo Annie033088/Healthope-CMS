@@ -6,11 +6,11 @@
         text="新增課程"
         @click="redirect('/groupClass/showcase/add')"
       ></BtnNormal>
-      <SelectInput
-        @select="selectClassByName"
+      <SearchInput
+        @search="selectClassByName"
         placeholder="Name..."
         v-model="searchName"
-      ></SelectInput>
+      ></SearchInput>
       <RadioSelector
         class="categorySelector"
         v-model="selectCategory"
@@ -63,7 +63,7 @@ import SvgReset from "@/components/Btn/SvgReset";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import RadioSelector from "@/components/Selector/RadioSelector";
-import SelectInput from "@/components/Input/SelectInput";
+import SearchInput from "@/components/Input/SearchInput";
 import {
   groupClassCategoryAndText,
   groupClassIcon,
@@ -77,7 +77,7 @@ export default {
   components: {
     BtnNormal,
     TitleCard,
-    SelectInput,
+    SearchInput,
     SvgReset,
     SortSelector,
     RecordSelector,

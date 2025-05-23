@@ -2,18 +2,18 @@
   <div class="">
     <TitleCard text="展示用團課" @refreshPage="$emit('refreshPage')" />
     <SubTitleCard text="新增課程"></SubTitleCard>
-    <div class="sectionTitle"><p>課程基本資料區</p></div>
+    <div class="sectionTitle"><p>📋課程基本資料區</p></div>
     <div class="basicInputBox">
       <div class="basicInputContainer">
         <InputSpan
-          class="inputSpann"
+          class="inputSpanContainer"
           labelText="課程名稱"
           v-model="name"
           :required="true"
           @enter="addCourse"
         ></InputSpan>
         <InputSpan
-          class="inputSpann"
+          class="inputSpanContainer"
           labelText="課程順序"
           v-model="sort"
           :required="true"
@@ -169,7 +169,7 @@ export default {
     validInput() {
       // 格式驗證
       if (!this.name || this.name.length > 20) {
-        this.hintText = "名稱格式錯誤";
+        this.hintText = "名稱需輸入 20 字錯誤";
         return false;
       }
 
@@ -267,6 +267,7 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 100%;
+
 }
 
 .basicInputContainer {
@@ -276,7 +277,7 @@ export default {
   gap: 10%;
 }
 
-.inputSpann {
+.inputSpanContainer {
   max-width: 40%;
   width: 300px;
 }

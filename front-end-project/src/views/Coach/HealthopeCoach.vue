@@ -3,16 +3,16 @@
     <TitleCard text="教練" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
       <BtnNormal text="新增教練" @click="redirect('/coach/add')"></BtnNormal>
-      <SelectInput
+      <SearchInput
         placeholder="Name..."
         v-model="searchName"
-        @select="selectCoachByName"
-      ></SelectInput>
-      <SelectInput
+        @search="selectCoachByName"
+      ></SearchInput>
+      <SearchInput
         placeholder="手機末三碼..."
         v-model="searchPhone"
-        @select="selectCoachByPhone"
-      ></SelectInput>
+        @search="selectCoachByPhone"
+      ></SearchInput>
        <RadioSelector
        class="statusSelector"
         v-model="selectStatus"
@@ -62,7 +62,7 @@
 import TitleCard from "@/components/Card/TitleCard";
 import TableNormal from "@/components/Table/TableNormal.vue";
 import BtnNormal from "@/components/Btn/BtnNormal";
-import SelectInput from "@/components/Input/SelectInput";
+import SearchInput from "@/components/Input/SearchInput";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import RadioSelector from "@/components/Selector/RadioSelector";
@@ -73,7 +73,7 @@ export default {
   name: "HealthopeCoach",
   components: {
     TitleCard,
-    SelectInput,
+    SearchInput,
     BtnNormal,
     SortSelector,
     RecordSelector,

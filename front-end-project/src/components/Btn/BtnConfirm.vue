@@ -19,16 +19,16 @@ export default {
   max-width: 400px;
   height: 50px;
   border-radius: 3rem;
-  background-color: #707070;
+  background-color: #828282;
   color: #efefef;
   cursor: pointer;
   transition: all 300ms;
   font-weight: 600;
-  font-size: 0.9rem;
+  border: none;
+  font-size: 16px;
 }
 
 .btnConfirm:hover {
-  background-color: #eee;
-  color: #707070;
+  background-color: #666666f2;
 }
 </style>

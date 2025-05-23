@@ -65,6 +65,10 @@ export default {
   margin-bottom: 3%;
 }
 
+.inputSpan label{
+  font-weight: bold;
+}
+
 .inputSpan input {
   border-radius: 0.5rem;
   padding: 0.7rem 0.75rem;
@@ -72,6 +76,7 @@ export default {
   background-color: white;
   outline: 2px solid #efefef;
   font-size: 15px;
+  height: 14px;
 }
 
 .inputSpan input:focus {

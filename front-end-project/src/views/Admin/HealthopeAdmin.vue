@@ -6,11 +6,11 @@
     ></TitleCard>
     <div class="functionColumn">
       <BtnNormal text="新增管理者" @click="redirect('/admin/add')"></BtnNormal>
-      <SelectInput
-        @select="selectAdminByAccount()"
+      <SearchInput
+        @search="selectAdminByAccount()"
         placeholder="Account..."
         v-model="searchAccount"
-      ></SelectInput>
+      ></SearchInput>
       <RadioSelector
         class="statusSelector"
         v-model="selectStatus"
@@ -94,7 +94,7 @@ import TitleCard from "@/components/Card/TitleCard";
 import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import RadioSelector from "@/components/Selector/RadioSelector";
-import SelectInput from "@/components/Input/SelectInput";
+import SearchInput from "@/components/Input/SearchInput";
 import adminIdentityToText from "../../utils/globalSetting";
 import PaginationComponent from "@/components/PaginationComponent";
 
@@ -103,7 +103,7 @@ export default {
   components: {
     BtnNormal,
     TitleCard,
-    SelectInput,
+    SearchInput,
     SvgDelete,
     SvgReset,
     SortSelector,
