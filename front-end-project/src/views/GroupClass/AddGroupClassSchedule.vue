@@ -48,7 +48,7 @@
         <InputSpan
           class="inputSpanContainer"
           labelText="課程名稱"
-          v-model="schedule.Name"
+          v-model="schedule.ClassName"
         ></InputSpan>
         <SelectInput
           labelText="分類"
@@ -88,7 +88,7 @@
         <InputSpan
           class="inputSpanContainer"
           labelText="人數上限"
-          v-model="schedule.MaxParticipant"
+          v-model="schedule.MaximumParticipant"
         ></InputSpan>
         <div class="hintContainer">
           <span v-if="verifyFail" class="hintSpan">{{ this.hintText }}</span>
@@ -155,13 +155,13 @@ export default {
       displayCoachList: [],
       coachList: [],
       schedule: {
-        Name: "",
+        ClassName: "",
         Category: "",
         Icon: "",
         CoachId: "",
         Time: "",
         Place: "",
-        MaxParticipant: "35",
+        MaximumParticipant: "35",
       },
     };
   },
@@ -180,7 +180,7 @@ export default {
   },
   methods: {
     selectCourse(course) {
-      this.schedule.Name = course.Name;
+      this.schedule.ClassName = course.Name;
       this.schedule.Category = course.Category.value;
       this.schedule.Icon = course.Icon.value;
     },
@@ -212,6 +212,7 @@ export default {
           this.currentPage = this.searchingPage;
           this.showcaseList = response.data.ApiDataObject.ShowcaseList;
           this.coachList = response.data.ApiDataObject.CoachList;
+          this.displayCoachList = [];
           this.coachList.forEach((coach) => {
             let displayCoach = {
               ...coach,
@@ -264,7 +265,7 @@ export default {
     },
     validInput() {
       // 格式驗證
-      if (!this.schedule.Name || this.schedule.Name.length > 20) {
+      if (!this.schedule.ClassName || this.schedule.ClassName.length > 20) {
         this.hintText = "名稱需輸入 20 字以內";
         return false;
       }
@@ -323,30 +324,30 @@ export default {
         return false;
       }
 
-      let maxParticipant = Number(this.schedule.MaxParticipant);
+      let maximumParticipant = Number(this.schedule.MaximumParticipant);
       // 不是整數
       if (
-        !Number.isInteger(maxParticipant) ||
-        maxParticipant > 10000 ||
-        maxParticipant < 1
+        !Number.isInteger(maximumParticipant) ||
+        maximumParticipant > 255 ||
+        maximumParticipant < 1
       ) {
-        this.hintText = "最大上限人數輸入錯誤 (最高 9999 人)";
+        this.hintText = "最大上限人數輸入錯誤 (最高 255 人)";
         return false;
       }
 
       return true;
     },
     async addSchedule() {
-      this.schedule.Name = this.schedule.Name.trim();
+      this.schedule.ClassName = this.schedule.ClassName.trim();
       this.schedule.Category = this.schedule.Category.trim();
       this.schedule.Icon = this.schedule.Icon.trim();
       this.schedule.Place = this.schedule.Place.trim();
-      this.schedule.MaxParticipant = this.schedule.MaxParticipant.trim();
-      
+      this.schedule.MaximumParticipant = this.schedule.MaximumParticipant.trim();
+
       if (this.inputTime.split(":")[0].length < 2)
         this.schedule.Time = (this.inputDate + "T0" + this.inputTime).trim();
       else this.schedule.Time = (this.inputDate + "T" + this.inputTime).trim();
-      
+
       if (!this.validInput()) {
         this.verifyFail = true;
         return;
@@ -359,13 +360,13 @@ export default {
       try {
         // 傳輸新增資料
         let addScheduleDto = {
-          Name: this.schedule.Name,
+          ClassName: this.schedule.ClassName,
           Category: this.schedule.Category,
           Icon: this.schedule.Icon,
           Coach: coach,
           Time: this.schedule.Time,
           Place: this.schedule.Place,
-          MaxParticipant: this.schedule.MaxParticipant,
+          MaximumParticipant: this.schedule.MaximumParticipant,
         };
 
         // post後回傳

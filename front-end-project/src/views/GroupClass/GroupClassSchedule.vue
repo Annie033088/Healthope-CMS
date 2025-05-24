@@ -8,28 +8,23 @@
       ></BtnNormal>
       <DateSelector
         class="timeSelector"
-        v-model="searchName"
-        @change="selectClassByName"
+        v-model="selectTime"
+        @change="selectClassByTime"
         inputTitle="時間："
         inputType="radioTime"
         :options="[
-          { value: 'pastCourse', text: '過去' },
-          { value: 'futureCourse', text: '未來' },
-          { value: '', text: '全部' },
+          { value: 'past', text: '過去' },
+          { value: 'future', text: '未來' },
+          { value: 'all', text: '全部' },
         ]"
       />
       <RadioSelector
         class="statusSelector"
-        v-model="selectCategory"
-        @change="selectClassByCategory"
+        v-model="selectStatus"
+        @change="selectClassByStatus"
         inputTitle="狀態："
         inputType="radioCategory"
-        :options="[
-          { value: '1', text: '未開放' },
-          { value: '2', text: '開放' },
-          { value: '3', text: '結束' },
-          { value: '4', text: '取消' },
-        ]"
+        :options="groupClassScheduleStatus"
       />
       <SortSelector
         :options="[
@@ -53,6 +48,16 @@
       :editBtnFlag="true"
       :expandable="true"
     >
+      <template #detail="{ row }">
+        <div class="detailRowContainer">
+          <div class="detailRowLeft">
+            <strong>報到人數：</strong> {{ row.CheckInParticipant }}
+            <br />
+            <strong>標籤(Tag)：</strong>
+            <span>{{ row.Tag === 2 ? "代課" : "無" }} </span><br />
+          </div>
+        </div>
+      </template>
     </TableNormal>
     <div>
       <PaginationComponent
@@ -72,11 +77,7 @@ import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import RadioSelector from "@/components/Selector/RadioSelector";
 import DateSelector from "@/components/Selector/DateSelector";
-import {
-  groupClassCategoryAndText,
-  groupClassIcon,
-  groupClassCategoryReverse,
-} from "@/utils/groupClass";
+import { groupClassCategoryAndText, groupClassIcon, groupClassScheduleStatus } from "@/utils/groupClass";
 import TableNormal from "@/components/Table/TableNormal";
 import PaginationComponent from "@/components/PaginationComponent";
 
@@ -91,46 +92,39 @@ export default {
     RadioSelector,
     TableNormal,
     PaginationComponent,
-    DateSelector
+    DateSelector,
   },
   props: {
     notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
-      selectCategory: "",
+      selectStatus: "",
       selectSortOrder: "ascending",
       selectSortOption: "",
       recordPerPage: "8",
-      searchName: "",
+      selectTime: "all",
       currentPage: 1,
       totalPage: 1,
       searchingPage: 1,
       columns: [
         { label: "日期", key: "Date" },
-        { label: "星期", key: "Week" },
-        { label: "時間", key: "Time" },
-        { label: "名稱", key: "Name" },
+        { label: "星期", key: "Weekday" },
+        { label: "時間", key: "TimePart" },
+        { label: "名稱", key: "ClassName" },
         { label: "分類", key: "Category" },
-        { label: "教練", key: "Coach" },
+        { label: "教練", key: "CoachName" },
         { label: "地點", key: "Place" },
         { label: "人數", key: "Participant" },
         { label: "狀態", key: "Status" },
       ],
-      classList: [{Date:"2025-06-30"}],
+      classList: [{ Date: "2025-06-30" }],
     };
   },
   methods: {
     searchPage(page) {
       this.searchingPage = page;
       this.getClassData();
-    },
-    goDetail(row) {
-      if (row.GroupClassShowcaseId < 1) return;
-      this.$router.push({
-        path: "/groupClass/showcase/detail",
-        query: { id: row.GroupClassShowcaseId },
-      });
     },
     goEdit(row) {
       if (row.GroupClassShowcaseId < 1) return;
@@ -142,45 +136,49 @@ export default {
     redirect(path) {
       if (this.$route.path !== path) this.$router.push(path);
     },
-    selectClassByName() {
+    selectClassByTime() {
       this.searchingPage = 1;
-      this.searchName = this.searchName.trim();
-
-      if (this.searchName === "") {
-        this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "搜尋不得為空";
-        this.$notificationBox.notificationBoxErrorCode = 0;
-        return;
-      }
+      this.selectTime = this.selectTime.trim();
       this.getClassData();
     },
-    selectClassByCategory() {
+    selectClassByStatus() {
       this.searchingPage = 1;
       this.getClassData();
     },
     async getClassData() {
       if (!this.validInput()) return;
 
+      let specificDate = "";
+      let dateRangeFilter = "";
+
+      // 有可能是字串或時間
+      if (this.validDate(this.selectTime)) {
+        specificDate = new Date(this.selectTime).toISOString();
+      } else {
+        dateRangeFilter = this.selectTime;
+      }
+
       // post 的 dto 變數
       let getClassDto = {
-        Category: this.selectCategory || null,
+        Status: this.selectStatus || null,
+        SpecificDate: specificDate || null, // EX:"2025-05-24" or null
+        DateRangeFilter: dateRangeFilter || null, // EX: "past", "future", "all", or null
         SortOrder: this.selectSortOrder,
         SortOption: this.selectSortOption || null,
         RecordPerPage: this.recordPerPage,
-        SearchName: this.searchName || null,
         Page: this.searchingPage,
       };
 
       try {
         // post
         const response = await this.$axios.post(
-          "/api/GroupClassShowcase/GetShowcase",
+          "/api/GroupClassSchedule/GetSchedule",
           getClassDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.currentPage = this.searchingPage;
-          this.classList = response.data.ApiDataObject.ShowcaseList;
+          this.classList = response.data.ApiDataObject.ScheduleList;
 
           this.classList.forEach((course) => {
             for (
@@ -188,14 +186,29 @@ export default {
               index < groupClassCategoryAndText.length;
               index++
             ) {
-              if (course.Category === index + 1)
+              if (course.Category === Number(groupClassCategoryAndText[index].value))
                 course.Category = groupClassCategoryAndText[index].text;
             }
 
-            groupClassIcon.forEach((icon) => {
-              if (course.Icon.toString() === icon.value)
-                course.Icon = icon.text;
+            for (
+              let index = 0;
+              index < groupClassScheduleStatus.length;
+              index++
+            ) {
+              if (course.Status === Number(groupClassScheduleStatus[index].value))
+                course.Status = groupClassScheduleStatus[index].text;
+            }
+
+            const localDate = new Date(course.Time);
+            course.Date = localDate.toLocaleDateString("sv-SE"); // 用瑞典格式會保留 yyyy-MM-dd
+            course.Weekday = localDate.toLocaleDateString(undefined, { weekday: 'long' });
+            course.TimePart = localDate.toLocaleTimeString(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
             });
+
+            course.Participant = course.ReserveParticipant + "/" +course.MaximumParticipant
           });
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
@@ -220,24 +233,38 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得展示用團課列表時發生錯誤", error);
+        console.error("取得團課列表時發生錯誤", error);
       }
+    },
+    validDate(dateStr) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return false;
+
+      // 檢查元件解析後的年月日是否跟原始輸入一致
+      const [year, month, day] = dateStr.split("-").map(Number);
+      return (
+        date.getFullYear() === year &&
+        date.getMonth() + 1 === month &&
+        date.getDate() === day
+      );
     },
     validInput() {
       // 驗證參數
       if (
-        !(this.searchName.length > 1 || this.searchName === "") ||
-        this.searchName.length > 20
-      ) {
-        this.searchName = "";
-        this.$notificationBox.notificationBoxFlag = true;
-        this.$notificationBox.notificationBoxTitle = "輸入長度需 2~20 位數";
-        this.$notificationBox.notificationBoxErrorCode = 5;
+        this.selectTime !== "all" &&
+        this.selectTime !== "past" &&
+        this.selectTime !== "future" &&
+        !this.validDate(this.selectTime)
+      )
         return false;
-      }
       if (
-        this.selectCategory !== "" &&
-        !(this.selectCategory in groupClassCategoryReverse)
+        this.selectStatus !== "" &&
+        this.selectStatus === "1" &&
+        this.selectStatus === "2" &&
+        this.selectStatus === "3" &&
+        this.selectStatus === "4"
       )
         return false;
       if (
@@ -249,8 +276,8 @@ export default {
         return false;
       if (
         !(
-          this.selectSortOption === "name" ||
-          this.selectSortOption === "sort" ||
+          this.selectSortOption === "time" ||
+          this.selectSortOption === "reserveParticipant" ||
           this.selectSortOption === ""
         )
       )
@@ -268,92 +295,30 @@ export default {
       return true;
     },
     resetSearchingRecord() {
-      this.selectCategory = "";
+      this.selectStatus = "";
       this.selectSortOrder = "ascending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
-      this.searchName = "";
+      this.selectTime = "";
       this.searchingPage = 1;
       this.getClassData();
-    },
-    deleteShowcase(row) {
-      // 添加監聽器，查看彈窗是否被按確認鍵
-      this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
-        if (newVal) {
-          let redirectRoute = "stop";
-          this.$emit("afterConfirmEvent", redirectRoute);
-
-          try {
-            this.submitDeleteShowcase(row.GroupClassShowcaseId);
-          } catch (error) {
-            console.error("刪除展示課程時發生錯誤", error);
-          } finally {
-            this.unwatchFlag(); // 確保監聽被移除
-            this.unwatchFlag = null;
-          }
-        }
-      });
-
-      // 設定彈窗資料
-      this.$notificationBox.notificationBoxFlag = true;
-      this.$notificationBox.notificationBoxTitle = "此操作不可修改，確認刪除?";
-      this.$notificationBox.notificationBoxCancelFlag = true;
-      this.$notificationBox.notificationBoxErrorCode = 0;
-    },
-    async submitDeleteShowcase(id) {
-      if (id < 1) return;
-
-      try {
-        // post
-        let showcaseIdDto = {
-          GroupClassShowcaseId: id,
-        };
-
-        // post
-        const response = await this.$axios.post(
-          "/api/GroupClassShowcase/DeleteShowcase",
-          showcaseIdDto
-        );
-
-        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.$emit("refreshPage");
-        } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
-          // 設定彈窗資料
-          this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
-          this.$notificationBox.notificationBoxErrorCode =
-            response.data.ErrorCode;
-        }
-      } catch (error) {
-        console.error("刪除失敗", error);
-      }
     },
   },
   computed: {
     groupClassCategoryAndText() {
-      let category = [...groupClassCategoryAndText];
-      category.push({ value: "", text: "無" });
-      return category;
+      return groupClassCategoryAndText;
     },
     groupClassIcon() {
       return groupClassIcon;
     },
+    groupClassScheduleStatus(){
+      let category = [...groupClassScheduleStatus];
+      category.push({ value: "", text: "全部" });
+      return category;
+    }
   },
   created() {
-    //this.getClassData();
+    this.getClassData();
   },
 };
 </script>
@@ -369,7 +334,7 @@ export default {
 .statusSelector {
   width: 440px;
 }
-.timeSelector{
+.timeSelector {
   width: 450px;
 }
 

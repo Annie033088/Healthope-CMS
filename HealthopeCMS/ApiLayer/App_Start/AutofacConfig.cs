@@ -26,18 +26,28 @@ namespace ApiLayer.App_Start
             builder.RegisterType<HttpService>().As<IHttpService>().InstancePerLifetimeScope();
             builder.RegisterType<FileService>().As<IFileService>().InstancePerRequest();
             builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
-            builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
-            builder.RegisterType<AdminService>().As<IAdminService>().InstancePerRequest();
-            builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
-            builder.RegisterType<MemberService>().As<IMemberService>().InstancePerRequest();
-            builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
-            builder.RegisterType<CoachService>().As<ICoachService>().InstancePerRequest();
-            builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
-            builder.RegisterType<GroupClassShowcaseService>().As<IGroupClassShowcaseService>().InstancePerRequest();
-            builder.RegisterType<GroupClassShowcaseRepository>().As<IGroupClassShowcaseRepository>().InstancePerRequest();
             builder.RegisterGeneric(typeof(MultipartRequestService<>))
                     .As(typeof(IMultipartRequestService<>))
                     .InstancePerRequest();
+
+            builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
+
+            builder.RegisterType<AdminService>().As<IAdminService>().InstancePerRequest();
+            builder.RegisterType<AdminRepository>().As<IAdminRepository>().InstancePerRequest();
+
+            builder.RegisterType<MemberService>().As<IMemberService>().InstancePerRequest();
+            builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
+
+            builder.RegisterType<CoachService>().As<ICoachService>().InstancePerRequest();
+            builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerRequest();
+
+            builder.RegisterType<GroupClassShowcaseService>().As<IGroupClassShowcaseService>().InstancePerRequest();
+            builder.RegisterType<GroupClassShowcaseRepository>().As<IGroupClassShowcaseRepository>().InstancePerRequest();
+
+            builder.RegisterType<GroupClassScheduleRepository>().As<IGroupClassScheduleRepository>().InstancePerRequest();
+            builder.RegisterType<GroupClassScheduleService>().As<IGroupClassScheduleService>().InstancePerRequest();
+
+
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>
             {

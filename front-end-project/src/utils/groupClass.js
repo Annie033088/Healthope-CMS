@@ -40,7 +40,7 @@ export const groupClassCategory = {
 }
 
 export const groupClassCategoryReverse = Object.fromEntries(
-  Object.entries(groupClassCategory).map(([k, v]) => [v, k])
+    Object.entries(groupClassCategory).map(([k, v]) => [v, k])
 );
 
 export const groupClassCategoryAndText = [
@@ -51,4 +51,11 @@ export const groupClassCategoryAndText = [
     { value: '5', text: '飛輪' },
     { value: '6', text: '基礎' },
     { value: '7', text: '其他' },
+]
+
+export const groupClassScheduleStatus = [
+    { value: '1', text: '未開放' },
+    { value: '2', text: '開放' },
+    { value: '3', text: '結束' },
+    { value: '4', text: '取消' },
 ]

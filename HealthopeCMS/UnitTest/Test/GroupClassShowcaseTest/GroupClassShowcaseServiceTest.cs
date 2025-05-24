@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ApiLayer.Controllers.api;
-using System.Threading.Tasks;
-using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
-using ApiLayer.Models.Other;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Models;
@@ -16,8 +12,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using UnitTest.utils;
-using ApiLayer.Models.Admin.RequestAdminDto;
 
 namespace UnitTest.Test.GroupClassShowcaseTest
 {
@@ -178,7 +172,7 @@ namespace UnitTest.Test.GroupClassShowcaseTest
         }
 
         [TestMethod]
-        public void 取得展示用團課清單_失敗_請求參數格式錯誤()
+        public void 取得展示用團課清單_失敗_取得空資料()
         {
             // Arrange
             RequestGetShowcaseDto getShowcaseDto = new RequestGetShowcaseDto()
@@ -342,7 +336,7 @@ namespace UnitTest.Test.GroupClassShowcaseTest
         }
 
         [TestMethod]
-        public void  修改展示用團課不包括圖檔_成功_回傳成功()
+        public void 修改展示用團課不包括圖檔_成功_回傳成功()
         {
             // Arrange
             RequestEditShowcaseDto editShowcaseDto = new RequestEditShowcaseDto()
@@ -380,7 +374,7 @@ namespace UnitTest.Test.GroupClassShowcaseTest
         }
 
         [TestMethod]
-        public void  修改_失敗_名稱重複()
+        public void 修改_失敗_名稱重複()
         {
             // Arrange
             RequestEditShowcaseDto editShowcaseDto = new RequestEditShowcaseDto()

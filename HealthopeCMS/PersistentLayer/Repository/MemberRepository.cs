@@ -182,7 +182,7 @@ namespace PersistentLayer.Repository
                 }
 
                 cmd.Parameters.Add("@memberId", SqlDbType.Int).Value = editMemberDto.MemberId;
-                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editMemberDto.UpdateTime;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editMemberDto.UpdateTime;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output

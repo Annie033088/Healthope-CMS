@@ -11,7 +11,6 @@ using AutoMapper;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using PersistentLayer.Repository;
 
 namespace ApiLayer.Service
 {

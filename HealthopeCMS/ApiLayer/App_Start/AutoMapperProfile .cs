@@ -2,6 +2,7 @@
 using ApiLayer.Models.Admin.ResponseAdminDto;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
+using ApiLayer.Models.GroupClassSchedule.Response;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
 using ApiLayer.Models.Member.Response;
@@ -32,6 +33,9 @@ namespace ApiLayer.App_Start
             CreateMap<GroupClassShowcase, ResponseGetShowcaseDto>();
             CreateMap<GroupClassShowcase, ResponseGetShowcaseDetailDto>();
             CreateMap<GroupClassShowcase, ResponseGetShowcaseEditDataDto>();
+            CreateMap<Coach, ScheduleGetCoachDto>();
+            CreateMap<GroupClassShowcase, ScheduleGetShowcaseDto>();
+            CreateMap<GroupClassSchedule, ResponseGetScheduleDto>();
         }
     }
 }

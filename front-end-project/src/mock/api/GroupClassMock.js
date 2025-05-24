@@ -1,6 +1,6 @@
 import avatar1 from '@/assets/mockImage/avatar1.png'
 export default function (mock) {
-    const courseList = [
+    const showcases = [
         {
             GroupClassShowcaseId: 1,
             Name: "正位瑜伽",
@@ -208,6 +208,75 @@ export default function (mock) {
         },
     ]
 
+    const schedules = [
+        {
+            "GroupClassScheduleId": 1,
+            "ClassName": "階梯有氧",
+            "Category": 1,
+            "CoachName": "Alice",
+            "Time": "2025-05-25T13:00:00",
+            "Place": "教室A",
+            "MaximumParticipant": 35,
+            "ReserveParticipant": 0,
+            "CheckInParticipant": 0,
+            "Tag": 1,
+            "Status": 2
+        },
+        {
+            "GroupClassScheduleId": 2,
+            "ClassName": "肌力訓練",
+            "Category": 2,
+            "CoachName": "Bob",
+            "Time": "2025-05-26T15:30:00",
+            "Place": "教室B",
+            "MaximumParticipant": 30,
+            "ReserveParticipant": 5,
+            "CheckInParticipant": 2,
+            "Tag": 2,
+            "Status": 2
+        },
+        {
+            "GroupClassScheduleId": 3,
+            "ClassName": "瑜伽伸展",
+            "Category": 3,
+            "CoachName": "Carol",
+            "Time": "2025-05-27T10:00:00",
+            "Place": "教室C",
+            "MaximumParticipant": 20,
+            "ReserveParticipant": 12,
+            "CheckInParticipant": 10,
+            "Tag": 3,
+            "Status": 1
+        },
+        {
+            "GroupClassScheduleId": 4,
+            "ClassName": "核心訓練",
+            "Category": 1,
+            "CoachName": "David",
+            "Time": "2025-05-28T18:00:00",
+            "Place": "教室A",
+            "MaximumParticipant": 25,
+            "ReserveParticipant": 25,
+            "CheckInParticipant": 24,
+            "Tag": 1,
+            "Status": 2
+        },
+        {
+            "GroupClassScheduleId": 5,
+            "ClassName": "飛輪課程",
+            "Category": 2,
+            "CoachName": "Eve",
+            "Time": "2025-05-29T07:00:00",
+            "Place": "教室B",
+            "MaximumParticipant": 40,
+            "ReserveParticipant": 38,
+            "CheckInParticipant": 36,
+            "Tag": 2,
+            "Status": 2
+        }
+    ]
+
+
     mock.onPost("/api/GroupClassShowcase/AddShowcase").reply(() => {
         // 可用這方式查看傳輸的資料
         // for (let [key, value] of config.data.entries()) {
@@ -227,7 +296,7 @@ export default function (mock) {
         } = JSON.parse(config.data);
 
         // 1️⃣ 篩選
-        let filtered = courseList.filter(item => {
+        let filtered = showcases.filter(item => {
             const matchCategory = Category === null || item.Category === Number(Category);
             const matchSearch = !SearchName || item.Name.includes(SearchName);
             return matchCategory && matchSearch;
@@ -269,7 +338,7 @@ export default function (mock) {
 
     mock.onPost("/api/GroupClassShowcase/GetShowcaseDetail").reply((config) => {
         let groupClassShowcaseIdDto = JSON.parse(config.data);
-        let groupClassShowcaseTarget = courseList.find(course =>
+        let groupClassShowcaseTarget = showcases.find(course =>
             course.GroupClassShowcaseId === Number(groupClassShowcaseIdDto.GroupClassShowcaseId));
 
         if (groupClassShowcaseTarget) {
@@ -281,7 +350,7 @@ export default function (mock) {
 
     mock.onPost("/api/GroupClassShowcase/GetShowcaseEditDataById").reply(config => {
         let getShowcaseByIdDto = JSON.parse(config.data);
-        let showcaseTarget = courseList.find(course => course.GroupClassShowcaseId === Number(getShowcaseByIdDto.GroupClassShowcaseId));
+        let showcaseTarget = showcases.find(course => course.GroupClassShowcaseId === Number(getShowcaseByIdDto.GroupClassShowcaseId));
 
         if (showcaseTarget) {
             return [200, { ErrorCode: 1, ApiDataObject: showcaseTarget }]
@@ -300,10 +369,10 @@ export default function (mock) {
 
     mock.onPost("/api/GroupClassShowcase/DeleteShowcase").reply(config => {
         let showcaseIdDto = JSON.parse(config.data);
-        const index = courseList.findIndex(course => course.GroupClassShowcaseId === Number(showcaseIdDto.GroupClassShowcaseId));
+        const index = showcases.findIndex(course => course.GroupClassShowcaseId === Number(showcaseIdDto.GroupClassShowcaseId));
 
         if (index !== -1) {
-            courseList.splice(index, 1);
+            showcases.splice(index, 1);
             return [200, { ErrorCode: 1 }]
         }
 
@@ -314,17 +383,86 @@ export default function (mock) {
     mock.onPost("/api/GroupClassSchedule/GetShowcaseAndCoach").reply(config => {
         let getShowcaseDto = JSON.parse(config.data);
 
-        let filteredShowcase = courseList.filter(item => {
+        let filteredShowcase = showcases.filter(item => {
             const matchCategory = getShowcaseDto.Category === null || item.Category === Number(getShowcaseDto.Category);
             return matchCategory;
         });
 
         const ShowcaseList = filteredShowcase;
 
-        return [200, { ErrorCode: 1, ApiDataObject: {ShowcaseList, CoachList:coaches} }]
+        return [200, { ErrorCode: 1, ApiDataObject: { ShowcaseList, CoachList: coaches } }]
     })
-    
+
     mock.onPost("/api/GroupClassSchedule/AddSchedule").reply(() => {
         return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/GroupClassSchedule/GetSchedule").reply((config) => {
+        console.log(JSON.parse(config.data));
+        let {
+            Status,
+            SpecificDate,
+            DateRangeFilter,
+            SortOrder,
+            SortOption,
+            RecordPerPage,
+            Page
+        } = JSON.parse(config.data);
+
+        // 1️⃣ 篩選
+        let filtered = schedules.filter(item => {
+            const matchStatus = Status === null || item.Status === Number(Status);
+            let matchTime = true;
+
+            if (DateRangeFilter && DateRangeFilter !== "all") {
+                const now = new Date();
+                const itemTime = new Date(item.Time);
+
+                if (DateRangeFilter === "past") {
+                    matchTime = itemTime < now;
+                } else if (DateRangeFilter === "future") {
+                    matchTime = itemTime >= now;
+                }
+            }
+
+            if (SpecificDate) {
+                matchTime = item.Time.includes(SpecificDate.slice(0, 10))
+            }
+            
+            return matchStatus && matchTime;
+        });
+
+        let field;
+        // 2️⃣ 排序
+        if (SortOption === "time") {
+            field = "Time";
+        } else if (SortOption === "reserveParticipant") {
+            field = "ReserveParticipant";
+        }
+        else {
+            field = "GroupClassScheduleId"
+        }
+
+        filtered.sort((a, b) => {
+            let aVal = a[field];
+            let bVal = b[field];
+
+            if (aVal < bVal) return SortOrder === 'descending' ? 1 : -1;
+            if (aVal > bVal) return SortOrder === 'descending' ? -1 : 1;
+            return 0;
+        });
+
+        // 3️⃣ 分頁
+        const start = (Page - 1) * RecordPerPage;
+        const paged = filtered.slice(start, start + RecordPerPage);
+
+        const ApiDataObject = {
+            ScheduleList: paged,
+            TotalPage: Math.ceil(
+                filtered.length / RecordPerPage
+            )
+        }
+
+        return [200, { ErrorCode: 1, ApiDataObject }]
     })
 }

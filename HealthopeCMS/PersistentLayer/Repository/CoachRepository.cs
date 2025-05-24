@@ -287,7 +287,7 @@ namespace PersistentLayer.Repository
                     cmd.Parameters.Add("@photoUrl", SqlDbType.NVarChar).Value = editCoachDto.PhotoUrl;
 
                 cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = editCoachDto.CoachId;
-                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editCoachDto.UpdateTime;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editCoachDto.UpdateTime;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
@@ -116,7 +115,7 @@ namespace ApiLayer.Service
 
                 ResponseGetCoachEditDataByIdDto response = mapper.Map<ResponseGetCoachEditDataByIdDto>(coach);
 
-                if (response!=null && !string.IsNullOrEmpty(response.PhotoUrl))
+                if (response != null && !string.IsNullOrEmpty(response.PhotoUrl))
                     response.PhotoUrl = "/" + response.PhotoUrl;
 
                 return response;

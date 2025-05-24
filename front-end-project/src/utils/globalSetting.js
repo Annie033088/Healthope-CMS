@@ -63,7 +63,13 @@ export const errorCodeDefine = {
     VerifyFail: 20,
 
     // 名稱重複
-    DuplicateName:21
+    DuplicateName: 21,
+
+    // 時間及地點重複
+    DuplicatePlaceAndTime: 22,
+
+    // 時間及教練重複
+    DuplicateCoachAndTime: 23,
 };
 
 //設定errorCode對應資料
@@ -134,6 +140,12 @@ export function errorCodeToMessage(errorCode) {
         case 21:
             message = "輸入的名稱重複";
             return message;
+        case 22:
+            message = "時間及地點重複";
+            return message;
+        case 23:
+            message = "時間及教練重複";
+            return message;
         default:
             message = "";
             return message;
@@ -163,16 +175,16 @@ export const adminPermission = {
     EditCoach: 6,
 
     // 增刪修 展示團課 權限
-    EditGroupClassShowcase : 7,
+    EditGroupClassShowcase: 7,
 
     // 查詢 展示團課 權限
-    SelectGroupClassShowcase : 8,
+    SelectGroupClassShowcase: 8,
 
     // 增刪修 團課表 權限
-    EditGroupClassSchedule : 9,
+    EditGroupClassSchedule: 9,
 
     // 查詢 團課表 權限
-    SelectGroupClassSchedule : 10,
+    SelectGroupClassSchedule: 10,
 }
 
 export default function adminIdentityToText(identity) {

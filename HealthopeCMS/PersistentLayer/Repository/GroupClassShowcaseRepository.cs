@@ -69,7 +69,6 @@ namespace PersistentLayer.Repository
             }
         }
 
-
         /// <summary>
         /// 取得展示用課程
         /// </summary>
@@ -303,7 +302,7 @@ namespace PersistentLayer.Repository
                     cmd.Parameters.Add("@sort", SqlDbType.Int).Value = editShowcaseDto.Sort;
 
                 cmd.Parameters.Add("@groupClassShowcaseId", SqlDbType.Int).Value = editShowcaseDto.GroupClassShowcaseId;
-                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editShowcaseDto.UpdateTime;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editShowcaseDto.UpdateTime;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.Http;
 using ApiLayer.Models;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;

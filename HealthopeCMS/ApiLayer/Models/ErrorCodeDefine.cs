@@ -111,5 +111,15 @@
         /// 名稱重複
         /// </summary>
         DuplicateName = 21,
+
+        /// <summary>
+        /// 時間及地點重複
+        /// </summary>
+        DuplicatePlaceAndTime = 22,
+
+        /// <summary>
+        /// 時間及教練重複
+        /// </summary>
+        DuplicateCoachAndTime = 23,
     }
 }

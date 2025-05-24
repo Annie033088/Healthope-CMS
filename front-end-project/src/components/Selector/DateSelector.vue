@@ -11,7 +11,13 @@
       />
       <span class="textRadio">{{ option.text }}</span>
     </label>
-    <input id="date" type="date" class="txbDate" v-model="localDate" @change="updateValue(localDate)">
+    <input
+      id="date"
+      type="date"
+      class="txbDate"
+      v-model="localDate"
+      @change="updateValue(localDate)"
+    />
   </div>
 </template>
 
@@ -45,6 +51,21 @@ export default {
     updateValue(val) {
       this.$emit("input", val); // 使用 input 事件來配合 v-model
       this.$emit("change");
+    },
+  },
+  watch: {
+    value: {
+      immediate: true,
+      handler(val) {
+        let checked = false;
+        this.options.forEach((option) => {
+          if (val === option.value) {
+            checked = true;
+          }
+        });
+        
+        if (checked) this.localDate = "";
+      },
     },
   },
 };
@@ -109,7 +130,7 @@ export default {
   cursor: pointer;
 }
 
-.txbDate{
+.txbDate {
   border: 1px solid #ccc;
   border-radius: 0.5rem;
   background-color: #fff;

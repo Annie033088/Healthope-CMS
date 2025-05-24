@@ -310,7 +310,7 @@ namespace PersistentLayer.Repository
                 }
 
                 cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = editAdminDto.AdminId;
-                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime).Value = editAdminDto.UpdateTime;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editAdminDto.UpdateTime;
 
                 cmd.Connection.Open();
 
