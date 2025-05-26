@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.GroupClassSchedule.Request;
 using ApiLayer.Models.GroupClassSchedule.Response;
-using ApiLayer.Models.GroupClassShowcase.Request;
-using ApiLayer.Models.GroupClassShowcase.Response;
-using ApiLayer.Models.Other;
-using ApiLayer.Service;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
@@ -148,7 +141,7 @@ namespace ApiLayer.Controllers.api
                 if (!((getScheduleDto.SortOrder == "ascending")
                     || (getScheduleDto.SortOrder == "descending")))
                     modelValidFlag = false;
-                if (!((getScheduleDto.SortOption == "name") || (getScheduleDto.SortOption == "sort")
+                if (!((getScheduleDto.SortOption == "time") || (getScheduleDto.SortOption == "reserveParticipant")
                     || (getScheduleDto.SortOption == null)))
                     modelValidFlag = false;
                 if (!((getScheduleDto.RecordPerPage == 8) || (getScheduleDto.RecordPerPage == 12)
@@ -185,5 +178,7 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+    
+        // TODO: 取消課程 => 發送信件通知已預約會員
     }
 }

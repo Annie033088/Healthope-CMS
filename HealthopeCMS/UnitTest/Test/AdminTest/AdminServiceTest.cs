@@ -124,7 +124,7 @@ namespace UnitTest.Test.AdminTest
             List<AdminPermission> result = adminService.GetPermission();
 
             // Assert
-            CollectionAssert.AreEqual(result, adminPermissions); // MSTest 專用
+            CollectionAssert.AreEqual(result, adminPermissions);
         }
 
         [TestMethod]

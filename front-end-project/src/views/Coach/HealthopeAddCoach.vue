@@ -7,18 +7,21 @@
       <div class="leftInputBox">
         <div class="inputContainer">
           <InputSpan
+            class="inputSpanContainer"
             labelText="姓名"
             v-model="name"
             :required="true"
             @enter="addCoach"
           ></InputSpan>
           <InputSpan
+            class="inputSpanContainer"
             labelText="手機號碼"
             v-model="phone"
             :required="true"
             @enter="addCoach"
           ></InputSpan>
           <InputSpan
+            class="inputSpanContainer"
             labelText="信箱"
             v-model="email"
             :required="false"
@@ -54,14 +57,14 @@
       <div class="rightInputBox">
         <div class="inputContainer">
           <InputSpan
-            class="inputSpan"
+            class="inputSpanContainer"
             labelText="帳號"
             v-model="account"
             :required="true"
             @enter="addCoach"
           ></InputSpan>
           <InputSpan
-            class="inputSpan"
+            class="inputSpanContainer"
             labelText="密碼"
             v-model="pwd"
             inputType="password"
@@ -69,7 +72,7 @@
             @enter="addCoach"
           ></InputSpan>
           <InputSpan
-            class="inputSpan"
+            class="inputSpanContainer"
             labelText="再輸入一次密碼"
             v-model="pwdAgain"
             inputType="password"
@@ -450,6 +453,10 @@ export default {
 .imageUpload {
   max-width: 100%;
   width: 225px;
+}
+
+.inputSpanContainer {
+  margin-bottom: 2%;
 }
 
 .hintContainer,

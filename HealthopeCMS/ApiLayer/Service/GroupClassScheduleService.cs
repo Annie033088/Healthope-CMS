@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Web.Http.Results;
 using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.GroupClassSchedule.Request;
 using ApiLayer.Models.GroupClassSchedule.Response;
 using AutoMapper;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using PersistentLayer.Repository;
 
 namespace ApiLayer.Service
 {
@@ -95,13 +91,13 @@ namespace ApiLayer.Service
             try
             {
                 (List<GroupClassSchedule> schedules, int totalPage) = groupClassScheduleRepository.GetSchedule(getScheduleDto);
-                ResponseGetScheduleListDto responseGetCoachDto = new ResponseGetScheduleListDto()
+                ResponseGetScheduleListDto responseGetScheuleDto = new ResponseGetScheduleListDto()
                 {
                     ScheduleList = mapper.Map<List<ResponseGetScheduleDto>>(schedules),
                     TotalPage = totalPage
                 };
 
-                return responseGetCoachDto;
+                return responseGetScheuleDto;
             }
             catch (Exception)
             {

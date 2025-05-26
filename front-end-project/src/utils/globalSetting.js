@@ -185,6 +185,12 @@ export const adminPermission = {
 
     // 查詢 團課表 權限
     SelectGroupClassSchedule: 10,
+
+    // 增刪修 團課表 權限
+    EditPlan: 11,
+
+    // 查詢 團課表 權限
+    SelectPlan: 12,
 }
 
 export default function adminIdentityToText(identity) {

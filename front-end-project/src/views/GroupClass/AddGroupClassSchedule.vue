@@ -342,7 +342,8 @@ export default {
       this.schedule.Category = this.schedule.Category.trim();
       this.schedule.Icon = this.schedule.Icon.trim();
       this.schedule.Place = this.schedule.Place.trim();
-      this.schedule.MaximumParticipant = this.schedule.MaximumParticipant.trim();
+      this.schedule.MaximumParticipant =
+        this.schedule.MaximumParticipant.trim();
 
       if (this.inputTime.split(":")[0].length < 2)
         this.schedule.Time = (this.inputDate + "T0" + this.inputTime).trim();
@@ -446,6 +447,10 @@ export default {
 
 .panelTitle .categorySelector {
   height: 34px;
+}
+
+.inputSpanContainer {
+  margin-bottom: 2%;
 }
 
 .btnContainer,

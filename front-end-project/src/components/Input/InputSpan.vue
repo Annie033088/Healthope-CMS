@@ -62,7 +62,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 3%;
 }
 
 .inputSpan label{

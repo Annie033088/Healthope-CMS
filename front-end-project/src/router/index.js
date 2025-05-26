@@ -7,6 +7,7 @@ import adminRoutes from './routes/admin';
 import memberRoutes from './routes/member';
 import coachRoutes from './routes/coach';
 import groupClassRoutes from './routes/groupClass';
+import planRoutes from './routes/plan';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -26,6 +27,8 @@ const routes = [
     ...groupClassRoutes,
     // home
     ...homeRoutes,
+    // plan
+    ...planRoutes,
 ]
 
 const router = new VueRouter({

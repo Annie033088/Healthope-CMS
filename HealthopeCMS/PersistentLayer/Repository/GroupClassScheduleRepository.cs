@@ -98,8 +98,8 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_addSchedule @className, @category, @icon, @time, @place, " +
-                    "@maximumParticipant, @coachId, @coachUpdateTime, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_addGroupClassSchedule @className, @category, @icon, @time," +
+                    "@place, @maximumParticipant, @coachId, @coachUpdateTime, @errorCode OUTPUT";
 
                 cmd.Parameters.Add("@className", SqlDbType.NVarChar).Value = schedule.ClassName;
                 cmd.Parameters.Add("@category", SqlDbType.Int).Value = schedule.Category;
@@ -143,27 +143,27 @@ namespace PersistentLayer.Repository
             SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
             int totalPage = 1;
-            List<Coach> coaches = new List<Coach>();
+            List<GroupClassSchedule> schedules = new List<GroupClassSchedule>();
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_getCoach @searchName, @searchPhone, @status, " +
-                    "@sortOrder, @sortOption, @recordPerPage, @page, @totalPage OUTPUT";
-
-                if (getScheduleDto.SearchName == null)
-                    cmd.Parameters.Add("@searchName", SqlDbType.VarChar).Value = DBNull.Value;
-                else
-                    cmd.Parameters.Add("@searchName", SqlDbType.VarChar).Value = getScheduleDto.SearchName;
-
-                if (getScheduleDto.SearchPhone == null)
-                    cmd.Parameters.Add("@searchPhone", SqlDbType.VarChar).Value = DBNull.Value;
-                else
-                    cmd.Parameters.Add("@searchPhone", SqlDbType.VarChar).Value = getScheduleDto.SearchPhone;
+                cmd.CommandText = "EXEC pro_healthope_getGroupClassSchedule @status, @dateRangeFilter, " +
+                    "@specificDate, @sortOrder, @sortOption, @recordPerPage, @page, @totalPage OUTPUT";
 
                 if (getScheduleDto.Status == null)
-                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                    cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = DBNull.Value;
                 else
-                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = getScheduleDto.Status;
+                    cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = getScheduleDto.Status;
+
+                if (getScheduleDto.DateRangeFilter == null)
+                    cmd.Parameters.Add("@dateRangeFilter", SqlDbType.VarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@dateRangeFilter", SqlDbType.VarChar).Value = getScheduleDto.DateRangeFilter;
+
+                if (getScheduleDto.SpecificDate == null)
+                    cmd.Parameters.Add("@specificDate", SqlDbType.DateTime2).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@specificDate", SqlDbType.DateTime2).Value = getScheduleDto.SpecificDate;
 
                 if (getScheduleDto.SortOption == null)
                     cmd.Parameters.Add("@sortOption", SqlDbType.VarChar).Value = DBNull.Value;
@@ -191,22 +191,27 @@ namespace PersistentLayer.Repository
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     DataRow dr = dt.Rows[i];
-                    Coach coach = new Coach()
+                    GroupClassSchedule schedule = new GroupClassSchedule()
                     {
-                        CoachId = dr.IsNull("f_coachId") ? 0 : dr.Field<int>("f_coachId"),
-                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
-                        Phone = dr.IsNull("f_phone") ? 0 : dr.Field<int>("f_phone"),
-                        Status = dr.IsNull("f_status") ? false : dr.Field<bool>("f_status"),
-                        Type = (byte)(dr.IsNull("f_type") ? 0 : dr.Field<byte>("f_type")),
-                        ContractStartTime = dr.IsNull("f_contractStartTime") ?
-                            DateTime.MinValue : dr.Field<DateTime>("f_contractStartTime"),
-                        ContractEndTime = dr.IsNull("f_contractEndTime") ?
-                            DateTime.MinValue : dr.Field<DateTime>("f_contractEndTime"),
+                        GroupClassScheduleId = dr.IsNull("f_groupClassScheduleId") ? 0 : dr.Field<int>("f_groupClassScheduleId"),
+                        Time = dr.IsNull("f_time") ? DateTime.MinValue : dr.Field<DateTime>("f_time"),
+                        ClassName = dr.IsNull("f_className") ? string.Empty : dr.Field<string>("f_className"),
+                        Category = dr.IsNull("f_category") ? 0 : dr.Field<int>("f_category"),
+                        CoachName = dr.IsNull("f_coachName") ? string.Empty : dr.Field<string>("f_coachName"),
+                        Place = dr.IsNull("f_place") ? string.Empty : dr.Field<string>("f_place"),
+                        ReserveParticipant = (byte)(dr.IsNull("f_reserveParticipant") ?
+                            0 : dr.Field<byte>("f_reserveParticipant")),
+                        MaximumParticipant = (byte)(dr.IsNull("f_maximumParticipant") ?
+                            0 : dr.Field<byte>("f_maximumParticipant")),
+                        CheckInParticipant = (byte)(dr.IsNull("f_checkInParticipant") ?
+                            0 : dr.Field<byte>("f_checkInParticipant")),
+                        Status = (byte)(dr.IsNull("f_status") ? 0 : dr.Field<byte>("f_status")),
+                        Tag = (byte)(dr.IsNull("f_tag") ? 0 : dr.Field<byte>("f_tag")),
                     };
-                    coaches.Add(coach);
+                    schedules.Add(schedule);
                 }
 
-                return (coaches, totalPage);
+                return (schedules, totalPage);
             }
             catch (Exception)
             {

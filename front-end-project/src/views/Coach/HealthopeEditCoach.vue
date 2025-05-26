@@ -7,18 +7,21 @@
       <div class="leftInputBox">
         <div class="inputContainer">
           <InputSpan
+            class="inputSpanContainer"
             labelText="姓名"
             v-model="currentCoachData.Name"
             :required="true"
             @enter="editCoach"
           ></InputSpan>
           <InputSpan
+            class="inputSpanContainer"
             labelText="手機號碼"
             v-model="currentCoachData.Phone"
             :required="true"
             @enter="editCoach"
           ></InputSpan>
           <InputSpan
+            class="inputSpanContainer"
             labelText="信箱"
             v-model="currentCoachData.Email"
             :required="false"
@@ -531,6 +534,10 @@ export default {
 .imageUpload {
   max-width: 100%;
   width: 225px;
+}
+
+.inputSpanContainer{
+  margin-bottom: 2%;
 }
 
 .hintContainer,

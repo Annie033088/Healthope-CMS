@@ -44,7 +44,7 @@
       :columns="columns"
       :rows="memberList"
       :expandable="true"
-      :editBtnFlag="true"
+      :editBtnFlag="permissionMap.EditMember"
       :checkDetailBtnFlag="true"
       :resetDetailIndexFlag="resetDetailIndexFlag"
       @goEdit="goEditMember"
@@ -110,6 +110,7 @@ export default {
     SvgReset,
   },
   props: {
+    permissionMap: {},
     text: String,
     notificationBoxConfirmFlag:Boolean
   },

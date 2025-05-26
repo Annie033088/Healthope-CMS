@@ -55,6 +55,7 @@ export default {
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
   padding: 0.25rem;
   font-size: 14px;
+  gap: 5px;
 }
 
 .lab {
@@ -62,7 +63,6 @@ export default {
   border-radius: 0.5rem;
   background-color: #fff;
   font-weight: 500;
-  margin-right: 5px;
   white-space: nowrap;
 }
 

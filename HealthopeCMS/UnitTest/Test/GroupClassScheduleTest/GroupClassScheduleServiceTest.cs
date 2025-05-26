@@ -1,21 +1,17 @@
-﻿using ApiLayer.Models.GroupClassSchedule.Request;
-using ApiLayer.Models.GroupClassSchedule.Response;
-using ApiLayer.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
-using System;
-using UnitTest.utils;
-using ApiLayer.Controllers.api;
-using ApiLayer.Interface;
-using Moq;
+using ApiLayer.Models;
+using ApiLayer.Models.GroupClassSchedule.Request;
+using ApiLayer.Models.GroupClassSchedule.Response;
 using ApiLayer.Service;
-using PersistentLayer.Interface;
 using AutoMapper;
-using ApiLayer.Models.GroupClassShowcase.Response;
 using DomainLayer.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using System.Linq;
+using UnitTest.utils;
 
 namespace UnitTest.Test.GroupClassScheduleTest
 {
@@ -221,6 +217,101 @@ namespace UnitTest.Test.GroupClassScheduleTest
 
             // Assert
             Assert.IsTrue(result == ErrorCodeDefine.DuplicatePlaceAndTime);
+        }
+
+        [TestMethod]
+        public void 取得團體課程表_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetGroupClassScheduleDto getGroupClassScheduleDto = new RequestGetGroupClassScheduleDto()
+            {
+                DateRangeFilter = "all",
+                SortOption = null,
+                Page = 1,
+                RecordPerPage = 8,
+                SortOrder = "ascending",
+                SpecificDate = null,
+                Status = 1
+            };
+            List<ResponseGetScheduleDto> responseGetScheduleListDto = new List<ResponseGetScheduleDto>()
+                {
+                    new ResponseGetScheduleDto()
+                    {
+                        GroupClassScheduleId=1,
+                        Category=1,
+                        CheckInParticipant=1,
+                        ClassName="ww",
+                        CoachName="alecks",
+                        Status=1,
+                        MaximumParticipant=60,
+                        Place="A",
+                        ReserveParticipant=1,
+                        Tag=1,
+                        Time=DateTime.Now,
+                    }
+                };
+
+            List<GroupClassSchedule> schedules = new List<GroupClassSchedule>()
+            {
+                new GroupClassSchedule()
+                {
+                        GroupClassScheduleId=1,
+                        Category=1,
+                        CheckInParticipant=1,
+                        ClassName="ww",
+                        CoachName="alecks",
+                        Status=1,
+                        MaximumParticipant=60,
+                        Place="A",
+                        ReserveParticipant=1,
+                        Tag=1,
+                        Time=DateTime.Now,
+                }
+            };
+
+            int totalPage = 1;
+
+            // Mock 設定
+            groupClassScheduleRepositoryMock.Setup(s
+                => s.GetSchedule(getGroupClassScheduleDto)).Returns((schedules, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetScheduleDto>>(schedules)).Returns(responseGetScheduleListDto);
+
+            // Act
+            ResponseGetScheduleListDto result = service.GetSchedule(getGroupClassScheduleDto);
+
+            // Assert
+            CollectionAssert.AreEqual(result.ScheduleList, responseGetScheduleListDto);
+        }
+
+        [TestMethod]
+        public void 取得團體課程表_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetGroupClassScheduleDto getGroupClassScheduleDto = new RequestGetGroupClassScheduleDto()
+            {
+                DateRangeFilter = "all",
+                SortOption = null,
+                Page = 1,
+                RecordPerPage = 8,
+                SortOrder = "ascending",
+                SpecificDate = null,
+                Status = 1
+            };
+            List<ResponseGetScheduleDto> responseGetScheduleListDto = new List<ResponseGetScheduleDto>();
+            List<GroupClassSchedule> schedules = new List<GroupClassSchedule>();
+
+            int totalPage = 1;
+
+            // Mock 設定
+            groupClassScheduleRepositoryMock.Setup(s
+                => s.GetSchedule(getGroupClassScheduleDto)).Returns((schedules, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetScheduleDto>>(schedules)).Returns(responseGetScheduleListDto);
+
+            // Act
+            ResponseGetScheduleListDto result = service.GetSchedule(getGroupClassScheduleDto);
+
+            // Assert
+            CollectionAssert.AreEqual(result.ScheduleList, responseGetScheduleListDto);
         }
     }
 }

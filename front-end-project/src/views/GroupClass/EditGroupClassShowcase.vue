@@ -6,14 +6,14 @@
     <div class="basicInputBox">
       <div class="basicInputContainer">
         <InputSpan
-          class="inputSpann"
+          class="inputSpanContainer"
           labelText="課程名稱"
           v-model="currentShowcaseData.Name"
           :required="true"
           @enter="editShowcase"
         ></InputSpan>
         <InputSpan
-          class="inputSpann"
+          class="inputSpanContainer"
           labelText="課程順序"
           v-model="currentShowcaseData.Sort"
           :required="true"
@@ -389,9 +389,10 @@ export default {
   gap: 10%;
 }
 
-.inputSpann {
+.inputSpanContainer {
   max-width: 40%;
   width: 300px;
+  margin-bottom: 1%;
 }
 
 .categoryInputContainer,

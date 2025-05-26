@@ -266,11 +266,11 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="wwwroot\css\101.841e0399.css" />
     <Content Include="wwwroot\css\119.00d9b5f5.css" />
-    <Content Include="wwwroot\css\214.4b7caf29.css" />
     <Content Include="wwwroot\css\227.7873b01b.css" />
     <Content Include="wwwroot\css\25.97b4031a.css" />
     <Content Include="wwwroot\css\27.a44c8ca2.css" />
     <Content Include="wwwroot\css\360.5f24eb27.css" />
+    <Content Include="wwwroot\css\465.6f661d9d.css" />
     <Content Include="wwwroot\css\492.dd2fe37f.css" />
     <Content Include="wwwroot\css\528.29987e98.css" />
     <Content Include="wwwroot\css\559.03b6f6aa.css" />
@@ -289,11 +289,11 @@
     <Content Include="wwwroot\index.html" />
     <Content Include="wwwroot\js\101.d5598db0.js" />
     <Content Include="wwwroot\js\119.b3a0b730.js" />
-    <Content Include="wwwroot\js\214.b889b4c4.js" />
     <Content Include="wwwroot\js\227.1afddb50.js" />
-    <Content Include="wwwroot\js\25.40824e91.js" />
-    <Content Include="wwwroot\js\27.e7d4f331.js" />
+    <Content Include="wwwroot\js\25.df21edfb.js" />
+    <Content Include="wwwroot\js\27.f8b20f16.js" />
     <Content Include="wwwroot\js\360.5128feb1.js" />
+    <Content Include="wwwroot\js\465.7b45ec04.js" />
     <Content Include="wwwroot\js\492.8a13ef50.js" />
     <Content Include="wwwroot\js\528.e1809a46.js" />
     <Content Include="wwwroot\js\559.33b1040f.js" />
@@ -303,11 +303,11 @@
     <Content Include="wwwroot\js\761.45e044f2.js" />
     <Content Include="wwwroot\js\851.72efe7ca.js" />
     <Content Include="wwwroot\js\877.50fda0d8.js" />
-    <Content Include="wwwroot\js\966.5427c7ac.js" />
+    <Content Include="wwwroot\js\966.9df1ab27.js" />
     <Content Include="wwwroot\js\979.7281d682.js" />
-    <Content Include="wwwroot\js\993.dcd58b21.js" />
-    <Content Include="wwwroot\js\994.d2925a40.js" />
-    <Content Include="wwwroot\js\app.9d604689.js" />
+    <Content Include="wwwroot\js\993.19fbd28e.js" />
+    <Content Include="wwwroot\js\994.27438a16.js" />
+    <Content Include="wwwroot\js\app.8f4bf518.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
   </ItemGroup>
   <ItemGroup>
@@ -318,11 +318,11 @@
     <None Include="packages.config" />
     <Content Include="wwwroot\js\101.d5598db0.js.map" />
     <Content Include="wwwroot\js\119.b3a0b730.js.map" />
-    <Content Include="wwwroot\js\214.b889b4c4.js.map" />
     <Content Include="wwwroot\js\227.1afddb50.js.map" />
-    <Content Include="wwwroot\js\25.40824e91.js.map" />
-    <Content Include="wwwroot\js\27.e7d4f331.js.map" />
+    <Content Include="wwwroot\js\25.df21edfb.js.map" />
+    <Content Include="wwwroot\js\27.f8b20f16.js.map" />
     <Content Include="wwwroot\js\360.5128feb1.js.map" />
+    <Content Include="wwwroot\js\465.7b45ec04.js.map" />
     <Content Include="wwwroot\js\492.8a13ef50.js.map" />
     <Content Include="wwwroot\js\528.e1809a46.js.map" />
     <Content Include="wwwroot\js\559.33b1040f.js.map" />
@@ -332,11 +332,11 @@
     <Content Include="wwwroot\js\761.45e044f2.js.map" />
     <Content Include="wwwroot\js\851.72efe7ca.js.map" />
     <Content Include="wwwroot\js\877.50fda0d8.js.map" />
-    <Content Include="wwwroot\js\966.5427c7ac.js.map" />
+    <Content Include="wwwroot\js\966.9df1ab27.js.map" />
     <Content Include="wwwroot\js\979.7281d682.js.map" />
-    <Content Include="wwwroot\js\993.dcd58b21.js.map" />
-    <Content Include="wwwroot\js\994.d2925a40.js.map" />
-    <Content Include="wwwroot\js\app.9d604689.js.map" />
+    <Content Include="wwwroot\js\993.19fbd28e.js.map" />
+    <Content Include="wwwroot\js\994.27438a16.js.map" />
+    <Content Include="wwwroot\js\app.8f4bf518.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
   <ItemGroup>

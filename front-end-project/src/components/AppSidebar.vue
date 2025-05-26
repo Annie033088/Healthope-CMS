@@ -148,6 +148,27 @@
         ></BtnSubSideBar>
       </div>
     </div>
+    <div
+      class="sidebarRow"
+      v-if="permissionMap.EditPlan || permissionMap.SelectPlan"
+    >
+      <button class="btnSidebar" @click="redirect('/plan')">
+        <svg
+          class="sidebarIcon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 9.75L12 8.75L14 9.75V5H10V9.75ZM7 17V15H12V17H7ZM5 21C4.45 21 3.97933 20.8043 3.588 20.413C3.19667 20.0217 3.00067 19.5507 3 19V5C3 4.45 3.196 3.97933 3.588 3.588C3.98 3.19667 4.45067 3.00067 5 3H19C19.55 3 20.021 3.196 20.413 3.588C20.805 3.98 21.0007 4.45067 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.0217 20.805 19.5507 21.0007 19 21H5ZM5 19H19V5H16V13L12 11L8 13V5H5V19Z"
+            fill="#AA7F7F"
+          />
+        </svg>
+        <b>方案</b>
+      </button>
+    </div>
     <div class="sidebarRow">
       <button class="btnSidebar">
         <svg
@@ -178,25 +199,26 @@ export default {
     BtnSubSideBar,
   },
   props: {
-    permissionList: [],
+    // 用來儲存權限對照結果
+    permissionMap: {
+      None: false,
+      EditAdmin: false,
+      SelectMember: false,
+      EditMember: false,
+      SelectCoach: false,
+      AddCoach: false,
+      EditCoach: false,
+      EditGroupClassShowcase: false,
+      SelectGroupClassShowcase: false,
+      EditGroupClassSchedule: false,
+      SelectGroupClassSchedule: false,
+      EditPlan: false,
+      SelectPlan: false,
+    },
     notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
-      // 用來儲存權限對照結果
-      permissionMap: {
-        EditAdmin: false, // 初始設置為 false 或希望的初始狀態
-        EditMember: false,
-        SelectMember: false,
-        SelectCoach: false,
-        AddCoach: false,
-        None: true,
-        EditCoach: false,
-        EditGroupClassShowcase: false,
-        SelectGroupClassShowcase: false,
-        EditGroupClassSchedule:false,
-        SelectGroupClassSchedule:false,
-      },
       dropDownFlag: {
         Course: false,
       },
@@ -206,7 +228,6 @@ export default {
     };
   },
   created() {
-    this.initializePermissionMap(this.permissionList);
     this.setScrollWithWindow();
   },
   methods: {
@@ -230,44 +251,6 @@ export default {
         this.$router.push(page);
       }
     },
-    // 檢查用戶擁有的權限
-    initializePermissionMap(permissionList) {
-      // 遍歷權限對照表並根據用戶權限設定對應結果
-      for (let key in this.$adminPermission) {
-        const permissionValue = this.$adminPermission[key];
-        this.permissionMap[key] = permissionList.includes(permissionValue);
-      }
-    },
-    // 發送請求取得權限
-    async getPermission() {
-      try {
-        // post
-        const response = await this.$axios.post("/api/Admin/GetPermission");
-
-        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.initializePermissionMap(response.data.ApiDataObject);
-        } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                this.$emit("afterConfirmEvent");
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
-          this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
-          this.$notificationBox.notificationBoxErrorCode =
-            response.data.ErrorCode;
-        }
-      } catch (error) {
-        console.error("創建管理者時發生錯誤", error);
-      }
-    },
     setScrollWithWindow() {
       // 讓側邊欄跟著視窗移動
       window.addEventListener("scroll", () => {
@@ -284,20 +267,15 @@ export default {
       });
     },
   },
-  computed:{
-    groupClassFlag(){
-      return this.permissionMap.EditGroupClassShowcase ||  
-      this.permissionMap.SelectGroupClassShowcase || 
-      this.permissionMap.EditGroupClassSchedule || 
-       this.permissionMap.SelectGroupClassSchedule 
-    }
-  },
-  mounted() {
-    // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
-    if (!this.permissionList) return;
-    if (this.permissionList.length < 1 && this.$loginFlag) {
-      this.getPermission();
-    }
+  computed: {
+    groupClassFlag() {
+      return (
+        this.permissionMap.EditGroupClassShowcase ||
+        this.permissionMap.SelectGroupClassShowcase ||
+        this.permissionMap.EditGroupClassSchedule ||
+        this.permissionMap.SelectGroupClassSchedule
+      );
+    },
   },
 };
 </script>

@@ -1,7 +1,13 @@
 <template>
   <div class="selectorContainer">
-    <label class="lab">{{labelText}}</label>
-    <select class="normalSelector" v-model="localValue" @change="handleChange">
+    <label class="lab" v-if="labelText">{{ labelText }}</label>
+    <select
+      class="normalSelector"
+      v-model="localValue"
+      @change="handleChange"
+      @click="$emit('click', $event)"
+      :disabled="disabled"
+    >
       <option v-for="opt in options" :key="opt.value" :value="opt.value">
         {{ opt.text }}
       </option>
@@ -14,36 +20,41 @@ export default {
   props: {
     parentValue: {
       type: [String, Number],
-      required: true
+      required: true,
     },
     options: {
       type: Array,
     },
-    labelText:{
-        type:String
+    labelText: {
+      type: String,
+      default: "",
+    },
+    disabled:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
     return {
-      localValue: this.parentValue
+      localValue: this.parentValue,
     };
   },
   watch: {
     parentValue(val) {
       this.localValue = val;
-    }
+    },
   },
   methods: {
     handleChange() {
       this.$emit("update:parentValue", this.localValue);
       this.$emit("change");
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.selectorContainer{
+.selectorContainer {
   display: inline-block;
   border-radius: 0.5rem;
   background-color: #eee;
@@ -70,5 +81,4 @@ export default {
 .normalSelector:hover {
   cursor: pointer;
 }
-
 </style>

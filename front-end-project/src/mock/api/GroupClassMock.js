@@ -245,7 +245,7 @@ export default function (mock) {
             "MaximumParticipant": 20,
             "ReserveParticipant": 12,
             "CheckInParticipant": 10,
-            "Tag": 3,
+            "Tag": 1,
             "Status": 1
         },
         {

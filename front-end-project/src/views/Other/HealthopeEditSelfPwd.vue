@@ -4,20 +4,20 @@
     <div class="inputBox">
       <div class="inputContainer">
         <InputSpan
-          class="inputSpan"
+          class="inputSpanContainer"
           labelText="請輸入舊密碼"
           v-model="oldPwd"
           @enter="editSelfPwd"
         ></InputSpan>
         <InputSpan
-          class="inputSpan"
+          class="inputSpanContainer"
           labelText="請輸入新密碼"
           v-model="newPwd"
           inputType="password"
           @enter="editSelfPwd"
         ></InputSpan>
         <InputSpan
-          class="inputSpan"
+          class="inputSpanContainer"
           labelText="請再輸入一次新密碼"
           v-model="newAgainPwd"
           inputType="password"
@@ -143,6 +143,10 @@ export default {
 .inputContainer {
   width: 60%;
   max-width: 350px;
+}
+
+.inputSpanContainer{
+  margin-bottom: 2%;
 }
 
 .btnAddContainer, .hintContainer {

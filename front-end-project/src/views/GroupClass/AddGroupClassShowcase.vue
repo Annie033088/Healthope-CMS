@@ -280,6 +280,7 @@ export default {
 .inputSpanContainer {
   max-width: 40%;
   width: 300px;
+  margin-bottom:1%;
 }
 
 .categoryInputContainer,

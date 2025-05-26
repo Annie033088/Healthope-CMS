@@ -1,5 +1,4 @@
 ﻿using ApiLayer.Models;
-using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.GroupClassSchedule.Request;
 using ApiLayer.Models.GroupClassSchedule.Response;
 using PersistentLayer.Models;

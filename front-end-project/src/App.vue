@@ -9,7 +9,7 @@
     <AppSidebar
       v-if="this.$loginFlag"
       class="sidebar"
-      :permissionList="permissionList"
+      :permissionMap="permissionMap"
       :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
       @afterConfirmEvent="afterConfirmEvent"
       @refreshPage="refreshRouterViewComponent"
@@ -28,6 +28,7 @@
       @refreshPage="refreshRouterViewComponent"
       :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
       @afterConfirmEvent="afterConfirmEvent"
+      :permissionMap="permissionMap"
     ></router-view>
     <AppFooter />
   </div>
@@ -38,6 +39,7 @@ import AppFooter from "@/components/AppFooter.vue";
 import NotificationBox from "@/components/NotificationBox.vue";
 import AppHeader from "@/components/Header/AppHeader";
 import AppSidebar from "@/components/AppSidebar.vue";
+import { adminPermission } from "@/utils/globalSetting";
 
 export default {
   name: "App",
@@ -50,14 +52,14 @@ export default {
   data() {
     return {
       title: "Healthope 健望館後台管理網站",
-      permissionList: [],
       routerViewKey: 0,
       notificationBoxConfirmFlag: false,
+      permissionMap: {},
     };
   },
   methods: {
     setPermission(permissionList) {
-      this.permissionList = permissionList;
+      this.initializePermissionMap(permissionList);
     },
     refreshRouterViewComponent() {
       this.routerViewKey += 1;
@@ -73,9 +75,52 @@ export default {
       if (redirectRoute) this.$router.push(redirectRoute);
       else this.refreshRouterViewComponent();
     },
-    notificationBoxCreated(){
+    notificationBoxCreated() {
       this.notificationBoxConfirmFlag = false;
-    }
+    },
+    // 檢查用戶擁有的權限
+    initializePermissionMap(permissionList) {
+      // 遍歷權限對照表並根據用戶權限設定對應結果
+      for (let key in adminPermission) {
+        const permissionValue = adminPermission[key];
+        this.permissionMap[key] = permissionList.includes(permissionValue);
+      }
+    },
+    // 發送請求取得權限
+    async getPermission() {
+      try {
+        // post
+        const response = await this.$axios.post("/api/Admin/GetPermission");
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.initializePermissionMap(response.data.ApiDataObject);
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                this.$emit("afterConfirmEvent");
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("創建管理者時發生錯誤", error);
+      }
+    },
+  },
+  mounted() {
+    // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
+    if (!this.permissionMap) return;
+    if (this.$loginFlag) this.getPermission();
   },
 };
 </script>

@@ -53,6 +53,14 @@ namespace ApiLayer.Models
                 AdminPermission.EditGroupClassShowcase,} },
             { "GroupClassShowcase,DeleteShowcase", new List<AdminPermission> {
                 AdminPermission.EditGroupClassShowcase,} },
+
+            // GroupClassScheduleController
+            { "GroupClassSchedule,GetShowcaseAndCoach", new List<AdminPermission> {
+                AdminPermission.EditGroupClassSchedule,} },
+            { "GroupClassSchedule,AddSchedule", new List<AdminPermission> {
+                AdminPermission.EditGroupClassSchedule,} },
+            { "GroupClassSchedule,GetSchedule", new List<AdminPermission> {
+                AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule} },
         };
     }
 }

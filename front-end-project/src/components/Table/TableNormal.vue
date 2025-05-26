@@ -17,16 +17,23 @@
           >
             操作
           </th>
-          <th v-if="checkDetailBtnFlag" :style="{ width: '10%' }">
-            查看
-          </th>
+          <th v-if="checkDetailBtnFlag" :style="{ width: '10%' }">查看</th>
         </tr>
       </thead>
       <tbody>
         <template v-for="(row, index) in rows">
           <tr :key="'main-' + index" @click="toggleDetail(index)">
             <td v-for="col in columns" :key="col.key">
-              <div>
+              <NormalSelector
+                @click.stop=""
+                v-if="col.type === 'dropDownSelector'"
+                :options="row[col.key].Options"
+                :parentValue="row[col.key].Value"
+                @change="$emit(`change${col.key}`, row)"
+                :disabled="!row.enableFlag"
+              >
+              </NormalSelector>
+              <div v-else>
                 {{ row[col.key] }}
               </div>
             </td>
@@ -46,10 +53,10 @@
             </td>
             <td v-if="checkDetailBtnFlag">
               <div class="editBtnContainer">
-              <SvgCheckDetail
-                size="24"
-                @click.stop="$emit('goCheckDetail', row)"
-              />
+                <SvgCheckDetail
+                  size="24"
+                  @click.stop="$emit('goCheckDetail', row)"
+                />
               </div>
             </td>
           </tr>
@@ -72,6 +79,7 @@
 import SvgEdit from "@/components/Btn/SvgEdit";
 import SvgDelete from "@/components/Btn/SvgDelete";
 import SvgCheckDetail from "@/components/Btn/SvgCheckDetail";
+import NormalSelector from "@/components/Selector/NormalSelector";
 
 export default {
   name: "TableNormal",
@@ -79,6 +87,7 @@ export default {
     SvgEdit,
     SvgDelete,
     SvgCheckDetail,
+    NormalSelector,
   },
   props: {
     columns: {
@@ -125,8 +134,8 @@ export default {
     avgWidth() {
       let column = this.columns.length;
       let width = 100;
-      if (this.operationFlag) width-=10
-      if (this.checkDetailBtnFlag) width-=10
+      if (this.operationFlag) width -= 10;
+      if (this.checkDetailBtnFlag) width -= 10;
       return width / column;
     },
   },
@@ -193,5 +202,4 @@ tbody td {
   display: flex;
   justify-content: start;
 }
-
 </style>

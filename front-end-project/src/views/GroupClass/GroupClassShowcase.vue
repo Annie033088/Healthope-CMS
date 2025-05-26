@@ -38,8 +38,8 @@
       class="tableContainer"
       :columns="columns"
       :rows="classList"
-      :editBtnFlag="true"
-      :deleteBtnFlag="true"
+      :editBtnFlag="permissionMap.EditGroupClassSchedule"
+      :deleteBtnFlag="permissionMap.EditGroupClassSchedule"
       :checkDetailBtnFlag="true"
       @goCheckDetail="goDetail"
       @goEdit="goEdit"
@@ -86,6 +86,7 @@ export default {
     PaginationComponent,
   },
   props: {
+    permissionMap: {},
     notificationBoxConfirmFlag: Boolean,
   },
   data() {

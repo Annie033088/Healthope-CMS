@@ -4,7 +4,7 @@ import router from './router';
 import App from './App.vue'
 // eslint-disable-next-line no-unused-vars
 import axios from './plugins/axios';
-import {errorCodeDefine, errorCodeToMessage, adminPermission} from './utils/globalSetting';
+import {errorCodeDefine, errorCodeToMessage} from './utils/globalSetting';
 
 if (process.env.NODE_ENV === 'development') {
   await import('./mock/mock.js')
@@ -13,7 +13,6 @@ if (process.env.NODE_ENV === 'development') {
 Vue.prototype.$errorCodeDefine = errorCodeDefine;
 Vue.prototype.$errorCodeToMessage = errorCodeToMessage;
 Vue.prototype.$axios = axios;
-Vue.prototype.$adminPermission = adminPermission;
 Vue.prototype.$loginFlag = false;
 Vue.prototype.$notificationBox = Vue.observable({
   notificationBoxFlag: false,

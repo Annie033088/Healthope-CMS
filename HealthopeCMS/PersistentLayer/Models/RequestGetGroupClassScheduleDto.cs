@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistentLayer.Models
 {
     public class RequestGetGroupClassScheduleDto
     {
         /// <summary>
-        /// 篩選分類
+        /// 篩選狀態
         /// </summary>
-        public bool? Status { get; set; }
+        public byte? Status { get; set; }
 
         /// <summary>
         /// 搜尋的日期範圍

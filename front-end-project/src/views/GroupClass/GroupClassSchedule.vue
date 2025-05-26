@@ -23,7 +23,7 @@
         v-model="selectStatus"
         @change="selectClassByStatus"
         inputTitle="狀態："
-        inputType="radioCategory"
+        inputType="radioStatus"
         :options="groupClassScheduleStatus"
       />
       <SortSelector
@@ -45,16 +45,15 @@
       class="tableContainer"
       :columns="columns"
       :rows="classList"
-      :editBtnFlag="true"
       :expandable="true"
+      @changeStatus="editStatus"
     >
       <template #detail="{ row }">
         <div class="detailRowContainer">
           <div class="detailRowLeft">
-            <strong>報到人數：</strong> {{ row.CheckInParticipant }}
+            <strong>分類：</strong> {{ row.Category }}
             <br />
-            <strong>標籤(Tag)：</strong>
-            <span>{{ row.Tag === 2 ? "代課" : "無" }} </span><br />
+            <strong>報到人數：</strong> {{ row.CheckInParticipant }}
           </div>
         </div>
       </template>
@@ -77,7 +76,11 @@ import SortSelector from "@/components/Selector/SortSelector";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import RadioSelector from "@/components/Selector/RadioSelector";
 import DateSelector from "@/components/Selector/DateSelector";
-import { groupClassCategoryAndText, groupClassIcon, groupClassScheduleStatus } from "@/utils/groupClass";
+import {
+  groupClassCategoryAndText,
+  groupClassIcon,
+  groupClassScheduleStatus,
+} from "@/utils/groupClass";
 import TableNormal from "@/components/Table/TableNormal";
 import PaginationComponent from "@/components/PaginationComponent";
 
@@ -95,6 +98,7 @@ export default {
     DateSelector,
   },
   props: {
+    permissionMap: {},
     notificationBoxConfirmFlag: Boolean,
   },
   data() {
@@ -112,16 +116,30 @@ export default {
         { label: "星期", key: "Weekday" },
         { label: "時間", key: "TimePart" },
         { label: "名稱", key: "ClassName" },
-        { label: "分類", key: "Category" },
         { label: "教練", key: "CoachName" },
         { label: "地點", key: "Place" },
         { label: "人數", key: "Participant" },
-        { label: "狀態", key: "Status" },
+        {
+          label: "狀態",
+          key: "Status",
+          type: "dropDownSelector",
+          enableFlag: this.permissionMap.EditGroupClassSchedule,
+        },
+        {
+          label: "Tag",
+          key: "Tag",
+          type: "dropDownSelector",
+          enableFlag: this.permissionMap.EditGroupClassSchedule,
+        },
       ],
       classList: [{ Date: "2025-06-30" }],
     };
   },
   methods: {
+    // TODO: 到時候記得實作修改團課狀態
+    editStatus(row) {
+      console.log("parent change status", row);
+    },
     searchPage(page) {
       this.searchingPage = page;
       this.getClassData();
@@ -186,29 +204,55 @@ export default {
               index < groupClassCategoryAndText.length;
               index++
             ) {
-              if (course.Category === Number(groupClassCategoryAndText[index].value))
+              if (
+                course.Category ===
+                Number(groupClassCategoryAndText[index].value)
+              )
                 course.Category = groupClassCategoryAndText[index].text;
             }
 
-            for (
-              let index = 0;
-              index < groupClassScheduleStatus.length;
-              index++
-            ) {
-              if (course.Status === Number(groupClassScheduleStatus[index].value))
-                course.Status = groupClassScheduleStatus[index].text;
-            }
+            let statusOption = [];
+            let statusFininsh = 3;
+            let statusCancel = 4;
+
+            groupClassScheduleStatus.forEach((status) => {
+              if (course.Status === Number(status.value))
+                statusOption.push(status);
+
+              if (
+                Number(status.value) === statusCancel &&
+                course.Status !== statusFininsh &&
+                course.Status !== statusCancel
+              )
+                statusOption.push(status);
+            });
+
+            course.Status = {
+              Value: String(course.Status),
+              Options: statusOption,
+            };
+
+            course.Tag = {
+              Value: String(course.Tag),
+              Options: [
+                { value: "1", text: "無" },
+                { value: "2", text: "代課" },
+              ],
+            };
 
             const localDate = new Date(course.Time);
             course.Date = localDate.toLocaleDateString("sv-SE"); // 用瑞典格式會保留 yyyy-MM-dd
-            course.Weekday = localDate.toLocaleDateString(undefined, { weekday: 'long' });
+            course.Weekday = localDate.toLocaleDateString(undefined, {
+              weekday: "long",
+            });
             course.TimePart = localDate.toLocaleTimeString(undefined, {
               hour: "2-digit",
               minute: "2-digit",
               hour12: false,
             });
 
-            course.Participant = course.ReserveParticipant + "/" +course.MaximumParticipant
+            course.Participant =
+              course.ReserveParticipant + "/" + course.MaximumParticipant;
           });
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
@@ -311,11 +355,11 @@ export default {
     groupClassIcon() {
       return groupClassIcon;
     },
-    groupClassScheduleStatus(){
+    groupClassScheduleStatus() {
       let category = [...groupClassScheduleStatus];
       category.push({ value: "", text: "全部" });
       return category;
-    }
+    },
   },
   created() {
     this.getClassData();

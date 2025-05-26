@@ -1,16 +1,15 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
-using ApiLayer.Models.GroupClassShowcase.Response;
 using ApiLayer.Models;
+using ApiLayer.Models.GroupClassSchedule.Request;
+using ApiLayer.Models.GroupClassSchedule.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;
 using UnitTest.utils;
-using ApiLayer.Models.GroupClassSchedule.Request;
-using ApiLayer.Models.GroupClassSchedule.Response;
-using System.Collections.Generic;
-using System;
 
 namespace UnitTest.Test.GroupClassScheduleTest
 {
@@ -93,20 +92,23 @@ namespace UnitTest.Test.GroupClassScheduleTest
         [TestMethod]
         public void 新增團體課程表_成功_回傳成功()
         {
+            DateTime future = DateTime.Now.AddDays(2).Date;
+            DateTime time = future.AddHours(18).AddMinutes(40);
+
             // Arrange
             RequestAddScheduleDto addScheduleDto = new RequestAddScheduleDto()
             {
-                Category=1,
-                ClassName="wq",
-                Coach= new ScheduleGetCoachDto()
+                Category = 1,
+                ClassName = "wq",
+                Coach = new ScheduleGetCoachDto()
                 {
-                    CoachId=1,
+                    CoachId = 1,
                     UpdateTime = DateTime.Now,
                 },
-                Icon=1,
-                MaximumParticipant=35,
-                Place="weq",
-                Time = new DateTime(2025, 05, 25, 18, 40, 0),
+                Icon = 1,
+                MaximumParticipant = 35,
+                Place = "weq",
+                Time = time,
             };
 
             ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
@@ -152,6 +154,8 @@ namespace UnitTest.Test.GroupClassScheduleTest
         [TestMethod]
         public void 新增團體課程表_失敗_課程時間重複()
         {
+            DateTime future = DateTime.Now.AddDays(2).Date;
+            DateTime time = future.AddHours(18).AddMinutes(40);
             RequestAddScheduleDto addScheduleDto = new RequestAddScheduleDto()
             {
                 Category = 1,
@@ -164,7 +168,7 @@ namespace UnitTest.Test.GroupClassScheduleTest
                 Icon = 1,
                 MaximumParticipant = 35,
                 Place = "weq",
-                Time = new DateTime(2025, 05, 25, 18, 40, 0),
+                Time = time,
             };
 
             ErrorCodeDefine errorCode = ErrorCodeDefine.DuplicatePlaceAndTime;
@@ -179,6 +183,64 @@ namespace UnitTest.Test.GroupClassScheduleTest
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DuplicatePlaceAndTime));
+        }
+
+        [TestMethod]
+        public void 取得團體課程表_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetGroupClassScheduleDto getGroupClassScheduleDto = new RequestGetGroupClassScheduleDto()
+            {
+                DateRangeFilter = "all",
+                SortOption = null,
+                Page = 1,
+                RecordPerPage = 8,
+                SortOrder = "ascending",
+                SpecificDate = null,
+                Status = 1
+            };
+
+            ResponseGetScheduleListDto responseGetScheduleListDto = new ResponseGetScheduleListDto()
+            {
+                ScheduleList = null,
+                TotalPage = 1,
+            };
+
+            // Mock 設定
+            groupClassScheduleServiceMock.Setup(s
+                => s.GetSchedule(getGroupClassScheduleDto)).Returns(responseGetScheduleListDto);
+
+            // Act
+            IHttpActionResult result = controller.GetSchedule(getGroupClassScheduleDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetScheduleListDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetScheduleListDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, responseGetScheduleListDto));
+        }
+
+        [TestMethod]
+        public void 取得團體課程表_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestGetGroupClassScheduleDto getGroupClassScheduleDto = new RequestGetGroupClassScheduleDto()
+            {
+                DateRangeFilter = "q",
+                SortOption = null,
+                Page = 1,
+                RecordPerPage = 8,
+                SortOrder = "ascending",
+                SpecificDate = null,
+                Status = 1
+            };
+
+            // Act
+            IHttpActionResult result = controller.GetSchedule(getGroupClassScheduleDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
     }
 }
