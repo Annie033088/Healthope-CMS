@@ -13,6 +13,6 @@ module.exports = defineConfig({
     },
   },*/
   // build 出的檔案位置
-  outputDir: '../HealthopeCMS/ApiLayer/wwwroot',
+  outputDir: '../front-end-project/wwwroot',
   publicPath: '/wwwroot', 
 })

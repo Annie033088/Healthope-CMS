@@ -61,6 +61,14 @@ namespace ApiLayer.Models
                 AdminPermission.EditGroupClassSchedule,} },
             { "GroupClassSchedule,GetSchedule", new List<AdminPermission> {
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule} },
+
+            // PlanTemplateController
+            { "PlanTemplate,AddTicketPlan", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,AddMembershipPlan", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,AddPersonalTrainingPackage", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
         };
     }
 }

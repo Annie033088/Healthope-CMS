@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Http;
+using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.GroupClassSchedule.Request;
@@ -11,6 +12,9 @@ using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {
+    [RequestLoggerFilter]
+    [VeriyLoginFilter]
+    [AdminPermissionAuthFilter]
     public class GroupClassScheduleController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();

@@ -26,11 +26,11 @@
             <td v-for="col in columns" :key="col.key">
               <NormalSelector
                 @click.stop=""
-                v-if="col.type === 'dropDownSelector'"
+                v-if="col.type === 'dropDownSelector' && row[col.key]"
                 :options="row[col.key].Options"
                 :parentValue="row[col.key].Value"
                 @change="$emit(`change${col.key}`, row)"
-                :disabled="!row.enableFlag"
+                :disabled="!col.enableFlag"
               >
               </NormalSelector>
               <div v-else>

@@ -47,6 +47,9 @@ namespace ApiLayer.App_Start
             builder.RegisterType<GroupClassScheduleRepository>().As<IGroupClassScheduleRepository>().InstancePerRequest();
             builder.RegisterType<GroupClassScheduleService>().As<IGroupClassScheduleService>().InstancePerRequest();
 
+            builder.RegisterType<PlanTemplateService>().As<IPlanTemplateService>().InstancePerRequest();
+            builder.RegisterType<PlanTemplateRepository>().As<IPlanTemplateRepository>().InstancePerRequest();
+
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

@@ -74,7 +74,11 @@
       <div class="sidebarRow" v-if="groupClassFlag">
         <button
           class="btnDropDownSidebar"
-          @click="dropDownFlag.Course ? closeDropdown() : openDropdown()"
+          @click="
+            dropDownFlag.Course
+              ? closeDropdown('Course')
+              : openDropdown('Course')
+          "
         >
           <svg
             class="sidebarIcon"
@@ -127,7 +131,7 @@
       <div
         class="btnSubContainer"
         :class="dropDownFlag.Course ? 'showDropdown' : 'hideDropdown'"
-        @animationend="handleAnimationEnd"
+        @animationend="handleAnimationEnd('Course')"
         v-if="showElement.Course"
       >
         <BtnSubSideBar
@@ -148,26 +152,79 @@
         ></BtnSubSideBar>
       </div>
     </div>
-    <div
-      class="sidebarRow"
-      v-if="permissionMap.EditPlan || permissionMap.SelectPlan"
-    >
-      <button class="btnSidebar" @click="redirect('/plan')">
-        <svg
-          class="sidebarIcon"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+    <div>
+      <div class="sidebarRow" v-if="groupClassFlag">
+        <button
+          class="btnDropDownSidebar"
+          @click="
+            dropDownFlag.PlanTemplate
+              ? closeDropdown('PlanTemplate')
+              : openDropdown('PlanTemplate')
+          "
         >
-          <path
-            d="M10 9.75L12 8.75L14 9.75V5H10V9.75ZM7 17V15H12V17H7ZM5 21C4.45 21 3.97933 20.8043 3.588 20.413C3.19667 20.0217 3.00067 19.5507 3 19V5C3 4.45 3.196 3.97933 3.588 3.588C3.98 3.19667 4.45067 3.00067 5 3H19C19.55 3 20.021 3.196 20.413 3.588C20.805 3.98 21.0007 4.45067 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.0217 20.805 19.5507 21.0007 19 21H5ZM5 19H19V5H16V13L12 11L8 13V5H5V19Z"
-            fill="#AA7F7F"
-          />
-        </svg>
-        <b>方案</b>
-      </button>
+          <svg
+            class="sidebarIcon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 9.75L12 8.75L14 9.75V5H10V9.75ZM7 17V15H12V17H7ZM5 21C4.45 21 3.97933 20.8043 3.588 20.413C3.19667 20.0217 3.00067 19.5507 3 19V5C3 4.45 3.196 3.97933 3.588 3.588C3.98 3.19667 4.45067 3.00067 5 3H19C19.55 3 20.021 3.196 20.413 3.588C20.805 3.98 21.0007 4.45067 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.0217 20.805 19.5507 21.0007 19 21H5ZM5 19H19V5H16V13L12 11L8 13V5H5V19Z"
+              fill="#AA7F7F"
+            />
+          </svg>
+          <b>方案</b>
+          <svg
+            v-if="!dropDownFlag.PlanTemplate"
+            class="sidebarSymbol"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 12.998H13V18.998H11V12.998H5V10.998H11V4.99799H13V10.998H19V12.998Z"
+              fill="black"
+            />
+          </svg>
+          <svg
+            v-else
+            class="sidebarSymbol"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M19 12.998H5V10.998H19V12.998Z" fill="black" />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="btnSubContainer"
+        :class="dropDownFlag.PlanTemplate ? 'showDropdown' : 'hideDropdown'"
+        @animationend="handleAnimationEnd('PlanTemplate')"
+        v-if="showElement.PlanTemplate"
+      >
+        <BtnSubSideBar
+          v-if="permissionMap.EditPlan || permissionMap.SelectPlan"
+          text="會籍方案"
+          @click="redirect('/plan/membershipPlan')"
+        ></BtnSubSideBar>
+        <BtnSubSideBar
+          v-if="permissionMap.EditPlan || permissionMap.SelectPlan"
+          text="教練課方案"
+          @click="redirect('/plan/personalTrainingPackage')"
+        ></BtnSubSideBar>
+        <BtnSubSideBar
+          v-if="permissionMap.EditPlan || permissionMap.SelectPlan"
+          text="票劵方案"
+          @click="redirect('/plan/ticket')"
+        ></BtnSubSideBar>
+      </div>
     </div>
     <div class="sidebarRow">
       <button class="btnSidebar">
@@ -200,30 +257,18 @@ export default {
   },
   props: {
     // 用來儲存權限對照結果
-    permissionMap: {
-      None: false,
-      EditAdmin: false,
-      SelectMember: false,
-      EditMember: false,
-      SelectCoach: false,
-      AddCoach: false,
-      EditCoach: false,
-      EditGroupClassShowcase: false,
-      SelectGroupClassShowcase: false,
-      EditGroupClassSchedule: false,
-      SelectGroupClassSchedule: false,
-      EditPlan: false,
-      SelectPlan: false,
-    },
+    permissionMap: {},
     notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
       dropDownFlag: {
         Course: false,
+        PlanTemplate: false,
       },
       showElement: {
         Course: false,
+        PlanTemplate: false,
       },
     };
   },
@@ -231,17 +276,17 @@ export default {
     this.setScrollWithWindow();
   },
   methods: {
-    openDropdown() {
-      this.showElement.Course = true;
-      this.dropDownFlag.Course = true;
+    openDropdown(key) {
+      this.showElement[key] = true;
+      this.dropDownFlag[key] = true;
     },
-    closeDropdown() {
-      this.dropDownFlag.Course = false; // 播放消失動畫
+    closeDropdown(key) {
+      this.dropDownFlag[key] = false; // 播放消失動畫
     },
-    handleAnimationEnd() {
-      if (!this.dropDownFlag.Course) {
+    handleAnimationEnd(key) {
+      if (!this.dropDownFlag[key]) {
         // 消失動畫播完後，才真正隱藏元素
-        this.showElement.Course = false;
+        this.showElement[key] = false;
       }
     },
     redirect(page) {
@@ -276,6 +321,9 @@ export default {
         this.permissionMap.SelectGroupClassSchedule
       );
     },
+  },
+  mounted() {
+    if (!this.permissionMap && this.$loginFlag) this.$emit("getPermission");
   },
 };
 </script>

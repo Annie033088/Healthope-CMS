@@ -53,6 +53,9 @@
     <Compile Include="Models\GroupClassSchedule.cs" />
     <Compile Include="Models\GroupClassShowcase.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\MembershipPlan.cs" />
+    <Compile Include="Models\PersonalTrainingPackage.cs" />
+    <Compile Include="Models\TicketPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AdminPermissionUtility.cs" />
     <Compile Include="Utility\AppSetting.cs" />

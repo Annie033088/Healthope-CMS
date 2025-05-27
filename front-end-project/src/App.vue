@@ -13,6 +13,7 @@
       :notificationBoxConfirmFlag="notificationBoxConfirmFlag"
       @afterConfirmEvent="afterConfirmEvent"
       @refreshPage="refreshRouterViewComponent"
+      @getPermission="getPermission"
     >
     </AppSidebar>
     <AppHeader
@@ -54,7 +55,21 @@ export default {
       title: "Healthope 健望館後台管理網站",
       routerViewKey: 0,
       notificationBoxConfirmFlag: false,
-      permissionMap: {},
+      permissionMap: {
+        None: false,
+        EditAdmin: false,
+        SelectMember: false,
+        EditMember: false,
+        SelectCoach: false,
+        AddCoach: false,
+        EditCoach: false,
+        EditGroupClassShowcase: false,
+        SelectGroupClassShowcase: false,
+        EditGroupClassSchedule: false,
+        SelectGroupClassSchedule: false,
+        EditPlan: false,
+        SelectPlan: false,
+      },
     };
   },
   methods: {
@@ -116,11 +131,6 @@ export default {
         console.error("創建管理者時發生錯誤", error);
       }
     },
-  },
-  mounted() {
-    // 如果是 剛登入後，不需要請求權限 (因為登入時就一併帶過來了)
-    if (!this.permissionMap) return;
-    if (this.$loginFlag) this.getPermission();
   },
 };
 </script>

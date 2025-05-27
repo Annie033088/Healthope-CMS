@@ -6,6 +6,9 @@ using ApiLayer.Models.GroupClassSchedule.Response;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
 using ApiLayer.Models.Member.Response;
+using ApiLayer.Models.PlanTemplate.Request;
+using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.Response.PlanTemplate;
 using AutoMapper;
 using DomainLayer.Models;
 
@@ -36,6 +39,12 @@ namespace ApiLayer.App_Start
             CreateMap<Coach, ScheduleGetCoachDto>();
             CreateMap<GroupClassShowcase, ScheduleGetShowcaseDto>();
             CreateMap<GroupClassSchedule, ResponseGetScheduleDto>();
+            CreateMap<RequestAddTicketPlanDto, TicketPlan>();
+            CreateMap<RequestAddMembershipPlanDto, MembershipPlan>();
+            CreateMap<RequestAddPersonalTrainingPackageDto, PersonalTrainingPackage>();
+            CreateMap<MembershipPlan, ResponseGetMembershipPlanDto>();
+            CreateMap<PersonalTrainingPackage, ResponseGetPersonalTrainingPackageDto>();
+            CreateMap<TicketPlan, ResponseGetTicketPlanDto>();
         }
     }
 }

@@ -14,6 +14,7 @@
       <div class="text" v-if="!previewUrl">
         <span>點擊上傳</span>
         <span>(.jpg, .jpeg, .png, .webp)</span>
+        <span>(2mb 以下)</span>
       </div>
       <img v-if="previewUrl" :src="previewUrl" class="previewImage" />
     </label>

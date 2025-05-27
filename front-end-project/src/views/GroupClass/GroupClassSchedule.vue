@@ -305,10 +305,10 @@ export default {
         return false;
       if (
         this.selectStatus !== "" &&
-        this.selectStatus === "1" &&
-        this.selectStatus === "2" &&
-        this.selectStatus === "3" &&
-        this.selectStatus === "4"
+        this.selectStatus !== "1" &&
+        this.selectStatus !== "2" &&
+        this.selectStatus !== "3" &&
+        this.selectStatus !== "4"
       )
         return false;
       if (

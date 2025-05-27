@@ -84,7 +84,7 @@ export default function (mock) {
     })
 
     mock.onPost("/api/Admin/GetPermission").reply(() => {
-        return [200, { ErrorCode: 1, ApiDataObject: [1, 2] }]
+        return [200, { ErrorCode: 1, ApiDataObject: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }]
     })
 
     mock.onPost("/api/Admin/GetAdminById").reply(config => {
@@ -166,8 +166,8 @@ export default function (mock) {
         const index = AdminList.findIndex(admin => admin.AdminId === Number(adminIdDto.AdminId));
 
         if (index !== -1) {
-          AdminList.splice(index, 1); // 從陣列中移除那個 admin
-          return [200, { ErrorCode: 1 }]
+            AdminList.splice(index, 1); // 從陣列中移除那個 admin
+            return [200, { ErrorCode: 1 }]
         }
 
         return [200, { ErrorCode: 12 }]

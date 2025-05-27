@@ -7,7 +7,7 @@ import adminRoutes from './routes/admin';
 import memberRoutes from './routes/member';
 import coachRoutes from './routes/coach';
 import groupClassRoutes from './routes/groupClass';
-import planRoutes from './routes/plan';
+import planRoutes from './routes/planTemplate';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -37,7 +37,6 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    // Vue.prototype.$loginFlag =true; // 目前開發先把登入狀態固定為登入後
     const requireAuth = to.meta.requireAuth;
     let havePermissionDto;
 

@@ -5,7 +5,7 @@ namespace PersistentLayer.Models
     public class ResultWithException
     {
         /// <summary>
-        /// 狀態碼 (參考 enum ErrorCodeDerine)
+        /// 狀態碼 (參考 enum ErrorCodeDefine)
         /// </summary>
         public int ErrorCodeNumber { get; set; }
 

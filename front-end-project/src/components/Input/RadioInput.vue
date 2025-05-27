@@ -8,6 +8,7 @@
           :name="inputType"
           :value="option.value"
           v-model="localValue"
+          @change="$emit('change')"
         />
         <span
           class="textRadio"
@@ -67,6 +68,10 @@ export default {
   display: flex;
   gap: 0.5rem;
   flex-direction: column;
+}
+
+.inputSpan .lab{
+  font-weight: 500;
 }
 
 .radioContainer {

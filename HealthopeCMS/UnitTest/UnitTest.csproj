@@ -196,6 +196,8 @@
     <Compile Include="Test\GroupClassShowcaseTest\GroupClassShowcaseServiceTest.cs" />
     <Compile Include="Test\MemberTest\MemberControllerTest.cs" />
     <Compile Include="Test\MemberTest\MemberServiceTest.cs" />
+    <Compile Include="Test\PlanTemplateTest\PlanTemplateControllerTest.cs" />
+    <Compile Include="Test\PlanTemplateTest\PlanTemplateServiceTest.cs" />
     <Compile Include="utils\ResponseIsEqual.cs" />
   </ItemGroup>
   <ItemGroup>

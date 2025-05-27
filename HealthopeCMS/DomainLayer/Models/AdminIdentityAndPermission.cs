@@ -58,6 +58,16 @@ namespace DomainLayer.Models
         /// 查詢 團課表 權限
         /// </summary>
         SelectGroupClassSchedule = 10,
+
+        /// <summary>
+        /// 增刪修 團課表 權限
+        /// </summary>
+        EditPlan = 11,
+
+        /// <summary>
+        /// 查詢 團課表 權限
+        /// </summary>
+        SelectPlan = 12,
     }
 
     public enum AdminIdentity : byte
@@ -117,12 +127,14 @@ namespace DomainLayer.Models
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
                 AdminPermission.EditGroupClassShowcase, AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
+                AdminPermission.EditPlan, AdminPermission.SelectPlan,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
                 AdminPermission.EditGroupClassShowcase, AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
+                AdminPermission.EditPlan, AdminPermission.SelectPlan,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,

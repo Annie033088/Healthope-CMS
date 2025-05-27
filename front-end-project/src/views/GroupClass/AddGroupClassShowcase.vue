@@ -169,7 +169,7 @@ export default {
     validInput() {
       // 格式驗證
       if (!this.name || this.name.length > 20) {
-        this.hintText = "名稱需輸入 20 字錯誤";
+        this.hintText = "名稱需輸入 20 字";
         return false;
       }
 
