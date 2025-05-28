@@ -82,8 +82,11 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                response = new ResultResponse<List<AdminPermission>> { ErrorCode = ErrorCodeDefine.Success, 
-                    ApiDataObject = adminPermissions };
+                response = new ResultResponse<List<AdminPermission>>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = adminPermissions
+                };
                 return Ok(response);
             }
             catch (Exception ex)

@@ -8,7 +8,7 @@
           :name="inputType"
           :value="option.value"
           v-model="localValue"
-          @change="$emit('change')"
+          @change="handleChange(option.value)"
         />
         <span
           class="textRadio"
@@ -42,15 +42,20 @@ export default {
       type: String,
       default: "radioInput",
     },
-    hightlightFlag:{
-      type:Boolean,
-      default:false
-    }
+    hightlightFlag: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       localValue: this.value,
     };
+  },
+  methods: {
+    handleChange(newVal) {
+      this.$emit("change", newVal); // 手動通知父元件
+    },
   },
   watch: {
     localValue(newVal) {
@@ -70,7 +75,7 @@ export default {
   flex-direction: column;
 }
 
-.inputSpan .lab{
+.inputSpan .lab {
   font-weight: 500;
 }
 

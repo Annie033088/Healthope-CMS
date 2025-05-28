@@ -53,6 +53,8 @@
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Interface\IPlanTemplateRepository.cs" />
     <Compile Include="Models\EditPwdDto.cs" />
+    <Compile Include="Models\RequestEditMembershipPlanDto.cs" />
+    <Compile Include="Models\RequestEditPersonalTrainingPackageDto.cs" />
     <Compile Include="Models\RequestEditShowcaseDto.cs" />
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />

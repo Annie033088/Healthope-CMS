@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
-using ApiLayer.Models.GroupClassShowcase.Request;
-using ApiLayer.Models.GroupClassShowcase.Response;
-using ApiLayer.Models.Other;
 using ApiLayer.Models;
+using ApiLayer.Models.Other;
+using ApiLayer.Models.PlanTemplate.Request;
+using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.Response.PlanTemplate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;
-using System.Web.Http;
 using UnitTest.utils;
-using ApiLayer.Models.PlanTemplate.Request;
-using System.Net.Http;
-using ApiLayer.Models.Response.PlanTemplate;
-using ApiLayer.Models.PlanTemplate.Response;
 
 namespace UnitTest.Test.PlanTemplateTest
 {
@@ -27,17 +24,23 @@ namespace UnitTest.Test.PlanTemplateTest
         private PlanTemplateController controller;
         private Mock<IPlanTemplateService> planTemplateServiceMock;
         private Mock<IMultipartRequestService<RequestAddMembershipPlanDto>> multipartRequestAddMembershipService;
-        private Mock<IMultipartRequestService<RequestAddPersonalTrainingPackageDto>> multipartRequestAddAddPersonalTrainingService;
+        private Mock<IMultipartRequestService<RequestEditMembershipPlanDto>> multipartRequestEditMembershipService;
+        private Mock<IMultipartRequestService<RequestAddPersonalTrainingPackageDto>> multipartRequestAddPersonalTrainingService;
+        private Mock<IMultipartRequestService<RequestEditPersonalTrainingPackageDto>> multipartRequestEditPersonalTrainingService;
 
         [TestInitialize]
         public void Setup()
         {
             planTemplateServiceMock = new Mock<IPlanTemplateService>();
             multipartRequestAddMembershipService = new Mock<IMultipartRequestService<RequestAddMembershipPlanDto>>();
-            multipartRequestAddAddPersonalTrainingService =
+            multipartRequestEditMembershipService = new Mock<IMultipartRequestService<RequestEditMembershipPlanDto>>();
+            multipartRequestAddPersonalTrainingService =
                 new Mock<IMultipartRequestService<RequestAddPersonalTrainingPackageDto>>();
+            multipartRequestEditPersonalTrainingService =
+                new Mock<IMultipartRequestService<RequestEditPersonalTrainingPackageDto>>();
             controller = new PlanTemplateController(planTemplateServiceMock.Object, multipartRequestAddMembershipService.Object,
-                multipartRequestAddAddPersonalTrainingService.Object);
+                multipartRequestAddPersonalTrainingService.Object, multipartRequestEditMembershipService.Object,
+                multipartRequestEditPersonalTrainingService.Object);
         }
 
         [TestMethod]
@@ -195,9 +198,9 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Mock 設定
             bool success = true;
-            multipartRequestAddAddPersonalTrainingService.Setup(s
+            multipartRequestAddPersonalTrainingService.Setup(s
                 => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestAddAddPersonalTrainingService.Setup(s
+            multipartRequestAddPersonalTrainingService.Setup(s
                 => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addPersonalTrainingPackageDto, files));
             planTemplateServiceMock.Setup(s
                 => s.AddPersonalTrainingPackage(addPersonalTrainingPackageDto,
@@ -230,9 +233,9 @@ namespace UnitTest.Test.PlanTemplateTest
             // Mock 設定
             bool success = true;
             bool fail = false;
-            multipartRequestAddAddPersonalTrainingService.Setup(s
+            multipartRequestAddPersonalTrainingService.Setup(s
                 => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestAddAddPersonalTrainingService.Setup(s
+            multipartRequestAddPersonalTrainingService.Setup(s
                 => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addPersonalTrainingPackageDto, files));
             planTemplateServiceMock.Setup(s
                 => s.AddPersonalTrainingPackage(addPersonalTrainingPackageDto, files.Any() ?
@@ -263,9 +266,9 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Mock 設定
             bool success = true;
-            multipartRequestAddAddPersonalTrainingService.Setup(s
+            multipartRequestAddPersonalTrainingService.Setup(s
                 => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-            multipartRequestAddAddPersonalTrainingService.Setup(s
+            multipartRequestAddPersonalTrainingService.Setup(s
                 => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>())).ReturnsAsync((addPersonalTrainingPackageDto, files));
 
             // Act
@@ -459,220 +462,383 @@ namespace UnitTest.Test.PlanTemplateTest
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
 
-        //[TestMethod]
-        //public void 根據Id取得展示用團課詳細資料_成功_回傳展示用團課資料()
-        //{
-        //    // Arrange
-        //    RequestShowcaseIdDto showcaseIdDto = new RequestShowcaseIdDto()
-        //    {
-        //        GroupClassShowcaseId = 1
-        //    };
+        [TestMethod]
+        public void 修改票劵方案狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditStatusDto editStatusDto = new RequestEditStatusDto()
+            {
+                TicketPlanId = 10,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
 
-        //    ResponseGetShowcaseDetailDto response = new ResponseGetShowcaseDetailDto()
-        //    {
-        //        Name = "okwopekq122",
-        //        Category = 5,
-        //        DetailContent = "",
-        //        Icon = 2,
-        //        ImageUrl = "",
-        //        Sort = 1,
-        //        Summary = ""
-        //    };
+            bool successFlag = true;
 
-        //    // Mock 設定
-        //    groupClassShowcaseServiceMock.Setup(s => s.GetShowcaseDetail(showcaseIdDto)).Returns(response);
+            // Mock 設定
+            planTemplateServiceMock.Setup(s => s.EditTicketPlanStatus(editStatusDto)).Returns(successFlag);
 
-        //    // Act
-        //    IHttpActionResult result = groupClassShowcaseController.GetShowcaseDetail(showcaseIdDto);
+            // Act
+            IHttpActionResult result = controller.EditTicketPlanStatus(editStatusDto);
 
-        //    // Assert
-        //    ResponseIsEqual<ResponseGetShowcaseDetailDto> responseIsEqual =
-        //        new ResponseIsEqual<ResponseGetShowcaseDetailDto>();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, response));
-        //}
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
 
-        //[TestMethod]
-        //public void 根據Id取得展示用團課詳細資料_失敗_回傳空資料()
-        //{
-        //    // Arrange
-        //    RequestShowcaseIdDto showcaseIdDto = new RequestShowcaseIdDto()
-        //    {
-        //        GroupClassShowcaseId = 1
-        //    };
+        [TestMethod]
+        public void 修改票劵方案狀態_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditStatusDto editStatusDto = new RequestEditStatusDto()
+            {
+                TicketPlanId = 10,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
 
-        //    ResponseGetShowcaseDetailDto response = null;
+            bool successFlag = false;
 
-        //    // Mock 設定
-        //    groupClassShowcaseServiceMock.Setup(s => s.GetShowcaseDetail(showcaseIdDto)).Returns(response);
+            // Mock 設定
+            planTemplateServiceMock.Setup(s => s.EditTicketPlanStatus(editStatusDto)).Returns(successFlag);
 
-        //    // Act
-        //    IHttpActionResult result = groupClassShowcaseController.GetShowcaseDetail(showcaseIdDto);
+            // Act
+            IHttpActionResult result = controller.EditTicketPlanStatus(editStatusDto);
 
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
-        //}
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
+        }
 
-        //[TestMethod]
-        //public void 取得展示用團課修改頁面需要的資料_成功_回傳資料()
-        //{
-        //    // Arrange
-        //    RequestShowcaseIdDto showcaseIdDto = new RequestShowcaseIdDto()
-        //    {
-        //        GroupClassShowcaseId = 1
-        //    };
+        [TestMethod]
+        public void 取得修改會籍方案頁面需要的資料_成功_回傳資料()
+        {
+            // Arrange
+            RequestMembershipPlanIdDto memebershipPlanIdDto = new RequestMembershipPlanIdDto()
+            {
+                MembershipPlanId = 1
+            };
 
-        //    ResponseGetShowcaseEditDataDto responseDto = new ResponseGetShowcaseEditDataDto()
-        //    {
-        //        Name = "Jack",
-        //        Sort = 1,
-        //        Category = 2,
-        //        DetailContent = "",
-        //        Icon = 3,
-        //        ImageUrl = "",
-        //        Summary = "",
-        //        UpdateTime = DateTime.Now,
-        //    };
+            ResponseGetMembershipPlanEditDataDto responseDto = new ResponseGetMembershipPlanEditDataDto()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
 
-        //    // Mock 設定
-        //    groupClassShowcaseServiceMock.Setup(s => s.GetShowcaseEditDataById(showcaseIdDto)).Returns(responseDto);
+            // Mock 設定
+            planTemplateServiceMock.Setup(s => s.GetMembershipPlanEditDataById(memebershipPlanIdDto)).Returns(responseDto);
 
-        //    // Act
-        //    IHttpActionResult result = groupClassShowcaseController.GetShowcaseEditDataById(showcaseIdDto);
+            // Act
+            IHttpActionResult result = controller.GetMembershipPlanEditDataById(memebershipPlanIdDto);
 
-        //    // Assert
-        //    ResponseIsEqual<ResponseGetShowcaseEditDataDto> responseIsEqual =
-        //        new ResponseIsEqual<ResponseGetShowcaseEditDataDto>();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
-        //        ErrorCodeDefine.Success, responseDto));
-        //}
+            // Assert
+            ResponseIsEqual<ResponseGetMembershipPlanEditDataDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetMembershipPlanEditDataDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, responseDto));
+        }
 
-        //[TestMethod]
-        //public void 取得展示用團課修改頁面需要的資料_失敗_請求參數格式錯誤()
-        //{
-        //    // Arrange
-        //    RequestShowcaseIdDto showcaseIdDto = new RequestShowcaseIdDto()
-        //    {
-        //        GroupClassShowcaseId = 0
-        //    };
+        [TestMethod]
+        public void 取得修改會籍方案頁面需要的資料_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestMembershipPlanIdDto memebershipPlanIdDto = new RequestMembershipPlanIdDto()
+            {
+                MembershipPlanId = 0
+            };
 
-        //    // Act
-        //    IHttpActionResult result = groupClassShowcaseController.GetShowcaseEditDataById(showcaseIdDto);
+            ResponseGetMembershipPlanEditDataDto responseDto = new ResponseGetMembershipPlanEditDataDto()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
 
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
-        //}
+            // Mock 設定
+            planTemplateServiceMock.Setup(s => s.GetMembershipPlanEditDataById(memebershipPlanIdDto)).Returns(responseDto);
 
-        //[TestMethod]
-        //public async Task 修改展示用團課不包括圖檔_成功_回傳成功()
-        //{
-        //    // Arrange
-        //    RequestEditShowcaseDto editShowcaseDto = new RequestEditShowcaseDto()
-        //    {
-        //        GroupClassShowcaseId = 1,
-        //        Category = 1,
-        //        DetailContent = "",
-        //        Icon = 1,
-        //        ImageUrl = "",
-        //        Sort = 3,
-        //        Summary = "",
-        //        Name = "蘑菇",
-        //        UpdateTime = DateTime.Now,
-        //    };
-        //    ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
-        //    Exception exception = null;
-        //    List<FileDto> files = new List<FileDto>();
+            // Act
+            IHttpActionResult result = controller.GetMembershipPlanEditDataById(memebershipPlanIdDto);
 
-        //    // Mock 設定
-        //    bool success = true;
-        //    multipartRequestEditServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-        //    multipartRequestEditServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
-        //        .ReturnsAsync((editShowcaseDto, files));
-        //    groupClassShowcaseServiceMock.Setup(s => s.EditShowcase(editShowcaseDto, files.Any() ? files[0] : null))
-        //        .Returns((errorCode, exception));
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
 
-        //    // Act
-        //    IHttpActionResult result = await groupClassShowcaseController.EditShowcase();
+        [TestMethod]
+        public void 取得修改教練課方案頁面需要的資料_成功_回傳資料()
+        {
+            // Arrange
+            RequestPersonalTrainingPackageIdDto personalTrainingPackageId = new RequestPersonalTrainingPackageIdDto()
+            {
+                PersonalTrainingPackageId = 1
+            };
 
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
-        //}
+            ResponseGetPersonalTrainingPackageEditDataDto responseDto = new ResponseGetPersonalTrainingPackageEditDataDto()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
 
-        //[TestMethod]
-        //public async Task 修改_失敗_名稱重複()
-        //{
-        //    // Arrange
-        //    RequestEditShowcaseDto editShowcaseDto = new RequestEditShowcaseDto()
-        //    {
-        //        GroupClassShowcaseId = 1,
-        //        Category = 1,
-        //        DetailContent = "",
-        //        Icon = 1,
-        //        ImageUrl = "",
-        //        Sort = 3,
-        //        Summary = "",
-        //        Name = "蘑菇",
-        //        UpdateTime = DateTime.Now,
-        //    };
-        //    ErrorCodeDefine errorCode = ErrorCodeDefine.DuplicateName;
-        //    Exception exception = null;
-        //    List<FileDto> files = new List<FileDto>();
+            // Mock 設定
+            planTemplateServiceMock.Setup(s => s.GetPersonalTrainingPackageEditDataById(personalTrainingPackageId))
+                .Returns(responseDto);
 
-        //    // Mock 設定
-        //    bool success = true;
-        //    multipartRequestEditServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>())).Returns(success);
-        //    multipartRequestEditServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
-        //        .ReturnsAsync((editShowcaseDto, files));
-        //    groupClassShowcaseServiceMock.Setup(s => s.EditShowcase(editShowcaseDto, files.Any() ? files[0] : null))
-        //        .Returns((errorCode, exception));
+            // Act
+            IHttpActionResult result = controller.GetPersonalTrainingPackageEditDataById(personalTrainingPackageId);
 
-        //    // Act
-        //    IHttpActionResult result = await groupClassShowcaseController.EditShowcase();
+            // Assert
+            ResponseIsEqual<ResponseGetPersonalTrainingPackageEditDataDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetPersonalTrainingPackageEditDataDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, responseDto));
+        }
 
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DuplicateName));
-        //}
+        [TestMethod]
+        public void 取得修改教練課方案頁面需要的資料_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestPersonalTrainingPackageIdDto personalTrainingPackageId = new RequestPersonalTrainingPackageIdDto()
+            {
+                PersonalTrainingPackageId = 0
+            };
 
-        //[TestMethod]
-        //public async Task 修改_失敗_格式錯誤()
-        //{
-        //    // Arrange
-        //    RequestEditShowcaseDto editShowcaseDto = new RequestEditShowcaseDto()
-        //    {
-        //        GroupClassShowcaseId = 1,
-        //        Category = 20,
-        //        DetailContent = "",
-        //        Icon = 1,
-        //        ImageUrl = "",
-        //        Sort = 3,
-        //        Summary = "",
-        //        Name = "蘑菇",
-        //        UpdateTime = DateTime.Now,
-        //    };
-        //    ErrorCodeDefine errorCode = ErrorCodeDefine.InvalidFormatOrEntry;
-        //    Exception exception = null;
-        //    List<FileDto> files = new List<FileDto>();
+            ResponseGetPersonalTrainingPackageEditDataDto responseDto = new ResponseGetPersonalTrainingPackageEditDataDto()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
 
-        //    // Mock 設定
-        //    bool success = true;
-        //    multipartRequestEditServiceMock.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
-        //        .Returns(success);
-        //    multipartRequestEditServiceMock.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
-        //        .ReturnsAsync((editShowcaseDto, files));
-        //    groupClassShowcaseServiceMock.Setup(s => s.EditShowcase(editShowcaseDto, files.Any() ? files[0] : null))
-        //        .Returns((errorCode, exception));
+            // Mock 設定
+            planTemplateServiceMock.Setup(s => s.GetPersonalTrainingPackageEditDataById(personalTrainingPackageId))
+                .Returns(responseDto);
 
-        //    // Act
-        //    IHttpActionResult result = await groupClassShowcaseController.EditShowcase();
+            // Act
+            IHttpActionResult result = controller.GetPersonalTrainingPackageEditDataById(personalTrainingPackageId);
 
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
-        //}
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
 
+        [TestMethod]
+        public async Task 修改會籍方案不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMembershipPlanDto editMembershipPlanDto = new RequestEditMembershipPlanDto()
+            {
+                MembershipPlanId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditMembershipService.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(success);
+            multipartRequestEditMembershipService.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
+                .ReturnsAsync((editMembershipPlanDto, files));
+            planTemplateServiceMock.Setup(s => s.EditMembershipPlan(editMembershipPlanDto, files.Any() ? files[0] : null))
+                .Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await controller.EditMembershipPlan();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public async Task 修改會籍方案_失敗_資料已被修改()
+        {
+            // Arrange
+            RequestEditMembershipPlanDto editMembershipPlanDto = new RequestEditMembershipPlanDto()
+            {
+                MembershipPlanId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.HasBeenModified;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditMembershipService.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(success);
+            multipartRequestEditMembershipService.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
+                .ReturnsAsync((editMembershipPlanDto, files));
+            planTemplateServiceMock.Setup(s => s.EditMembershipPlan(editMembershipPlanDto, files.Any() ? files[0] : null))
+                .Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await controller.EditMembershipPlan();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.HasBeenModified));
+        }
+
+        [TestMethod]
+        public async Task 修改會籍方案_失敗_格式錯誤()
+        {
+            // Arrange
+            RequestEditMembershipPlanDto editMembershipPlanDto = new RequestEditMembershipPlanDto()
+            {
+                MembershipPlanId = 0,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.InvalidFormatOrEntry;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditMembershipService.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(success);
+            multipartRequestEditMembershipService.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
+                .ReturnsAsync((editMembershipPlanDto, files));
+            planTemplateServiceMock.Setup(s => s.EditMembershipPlan(editMembershipPlanDto, files.Any() ? files[0] : null))
+                .Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await controller.EditMembershipPlan();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public async Task 修改教練課方案不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditPersonalTrainingPackageDto editPlanDto = new RequestEditPersonalTrainingPackageDto()
+            {
+                PersonalTrainingPackageId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditPersonalTrainingService.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(success);
+            multipartRequestEditPersonalTrainingService.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
+                .ReturnsAsync((editPlanDto, files));
+            planTemplateServiceMock.Setup(s => s.EditPersonalTrainingPackage(editPlanDto, files.Any() ? files[0] : null))
+                .Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await controller.EditPersonalTrainingPackage();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public async Task 修改教練課方案_失敗_資料已被修改()
+        {
+            // Arrange
+            RequestEditPersonalTrainingPackageDto editPlanDto = new RequestEditPersonalTrainingPackageDto()
+            {
+                PersonalTrainingPackageId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.HasBeenModified;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditPersonalTrainingService.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(success);
+            multipartRequestEditPersonalTrainingService.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
+                .ReturnsAsync((editPlanDto, files));
+            planTemplateServiceMock.Setup(s => s.EditPersonalTrainingPackage(editPlanDto, files.Any() ? files[0] : null))
+                .Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await controller.EditPersonalTrainingPackage();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.HasBeenModified));
+        }
+
+        [TestMethod]
+        public async Task 修改教練課方案_失敗_格式錯誤()
+        {
+            // Arrange
+            RequestEditPersonalTrainingPackageDto editPlanDto = new RequestEditPersonalTrainingPackageDto()
+            {
+                PersonalTrainingPackageId = -1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.InvalidFormatOrEntry;
+            Exception exception = null;
+            List<FileDto> files = new List<FileDto>();
+
+            // Mock 設定
+            bool success = true;
+            multipartRequestEditPersonalTrainingService.Setup(s => s.IsMultipartRequest(It.IsAny<HttpRequestMessage>()))
+                .Returns(success);
+            multipartRequestEditPersonalTrainingService.Setup(s => s.GetObjectAndFile(It.IsAny<HttpRequestMessage>()))
+                .ReturnsAsync((editPlanDto, files));
+            planTemplateServiceMock.Setup(s => s.EditPersonalTrainingPackage(editPlanDto, files.Any() ? files[0] : null))
+                .Returns((errorCode, exception));
+
+            // Act
+            IHttpActionResult result = await controller.EditPersonalTrainingPackage();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
         //[TestMethod]
         //public void 刪除_成功_回傳成功()
         //{

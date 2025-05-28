@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ApiLayer.Models;
 using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
 using ApiLayer.Models.Response.PlanTemplate;
-using DomainLayer.Models;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Interface
 {
@@ -44,5 +41,33 @@ namespace ApiLayer.Interface
         /// 取得票劵方案
         /// </summary>
         ResponseGetTicketPlanListDto GetTicketPlan(RequestGetPlanDto getPlanDto);
+
+        /// <summary>
+        /// 修改票劵方案狀態
+        /// </summary>
+        bool EditTicketPlanStatus(RequestEditStatusDto editStatusDto);
+
+        /// <summary>
+        /// 取得修改會籍方案頁面資料
+        /// </summary>
+        ResponseGetMembershipPlanEditDataDto GetMembershipPlanEditDataById(RequestMembershipPlanIdDto memebershipPlanIdDto);
+
+        /// <summary>
+        /// 取得修改教練課方案頁面資料
+        /// </summary>
+        ResponseGetPersonalTrainingPackageEditDataDto GetPersonalTrainingPackageEditDataById(
+            RequestPersonalTrainingPackageIdDto personalTrainingPackageIdDto);
+
+        /// <summary>
+        /// 修改會籍方案
+        /// </summary>
+        (ErrorCodeDefine errorCode, Exception exception) EditMembershipPlan(
+            RequestEditMembershipPlanDto editMembershipPlanDto, FileDto file);
+
+        /// <summary>
+        /// 修改教練課方案
+        /// </summary>
+        (ErrorCodeDefine errorCode, Exception exception) EditPersonalTrainingPackage(
+            RequestEditPersonalTrainingPackageDto editPlanDto, FileDto file);
     }
 }

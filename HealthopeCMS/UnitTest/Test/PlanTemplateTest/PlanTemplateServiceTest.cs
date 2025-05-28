@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApiLayer.Interface;
-using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models;
+using ApiLayer.Models.PlanTemplate.Request;
+using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.Response.PlanTemplate;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Models;
@@ -13,10 +12,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using ApiLayer.Models.PlanTemplate.Request;
-using ApiLayer.Models.Other;
-using System.Web.Http;
-using UnitTest.utils;
 
 namespace UnitTest.Test.PlanTemplateTest
 {
@@ -266,6 +261,620 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Assert
             Assert.IsFalse(successFlag);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 取得會籍方案清單_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetPlanDto getPlanDto = new RequestGetPlanDto()
+            {
+                Status = true,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "status", // 只允許 status | price | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+            };
+
+            List<MembershipPlan> membershipPlans = new List<MembershipPlan>() {
+                new MembershipPlan(){
+                    MembershipPlanId  = 1,
+                    Name = "QQ",
+                    Price =100,
+                    Duration =12,
+                    Introduction ="",
+                    Display =true,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+            int totalPage = 1;
+
+            List<ResponseGetMembershipPlanDto> membershipPlanList = new List<ResponseGetMembershipPlanDto>()
+            {
+                new ResponseGetMembershipPlanDto()
+                {
+                MembershipPlanId  = 1,
+                Name = "QQ",
+                Price =100,
+                Duration =12,
+                Introduction ="",
+                Display =true,
+                Status =true,
+                UpdateTime =DateTime.Now,
+                }
+            };
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetMembershipPlan(getPlanDto)).Returns((membershipPlans, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetMembershipPlanDto>>(membershipPlans)).Returns(membershipPlanList);
+
+            // Act
+            ResponseGetMembershipPlanListDto response = service.GetMembershipPlan(getPlanDto);
+
+            // Assert
+            CollectionAssert.AreEqual(response.MembershipPlanList, membershipPlanList);
+        }
+
+        [TestMethod]
+        public void 取得會籍方案清單_失敗_取得空資料()
+        {
+            // Arrange
+            RequestGetPlanDto getPlanDto = new RequestGetPlanDto()
+            {
+                Status = true,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "status", // 只允許 status | price | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+            };
+
+            List<MembershipPlan> membershipPlans = new List<MembershipPlan>();
+            int totalPage = 1;
+            List<ResponseGetMembershipPlanDto> membershipPlanList = new List<ResponseGetMembershipPlanDto>();
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetMembershipPlan(getPlanDto)).Returns((membershipPlans, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetMembershipPlanDto>>(membershipPlans)).Returns(membershipPlanList);
+
+            // Act
+            ResponseGetMembershipPlanListDto response = service.GetMembershipPlan(getPlanDto);
+
+            // Assert
+            CollectionAssert.AreEqual(response.MembershipPlanList, membershipPlanList);
+        }
+
+        [TestMethod]
+        public void 取得教練課方案清單_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetPlanDto getPlanDto = new RequestGetPlanDto()
+            {
+                Status = true,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "status", // 只允許 status | price | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+            };
+
+            List<PersonalTrainingPackage> personalTrainingPackages = new List<PersonalTrainingPackage>() {
+                new PersonalTrainingPackage(){
+                    PersonalTrainingPackageId  = 1,
+                    Name = "QQ",
+                    Price =100,
+                    SessionCount =30,
+                    Introduction ="",
+                    Display =true,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+            int totalPage = 1;
+
+            List<ResponseGetPersonalTrainingPackageDto> personalTrainingPackageList = new List<ResponseGetPersonalTrainingPackageDto>()
+            {
+                new ResponseGetPersonalTrainingPackageDto()
+                {
+                    PersonalTrainingPackageId  = 1,
+                    Name = "QQ",
+                    Price =100,
+                    SessionCount =30,
+                    Introduction ="",
+                    Display =true,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetPersionalTrainingPackage(getPlanDto)).Returns((personalTrainingPackages, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetPersonalTrainingPackageDto>>(personalTrainingPackages))
+                .Returns(personalTrainingPackageList);
+
+            // Act
+            ResponseGetPersonalTrainingPackageListDto response = service.GetPersionalTrainingPackage(getPlanDto);
+
+            // Assert
+            CollectionAssert.AreEqual(response.PersonalTrainingPackageList, personalTrainingPackageList);
+        }
+
+        [TestMethod]
+        public void 取得教練課方案清單_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetPlanDto getPlanDto = new RequestGetPlanDto()
+            {
+                Status = true,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "status", // 只允許 status | price | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+            };
+
+            List<PersonalTrainingPackage> personalTrainingPackages = new List<PersonalTrainingPackage>() {
+                new PersonalTrainingPackage(){
+                    PersonalTrainingPackageId  = 1,
+                    Name = "QQ",
+                    Price =100,
+                    SessionCount =30,
+                    Introduction ="",
+                    Display =true,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+            int totalPage = 1;
+
+            List<ResponseGetPersonalTrainingPackageDto> personalTrainingPackageList = new List<ResponseGetPersonalTrainingPackageDto>()
+            {
+                new ResponseGetPersonalTrainingPackageDto()
+                {
+                    PersonalTrainingPackageId  = 1,
+                    Name = "QQ",
+                    Price =100,
+                    SessionCount =30,
+                    Introduction ="",
+                    Display =true,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetPersionalTrainingPackage(getPlanDto)).Returns((personalTrainingPackages, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetPersonalTrainingPackageDto>>(personalTrainingPackages))
+                .Returns(personalTrainingPackageList);
+
+            // Act
+            ResponseGetPersonalTrainingPackageListDto response = service.GetPersionalTrainingPackage(getPlanDto);
+
+            // Assert
+            CollectionAssert.AreEqual(response.PersonalTrainingPackageList, personalTrainingPackageList);
+        }
+
+        [TestMethod]
+        public void 取得票劵方案清單_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetPlanDto getPlanDto = new RequestGetPlanDto()
+            {
+                Status = true,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "status", // 只允許 status | price | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+            };
+
+            List<TicketPlan> tickePlans = new List<TicketPlan>() {
+                new TicketPlan(){
+                    TicketPlanId = 1,
+                    Price =100,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+            int totalPage = 1;
+
+            List<ResponseGetTicketPlanDto> tickPlanList = new List<ResponseGetTicketPlanDto>()
+            {
+                new ResponseGetTicketPlanDto()
+                {
+                    TicketPlanId = 1,
+                    Price =100,
+                    Status =true,
+                    UpdateTime =DateTime.Now,
+                }
+            };
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetTicketPlan(getPlanDto)).Returns((tickePlans, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetTicketPlanDto>>(tickePlans))
+                .Returns(tickPlanList);
+
+            // Act
+            ResponseGetTicketPlanListDto response = service.GetTicketPlan(getPlanDto);
+
+            // Assert
+            CollectionAssert.AreEqual(response.TicketPlanList, tickPlanList);
+        }
+
+        [TestMethod]
+        public void 取得票劵方案清單_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetPlanDto getPlanDto = new RequestGetPlanDto()
+            {
+                Status = true,
+                Page = 1, // 必須>0
+                SortOrder = "descending", // 只允許 descending 或 ascending
+                SortOption = "status", // 只允許 status | price | null
+                RecordPerPage = 8, // 只允許 8 或 12 或 16
+            };
+
+            List<TicketPlan> tickePlans = new List<TicketPlan>();
+            int totalPage = 1;
+            List<ResponseGetTicketPlanDto> tickPlanList = new List<ResponseGetTicketPlanDto>();
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetTicketPlan(getPlanDto)).Returns((tickePlans, totalPage));
+            mapperMock.Setup(s => s.Map<List<ResponseGetTicketPlanDto>>(tickePlans))
+                .Returns(tickPlanList);
+
+            // Act
+            ResponseGetTicketPlanListDto response = service.GetTicketPlan(getPlanDto);
+
+            // Assert
+            CollectionAssert.AreEqual(response.TicketPlanList, tickPlanList);
+        }
+
+        [TestMethod]
+        public void 修改票劵方案狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditStatusDto editStatusDto = new RequestEditStatusDto()
+            {
+                TicketPlanId = 10,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            TicketPlan ticketPlan = new TicketPlan()
+            {
+                TicketPlanId = 10,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            planTemplateRepositoryMock
+                .Setup(s => s.EditTicketPlanStatus(It.Is<TicketPlan>(t =>
+                    t.TicketPlanId == editStatusDto.TicketPlanId &&
+                    t.Status == editStatusDto.Status
+                )))
+                .Returns(successFlag);
+
+            // Act
+            bool response = service.EditTicketPlanStatus(editStatusDto);
+
+            // Assert
+            Assert.IsTrue(response);
+        }
+
+        [TestMethod]
+        public void 修改票劵方案狀態_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditStatusDto editStatusDto = new RequestEditStatusDto()
+            {
+                TicketPlanId = 10,
+                Status = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            TicketPlan ticketPlan = new TicketPlan()
+            {
+                Status = editStatusDto.Status,
+                TicketPlanId = editStatusDto.TicketPlanId,
+                UpdateTime = editStatusDto.UpdateTime,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.EditTicketPlanStatus(ticketPlan)).Returns(successFlag);
+
+            // Act
+            bool response = service.EditTicketPlanStatus(editStatusDto);
+
+            // Assert
+            Assert.IsFalse(response);
+        }
+
+        [TestMethod]
+        public void 取得修改會籍方案頁面需要的資料_成功_回傳資料()
+        {
+            // Arrange
+            RequestMembershipPlanIdDto memebershipPlanIdDto = new RequestMembershipPlanIdDto()
+            {
+                MembershipPlanId = 1
+            };
+
+            DateTime dateTime = DateTime.Now;
+
+            ResponseGetMembershipPlanEditDataDto responseDto = new ResponseGetMembershipPlanEditDataDto()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = dateTime,
+            };
+
+            MembershipPlan membershipPlan = new MembershipPlan()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = dateTime,
+            };
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.GetMembershipPlanEditDataById(memebershipPlanIdDto.MembershipPlanId))
+                .Returns(membershipPlan);
+            mapperMock.Setup(s => s.Map<ResponseGetMembershipPlanEditDataDto>(membershipPlan)).Returns(responseDto);
+
+            // Act
+            ResponseGetMembershipPlanEditDataDto response = service.GetMembershipPlanEditDataById(memebershipPlanIdDto);
+            responseDto.ImageUrl = "/" + responseDto.ImageUrl;
+
+            // Assert
+            Assert.IsTrue(response == responseDto);
+        }
+
+        [TestMethod]
+        public void 取得修改會籍方案頁面需要的資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestMembershipPlanIdDto memebershipPlanIdDto = new RequestMembershipPlanIdDto()
+            {
+                MembershipPlanId = 1
+            };
+
+            DateTime dateTime = DateTime.Now;
+
+            MembershipPlan membershipPlan = null;
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.GetMembershipPlanEditDataById(memebershipPlanIdDto.MembershipPlanId))
+                .Returns(membershipPlan);
+
+            // Act
+            ResponseGetMembershipPlanEditDataDto response = service.GetMembershipPlanEditDataById(memebershipPlanIdDto);
+
+            // Assert
+            Assert.IsTrue(response == null);
+        }
+
+        [TestMethod]
+        public void 取得修改教練課方案頁面需要的資料_成功_回傳資料()
+        {
+            // Arrange
+            RequestPersonalTrainingPackageIdDto personalTrainingPackageIdDto = new RequestPersonalTrainingPackageIdDto()
+            {
+                PersonalTrainingPackageId = 1
+            };
+
+            DateTime dateTime = DateTime.Now;
+
+            ResponseGetPersonalTrainingPackageEditDataDto responseDto = new ResponseGetPersonalTrainingPackageEditDataDto()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = dateTime,
+            };
+
+            PersonalTrainingPackage personalTrainingPackage = new PersonalTrainingPackage()
+            {
+                Name = "Jack",
+                Status = true,
+                Display = false,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = dateTime,
+            };
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.GetPersonalTrainingPackageEditDataById(
+                personalTrainingPackageIdDto.PersonalTrainingPackageId)).Returns(personalTrainingPackage);
+            mapperMock.Setup(s => s.Map<ResponseGetPersonalTrainingPackageEditDataDto>(personalTrainingPackage))
+                .Returns(responseDto);
+
+            // Act
+            ResponseGetPersonalTrainingPackageEditDataDto response = service.GetPersonalTrainingPackageEditDataById(
+                personalTrainingPackageIdDto);
+            responseDto.ImageUrl = "/" + responseDto.ImageUrl;
+
+            // Assert
+            Assert.IsTrue(response == responseDto);
+        }
+
+        [TestMethod]
+        public void 取得修改教練課方案頁面需要的資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestPersonalTrainingPackageIdDto personalTrainingPackageIdDto = new RequestPersonalTrainingPackageIdDto()
+            {
+                PersonalTrainingPackageId = 1
+            };
+
+            DateTime dateTime = DateTime.Now;
+
+            PersonalTrainingPackage personalTrainingPackage = null;
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.GetPersonalTrainingPackageEditDataById(
+                personalTrainingPackageIdDto.PersonalTrainingPackageId)).Returns(personalTrainingPackage);
+
+            // Act
+            ResponseGetPersonalTrainingPackageEditDataDto response = service.GetPersonalTrainingPackageEditDataById(
+                personalTrainingPackageIdDto);
+
+            // Assert
+            Assert.IsTrue(response == null);
+        }
+
+        [TestMethod]
+        public void 修改會籍方案不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMembershipPlanDto editMembershipPlanDto = new RequestEditMembershipPlanDto()
+            {
+                MembershipPlanId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            ResultWithException operationResult = new ResultWithException()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+            string oldPhotoUrl = "";
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.EditMembershipPlan(editMembershipPlanDto))
+                .Returns((operationResult, oldPhotoUrl));
+            httpServiceMock.Setup(s => s.GetRootPath()).Returns("/");
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = service.EditMembershipPlan(editMembershipPlanDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.Success);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 修改會籍方案_失敗_資料已被修改()
+        {
+            // Arrange
+            RequestEditMembershipPlanDto editMembershipPlanDto = new RequestEditMembershipPlanDto()
+            {
+                MembershipPlanId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+            ResultWithException operationResult = new ResultWithException()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+            string oldPhotoUrl = "";
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.EditMembershipPlan(editMembershipPlanDto))
+                .Returns((operationResult, oldPhotoUrl));
+            httpServiceMock.Setup(s => s.GetRootPath()).Returns("/");
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = service.EditMembershipPlan(editMembershipPlanDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.HasBeenModified);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 修改教練課方案不包括圖檔_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditPersonalTrainingPackageDto editPlanDto = new RequestEditPersonalTrainingPackageDto()
+            {
+                PersonalTrainingPackageId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            ResultWithException operationResult = new ResultWithException()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+            string oldPhotoUrl = "";
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.EditPersonalTrainingPackage(editPlanDto))
+                .Returns((operationResult, oldPhotoUrl));
+            httpServiceMock.Setup(s => s.GetRootPath()).Returns("/");
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = service.EditPersonalTrainingPackage(editPlanDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.Success);
+            Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 修改教練課方案_失敗_資料已被修改()
+        {
+            // Arrange
+            RequestEditPersonalTrainingPackageDto editPlanDto = new RequestEditPersonalTrainingPackageDto()
+            {
+                PersonalTrainingPackageId = 1,
+                Display = false,
+                Status = null,
+                Introduction = "",
+                ImageUrl = "",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+            ResultWithException operationResult = new ResultWithException()
+            {
+                ErrorCodeNumber = errorCodeNumber,
+                Exception = null
+            };
+            string oldPhotoUrl = "";
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s => s.EditPersonalTrainingPackage(editPlanDto))
+                .Returns((operationResult, oldPhotoUrl));
+            httpServiceMock.Setup(s => s.GetRootPath()).Returns("/");
+
+            // Act
+            (ErrorCodeDefine errorCode, Exception exception) = service.EditPersonalTrainingPackage(editPlanDto, null);
+
+            // Assert
+            Assert.IsTrue(errorCode == ErrorCodeDefine.HasBeenModified);
             Assert.IsTrue(exception == null);
         }
     }

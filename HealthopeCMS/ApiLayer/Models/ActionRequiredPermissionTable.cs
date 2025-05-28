@@ -69,6 +69,22 @@ namespace ApiLayer.Models
                 AdminPermission.EditPlan,} },
             { "PlanTemplate,AddPersonalTrainingPackage", new List<AdminPermission> {
                 AdminPermission.EditPlan,} },
+            { "PlanTemplate,EditTicketPlanStatus", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,GetMembershipPlanEditDataById", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,GetPersonalTrainingPackageEditDataById", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,EditMembershipPlan", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,EditPersonalTrainingPackage", new List<AdminPermission> {
+                AdminPermission.EditPlan,} },
+            { "PlanTemplate,GetMembershipPlan", new List<AdminPermission> {
+                AdminPermission.EditPlan, AdminPermission.SelectPlan} },
+            { "PlanTemplate,GetPersionalTrainingPackage", new List<AdminPermission> {
+                AdminPermission.EditPlan, AdminPermission.SelectPlan} },
+            { "PlanTemplate,GetTicketPlan", new List<AdminPermission> {
+                AdminPermission.EditPlan, AdminPermission.SelectPlan} },
         };
     }
 }

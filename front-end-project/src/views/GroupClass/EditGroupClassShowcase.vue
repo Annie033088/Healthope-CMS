@@ -137,6 +137,8 @@ export default {
         return;
       }
 
+      this.currentShowcaseData = this.cleanData(this.currentShowcaseData);
+
       if (!this.validInput()) {
         this.verifyFail = true;
         return;

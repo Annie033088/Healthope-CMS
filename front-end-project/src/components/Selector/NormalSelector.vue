@@ -47,7 +47,7 @@ export default {
   methods: {
     handleChange() {
       this.$emit("update:parentValue", this.localValue);
-      this.$emit("change");
+      this.$emit("change", this.localValue);
     },
   },
 };

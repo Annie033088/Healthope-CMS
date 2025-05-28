@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ApiLayer.Models.Response.PlanTemplate
 {
@@ -23,7 +21,7 @@ namespace ApiLayer.Models.Response.PlanTemplate
         /// <summary>
         /// 會籍方案 Id
         /// </summary>
-        public int membershipPlanId { get; set; }
+        public int MembershipPlanId { get; set; }
 
         /// <summary>
         /// 方案名

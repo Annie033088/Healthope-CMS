@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using ApiLayer.Interface;
 using ApiLayer.Models;
@@ -13,7 +12,6 @@ using AutoMapper;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using PersistentLayer.Repository;
 
 namespace ApiLayer.Service
 {
@@ -60,9 +58,9 @@ namespace ApiLayer.Service
                     string imageExtension = fileService.GetImageExtension(file.MimeType);
                     string fileName = Guid.NewGuid().ToString() + imageExtension;
                     string folderPath = Path.Combine(httpService.GetRootPath(),
-                        "assets", "images", "personalTrainingPackage");
+                        "assets", "images", "planTemplate");
                     savePath = Path.Combine(folderPath, fileName);
-                    membershipPlan.ImageUrl = Path.Combine("assets", "images", "PlanTemplate", fileName)
+                    membershipPlan.ImageUrl = Path.Combine("assets", "images", "planTemplate", fileName)
                         .Replace(Path.DirectorySeparatorChar, '/');
                     fileService.SaveFile(folderPath, savePath, file.FileData);
                 }
@@ -109,9 +107,9 @@ namespace ApiLayer.Service
                     string imageExtension = fileService.GetImageExtension(file.MimeType);
                     string fileName = Guid.NewGuid().ToString() + imageExtension;
                     string folderPath = Path.Combine(httpService.GetRootPath(),
-                        "assets", "images", "personalTrainingPackage");
+                        "assets", "images", "planTemplate");
                     savePath = Path.Combine(folderPath, fileName);
-                    personalTrainingPackage.ImageUrl = Path.Combine("assets", "images", "PlanTemplate", fileName)
+                    personalTrainingPackage.ImageUrl = Path.Combine("assets", "images", "planTemplate", fileName)
                         .Replace(Path.DirectorySeparatorChar, '/');
                     fileService.SaveFile(folderPath, savePath, file.FileData);
                 }
@@ -181,6 +179,174 @@ namespace ApiLayer.Service
                 TotalPage = totalPage,
             };
             return response;
+        }
+
+        /// <summary>
+        /// 修改票劵方案狀態
+        /// </summary>
+        public bool EditTicketPlanStatus(RequestEditStatusDto editStatusDto)
+        {
+            TicketPlan ticketPlan = new TicketPlan()
+            {
+                Status = editStatusDto.Status,
+                TicketPlanId = editStatusDto.TicketPlanId,
+                UpdateTime = editStatusDto.UpdateTime,
+            };
+            return planTemplateRepository.EditTicketPlanStatus(ticketPlan);
+        }
+
+        /// <summary>
+        /// 取得修改會籍方案頁面資料
+        /// </summary>
+        public ResponseGetMembershipPlanEditDataDto GetMembershipPlanEditDataById(RequestMembershipPlanIdDto memebershipPlanIdDto)
+        {
+            try
+            {
+                MembershipPlan membershipPlan = planTemplateRepository.GetMembershipPlanEditDataById(
+                    memebershipPlanIdDto.MembershipPlanId);
+
+                if (membershipPlan == null) return null;
+
+                ResponseGetMembershipPlanEditDataDto response = mapper.Map<ResponseGetMembershipPlanEditDataDto>(membershipPlan);
+
+                if (response != null && !string.IsNullOrEmpty(response.ImageUrl))
+                    response.ImageUrl = "/" + response.ImageUrl;
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 取得修改教練課方案頁面資料
+        /// </summary>
+        public ResponseGetPersonalTrainingPackageEditDataDto GetPersonalTrainingPackageEditDataById(
+            RequestPersonalTrainingPackageIdDto personalTrainingPackageIdDto)
+        {
+            try
+            {
+                PersonalTrainingPackage personalTrainigPackage = planTemplateRepository.GetPersonalTrainingPackageEditDataById(
+                    personalTrainingPackageIdDto.PersonalTrainingPackageId);
+
+                if (personalTrainigPackage == null) return null;
+
+                ResponseGetPersonalTrainingPackageEditDataDto response =
+                    mapper.Map<ResponseGetPersonalTrainingPackageEditDataDto>(personalTrainigPackage);
+
+                if (response != null && !string.IsNullOrEmpty(response.ImageUrl))
+                    response.ImageUrl = "/" + response.ImageUrl;
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改會籍方案
+        /// </summary>
+        public (ErrorCodeDefine errorCode, Exception exception) EditMembershipPlan(
+            RequestEditMembershipPlanDto editMembershipPlanDto, FileDto file)
+        {
+            try
+            {
+                editMembershipPlanDto.ImageUrl = null;
+                string savePath = "";
+                string rootUrl = httpService.GetRootPath();
+
+                if (file != null)
+                {
+                    string imageExtension = fileService.GetImageExtension(file.MimeType);
+                    string fileName = Guid.NewGuid().ToString() + imageExtension;
+                    string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/"),
+                        "assets", "images", "planTemplate");
+                    savePath = Path.Combine(folderPath, fileName);
+                    editMembershipPlanDto.ImageUrl = Path.Combine("assets", "images", "planTemplate", fileName)
+                        .Replace(Path.DirectorySeparatorChar, '/');
+
+                    fileService.SaveFile(folderPath, savePath, file.FileData);
+                }
+
+                (ResultWithException result, string oldImageUrl) =
+                    planTemplateRepository.EditMembershipPlan(editMembershipPlanDto);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), result.ErrorCodeNumber)
+                    || result.Exception != null)
+                {
+                    fileService.DeleteFile(savePath);
+                    return (ErrorCodeDefine.ServerError, result.Exception);
+                }
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)result.ErrorCodeNumber;
+
+                // 失敗就刪除之前存的檔案
+                if (errorCode != ErrorCodeDefine.Success) fileService.DeleteFile(savePath);
+                // 成功刪除舊檔案
+                else if (!string.IsNullOrEmpty(oldImageUrl))
+                    fileService.DeleteFile(Path.Combine(rootUrl, oldImageUrl.Replace('/', Path.DirectorySeparatorChar)));
+
+                return (errorCode, result.Exception);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改教練課方案
+        /// </summary>
+        public (ErrorCodeDefine errorCode, Exception exception) EditPersonalTrainingPackage(
+            RequestEditPersonalTrainingPackageDto editPlanDto, FileDto file)
+        {
+            try
+            {
+                editPlanDto.ImageUrl = null;
+                string savePath = "";
+                string rootUrl = httpService.GetRootPath();
+
+                if (file != null)
+                {
+                    string imageExtension = fileService.GetImageExtension(file.MimeType);
+                    string fileName = Guid.NewGuid().ToString() + imageExtension;
+                    string folderPath = Path.Combine(HttpContext.Current.Server.MapPath("~/"),
+                        "assets", "images", "planTemplate");
+                    savePath = Path.Combine(folderPath, fileName);
+                    editPlanDto.ImageUrl = Path.Combine("assets", "images", "planTemplate", fileName)
+                        .Replace(Path.DirectorySeparatorChar, '/');
+
+                    fileService.SaveFile(folderPath, savePath, file.FileData);
+                }
+
+                (ResultWithException result, string oldImageUrl) =
+                    planTemplateRepository.EditPersonalTrainingPackage(editPlanDto);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), result.ErrorCodeNumber)
+                    || result.Exception != null)
+                {
+                    fileService.DeleteFile(savePath);
+                    return (ErrorCodeDefine.ServerError, result.Exception);
+                }
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)result.ErrorCodeNumber;
+
+                // 失敗就刪除之前存的檔案
+                if (errorCode != ErrorCodeDefine.Success) fileService.DeleteFile(savePath);
+                // 成功刪除舊檔案
+                else if (!string.IsNullOrEmpty(oldImageUrl))
+                    fileService.DeleteFile(Path.Combine(rootUrl, oldImageUrl.Replace('/', Path.DirectorySeparatorChar)));
+
+                return (errorCode, result.Exception);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

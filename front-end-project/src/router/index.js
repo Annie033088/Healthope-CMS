@@ -8,6 +8,8 @@ import memberRoutes from './routes/member';
 import coachRoutes from './routes/coach';
 import groupClassRoutes from './routes/groupClass';
 import planRoutes from './routes/planTemplate';
+import memberClass from './routes/memberClass';
+import term from './routes/term';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -18,7 +20,7 @@ const routes = [
     // 其他 route ( 包括修改自己密碼 )
     ...otherRoutes,
     // 管理者相關
-   ...adminRoutes,
+    ...adminRoutes,
     // 會員相關
     ...memberRoutes,
     // 教練相關
@@ -29,6 +31,10 @@ const routes = [
     ...homeRoutes,
     // plan
     ...planRoutes,
+    // memberClass
+    ...memberClass,
+    // 條款
+    ...term,
 ]
 
 const router = new VueRouter({

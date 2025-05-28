@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using ApiLayer.Models.GroupClassSchedule.Request;
+using ApiLayer.Filters;
+using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Service;
+using ApiLayer.Models.Other;
+using ApiLayer.Models.PlanTemplate.Request;
+using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.Response.PlanTemplate;
 using DomainLayer.Utility;
 using NLog;
-using ApiLayer.Models.PlanTemplate.Request;
-using ApiLayer.Interface;
-using System.Threading.Tasks;
-using ApiLayer.Models.GroupClassShowcase.Request;
-using ApiLayer.Models.Other;
-using ApiLayer.Filters;
-using ApiLayer.Models.GroupClassShowcase.Response;
 using PersistentLayer.Models;
-using ApiLayer.Models.Response.PlanTemplate;
-using ApiLayer.Models.PlanTemplate.Response;
 
 namespace ApiLayer.Controllers.api
 {
@@ -30,15 +25,21 @@ namespace ApiLayer.Controllers.api
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IPlanTemplateService planTemplateService;
         private readonly IMultipartRequestService<RequestAddMembershipPlanDto> multipartRequestAddMembershipService;
-        private readonly IMultipartRequestService<RequestAddPersonalTrainingPackageDto> multipartRequestAddAddPersonalTrainingService;
+        private readonly IMultipartRequestService<RequestEditMembershipPlanDto> multipartRequestEditdMembershipService;
+        private readonly IMultipartRequestService<RequestAddPersonalTrainingPackageDto> multipartRequestAddPersonalTrainingService;
+        private readonly IMultipartRequestService<RequestEditPersonalTrainingPackageDto> multipartRequestEditPersonalTrainingService;
 
         public PlanTemplateController(IPlanTemplateService planTemplateService,
             IMultipartRequestService<RequestAddMembershipPlanDto> multipartRequestAddMembershipService,
-            IMultipartRequestService<RequestAddPersonalTrainingPackageDto> multipartRequestAddAddPersonalTrainingService)
+            IMultipartRequestService<RequestAddPersonalTrainingPackageDto> multipartRequestAddPersonalTrainingService,
+            IMultipartRequestService<RequestEditMembershipPlanDto> multipartRequestEditdMembershipService,
+            IMultipartRequestService<RequestEditPersonalTrainingPackageDto> multipartRequestEditPersonalTrainingService)
         {
             this.planTemplateService = planTemplateService;
             this.multipartRequestAddMembershipService = multipartRequestAddMembershipService;
-            this.multipartRequestAddAddPersonalTrainingService = multipartRequestAddAddPersonalTrainingService;
+            this.multipartRequestAddPersonalTrainingService = multipartRequestAddPersonalTrainingService;
+            this.multipartRequestEditdMembershipService = multipartRequestEditdMembershipService;
+            this.multipartRequestEditPersonalTrainingService = multipartRequestEditPersonalTrainingService;
         }
 
         /// <summary>
@@ -165,14 +166,14 @@ namespace ApiLayer.Controllers.api
                 HttpRequestMessage request = Request;
 
                 // 檢查請求是否為 multipart/form-data ( MIME 類型，表明這是「多部分資料」的格式 )
-                if (!multipartRequestAddAddPersonalTrainingService.IsMultipartRequest(request))
+                if (!multipartRequestAddPersonalTrainingService.IsMultipartRequest(request))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
                 // 取得請求的 form data 包括 1.addShowcaseDto, 2.file
-                (addPersonalTrainingPackageDto, files) = await multipartRequestAddAddPersonalTrainingService.GetObjectAndFile(request);
+                (addPersonalTrainingPackageDto, files) = await multipartRequestAddPersonalTrainingService.GetObjectAndFile(request);
 
                 // 沒取到資料
                 if (addPersonalTrainingPackageDto == default)
@@ -368,6 +369,241 @@ namespace ApiLayer.Controllers.api
                     ErrorCode = ErrorCodeDefine.Success,
                     ApiDataObject = getTicketPlan
                 };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改票劵方案狀態
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditTicketPlanStatus(RequestEditStatusDto editStatusDto)
+        {
+            try
+            {
+                // 驗證前端傳遞的參數是否合法
+                ResultResponse response;
+
+                if (!ModelState.IsValid || editStatusDto.TicketPlanId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = planTemplateService.EditTicketPlanStatus(editStatusDto);
+
+                response = new ResultResponse()
+                {
+                    ErrorCode = successFlag ?
+                    ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 取得修改會籍方案頁面資料
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetMembershipPlanEditDataById([FromBody] RequestMembershipPlanIdDto memebershipPlanIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (memebershipPlanIdDto.MembershipPlanId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetMembershipPlanEditDataDto responseData =
+                    planTemplateService.GetMembershipPlanEditDataById(memebershipPlanIdDto);
+                response = new ResultResponse<ResponseGetMembershipPlanEditDataDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseData
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 取得修改教練課方案頁面資料
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetPersonalTrainingPackageEditDataById(
+            [FromBody] RequestPersonalTrainingPackageIdDto personalTrainingPackageIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (personalTrainingPackageIdDto.PersonalTrainingPackageId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetPersonalTrainingPackageEditDataDto responseData =
+                    planTemplateService.GetPersonalTrainingPackageEditDataById(personalTrainingPackageIdDto);
+                response = new ResultResponse<ResponseGetPersonalTrainingPackageEditDataDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseData
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改會籍方案
+        /// </summary>
+        [HttpPost]
+        public async Task<IHttpActionResult> EditMembershipPlan()
+        {
+            try
+            {
+                ResultResponse response;
+                FormatValidation formatValidation = new FormatValidation();
+                RequestEditMembershipPlanDto editMembershipPlanDto = new RequestEditMembershipPlanDto();
+                List<FileDto> files = new List<FileDto>();
+                HttpRequestMessage request = Request;
+
+                // 檢查請求是否為 multipart/form-data ( MIME 類型，表明這是「多部分資料」的格式 )
+                if (!multipartRequestEditdMembershipService.IsMultipartRequest(request))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (editMembershipPlanDto, files) = await multipartRequestEditdMembershipService.GetObjectAndFile(request);
+
+                // 沒取到資料
+                if (editMembershipPlanDto == default)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                // 格式驗證
+                if (editMembershipPlanDto.MembershipPlanId < 1
+                    || !formatValidation.ValidInput(false, null, 200, editMembershipPlanDto.Introduction))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                if (files.Any() && !formatValidation.ValidImageFile(files[0].FileData, files[0].MimeType))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, Exception exception) = planTemplateService.EditMembershipPlan(editMembershipPlanDto,
+                    files.Any() ? files[0] : null);
+
+                // 如果有例外
+                if (exception != null)
+                {
+                    logger.Error(exception);
+                    response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse() { ErrorCode = errorCode };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改教練課方案
+        /// </summary>
+        [HttpPost]
+        public async Task<IHttpActionResult> EditPersonalTrainingPackage()
+        {
+            try
+            {
+                ResultResponse response;
+                FormatValidation formatValidation = new FormatValidation();
+                RequestEditPersonalTrainingPackageDto editPlanDto = new RequestEditPersonalTrainingPackageDto();
+                List<FileDto> files = new List<FileDto>();
+                HttpRequestMessage request = Request;
+
+                // 檢查請求是否為 multipart/form-data ( MIME 類型，表明這是「多部分資料」的格式 )
+                if (!multipartRequestEditPersonalTrainingService.IsMultipartRequest(request))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (editPlanDto, files) = await multipartRequestEditPersonalTrainingService.GetObjectAndFile(request);
+
+                // 沒取到資料
+                if (editPlanDto == default)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                // 格式驗證
+                if (editPlanDto.PersonalTrainingPackageId < 1
+                    || !formatValidation.ValidInput(false, null, 200, editPlanDto.Introduction))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                if (files.Any() && !formatValidation.ValidImageFile(files[0].FileData, files[0].MimeType))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, Exception exception) = planTemplateService.EditPersonalTrainingPackage(editPlanDto,
+                    files.Any() ? files[0] : null);
+
+                // 如果有例外
+                if (exception != null)
+                {
+                    logger.Error(exception);
+                    response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse() { ErrorCode = errorCode };
                 return Ok(response);
             }
             catch (Exception ex)

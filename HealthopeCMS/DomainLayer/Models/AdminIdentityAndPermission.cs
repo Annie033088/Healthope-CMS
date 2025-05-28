@@ -68,6 +68,26 @@ namespace DomainLayer.Models
         /// 查詢 團課表 權限
         /// </summary>
         SelectPlan = 12,
+
+        /// <summary>
+        /// 增修 會員預約課程
+        /// </summary>
+        EditMemberClass=13,
+
+        /// <summary>
+        /// 查詢 會員預約課程
+        /// </summary>
+        SelectMemberClass = 14,
+
+        /// <summary>
+        /// 修改條款
+        /// </summary>
+        EditTerm=15,
+
+        /// <summary>
+        /// 查詢條款
+        /// </summary>
+        SelectTerm=16,
     }
 
     public enum AdminIdentity : byte

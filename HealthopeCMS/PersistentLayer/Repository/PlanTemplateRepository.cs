@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
+using ApiLayer.Models.PlanTemplate.Request;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
-using System.Configuration;
 using PersistentLayer.Models;
-using ApiLayer.Models.PlanTemplate.Request;
 
 namespace PersistentLayer.Repository
 {
@@ -337,7 +334,7 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_getPersonalTrainingPackage @status, @sortOrder, " +
+                cmd.CommandText = "EXEC pro_healthope_getTicketPlan @status, @sortOrder, " +
                     "@sortOption, @recordPerPage, @page, @totalPage OUTPUT";
 
                 if (getPlanDto.Status == null)
@@ -386,6 +383,301 @@ namespace PersistentLayer.Repository
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改票劵方案狀態
+        /// </summary>
+        public bool EditTicketPlanStatus(TicketPlan ticketPlan)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editTicketPlanStatus @ticketPlanId, @status, @updateTime";
+
+                cmd.Parameters.Add("@ticketPlanId", SqlDbType.Int).Value = ticketPlan.TicketPlanId;
+                cmd.Parameters.Add("@status", SqlDbType.Bit).Value = ticketPlan.Status;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = ticketPlan.UpdateTime;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數為1代表成功
+                if (ExeCnt == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 取得修改會籍方案頁面資料
+        /// </summary>
+        public MembershipPlan GetMembershipPlanEditDataById(int memebershipPlanId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getMembershipPlanEditDataById @memebershipPlanId";
+
+                cmd.Parameters.Add("@memebershipPlanId", SqlDbType.Int).Value = memebershipPlanId;
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    MembershipPlan membershipPlan = new MembershipPlan()
+                    {
+                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
+                        Status = dr.IsNull("f_status") ? false : dr.Field<bool>("f_status"),
+                        Display = dr.IsNull("f_display") ? false : dr.Field<bool>("f_display"),
+                        Introduction = dr.IsNull("f_introduction") ? string.Empty : dr.Field<string>("f_introduction"),
+                        ImageUrl = dr.IsNull("f_imageUrl") ? string.Empty : dr.Field<string>("f_imageUrl"),
+                        UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
+                    };
+
+                    return membershipPlan;
+                }
+
+                return (null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 取得修改教練課方案頁面資料
+        /// </summary>
+        public PersonalTrainingPackage GetPersonalTrainingPackageEditDataById(int personalTrainingPackageId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getPersonalTrainingPackageEditDataById @personalTrainingPackageId";
+
+                cmd.Parameters.Add("@personalTrainingPackageId", SqlDbType.Int).Value = personalTrainingPackageId;
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    PersonalTrainingPackage personalTrainingPackage = new PersonalTrainingPackage()
+                    {
+                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
+                        Status = dr.IsNull("f_status") ? false : dr.Field<bool>("f_status"),
+                        Display = dr.IsNull("f_display") ? false : dr.Field<bool>("f_display"),
+                        Introduction = dr.IsNull("f_introduction") ? string.Empty : dr.Field<string>("f_introduction"),
+                        ImageUrl = dr.IsNull("f_imageUrl") ? string.Empty : dr.Field<string>("f_imageUrl"),
+                        UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
+                    };
+
+                    return personalTrainingPackage;
+                }
+
+                return (null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改會籍方案
+        /// </summary>
+        public (ResultWithException result, string oldImageUrl) EditMembershipPlan(RequestEditMembershipPlanDto editMembershipPlanDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editMembershipPlan @membershipPlanId, @introduction, @imageUrl, " +
+                    "@status, @display, @updateTime, @errorCode OUTPUT";
+
+                if (editMembershipPlanDto.Introduction == null)
+                    cmd.Parameters.Add("@introduction", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@introduction", SqlDbType.NVarChar).Value = editMembershipPlanDto.Introduction;
+
+                if (string.IsNullOrEmpty(editMembershipPlanDto.ImageUrl))
+                    cmd.Parameters.Add("@imageUrl", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@imageUrl", SqlDbType.NVarChar).Value = editMembershipPlanDto.ImageUrl;
+
+                if (editMembershipPlanDto.Status == null)
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@status ", SqlDbType.Bit).Value = editMembershipPlanDto.Status;
+
+                if (editMembershipPlanDto.Display == null)
+                    cmd.Parameters.Add("@display", SqlDbType.Bit).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@display ", SqlDbType.Bit).Value = editMembershipPlanDto.Display;
+
+                cmd.Parameters.Add("@membershipPlanId", SqlDbType.Int).Value = editMembershipPlanDto.MembershipPlanId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editMembershipPlanDto.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                object imageUrlObj = cmd.ExecuteScalar();
+                string imageUrl = string.Empty;
+
+                if (imageUrlObj != null && imageUrlObj != DBNull.Value)
+                    imageUrl = imageUrlObj.ToString();
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                ResultWithException result = new ResultWithException()
+                {
+                    ErrorCodeNumber = errorCodeNumber,
+                    Exception = null
+                };
+                return (result, imageUrl);
+            }
+            catch (Exception ex)
+            {
+                int serverError = 6;
+                ResultWithException result = new ResultWithException()
+                {
+                    ErrorCodeNumber = serverError,
+                    Exception = ex
+                };
+                return (result, string.Empty);
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        public (ResultWithException result, string oldImageUrl) EditPersonalTrainingPackage(
+            RequestEditPersonalTrainingPackageDto editPlanDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editPersonalTrainingPackage @personalTrainingPackageId, @introduction, " +
+                    "@imageUrl, @status, @display, @updateTime, @errorCode OUTPUT";
+
+                if (editPlanDto.Introduction == null)
+                    cmd.Parameters.Add("@introduction", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@introduction", SqlDbType.NVarChar).Value = editPlanDto.Introduction;
+
+                if (string.IsNullOrEmpty(editPlanDto.ImageUrl))
+                    cmd.Parameters.Add("@imageUrl", SqlDbType.NVarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@imageUrl", SqlDbType.NVarChar).Value = editPlanDto.ImageUrl;
+
+                if (editPlanDto.Status == null)
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@status ", SqlDbType.Bit).Value = editPlanDto.Status;
+
+                if (editPlanDto.Display == null)
+                    cmd.Parameters.Add("@display", SqlDbType.Bit).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@display ", SqlDbType.Bit).Value = editPlanDto.Display;
+
+                cmd.Parameters.Add("@personalTrainingPackageId", SqlDbType.Int).Value = editPlanDto.PersonalTrainingPackageId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editPlanDto.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                object imageUrlObj = cmd.ExecuteScalar();
+                string imageUrl = string.Empty;
+
+                if (imageUrlObj != null && imageUrlObj != DBNull.Value)
+                    imageUrl = imageUrlObj.ToString();
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                ResultWithException result = new ResultWithException()
+                {
+                    ErrorCodeNumber = errorCodeNumber,
+                    Exception = null
+                };
+                return (result, imageUrl);
+            }
+            catch (Exception ex)
+            {
+                int serverError = 6;
+                ResultWithException result = new ResultWithException()
+                {
+                    ErrorCodeNumber = serverError,
+                    Exception = ex
+                };
+                return (result, string.Empty);
             }
             finally
             {

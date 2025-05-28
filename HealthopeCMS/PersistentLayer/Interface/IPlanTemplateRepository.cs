@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ApiLayer.Models.PlanTemplate.Request;
 using DomainLayer.Models;
 using PersistentLayer.Models;
@@ -41,5 +37,32 @@ namespace PersistentLayer.Interface
         /// 取得票劵方案
         /// </summary>
         (List<TicketPlan> ticketPlans, int totalPage) GetTicketPlan(RequestGetPlanDto getPlanDto);
+
+        /// <summary>
+        /// 修改票劵方案狀態
+        /// </summary>
+        bool EditTicketPlanStatus(TicketPlan ticketPlan);
+
+        /// <summary>
+        /// 取得修改會籍方案頁面資料
+        /// </summary>
+        MembershipPlan GetMembershipPlanEditDataById(int memebershipPlanId);
+
+        /// <summary>
+        /// 取得修改教練課方案頁面資料
+        /// </summary>
+        PersonalTrainingPackage GetPersonalTrainingPackageEditDataById(int personalTrainingPackageId);
+
+        /// <summary>
+        /// 修改會籍方案
+        /// </summary>
+        (ResultWithException result, string oldImageUrl) EditMembershipPlan(
+            RequestEditMembershipPlanDto editMembershipPlanDto);
+
+        /// <summary>
+        /// 修改教練課方案
+        /// </summary>
+        (ResultWithException result, string oldImageUrl) EditPersonalTrainingPackage(
+            RequestEditPersonalTrainingPackageDto editPlanDto);
     }
 }

@@ -58,7 +58,6 @@ export default {
 
 <style scoped>
 .inputSpan {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

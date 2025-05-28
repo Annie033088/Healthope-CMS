@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ApiLayer.Models.PlanTemplate.Response
 {
@@ -22,7 +20,7 @@ namespace ApiLayer.Models.PlanTemplate.Response
         /// <summary>
         /// 教練課方案 Id
         /// </summary>
-        public int personalTrainingPackageId { get; set; }
+        public int PersonalTrainingPackageId { get; set; }
 
         /// <summary>
         /// 方案名

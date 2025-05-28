@@ -45,6 +45,8 @@ namespace ApiLayer.App_Start
             CreateMap<MembershipPlan, ResponseGetMembershipPlanDto>();
             CreateMap<PersonalTrainingPackage, ResponseGetPersonalTrainingPackageDto>();
             CreateMap<TicketPlan, ResponseGetTicketPlanDto>();
+            CreateMap<MembershipPlan, ResponseGetMembershipPlanEditDataDto>();
+            CreateMap<PersonalTrainingPackage, ResponseGetPersonalTrainingPackageEditDataDto>();
         }
     }
 }

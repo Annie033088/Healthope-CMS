@@ -29,7 +29,7 @@
                 v-if="col.type === 'dropDownSelector' && row[col.key]"
                 :options="row[col.key].Options"
                 :parentValue="row[col.key].Value"
-                @change="$emit(`change${col.key}`, row)"
+                @change="value => { row[col.key].Value = value; $emit(`change${col.key}`, row) }"
                 :disabled="!col.enableFlag"
               >
               </NormalSelector>
@@ -202,4 +202,5 @@ tbody td {
   display: flex;
   justify-content: start;
 }
+
 </style>

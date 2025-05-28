@@ -191,6 +191,18 @@ export const adminPermission = {
 
     // 查詢 團課表 權限
     SelectPlan: 12,
+
+    // 增修 會員預約課程
+    EditMemberClass: 13,
+
+    // 查詢 會員預約課程
+    SelectMemberClass: 14,
+
+    // 修改條款
+    EditTerm: 15,
+
+    // 查詢條款
+    SelectTerm: 16,
 }
 
 export default function adminIdentityToText(identity) {
