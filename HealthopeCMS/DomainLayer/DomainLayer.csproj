@@ -55,6 +55,7 @@
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\MembershipPlan.cs" />
     <Compile Include="Models\PersonalTrainingPackage.cs" />
+    <Compile Include="Models\Term.cs" />
     <Compile Include="Models\TicketPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AdminPermissionUtility.cs" />

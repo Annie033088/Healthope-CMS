@@ -9,6 +9,8 @@ using ApiLayer.Models.Member.Response;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
 using ApiLayer.Models.Response.PlanTemplate;
+using ApiLayer.Models.Term.Request;
+using ApiLayer.Models.Term.Response;
 using AutoMapper;
 using DomainLayer.Models;
 
@@ -47,6 +49,10 @@ namespace ApiLayer.App_Start
             CreateMap<TicketPlan, ResponseGetTicketPlanDto>();
             CreateMap<MembershipPlan, ResponseGetMembershipPlanEditDataDto>();
             CreateMap<PersonalTrainingPackage, ResponseGetPersonalTrainingPackageEditDataDto>();
+            CreateMap<RequestGetOldTermDto, Term>();
+            CreateMap<RequestAddTermDto, Term>();
+            CreateMap<Term, ResponseGetOldTermDto>();
+            CreateMap<Term, ResponseGetTermDto>();
         }
     }
 }

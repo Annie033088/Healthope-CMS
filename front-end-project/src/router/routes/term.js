@@ -17,4 +17,12 @@ export default [
             requireAuth: [{ adminPermission: adminPermission.EditTerm }]
         }
     },
+    {
+        path: '/term/edit',
+        name: 'HealthopeEditTerm',
+        component: () => import('@/views/Term/HealthopeEditTerm'),
+        meta: {
+            requireAuth: [{ adminPermission: adminPermission.EditTerm }]
+        }
+    },
 ];

@@ -198,6 +198,8 @@
     <Compile Include="Test\MemberTest\MemberServiceTest.cs" />
     <Compile Include="Test\PlanTemplateTest\PlanTemplateControllerTest.cs" />
     <Compile Include="Test\PlanTemplateTest\PlanTemplateServiceTest.cs" />
+    <Compile Include="Test\TermTest\TermControllerTest.cs" />
+    <Compile Include="Test\TermTest\TermServiceTest.cs" />
     <Compile Include="utils\ResponseIsEqual.cs" />
   </ItemGroup>
   <ItemGroup>

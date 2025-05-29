@@ -19,7 +19,7 @@ export default function (mock) {
         // 模擬接待員(櫃檯)登入
         if (loginDto.Account === "aggollemni123" && loginDto.Pwd === "aggollemni456") {
             Vue.prototype.$loginFlag = true;
-            return [200, { ErrorCode: 1, ApiDataObject: [2, 8, 10, 12] }];
+            return [200, { ErrorCode: 1, ApiDataObject: [2, 8, 10, 12, 16] }];
         }
 
         return [200, { ErrorCode: 9 }];

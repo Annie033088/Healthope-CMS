@@ -52,6 +52,7 @@
     <Compile Include="Interface\IGroupClassShowcaseRepository.cs" />
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Interface\IPlanTemplateRepository.cs" />
+    <Compile Include="Interface\ITermRepository.cs" />
     <Compile Include="Models\EditPwdDto.cs" />
     <Compile Include="Models\RequestEditMembershipPlanDto.cs" />
     <Compile Include="Models\RequestEditPersonalTrainingPackageDto.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />
     <Compile Include="Models\RequestGetShowcaseDto.cs" />
+    <Compile Include="Models\RequestGetTermDto.cs" />
     <Compile Include="Models\ResultWithException.cs" />
     <Compile Include="Models\RequestEditAdminDto.cs" />
     <Compile Include="Models\RequestEditCoachDto.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="Repository\GroupClassShowcaseRepository.cs" />
     <Compile Include="Repository\MemberRepository.cs" />
     <Compile Include="Repository\PlanTemplateRepository.cs" />
+    <Compile Include="Repository\TermRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

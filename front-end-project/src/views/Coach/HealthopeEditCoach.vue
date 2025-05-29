@@ -247,6 +247,10 @@ export default {
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
+        
+        if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
+          this.$emit("refreshPage");
+        }
       } catch (error) {
         console.error("新增教練時發生錯誤", error);
       }
@@ -536,7 +540,7 @@ export default {
   width: 225px;
 }
 
-.inputSpanContainer{
+.inputSpanContainer {
   margin-bottom: 2%;
 }
 

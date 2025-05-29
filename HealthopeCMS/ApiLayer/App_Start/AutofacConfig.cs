@@ -50,6 +50,8 @@ namespace ApiLayer.App_Start
             builder.RegisterType<PlanTemplateService>().As<IPlanTemplateService>().InstancePerRequest();
             builder.RegisterType<PlanTemplateRepository>().As<IPlanTemplateRepository>().InstancePerRequest();
 
+            builder.RegisterType<TermService>().As<ITermService>().InstancePerRequest();
+            builder.RegisterType<TermRepository>().As<ITermRepository>().InstancePerRequest();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

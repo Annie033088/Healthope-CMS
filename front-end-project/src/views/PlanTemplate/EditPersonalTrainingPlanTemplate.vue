@@ -176,6 +176,10 @@ export default {
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
+        
+        if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
+          this.$emit("refreshPage");
+        }
       } catch (error) {
         console.error("修改方案發生錯誤", error);
       }

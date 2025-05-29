@@ -72,7 +72,7 @@ namespace DomainLayer.Models
         /// <summary>
         /// 增修 會員預約課程
         /// </summary>
-        EditMemberClass=13,
+        EditMemberClass = 13,
 
         /// <summary>
         /// 查詢 會員預約課程
@@ -82,12 +82,12 @@ namespace DomainLayer.Models
         /// <summary>
         /// 修改條款
         /// </summary>
-        EditTerm=15,
+        EditTerm = 15,
 
         /// <summary>
         /// 查詢條款
         /// </summary>
-        SelectTerm=16,
+        SelectTerm = 16,
     }
 
     public enum AdminIdentity : byte
@@ -148,6 +148,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditGroupClassShowcase, AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
                 AdminPermission.EditPlan, AdminPermission.SelectPlan,
+                AdminPermission.EditTerm, AdminPermission.SelectTerm,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -155,6 +156,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditGroupClassShowcase, AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
                 AdminPermission.EditPlan, AdminPermission.SelectPlan,
+                AdminPermission.EditTerm, AdminPermission.SelectTerm,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,

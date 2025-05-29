@@ -249,6 +249,10 @@ export default {
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
+          this.$emit("refreshPage");
+        }
       } catch (error) {
         console.error("取得特定會籍方案時發生錯誤", error);
       }

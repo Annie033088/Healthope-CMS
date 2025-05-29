@@ -112,7 +112,7 @@ export default {
           let identityNum = this.identityTextToNumber(this.selectIdentity);
 
           // 轉換失敗的話代表格式錯誤
-          if (identityNum === -1)  {
+          if (identityNum === -1) {
             this.addFail = true;
             this.hintText = "身份格式錯誤";
             return;
@@ -124,11 +124,11 @@ export default {
           editAdminDto.Identity = null;
         }
 
-        if (!editFlag)  {
-            this.addFail = true;
-            this.hintText = "請修改資料或返回";
-            return;
-          }
+        if (!editFlag) {
+          this.addFail = true;
+          this.hintText = "請修改資料或返回";
+          return;
+        }
 
         // post
         const response = await this.$axios.post(
@@ -180,24 +180,15 @@ export default {
           this.selectStatus = this.admin.Status ? "true" : "false";
           this.selectIdentity = this.identityToText(this.admin.Identity);
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = "/admin";
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
+        }
+        
+        if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
+          this.$emit("refreshPage");
         }
       } catch (error) {
         console.error("取得特定管理者時發生錯誤", error);
