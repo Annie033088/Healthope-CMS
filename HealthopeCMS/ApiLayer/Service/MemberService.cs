@@ -56,6 +56,9 @@ namespace ApiLayer.Service
             try
             {
                 Member member = memberRepository.GetMemberEditDataById(getMemberByIdDto.MemberId);
+
+                if (member == null) return null;
+
                 ResponseGetMemberEditDataByIdDto response = mapper.Map<ResponseGetMemberEditDataByIdDto>(member);
                 return response;
             }

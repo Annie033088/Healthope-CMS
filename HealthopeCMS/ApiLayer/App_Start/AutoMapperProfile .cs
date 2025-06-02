@@ -5,6 +5,7 @@ using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.GroupClassSchedule.Response;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
+using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.Member.Response;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
@@ -53,6 +54,10 @@ namespace ApiLayer.App_Start
             CreateMap<RequestAddTermDto, Term>();
             CreateMap<Term, ResponseGetOldTermDto>();
             CreateMap<Term, ResponseGetTermDto>();
+            CreateMap<Term, ResponseGetTermEditDataByIdDto>();
+            CreateMap<RequestEditTermStatusDto, Term>();
+            CreateMap<Term, ResponseGetTermDetailDto>();
+            CreateMap<RequestAddLeaseAgreementDto, LeaseAgreement>();
         }
     }
 }

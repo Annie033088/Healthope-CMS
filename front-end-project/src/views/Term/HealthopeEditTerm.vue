@@ -4,11 +4,6 @@
     <SubTitleCard text="修改條款"></SubTitleCard>
     <div class="titleContainer">
       <h3 class="">修改條款</h3>
-      <BtnNormal
-        class="btnPublish"
-        text="發布條款"
-        @click="publishTerm"
-      ></BtnNormal>
     </div>
     <div class="editContainer">
       <h3 class="">{{ currentTermData.Name }}</h3>
@@ -44,7 +39,6 @@
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import BtnConfirm from "@/components/Btn/BtnConfirm";
-import BtnNormal from "@/components/Btn/BtnNormal";
 
 export default {
   name: "HealthopeEditTerm",
@@ -52,7 +46,6 @@ export default {
     TitleCard,
     SubTitleCard,
     BtnConfirm,
-    BtnNormal,
   },
   data() {
     return {
@@ -128,7 +121,6 @@ export default {
         console.error("修改方案發生錯誤", error);
       }
     },
-    publishTerm() {},
     async GetTermEditDataById(id) {
       try {
         let getTermByIdDto = {
@@ -281,13 +273,5 @@ export default {
 
 .titleContainer h3 {
   margin-left: 28%;
-}
-
-.btnPublish {
-  margin-top: 25px;
-  width: 130px;
-  height: 50px;
-  max-width: 35%;
-  font-size: 16px;
 }
 </style>

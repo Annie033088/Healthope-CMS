@@ -29,10 +29,29 @@
                 v-if="col.type === 'dropDownSelector' && row[col.key]"
                 :options="row[col.key].Options"
                 :parentValue="row[col.key].Value"
-                @change="value => { row[col.key].Value = value; $emit(`change${col.key}`, row) }"
+                @change="
+                  (value) => {
+                    row[col.key].Value = value;
+                    $emit(`change${col.key}`, row);
+                  }
+                "
                 :disabled="!col.enableFlag"
               >
               </NormalSelector>
+              <CheckboxInput
+                v-else-if="
+                  col.type === 'checkBoxInput' &&
+                  (row[col.key] === true || row[col.key] === false)
+                "
+                :disabled="!col.enableFlag"
+                v-model="row[col.key]"
+                @change="
+                  (value) => {
+                    row[col.key] = value;
+                    $emit(`change${col.key}`, row);
+                  }
+                "
+              />
               <div v-else>
                 {{ row[col.key] }}
               </div>
@@ -80,6 +99,7 @@ import SvgEdit from "@/components/Btn/SvgEdit";
 import SvgDelete from "@/components/Btn/SvgDelete";
 import SvgCheckDetail from "@/components/Btn/SvgCheckDetail";
 import NormalSelector from "@/components/Selector/NormalSelector";
+import CheckboxInput from "@/components/Input/CheckboxInput";
 
 export default {
   name: "TableNormal",
@@ -88,6 +108,7 @@ export default {
     SvgDelete,
     SvgCheckDetail,
     NormalSelector,
+    CheckboxInput,
   },
   props: {
     columns: {
@@ -144,6 +165,7 @@ export default {
       this.expandedIndex = null;
     },
   },
+  created() {},
 };
 </script>
 
@@ -202,5 +224,4 @@ tbody td {
   display: flex;
   justify-content: start;
 }
-
 </style>

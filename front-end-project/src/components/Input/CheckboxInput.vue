@@ -1,14 +1,32 @@
 <template>
   <label class="container">
-    <input type="checkbox" checked="checked" />
+    <input
+      type="checkbox"
+      :checked="value"
+      @change="onChange"
+      :disabled="disabled"
+    />
     <div class="checkmark"></div>
   </label>
 </template>
 
 <script>
 export default {
-    name:"CheckboxInput"
-}
+  name: "CheckboxInput",
+  props: {
+    value: Boolean,
+    disabled: Boolean,
+  },
+  methods: {
+    onChange(event) {
+      const value = event.target.checked;
+      // 更新 v-model
+      this.$emit("input", value);
+
+      this.$emit("change", value);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -24,7 +42,7 @@ export default {
   display: block;
   position: relative;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 12px;
   user-select: none;
 }
 

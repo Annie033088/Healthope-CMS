@@ -53,5 +53,10 @@ namespace ApiLayer.Models.Term.Response
         /// 條款生效日
         /// </summary>
         public DateTime EffectiveTime { get; set; }
+
+        /// <summary>
+        /// 更新時間
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
     }
 }

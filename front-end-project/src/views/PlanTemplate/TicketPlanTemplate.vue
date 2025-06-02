@@ -80,7 +80,7 @@ export default {
         {
           label: "狀態",
           key: "Status",
-          type: "dropDownSelector",
+          type: "checkBoxInput",
           enableFlag: this.permissionMap.EditPlan,
         },
       ],
@@ -90,14 +90,12 @@ export default {
     redirect(path) {
       if (this.$route.path !== path) this.$router.push(path);
     },
-    selectPlanByStatus() {},
-
     async editStatus(row) {
-      if (row.Status.Value !== "true" && row.Status.Value !== "false") return;
+      if (typeof row.Status !== "boolean") return;
 
       let editStatusDto = {
         TicketPlanId: row.TicketPlanId,
-        Status: row.Status.Value,
+        Status: row.Status,
         UpdateTime: row.UpdateTime,
       };
 
@@ -163,13 +161,6 @@ export default {
           response.data.ApiDataObject.TicketPlanList.forEach((plan) => {
             let displayPlan = {
               ...plan,
-              Status: {
-                Value: plan.Status === true ? "true" : "false",
-                Options: [
-                  { value: "false", text: "無效" },
-                  { value: "true", text: "有效" },
-                ],
-              },
               Name: "一次性票劵",
             };
             this.planList.push(displayPlan);

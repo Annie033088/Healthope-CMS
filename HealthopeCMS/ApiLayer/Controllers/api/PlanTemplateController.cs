@@ -11,6 +11,7 @@ using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
 using ApiLayer.Models.Response.PlanTemplate;
+using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
@@ -432,6 +433,13 @@ namespace ApiLayer.Controllers.api
 
                 ResponseGetMembershipPlanEditDataDto responseData =
                     planTemplateService.GetMembershipPlanEditDataById(memebershipPlanIdDto);
+
+                if (responseData == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
                 response = new ResultResponse<ResponseGetMembershipPlanEditDataDto>
                 {
                     ErrorCode = ErrorCodeDefine.Success,
@@ -467,6 +475,13 @@ namespace ApiLayer.Controllers.api
 
                 ResponseGetPersonalTrainingPackageEditDataDto responseData =
                     planTemplateService.GetPersonalTrainingPackageEditDataById(personalTrainingPackageIdDto);
+
+                if (responseData == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
                 response = new ResultResponse<ResponseGetPersonalTrainingPackageEditDataDto>
                 {
                     ErrorCode = ErrorCodeDefine.Success,

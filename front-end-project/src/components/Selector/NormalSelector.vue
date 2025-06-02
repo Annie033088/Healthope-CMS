@@ -59,7 +59,7 @@ export default {
   border-radius: 0.5rem;
   background-color: #eee;
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.25rem;
+  padding: 0.2rem;
   font-size: 14px;
 }
 
@@ -74,7 +74,7 @@ export default {
 .normalSelector {
   border: none;
   border-radius: 0.5rem;
-  padding: 0.5rem 0.5rem;
+  padding: 0.4rem 0.4rem;
   background-color: #fafbfc;
 }
 

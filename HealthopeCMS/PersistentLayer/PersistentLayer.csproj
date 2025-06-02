@@ -50,6 +50,7 @@
     <Compile Include="Interface\ICoachRepository.cs" />
     <Compile Include="Interface\IGroupClassScheduleRepository.cs" />
     <Compile Include="Interface\IGroupClassShowcaseRepository.cs" />
+    <Compile Include="Interface\ILeaseAgreementRepository.cs" />
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Interface\IPlanTemplateRepository.cs" />
     <Compile Include="Interface\ITermRepository.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Models\RequestEditMembershipPlanDto.cs" />
     <Compile Include="Models\RequestEditPersonalTrainingPackageDto.cs" />
     <Compile Include="Models\RequestEditShowcaseDto.cs" />
+    <Compile Include="Models\RequestEditTermDto.cs" />
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />
     <Compile Include="Models\RequestGetShowcaseDto.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="Repository\CoachRepository.cs" />
     <Compile Include="Repository\GroupClassScheduleRepository.cs" />
     <Compile Include="Repository\GroupClassShowcaseRepository.cs" />
+    <Compile Include="Repository\LeaseAgreementRepository.cs" />
     <Compile Include="Repository\MemberRepository.cs" />
     <Compile Include="Repository\PlanTemplateRepository.cs" />
     <Compile Include="Repository\TermRepository.cs" />

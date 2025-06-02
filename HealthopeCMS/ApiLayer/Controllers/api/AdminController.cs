@@ -6,6 +6,7 @@ using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
+using ApiLayer.Service;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
@@ -257,16 +258,11 @@ namespace ApiLayer.Controllers.api
                 }
 
                 bool successFlag = adminService.DeleteAdmin(adminIdDto);
-
-                // 成功
-                if (successFlag)
+                response = new ResultResponse()
                 {
-                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.Success };
-                    return Ok(response);
-                }
-
-                // 失敗
-                response = new ResultResponse { ErrorCode = ErrorCodeDefine.DeleteFailed };
+                    ErrorCode = successFlag ?
+                    ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
+                };
                 return Ok(response);
             }
             catch (Exception ex)

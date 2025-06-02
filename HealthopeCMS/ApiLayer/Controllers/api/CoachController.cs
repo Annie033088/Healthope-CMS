@@ -10,6 +10,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.Other;
+using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
@@ -190,6 +191,13 @@ namespace ApiLayer.Controllers.api
 
                 ResponseGetCoachEditDataByIdDto responseGetCoachDto =
                     coachService.GetCoachEditDataById(coachIdDto);
+
+                if (responseGetCoachDto == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
                 response = new ResultResponse<ResponseGetCoachEditDataByIdDto>
                 {
                     ErrorCode = ErrorCodeDefine.Success,

@@ -191,4 +191,23 @@ export default function (mock) {
     mock.onPost("/api/Term/EditTerm").reply(() => {
         return [200, { ErrorCode: 1 }]
     })
+
+    mock.onPost("/api/Term/EditTermStatus").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Term/GetTermDetail").reply((config) => {
+        let termIdDto = JSON.parse(config.data);
+        let termTarget = terms.find(term => term.TermId === Number(termIdDto.TermId));
+
+        if (termTarget) {
+            return [200, { ErrorCode: 1, ApiDataObject: termTarget }]
+        } else {
+            return [200, { ErrorCode: 13 }]
+        }
+    })
+
+    mock.onPost("/api/Term/DeleteTerm").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
 }

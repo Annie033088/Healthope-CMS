@@ -273,6 +273,19 @@ export default function (mock) {
             "CheckInParticipant": 36,
             "Tag": 2,
             "Status": 2
+        },
+        {
+            "GroupClassScheduleId": 6,
+            "ClassName": "舞力全開",
+            "Category": 4,
+            "CoachName": "Chacha",
+            "Time": "2025-05-29T08:00:00",
+            "Place": "教室A",
+            "MaximumParticipant": 40,
+            "ReserveParticipant": 38,
+            "CheckInParticipant": 36,
+            "Tag": 1,
+            "Status": 4
         }
     ]
 

@@ -10,6 +10,7 @@ import groupClassRoutes from './routes/groupClass';
 import planRoutes from './routes/planTemplate';
 import memberClass from './routes/memberClass';
 import term from './routes/term';
+import leaseAgreement from './routes/leaseAgreement';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -35,6 +36,8 @@ const routes = [
     ...memberClass,
     // 條款
     ...term,
+    // 租約
+    ...leaseAgreement,
 ]
 
 const router = new VueRouter({

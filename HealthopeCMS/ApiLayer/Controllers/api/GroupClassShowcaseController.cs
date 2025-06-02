@@ -10,6 +10,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
 using ApiLayer.Models.Other;
+using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
@@ -224,6 +225,13 @@ namespace ApiLayer.Controllers.api
 
                 ResponseGetShowcaseEditDataDto responseGetShowcaseDto =
                     groupClassShowcaseService.GetShowcaseEditDataById(showcaseIdDto);
+
+                if (responseGetShowcaseDto == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
                 response = new ResultResponse<ResponseGetShowcaseEditDataDto>
                 {
                     ErrorCode = ErrorCodeDefine.Success,

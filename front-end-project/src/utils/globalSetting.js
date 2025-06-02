@@ -203,6 +203,12 @@ export const adminPermission = {
 
     // 查詢條款
     SelectTerm: 16,
+    
+    // 修改租約
+    EditLeaseAgreement: 17,
+
+    // 查詢租約
+    SelectLeaseAgreement: 18,
 }
 
 export default function adminIdentityToText(identity) {

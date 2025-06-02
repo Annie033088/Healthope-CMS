@@ -12,6 +12,9 @@ using PersistentLayer.Interface;
 using PersistentLayer.Models;
 using UnitTest.utils;
 using System;
+using ApiLayer.Models.Member.Response;
+using static AutoMapper.Internal.ExpressionFactory;
+using ApiLayer.Interface;
 
 namespace UnitTest.Test.TermTest
 {
@@ -255,6 +258,277 @@ namespace UnitTest.Test.TermTest
 
             // Assert
             CollectionAssert.AreEqual(responseGetTerms, result.TermList);
+        }
+
+        [TestMethod]
+        public void 根據Id取得要修改條款的資料_成功_回傳條款資料()
+        {
+            // Arrange
+            RequestTermIdDto termIdDto = new RequestTermIdDto()
+            {
+                TermId = 1
+            };
+
+            Term term = new Term()
+            {
+                Name = "okwopekq122",
+                DetailContent = "dwdq",
+                VersionDescription = "000blob",
+                UpdateTime = DateTime.Now,
+            };
+
+            ResponseGetTermEditDataByIdDto response = new ResponseGetTermEditDataByIdDto()
+            {
+                Name = "okwopekq122",
+                DetailContent = "dwdq",
+                VersionDescription = "000blob",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.GetTermEditDataById(termIdDto.TermId)).Returns(term);
+            mapperMock.Setup(s => s.Map<ResponseGetTermEditDataByIdDto>(term)).Returns(response);
+
+            // Act
+            ResponseGetTermEditDataByIdDto result = service.GetTermEditDataById(termIdDto);
+
+            // Assert
+            Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 根據Id取得要修改條款的資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestTermIdDto termIdDto = new RequestTermIdDto()
+            {
+                TermId = 1
+            };
+
+            Term term = new Term();
+
+            ResponseGetTermEditDataByIdDto response = new ResponseGetTermEditDataByIdDto();
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.GetTermEditDataById(termIdDto.TermId)).Returns(term);
+            mapperMock.Setup(s => s.Map<ResponseGetTermEditDataByIdDto>(term)).Returns(response);
+
+            // Act
+            ResponseGetTermEditDataByIdDto result = service.GetTermEditDataById(termIdDto);
+
+            // Assert
+            Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 修改條款_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditTermDto editTermDto = new RequestEditTermDto()
+            {
+                TermId = 1,
+                DetailContent = null,
+                VersionDescription = "qwe",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.EditTerm(editTermDto)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditTerm(editTermDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 修改條款_失敗_回傳資料已被他人修改()
+        {
+            // Arrange
+            RequestEditTermDto editTermDto = new RequestEditTermDto()
+            {
+                TermId = 1,
+                DetailContent = null,
+                VersionDescription = "qwe",
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.EditTerm(editTermDto)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditTerm(editTermDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 修改條款狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditTermStatusDto editTermStatusDto = new RequestEditTermStatusDto()
+            {
+                TermId = 1,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            Term term = new Term()
+            {
+                TermId = 1,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.EditTermStatus(term)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<Term>(editTermStatusDto)).Returns(term);
+
+            // Act
+            ErrorCodeDefine result = service.EditTermStatus(editTermStatusDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 修改條款狀態_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditTermStatusDto editTermStatusDto = new RequestEditTermStatusDto()
+            {
+                TermId = 1,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            Term term = new Term()
+            {
+                TermId = 1,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.EditTermStatus(term)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<Term>(editTermStatusDto)).Returns(term);
+
+            // Act
+            ErrorCodeDefine result = service.EditTermStatus(editTermStatusDto);
+
+            // Assert
+            Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
+        }
+        [TestMethod]
+        public void 取得條款細項資料_成功_回傳條款資料()
+        {
+            // Arrange
+            RequestTermIdDto termIdDto = new RequestTermIdDto()
+            {
+                TermId = 1
+            };
+
+            Term term = new Term()
+            {
+                Name = "okwopekq122",
+                DetailContent = "dwdq",
+                VersionDescription = "000blob",
+                Version = 2,
+            };
+
+            ResponseGetTermDetailDto response = new ResponseGetTermDetailDto()
+            {
+                Name = "okwopekq122",
+                DetailContent = "dwdq",
+                VersionDescription = "000blob",
+                Version = 2,
+            };
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.GetTermDetail(termIdDto.TermId)).Returns(term);
+            mapperMock.Setup(s => s.Map<ResponseGetTermDetailDto>(term)).Returns(response);
+
+            // Act
+            ResponseGetTermDetailDto result = service.GetTermDetail(termIdDto);
+
+            // Assert
+            Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 取得條款細項資料_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestTermIdDto termIdDto = new RequestTermIdDto()
+            {
+                TermId = 1
+            };
+
+            Term term = new Term();
+
+            ResponseGetTermDetailDto response = new ResponseGetTermDetailDto();
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.GetTermDetail(termIdDto.TermId)).Returns(term);
+            mapperMock.Setup(s => s.Map<ResponseGetTermDetailDto>(term)).Returns(response);
+
+            // Act
+            ResponseGetTermDetailDto result = service.GetTermDetail(termIdDto);
+
+            // Assert
+            Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 刪圖條款_成功_回傳成功()
+        {
+            // Arrange
+            RequestTermIdDto termIdDto = new RequestTermIdDto()
+            {
+                TermId = 10,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.DeleteTerm(termIdDto.TermId)).Returns(successFlag);
+
+            // Act
+            bool result = service.DeleteTerm(termIdDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 刪除條款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestTermIdDto termIdDto = new RequestTermIdDto()
+            {
+                TermId = 1000,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            termRepositoryMock.Setup(s => s.DeleteTerm(termIdDto.TermId)).Returns(successFlag);
+
+            // Act
+            bool result = service.DeleteTerm(termIdDto);
+
+            // Assert
+            Assert.IsFalse(result);
         }
     }
 }
