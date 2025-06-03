@@ -19,7 +19,7 @@ export default {
   name: "NormalSelector",
   props: {
     parentValue: {
-      type: [String, Number],
+      type: [String, Number, Boolean],
       required: true,
     },
     options: {

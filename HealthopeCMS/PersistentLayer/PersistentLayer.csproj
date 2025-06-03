@@ -60,6 +60,7 @@
     <Compile Include="Models\RequestEditShowcaseDto.cs" />
     <Compile Include="Models\RequestEditTermDto.cs" />
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
+    <Compile Include="Models\RequestGetLeaseAgreementDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />
     <Compile Include="Models\RequestGetShowcaseDto.cs" />
     <Compile Include="Models\RequestGetTermDto.cs" />

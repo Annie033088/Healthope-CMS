@@ -274,6 +274,7 @@ export default {
         this.verifyFail = true;
         return;
       }
+
       try {
         // 傳輸新增資料
         const addCoachDto = {
@@ -281,16 +282,28 @@ export default {
           Phone: phone,
           Email: this.email,
           Type: this.selectType,
-          ContractStartTime: this.contractStartTime
-            ? this.contractStartTime
-            : null,
-          ContractEndTime: this.contractEndTime ? this.contractEndTime : null,
+          ContractStartTime: this.contractStartTime,
+          ContractEndTime: this.contractEndTime,
           Account: this.account,
           Pwd: this.pwd,
           Introduction: this.introduction,
           Specialty: this.specialty,
           Certification: this.certification,
         };
+
+        // 空就填入設值
+        // 手動拼接字串轉成 iso time
+        if (!addCoachDto.ContractStartTime)
+          addCoachDto.ContractStartTime = "0001-01-01T00:00:00Z";
+        else
+          addCoachDto.ContractStartTime =
+            addCoachDto.ContractStartTime + "T00:00:00Z";
+
+        if (!addCoachDto.ContractEndTime)
+          addCoachDto.ContractEndTime = "0001-01-01T00:00:00Z";
+        else
+          addCoachDto.ContractEndTime =
+            addCoachDto.ContractEndTime + "T00:00:00Z";
 
         // 考量到效率, 採用 form data 型式傳輸資料/檔案
         const formData = new FormData();

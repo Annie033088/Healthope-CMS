@@ -40,7 +40,7 @@
             fill="#757575"
           />
         </svg>
-        <b>會員d</b>
+        <b>會員</b>
       </button>
     </div>
     <div
@@ -291,7 +291,7 @@
             stroke-linejoin="round"
           />
         </svg>
-        <b>租約</b>
+        <b>場館租約</b>
       </button>
     </div>
     <div class="sidebarRow">

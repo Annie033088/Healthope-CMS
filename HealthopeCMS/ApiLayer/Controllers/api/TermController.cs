@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Admin.RequestAdminDto;
@@ -15,6 +16,9 @@ using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {
+    [RequestLoggerFilter]
+    [VeriyLoginFilter]
+    [AdminPermissionAuthFilter]
     public class TermController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -81,8 +85,7 @@ namespace ApiLayer.Controllers.api
                 bool successFlag = termService.AddTerm(addTermDto);
                 response = new ResultResponse()
                 {
-                    ErrorCode = successFlag ?
-                   ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
                 };
                 return Ok(response);
             }

@@ -164,15 +164,14 @@ export default {
             term.ApplicableTarget = target.text;
 
             let statusOption = [];
-            let statusDraft = 1;
-            let statusPublished = 2;
+            
             termStatusAndText.forEach((status) => {
               if (term.Status === Number(status.value))
                 statusOption.push(status);
 
               if (
-                Number(status.value) === statusPublished &&
-                term.Status === statusDraft
+                Number(status.value) === termStatus.Published &&
+                term.Status === termStatus.Draft
               )
                 statusOption.push(status);
             });
@@ -217,7 +216,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得展示用團課列表時發生錯誤", error);
+        console.error("取得條款列表時發生錯誤", error);
       }
     },
     selectTermByType() {
@@ -264,7 +263,7 @@ export default {
           try {
             this.submitDelTerm(row.TermId);
           } catch (error) {
-            console.error("刪除管理員時發生錯誤", error);
+            console.error("刪除條款時發生錯誤", error);
           } finally {
             this.unwatchFlag(); // 確保監聽被移除
             this.unwatchFlag = null;
@@ -390,7 +389,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得展示用團課列表時發生錯誤", error);
+        console.error("修改狀態時發生錯誤", error);
       }
     },
     async goCheckDetail(row){

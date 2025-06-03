@@ -10,12 +10,24 @@ using ApiLayer.Service;
 using DomainLayer.Utility;
 using NLog;
 using ApiLayer.Models.LeaseAgreement.Request;
+using ApiLayer.Interface;
+using ApiLayer.Models.Term.Response;
+using ApiLayer.Models.Term;
+using PersistentLayer.Models;
+using ApiLayer.Models.LeaseAgreement;
+using ApiLayer.Models.LeaseAgreement.Response;
 
 namespace ApiLayer.Controllers.api
 {
     public class LeaseAgreementController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly ILeaseAgreementService leaseAgreementService;
+
+        public LeaseAgreementController(ILeaseAgreementService leaseAgreementService)
+        {
+            this.leaseAgreementService = leaseAgreementService;
+        }
 
         /// <summary>
         /// 新增條款
@@ -27,9 +39,9 @@ namespace ApiLayer.Controllers.api
             {
                 ResultResponse response;
                 // 驗證前端傳遞的參數是否合法
-                int currentYear = DateTime.Now.Year;
-                DateTime minDate = new DateTime(currentYear - 100, 1, 1);
-                DateTime maxDate = new DateTime(currentYear + 100, 12, 31);
+                int currentYear = DateTime.UtcNow.Year;
+                DateTime minDate = new DateTime(currentYear - 100, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                DateTime maxDate = new DateTime(currentYear + 100, 12, 31, 23, 59, 59, DateTimeKind.Utc);
 
                 if (!ModelState.IsValid || addLeaseAgreementDto.ReminderLeadTime < 1
                     || addLeaseAgreementDto.StartTime > addLeaseAgreementDto.EndTime
@@ -40,11 +52,82 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                bool successFlag = termService.AddTerm(addTermDto);
+                bool successFlag = leaseAgreementService.AddLeaseAgreement(addLeaseAgreementDto);
                 response = new ResultResponse()
                 {
-                    ErrorCode = successFlag ?
-                   ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 取得條款
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetLeaseAgreement([FromBody] RequestGetLeaseAgreementDto getLeaseAgreementDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || (getLeaseAgreementDto.Status != null
+                        && !Enum.IsDefined(typeof(LeaseAgreementStatus), getLeaseAgreementDto.Status))
+                    || (!((getLeaseAgreementDto.RecordPerPage == 8) || (getLeaseAgreementDto.RecordPerPage == 12)
+                        || (getLeaseAgreementDto.RecordPerPage == 16)))
+                    || getLeaseAgreementDto.Page < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetLeaseAgreementListDto leaseAgreemets = leaseAgreementService.GetLeaseAgreement(getLeaseAgreementDto);
+                response = new ResultResponse<ResponseGetLeaseAgreementListDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = leaseAgreemets
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改租約狀態 (僅限未啟用=>啟用, 啟用=>已完成、取消)
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditLeaseAgreementStatus([FromBody] RequestEditLeaseAgreementStatusDto editLeaseAgreementStatusDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+                if (!ModelState.IsValid || editLeaseAgreementStatusDto.LeaseAgreementId < 1
+                    || !Enum.IsDefined(typeof(LeaseAgreementStatus), editLeaseAgreementStatusDto.Status)
+                    // 狀態不能轉成 未啟用
+                    || (LeaseAgreementStatus)editLeaseAgreementStatusDto.Status == LeaseAgreementStatus.Inactive)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse
+                {
+                    ErrorCode = leaseAgreementService.EditLeaseAgreementStatus(
+                    editLeaseAgreementStatusDto)
                 };
                 return Ok(response);
             }

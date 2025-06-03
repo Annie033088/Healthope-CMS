@@ -269,6 +269,12 @@ export default {
       this.revokePreviewUrl();
     },
     GetAddPlanDtoAndPostPath() {
+      this.price = this.price.trim();
+      this.name = this.name.trim();
+      this.introduction = this.introduction.trim();
+      this.duration = this.duration.trim();
+      this.sessionCount = this.sessionCount.trim();
+
       let postPath = "";
       let addPlanDto = {
         Price: this.price,

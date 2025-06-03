@@ -198,7 +198,16 @@ export default {
         )
       )
         return;
-      if (this.searchingPage < 1) return;
+      
+      const IntMax = 2147483647;
+      let searchingPage = Number(this.searchingPage);
+      if (
+        !Number.isInteger(searchingPage) ||
+        searchingPage < 1 ||
+        // 超出安全整數範圍
+        searchingPage > IntMax
+      )
+        return false;
 
       // post 的 dto 變數
       let getAdminDto = {

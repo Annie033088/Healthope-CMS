@@ -188,7 +188,16 @@ export default {
         )
       )
         return false;
-      if (this.searchingPage < 1) return false;
+
+      const IntMax = 2147483647;
+      let searchingPage = Number(this.searchingPage);
+      if (
+        !Number.isInteger(searchingPage) ||
+        searchingPage < 1 ||
+        // 超出安全整數範圍
+        searchingPage > IntMax
+      )
+        return false;
 
       return true;
     },
@@ -200,9 +209,12 @@ export default {
       this.searchingPage = 1;
       this.getPlan();
     },
-    goEdit(row){
+    goEdit(row) {
       if (row.PersonalTrainingPackageId < 1) return;
-      this.$router.push({ path: "/plan/personalTrainingPackage/edit", query: { id: row.PersonalTrainingPackageId } });
+      this.$router.push({
+        path: "/plan/personalTrainingPackage/edit",
+        query: { id: row.PersonalTrainingPackageId },
+      });
     },
   },
   created() {

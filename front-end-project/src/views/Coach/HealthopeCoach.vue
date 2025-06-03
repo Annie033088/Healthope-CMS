@@ -13,8 +13,8 @@
         v-model="searchPhone"
         @search="selectCoachByPhone"
       ></SearchInput>
-       <RadioSelector
-       class="statusSelector"
+      <RadioSelector
+        class="statusSelector"
         v-model="selectStatus"
         @change="selectCoachByStatus"
         inputTitle="狀態："
@@ -112,7 +112,7 @@ export default {
     goEditCoach(row) {
       if (row.CoachId < 1) return;
       this.$router.push({ path: "/coach/edit", query: { id: row.CoachId } });
-      },
+    },
     searchPage(page) {
       this.searchingPage = page;
       this.getCoachData();
@@ -211,7 +211,16 @@ export default {
         )
       )
         return;
-      if (this.searchingPage < 1) return;
+
+      const IntMax = 2147483647;
+      let searchingPage = Number(this.searchingPage);
+      if (
+        !Number.isInteger(searchingPage) ||
+        searchingPage < 1 ||
+        // 超出安全整數範圍
+        searchingPage > IntMax
+      )
+        return false;
 
       // post 的 dto 變數
       let getCoachDto = {
@@ -241,13 +250,15 @@ export default {
             if (coach.Status === true) coach.Status = "啟用中";
             else coach.Status = "停用";
 
-            coach.ContractStartTime = coach.ContractStartTime.substring(0, 10);
-            coach.ContractEndTime = coach.ContractEndTime.substring(0, 10);
+            const defaultStartDate = coach.ContractStartTime.substring(0, 10);
+            const defaultEndDate = coach.ContractEndTime.substring(0, 10);
 
-            if (coach.ContractStartTime === "0001-01-01")
+            if (defaultStartDate === "0001-01-01")
               coach.ContractStartTime = "X";
-            if (coach.ContractEndTime === "0001-01-01")
-              coach.ContractEndTime = "X";
+            else coach.ContractStartTime = defaultStartDate;
+
+            if (defaultEndDate === "0001-01-01") coach.ContractEndTime = "X";
+            else coach.ContractEndTime = defaultEndDate;
 
             coach.Phone = ("0" + coach.Phone).replace(
               /^(\d{4})\d{3}(\d{3})$/,
@@ -297,7 +308,7 @@ export default {
   gap: 10px 20px;
 }
 
-.statusSelector{
+.statusSelector {
   width: 300px;
 }
 </style>

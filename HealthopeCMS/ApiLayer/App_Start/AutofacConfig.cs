@@ -2,6 +2,7 @@
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
+using ApiLayer.Job;
 using ApiLayer.Service;
 using Autofac;
 using Autofac.Integration.WebApi;
@@ -29,6 +30,8 @@ namespace ApiLayer.App_Start
             builder.RegisterGeneric(typeof(MultipartRequestService<>))
                     .As(typeof(IMultipartRequestService<>))
                     .InstancePerRequest();
+            builder.RegisterType<EmailService>().As<IEmailService>().InstancePerRequest();
+            builder.RegisterType<EmailJob>().As<IEmailJob>().InstancePerRequest();
 
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
 
@@ -52,6 +55,9 @@ namespace ApiLayer.App_Start
 
             builder.RegisterType<TermService>().As<ITermService>().InstancePerRequest();
             builder.RegisterType<TermRepository>().As<ITermRepository>().InstancePerRequest();
+
+            builder.RegisterType<LeaseAgreementService>().As<ILeaseAgreementService>().InstancePerRequest();
+            builder.RegisterType<LeaseAgreementRepository>().As<ILeaseAgreementRepository>().InstancePerRequest();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

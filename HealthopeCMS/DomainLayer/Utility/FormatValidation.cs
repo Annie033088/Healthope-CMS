@@ -132,15 +132,15 @@ namespace DomainLayer.Utility
         {
             if (startTime == null && endTime == null) return true;
             // 預設值 "0001-01-01" 給過
-            else if (startTime == DateTime.MinValue || endTime == DateTime.MinValue) return true;
-            else if (startTime == null && endTime != null) return false;
-            else if (startTime != null && endTime == null) return false;
+            else if (startTime == DateTime.MinValue && endTime == DateTime.MinValue) return true;
+            else if (startTime == DateTime.MinValue && endTime != DateTime.MinValue) return false;
+            else if (startTime != DateTime.MinValue && endTime == DateTime.MinValue) return false;
             else if (startTime > endTime) return false;
             else
             {
-                int currentYear = DateTime.Now.Year;
-                DateTime minDate = new DateTime(currentYear - 100, 1, 1);
-                DateTime maxDate = new DateTime(currentYear + 100, 12, 31);
+                int currentYear = DateTime.UtcNow.Year;
+                DateTime minDate = new DateTime(currentYear - 100, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                DateTime maxDate = new DateTime(currentYear + 100, 12, 31, 23, 59, 59, DateTimeKind.Utc);
 
                 if (startTime < minDate || startTime > maxDate ||
                     endTime < minDate || endTime > maxDate) return false;

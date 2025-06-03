@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TitleCard text="租約" @refreshPage="$emit('refreshPage')"></TitleCard>
+    <TitleCard text="場館租約" @refreshPage="$emit('refreshPage')"></TitleCard>
     <SubTitleCard text="新增租約"></SubTitleCard>
     <div class="sectionTitle"><p>新增租約</p></div>
     <div class="leaseInputContainer">
@@ -67,14 +67,13 @@ export default {
         return;
       }
 
-      const localStartTime = new Date(this.startTime + "T00:00:00");
-      const isoStartTime = localStartTime.toISOString();
-      const localEndTime = new Date(this.endTime + "T00:00:00");
-      const isoEndTime = localEndTime.toISOString();
+      this.reminderLeadTime = this.reminderLeadTime.trim();
+      this.startTime = this.startTime + "T00:00:00Z";
+      this.endTime = this.endTime + "T00:00:00Z";
 
       let addLeaseAgreementDto = {
-        StartTime: isoStartTime,
-        EndTime: isoEndTime,
+        StartTime: this.startTime,
+        EndTime: this.endTime,
         ReminderLeadTime: this.reminderLeadTime,
       };
 
@@ -95,7 +94,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("新增條款時發生錯誤", error);
+        console.error("新增租約時發生錯誤", error);
       }
     },
     validInput() {

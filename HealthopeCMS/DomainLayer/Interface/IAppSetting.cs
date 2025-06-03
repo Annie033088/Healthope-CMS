@@ -1,4 +1,7 @@
-﻿namespace DomainLayer.Interface
+﻿using System.Configuration;
+using System;
+
+namespace DomainLayer.Interface
 {
     public interface IAppSetting
     {
@@ -11,5 +14,10 @@
         /// sa Hash
         /// </summary>
         string GetSuperAdminHash();
+
+        /// <summary>
+        /// 取得 config 擋 key - value
+        /// </summary>
+        string GetConfigurationAppsetting(string key);
     }
 }

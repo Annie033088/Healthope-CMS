@@ -35,5 +35,20 @@ namespace DomainLayer.Utility
                 throw;
             }
         }
+
+        /// <summary>
+        /// 取得 config 擋 key - value
+        /// </summary>
+        public string GetConfigurationAppsetting(string key)
+        {
+            try
+            {
+                return ConfigurationManager.AppSettings[key];
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -93,6 +93,18 @@ namespace ApiLayer.Models
                 AdminPermission.EditTerm, AdminPermission.SelectTerm} },
             { "Term,AddTerm", new List<AdminPermission> {
                 AdminPermission.EditTerm} },
+            { "Term,GetTermEditDataById", new List<AdminPermission> {
+                AdminPermission.EditTerm} },
+            { "Term,EditTerm", new List<AdminPermission> {
+                AdminPermission.EditTerm} },
+            { "Term,EditTermStatus", new List<AdminPermission> {
+                AdminPermission.EditTerm} },
+            { "Term,GetTermDetail", new List<AdminPermission> {
+                AdminPermission.EditTerm, AdminPermission.SelectTerm} },
+            { "Term,DeleteTerm", new List<AdminPermission> {
+                AdminPermission.EditTerm} },
+
+            // LeaseAgreementController
         };
     }
 }

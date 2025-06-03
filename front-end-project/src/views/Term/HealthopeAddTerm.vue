@@ -241,6 +241,9 @@ export default {
     },
     async addTerm() {
       if (!this.validInput()) this.verifyFail = true;
+      
+      this.detailContent = this.detailContent.trim();
+      this.versionDescription = this.versionDescription.trim();
 
       let addTermDto = {
         Type: this.type,

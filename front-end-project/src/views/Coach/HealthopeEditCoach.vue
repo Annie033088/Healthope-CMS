@@ -164,8 +164,10 @@ export default {
         return;
       }
 
-      if (!this.validInput()) return;
-
+      if (!this.validInput()) {
+        this.verifyFail = true;
+        return;
+      }
       try {
         // 傳輸修改資料
         const editCoachDto = {
@@ -213,11 +215,18 @@ export default {
               : this.currentCoachData.Certification,
         };
 
-        // 空日期代表設為預設(Min Value)
+        // 手動拼接字串轉成 iso time
         if (editCoachDto.ContractStartTime === "")
-          editCoachDto.ContractStartTime = "0001-01-01";
+          editCoachDto.ContractStartTime = "0001-01-01T00:00:00Z";
+        else if (editCoachDto.ContractStartTime)
+          editCoachDto.ContractStartTime =
+            editCoachDto.ContractStartTime + "T00:00:00Z";
+
         if (editCoachDto.ContractEndTime === "")
-          editCoachDto.ContractEndTime = "0001-01-01";
+          editCoachDto.ContractEndTime = "0001-01-01T00:00:00Z";
+        else if (editCoachDto.ContractEndTime)
+          editCoachDto.ContractEndTime =
+            editCoachDto.ContractEndTime + "T00:00:00Z";
 
         // 考量到效率, 採用 form data 型式傳輸資料/檔案
         const formData = new FormData();
@@ -247,7 +256,7 @@ export default {
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
-        
+
         if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
           this.$emit("refreshPage");
         }
@@ -347,7 +356,6 @@ export default {
         !this.currentCoachData.Name ||
         this.currentCoachData.Name.length > 15
       ) {
-        this.verifyFail = true;
         this.hintText = "名稱格式錯誤";
         return false;
       }
@@ -355,14 +363,12 @@ export default {
       let phone = Number(this.currentCoachData.Phone);
       const phoneRegex = /^[9]\d{8}$/;
       if (Number.isNaN(phone) || !phoneRegex.test(phone)) {
-        this.verifyFail = true;
         this.hintText = "手機格式錯誤";
         return false;
       }
 
       if (!this.validEmail(this.currentCoachData.Email)) {
         this.hintText = "信箱格式錯誤";
-        this.verifyFail = true;
         return false;
       }
 
@@ -371,7 +377,6 @@ export default {
         this.currentCoachData.Status !== "false"
       ) {
         this.hintText = "狀態格式錯誤";
-        this.verifyFail = true;
         return false;
       }
 
@@ -388,7 +393,7 @@ export default {
 
       if (
         (!this.currentCoachData.ContractStartTime &&
-          this.currentCoachData.ContractStartTime) ||
+          this.currentCoachData.ContractEndTime) ||
         (this.currentCoachData.ContractStartTime &&
           !this.currentCoachData.ContractEndTime) ||
         selectedEndDate < selectedStartDate ||
@@ -398,25 +403,21 @@ export default {
         selectedEndYear > maxYear
       ) {
         this.hintText = "合約日期錯誤";
-        this.verifyFail = true;
         return false;
       }
 
       if (this.currentCoachData.Introduction.length > 50) {
         this.hintText = "簡介輸入需在 50 字以內";
-        this.verifyFail = true;
         return false;
       }
 
       if (this.currentCoachData.Specialty.length > 200) {
         this.hintText = "特長輸入需在 200 字以內";
-        this.verifyFail = true;
         return false;
       }
 
       if (this.currentCoachData.Certification.length > 200) {
         this.hintText = "證照輸入需在 200 字以內";
-        this.verifyFail = true;
         return false;
       }
 

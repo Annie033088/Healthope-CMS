@@ -54,6 +54,18 @@
     <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.5.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.Core, Version=1.8.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Core.1.8.20\lib\net46\Hangfire.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.SqlServer, Version=1.8.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.SqlServer.1.8.20\lib\net451\Hangfire.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit, Version=4.12.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MailKit.4.12.1\lib\net47\MailKit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -61,8 +73,20 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit, Version=4.12.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\packages\MimeKit.4.12.0\lib\net47\MimeKit.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.5.4.0\lib\net46\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Pipelines.Sockets.Unofficial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42ea0a778e13fbe2, processorArchitecture=MSIL">
       <HintPath>..\packages\Pipelines.Sockets.Unofficial.2.2.8\lib\net472\Pipelines.Sockets.Unofficial.dll</HintPath>
@@ -71,14 +95,17 @@
       <HintPath>..\packages\StackExchange.Redis.2.8.31\lib\net472\StackExchange.Redis.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.8.0.1\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Formats.Asn1, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.8.0.1\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
       <Private>True</Private>
@@ -87,21 +114,25 @@
     <Reference Include="System.IO.Pipelines, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Pipelines.5.0.1\lib\net461\System.IO.Pipelines.dll</HintPath>
     </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.0\lib\net462\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.0\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Threading.Channels, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Channels.5.0.0\lib\net461\System.Threading.Channels.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.0\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -206,6 +237,7 @@
     <Compile Include="Interface\IGroupClassScheduleService.cs" />
     <Compile Include="Interface\IHttpService.cs" />
     <Compile Include="Interface\ILeaseAgreementService.cs" />
+    <Compile Include="Interface\IEmailService.cs" />
     <Compile Include="Interface\IMemberService.cs" />
     <Compile Include="Interface\IMultipartRequestService.cs" />
     <Compile Include="Interface\IPlanTemplateService.cs" />
@@ -213,6 +245,8 @@
     <Compile Include="Interface\IGroupClassShowcaseService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Interface\ITermService.cs" />
+    <Compile Include="Job\EmailJob.cs" />
+    <Compile Include="Job\IEmailJob.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestEditSelfPwdDto.cs" />
     <Compile Include="Models\AccountAccess\RequestAccountAccessDto\RequestHavePermissionDto.cs" />
     <Compile Include="Models\Admin\AdminRedis.cs" />
@@ -237,7 +271,10 @@
     <Compile Include="Models\GroupClassShowcase\Response\ResponseGetShowcaseDetailDto.cs" />
     <Compile Include="Models\GroupClassShowcase\Response\ResponseGetShowcaseEditDataDto.cs" />
     <Compile Include="Models\GroupClassShowcase\Response\ResponseGetShowcaseListDto.cs" />
+    <Compile Include="Models\LeaseAgreement\LeaseAgreementStatus.cs" />
     <Compile Include="Models\LeaseAgreement\Request\RequestAddLeaseAgreementDto.cs" />
+    <Compile Include="Models\LeaseAgreement\Request\RequestEditLeaseAgreementStatusDto.cs" />
+    <Compile Include="Models\LeaseAgreement\Response\ResponseGetLeaseAgreementListDto.cs" />
     <Compile Include="Models\Member\Request\RequestMemberIdDto.cs" />
     <Compile Include="Models\Member\Response\ResponseGetMemberDetailDto.cs" />
     <Compile Include="Models\Member\Response\ResponseGetMemberEditDataByIdDto.cs" />
@@ -273,6 +310,7 @@
     <Compile Include="Service\GroupClassShowcaseService.cs" />
     <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\LeaseAgreementService.cs" />
+    <Compile Include="Service\EmailService.cs" />
     <Compile Include="Service\MemberService.cs" />
     <Compile Include="Service\MultipartRequestService.cs" />
     <Compile Include="Service\PlanTemplateService.cs" />
@@ -296,71 +334,75 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="wwwroot\css\100.44e00a0d.css" />
     <Content Include="wwwroot\css\101.841e0399.css" />
-    <Content Include="wwwroot\css\110.ce61159f.css" />
+    <Content Include="wwwroot\css\110.d7525503.css" />
     <Content Include="wwwroot\css\119.00d9b5f5.css" />
     <Content Include="wwwroot\css\131.2b6b3b4c.css" />
-    <Content Include="wwwroot\css\210.25badf3c.css" />
+    <Content Include="wwwroot\css\175.733fe7c7.css" />
+    <Content Include="wwwroot\css\198.34c7193e.css" />
+    <Content Include="wwwroot\css\209.4bcd5ad4.css" />
     <Content Include="wwwroot\css\214.240b755d.css" />
-    <Content Include="wwwroot\css\221.7fcf4af9.css" />
-    <Content Include="wwwroot\css\244.ed9279ef.css" />
     <Content Include="wwwroot\css\249.414165f2.css" />
-    <Content Include="wwwroot\css\332.3d78d06d.css" />
-    <Content Include="wwwroot\css\334.bb063c4d.css" />
-    <Content Include="wwwroot\css\388.e9ea6d65.css" />
-    <Content Include="wwwroot\css\426.e51c7c2f.css" />
-    <Content Include="wwwroot\css\447.af08a3b7.css" />
+    <Content Include="wwwroot\css\282.da08666c.css" />
+    <Content Include="wwwroot\css\318.ac986f93.css" />
+    <Content Include="wwwroot\css\37.03de7da8.css" />
+    <Content Include="wwwroot\css\391.eae839cb.css" />
+    <Content Include="wwwroot\css\426.b0b14f67.css" />
     <Content Include="wwwroot\css\451.49dd2477.css" />
+    <Content Include="wwwroot\css\474.8eb4a19d.css" />
     <Content Include="wwwroot\css\492.1e469a91.css" />
     <Content Include="wwwroot\css\516.d6aec704.css" />
-    <Content Include="wwwroot\css\537.e9b8dcbe.css" />
-    <Content Include="wwwroot\css\553.655044f8.css" />
-    <Content Include="wwwroot\css\764.e1190ba5.css" />
-    <Content Include="wwwroot\css\815.71ac3054.css" />
+    <Content Include="wwwroot\css\559.833f90cf.css" />
+    <Content Include="wwwroot\css\818.a8a2ad4e.css" />
     <Content Include="wwwroot\css\877.9f3dca8c.css" />
     <Content Include="wwwroot\css\907.d1c44ff7.css" />
     <Content Include="wwwroot\css\916.d90242bf.css" />
+    <Content Include="wwwroot\css\937.2eaead81.css" />
+    <Content Include="wwwroot\css\965.d7a943de.css" />
     <Content Include="wwwroot\css\972.3de9aef2.css" />
-    <Content Include="wwwroot\css\975.f6dea363.css" />
+    <Content Include="wwwroot\css\977.e55c1fa5.css" />
     <Content Include="wwwroot\css\979.5f24eb27.css" />
     <Content Include="wwwroot\css\994.eb5c593c.css" />
-    <Content Include="wwwroot\css\app.c7fefac5.css" />
+    <Content Include="wwwroot\css\995.cff70ce7.css" />
+    <Content Include="wwwroot\css\app.6a02c5d3.css" />
     <Content Include="wwwroot\img\avatar1.ca19a3cf.png" />
     <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
     <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
     <Content Include="wwwroot\index.html" />
     <Content Include="wwwroot\js\100.92c00eeb.js" />
     <Content Include="wwwroot\js\101.d5598db0.js" />
-    <Content Include="wwwroot\js\110.42a3a219.js" />
+    <Content Include="wwwroot\js\110.98679cd2.js" />
     <Content Include="wwwroot\js\119.b3a0b730.js" />
     <Content Include="wwwroot\js\131.534c3797.js" />
-    <Content Include="wwwroot\js\210.75e0c86b.js" />
+    <Content Include="wwwroot\js\161.914cde44.js" />
+    <Content Include="wwwroot\js\175.e5b96ca2.js" />
+    <Content Include="wwwroot\js\198.dfb0a602.js" />
+    <Content Include="wwwroot\js\209.18618989.js" />
     <Content Include="wwwroot\js\214.3f596557.js" />
-    <Content Include="wwwroot\js\221.24a2b54a.js" />
     <Content Include="wwwroot\js\230.eef265e1.js" />
-    <Content Include="wwwroot\js\244.64fdd884.js" />
     <Content Include="wwwroot\js\249.d1c80b43.js" />
-    <Content Include="wwwroot\js\332.8e682de8.js" />
-    <Content Include="wwwroot\js\334.f38e58ce.js" />
-    <Content Include="wwwroot\js\388.c844cf7b.js" />
-    <Content Include="wwwroot\js\422.87bdfe2c.js" />
-    <Content Include="wwwroot\js\426.ec8bf8e9.js" />
-    <Content Include="wwwroot\js\447.6462d0f8.js" />
+    <Content Include="wwwroot\js\282.1bf38b65.js" />
+    <Content Include="wwwroot\js\318.c7ce8975.js" />
+    <Content Include="wwwroot\js\37.75e9ff93.js" />
+    <Content Include="wwwroot\js\391.806f066c.js" />
+    <Content Include="wwwroot\js\426.b1f331d7.js" />
     <Content Include="wwwroot\js\451.5a19e7b5.js" />
+    <Content Include="wwwroot\js\474.f8bdfcf6.js" />
     <Content Include="wwwroot\js\492.57ec5037.js" />
     <Content Include="wwwroot\js\516.aa023f37.js" />
-    <Content Include="wwwroot\js\537.583e9067.js" />
-    <Content Include="wwwroot\js\553.a323fe4d.js" />
-    <Content Include="wwwroot\js\764.8dd189e3.js" />
-    <Content Include="wwwroot\js\815.64b508a8.js" />
+    <Content Include="wwwroot\js\559.13040177.js" />
+    <Content Include="wwwroot\js\818.0968946c.js" />
     <Content Include="wwwroot\js\83.eaae2766.js" />
     <Content Include="wwwroot\js\877.1e05ba61.js" />
     <Content Include="wwwroot\js\907.5099abd8.js" />
     <Content Include="wwwroot\js\916.f1b2f294.js" />
+    <Content Include="wwwroot\js\937.d436053d.js" />
+    <Content Include="wwwroot\js\965.8e31d6b6.js" />
     <Content Include="wwwroot\js\972.bfbc2a65.js" />
-    <Content Include="wwwroot\js\975.5f89233f.js" />
+    <Content Include="wwwroot\js\977.5b392f8f.js" />
     <Content Include="wwwroot\js\979.d888cf5f.js" />
     <Content Include="wwwroot\js\994.27438a16.js" />
-    <Content Include="wwwroot\js\app.a07739bc.js" />
+    <Content Include="wwwroot\js\995.1bc9e2a0.js" />
+    <Content Include="wwwroot\js\app.a8672d43.js" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
   </ItemGroup>
   <ItemGroup>
@@ -371,37 +413,39 @@
     <None Include="packages.config" />
     <Content Include="wwwroot\js\100.92c00eeb.js.map" />
     <Content Include="wwwroot\js\101.d5598db0.js.map" />
-    <Content Include="wwwroot\js\110.42a3a219.js.map" />
+    <Content Include="wwwroot\js\110.98679cd2.js.map" />
     <Content Include="wwwroot\js\119.b3a0b730.js.map" />
     <Content Include="wwwroot\js\131.534c3797.js.map" />
-    <Content Include="wwwroot\js\210.75e0c86b.js.map" />
+    <Content Include="wwwroot\js\161.914cde44.js.map" />
+    <Content Include="wwwroot\js\175.e5b96ca2.js.map" />
+    <Content Include="wwwroot\js\198.dfb0a602.js.map" />
+    <Content Include="wwwroot\js\209.18618989.js.map" />
     <Content Include="wwwroot\js\214.3f596557.js.map" />
-    <Content Include="wwwroot\js\221.24a2b54a.js.map" />
     <Content Include="wwwroot\js\230.eef265e1.js.map" />
-    <Content Include="wwwroot\js\244.64fdd884.js.map" />
     <Content Include="wwwroot\js\249.d1c80b43.js.map" />
-    <Content Include="wwwroot\js\332.8e682de8.js.map" />
-    <Content Include="wwwroot\js\334.f38e58ce.js.map" />
-    <Content Include="wwwroot\js\388.c844cf7b.js.map" />
-    <Content Include="wwwroot\js\422.87bdfe2c.js.map" />
-    <Content Include="wwwroot\js\426.ec8bf8e9.js.map" />
-    <Content Include="wwwroot\js\447.6462d0f8.js.map" />
+    <Content Include="wwwroot\js\282.1bf38b65.js.map" />
+    <Content Include="wwwroot\js\318.c7ce8975.js.map" />
+    <Content Include="wwwroot\js\37.75e9ff93.js.map" />
+    <Content Include="wwwroot\js\391.806f066c.js.map" />
+    <Content Include="wwwroot\js\426.b1f331d7.js.map" />
     <Content Include="wwwroot\js\451.5a19e7b5.js.map" />
+    <Content Include="wwwroot\js\474.f8bdfcf6.js.map" />
     <Content Include="wwwroot\js\492.57ec5037.js.map" />
     <Content Include="wwwroot\js\516.aa023f37.js.map" />
-    <Content Include="wwwroot\js\537.583e9067.js.map" />
-    <Content Include="wwwroot\js\553.a323fe4d.js.map" />
-    <Content Include="wwwroot\js\764.8dd189e3.js.map" />
-    <Content Include="wwwroot\js\815.64b508a8.js.map" />
+    <Content Include="wwwroot\js\559.13040177.js.map" />
+    <Content Include="wwwroot\js\818.0968946c.js.map" />
     <Content Include="wwwroot\js\83.eaae2766.js.map" />
     <Content Include="wwwroot\js\877.1e05ba61.js.map" />
     <Content Include="wwwroot\js\907.5099abd8.js.map" />
     <Content Include="wwwroot\js\916.f1b2f294.js.map" />
+    <Content Include="wwwroot\js\937.d436053d.js.map" />
+    <Content Include="wwwroot\js\965.8e31d6b6.js.map" />
     <Content Include="wwwroot\js\972.bfbc2a65.js.map" />
-    <Content Include="wwwroot\js\975.5f89233f.js.map" />
+    <Content Include="wwwroot\js\977.5b392f8f.js.map" />
     <Content Include="wwwroot\js\979.d888cf5f.js.map" />
     <Content Include="wwwroot\js\994.27438a16.js.map" />
-    <Content Include="wwwroot\js\app.a07739bc.js.map" />
+    <Content Include="wwwroot\js\995.1bc9e2a0.js.map" />
+    <Content Include="wwwroot\js\app.a8672d43.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
   <ItemGroup>

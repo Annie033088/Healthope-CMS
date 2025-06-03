@@ -88,6 +88,16 @@ namespace DomainLayer.Models
         /// 查詢條款
         /// </summary>
         SelectTerm = 16,
+
+        /// <summary>
+        /// 修改租約
+        /// </summary>
+        EditLeaseAgreement = 17,
+
+        /// <summary>
+        /// 查詢租約
+        /// </summary>
+        SelectLeaseAgreement = 18,
     }
 
     public enum AdminIdentity : byte
@@ -149,6 +159,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
                 AdminPermission.EditPlan, AdminPermission.SelectPlan,
                 AdminPermission.EditTerm, AdminPermission.SelectTerm,
+                AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -157,6 +168,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
                 AdminPermission.EditPlan, AdminPermission.SelectPlan,
                 AdminPermission.EditTerm, AdminPermission.SelectTerm,
+                AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,

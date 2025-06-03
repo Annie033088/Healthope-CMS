@@ -35,7 +35,7 @@
                     $emit(`change${col.key}`, row);
                   }
                 "
-                :disabled="!col.enableFlag"
+                :disabled="!col.enableFlag || row[col.key].Options.length === 1"
               >
               </NormalSelector>
               <CheckboxInput
