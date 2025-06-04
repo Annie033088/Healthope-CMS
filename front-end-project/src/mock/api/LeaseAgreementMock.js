@@ -54,6 +54,17 @@ export default function (mock) {
             ReminderLeadTime: 3,
             CreateTime: "2025-06-03T09:00:00.000",
             UpdateTime: "2025-06-03T09:10:00.000"
+        },
+        {
+            LeaseAgreementId: 106,
+            StartTime: "2025-03-10",
+            EndTime: "2025-05-10",
+            Remind: false,
+            Remark: "Short term",
+            Status: 1,
+            ReminderLeadTime: 3,
+            CreateTime: "2025-06-03T09:00:00.000",
+            UpdateTime: "2025-06-03T09:10:00.000"
         }
     ];
 

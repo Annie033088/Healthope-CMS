@@ -70,6 +70,9 @@ export const errorCodeDefine = {
 
     // 時間及教練重複
     DuplicateCoachAndTime: 23,
+
+    // 已有啟用中的租約
+    ActiveLeaseAgreement: 24,
 };
 
 //設定errorCode對應資料
@@ -146,6 +149,9 @@ export function errorCodeToMessage(errorCode) {
         case 23:
             message = "時間及教練重複";
             return message;
+        case 24:
+            message = "已有啟用中的租約";
+            return message;
         default:
             message = "";
             return message;
@@ -203,7 +209,7 @@ export const adminPermission = {
 
     // 查詢條款
     SelectTerm: 16,
-    
+
     // 修改租約
     EditLeaseAgreement: 17,
 

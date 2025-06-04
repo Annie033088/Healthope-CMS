@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Models.GroupClassSchedule.Request;
-using ApiLayer.Models.GroupClassSchedule.Response;
-using ApiLayer.Models;
 using System.Web.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTest.utils;
-using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Controllers.api;
-using Moq;
 using ApiLayer.Interface;
-using ApiLayer.Models.Term.Response;
-using PersistentLayer.Models;
+using ApiLayer.Models;
+using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
+using ApiLayer.Models.Term.Request;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using PersistentLayer.Models;
+using UnitTest.utils;
 
 namespace UnitTest.Test.LeaseAgreementTest
 {
@@ -119,6 +113,140 @@ namespace UnitTest.Test.LeaseAgreementTest
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改租約狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditLeaseAgreementStatusDto editLeaseAgreementStatusDto = new RequestEditLeaseAgreementStatusDto()
+            {
+                LeaseAgreementId = 1,
+                Remark = null,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            leaseAgreementServiceMock.Setup(s => s.EditLeaseAgreementStatus(editLeaseAgreementStatusDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.EditLeaseAgreementStatus(editLeaseAgreementStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改租約狀態_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditLeaseAgreementStatusDto editLeaseAgreementStatusDto = new RequestEditLeaseAgreementStatusDto()
+            {
+                LeaseAgreementId = 1,
+                Remark = null,
+                Status = 22,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.EditLeaseAgreementStatus(editLeaseAgreementStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改提醒狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditLeaseAgreementRemindDto editLeaseAgreementRemindDto = new RequestEditLeaseAgreementRemindDto()
+            {
+                LeaseAgreementId = 1,
+                Remind = false,
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            leaseAgreementServiceMock.Setup(s => s.EditLeaseAgreementRemind(editLeaseAgreementRemindDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.EditLeaseAgreementRemind(editLeaseAgreementRemindDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改提醒狀態_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditLeaseAgreementRemindDto editLeaseAgreementRemindDto = new RequestEditLeaseAgreementRemindDto()
+            {
+                LeaseAgreementId = 1,
+                Remind = true,
+                UpdateTime = DateTime.Now,
+            };
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            leaseAgreementServiceMock.Setup(s => s.EditLeaseAgreementRemind(editLeaseAgreementRemindDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.EditLeaseAgreementRemind(editLeaseAgreementRemindDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 刪圖條款_成功_回傳成功()
+        {
+            // Arrange
+            RequestLeaseAgreementIdDto leaseAgreementIdDto = new RequestLeaseAgreementIdDto()
+            {
+                LeaseAgreementId = 10,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            leaseAgreementServiceMock.Setup(s => s.DeleteLeaseAgreement(leaseAgreementIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.DeleteLeaseAgreement(leaseAgreementIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 刪除條款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestLeaseAgreementIdDto leaseAgreementIdDto = new RequestLeaseAgreementIdDto()
+            {
+                LeaseAgreementId = 10,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            leaseAgreementServiceMock.Setup(s => s.DeleteLeaseAgreement(leaseAgreementIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.DeleteLeaseAgreement(leaseAgreementIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DeleteFailed));
         }
     }
 }

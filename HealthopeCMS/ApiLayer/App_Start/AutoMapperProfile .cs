@@ -61,6 +61,7 @@ namespace ApiLayer.App_Start
             CreateMap<RequestAddLeaseAgreementDto, LeaseAgreement>();
             CreateMap<LeaseAgreement, ResponseGetLeaseAgreementDto>();
             CreateMap<RequestEditLeaseAgreementStatusDto, LeaseAgreement>();
+            CreateMap<RequestEditLeaseAgreementRemindDto, LeaseAgreement>();
         }
     }
 }

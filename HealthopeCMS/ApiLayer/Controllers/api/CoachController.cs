@@ -10,7 +10,6 @@ using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.Other;
-using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;

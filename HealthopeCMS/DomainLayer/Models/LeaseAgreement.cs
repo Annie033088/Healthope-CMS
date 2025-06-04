@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DomainLayer.Models
 {
@@ -28,17 +23,17 @@ namespace DomainLayer.Models
         /// 提醒是否開啟
         /// </summary>
         public bool Remind { get; set; }
-        
+
         /// <summary>
         /// 備註
         /// </summary>
         public string Remark { get; set; }
-        
+
         /// <summary>
         /// 狀態
         /// </summary>
         public byte Status { get; set; }
-        
+
         /// <summary>
         /// 提醒前置天數
         /// </summary>

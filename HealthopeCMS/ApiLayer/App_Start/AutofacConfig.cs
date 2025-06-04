@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
@@ -9,6 +10,7 @@ using Autofac.Integration.WebApi;
 using AutoMapper;
 using DomainLayer.Interface;
 using DomainLayer.Utility;
+using Hangfire;
 using PersistentLayer.Interface;
 using PersistentLayer.Repository;
 using StackExchange.Redis;
@@ -17,7 +19,7 @@ namespace ApiLayer.App_Start
 {
     public class AutofacConfig
     {
-        public static void RegisterDependencies()
+        public static IContainer RegisterDependencies()
         {
             ContainerBuilder builder = new ContainerBuilder();
 
@@ -26,12 +28,15 @@ namespace ApiLayer.App_Start
             builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
             builder.RegisterType<HttpService>().As<IHttpService>().InstancePerLifetimeScope();
             builder.RegisterType<FileService>().As<IFileService>().InstancePerRequest();
-            builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerRequest();
+            builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(MultipartRequestService<>))
                     .As(typeof(IMultipartRequestService<>))
                     .InstancePerRequest();
-            builder.RegisterType<EmailService>().As<IEmailService>().InstancePerRequest();
-            builder.RegisterType<EmailJob>().As<IEmailJob>().InstancePerRequest();
+            builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
+            builder.RegisterType<JobDispatcher>().As<IJobDispatcher>();
+            builder.RegisterAssemblyTypes(typeof(SendEmailJob).Assembly)
+                    .AsClosedTypesOf(typeof(IJob<>))
+                    .InstancePerDependency();
 
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
 
@@ -83,13 +88,14 @@ namespace ApiLayer.App_Start
             builder.RegisterType<AdminPermissionAuthFilter>().InstancePerRequest();
 
             // 把 Autofac 的 FilterProvider 自動掛進 config
-            HttpConfiguration config = GlobalConfiguration.Configuration;
+            HttpConfiguration config = System.Web.Http.GlobalConfiguration.Configuration;
             builder.RegisterWebApiFilterProvider(config);
 
             IContainer container = builder.Build();
 
             // 設定 Autofac 為 Web API 的 DI 容器
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+            return container;
         }
     }
 }

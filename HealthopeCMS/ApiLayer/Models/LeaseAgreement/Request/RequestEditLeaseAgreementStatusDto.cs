@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ApiLayer.Models.LeaseAgreement.Request
 {
@@ -16,6 +13,11 @@ namespace ApiLayer.Models.LeaseAgreement.Request
         /// 狀態
         /// </summary>
         public byte Status { get; set; }
+
+        /// <summary>
+        /// 備註
+        /// </summary>
+        public string Remark { get; set; }
 
         /// <summary>
         /// 最後更新時間

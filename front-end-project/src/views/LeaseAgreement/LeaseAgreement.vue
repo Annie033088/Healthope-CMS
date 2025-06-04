@@ -133,11 +133,14 @@ export default {
               if (leaseAgreement.Status === Number(status.value))
                 statusOption.push(status);
 
+              // 未啟用 => 可以選啟用 (結束日需 > 今日)
               if (
                 Number(status.value) === leaseAgreementStatus.Active &&
                 leaseAgreement.Status === leaseAgreementStatus.Inactive
-              )
-                statusOption.push(status);
+              ) {
+                if (new Date(leaseAgreement.EndTime) > new Date())
+                  statusOption.push(status);
+              }
 
               if (leaseAgreement.Status === leaseAgreementStatus.Active) {
                 if (Number(status.value) === leaseAgreementStatus.Completed)
@@ -166,6 +169,7 @@ export default {
             leaseAgreement.Remind = {
               Value: leaseAgreement.Remind,
               Options: remindOption,
+              OldValue: leaseAgreement.Remind,
             };
 
             leaseAgreement.StartTime = leaseAgreement.StartTime.substring(
@@ -393,6 +397,7 @@ export default {
       }
     },
     async editRemind(row) {
+      console.log(row.Remind.OldValue);
       if (Boolean(row.Remind.OldValue) === false) {
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
@@ -411,6 +416,7 @@ export default {
         this.$notificationBox.notificationBoxFlag = true;
         this.$notificationBox.notificationBoxTitle = "修改了錯誤的提醒狀態!";
         this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
       }
 
       let editLeaseAgreementRemind = {

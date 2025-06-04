@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DomainLayer.Models;
 using PersistentLayer.Models;
 
@@ -24,6 +21,16 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 修改租約狀態 (僅限未啟用=>啟用, 啟用=>已完成、取消)
         /// </summary>
-        (int errorCodeNumber, bool sendEmailFlag) EditLeaseAgreementStatus(LeaseAgreement leaseAgreement);
+        (int errorCodeNumber, bool sendEmailFlag, DateTime leaseEndTime) EditLeaseAgreementStatus(LeaseAgreement leaseAgreement);
+
+        /// <summary>
+        /// 修改是否提醒
+        /// </summary>
+        int EditLeaseAgreementRemind(LeaseAgreement leaseAgreement);
+
+        /// <summary>
+        /// 刪除租約(僅限未啟用租約)
+        /// </summary>
+        bool DeleteLeaseAgreement(int leaseAgreementId);
     }
 }

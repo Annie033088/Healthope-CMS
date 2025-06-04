@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ApiLayer.Models.Term.Response
 {
@@ -10,7 +8,7 @@ namespace ApiLayer.Models.Term.Response
         /// <summary>
         /// 條款清單
         /// </summary>
-        public List<ResponseGetTermDto> TermList {  get; set; }
+        public List<ResponseGetTermDto> TermList { get; set; }
 
         /// <summary>
         /// 總頁數

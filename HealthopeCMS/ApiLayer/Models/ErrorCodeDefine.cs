@@ -121,5 +121,10 @@
         /// 時間及教練重複
         /// </summary>
         DuplicateCoachAndTime = 23,
+
+        /// <summary>
+        /// 已有啟用中的租約
+        /// </summary>
+        ActiveLeaseAgreement = 24,
     }
 }

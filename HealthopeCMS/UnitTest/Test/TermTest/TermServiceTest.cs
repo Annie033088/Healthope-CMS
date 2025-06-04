@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ApiLayer.Models;
-using System.Web.Http;
 using ApiLayer.Models.Term.Request;
 using ApiLayer.Models.Term.Response;
 using ApiLayer.Service;
@@ -10,11 +10,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using UnitTest.utils;
-using System;
-using ApiLayer.Models.Member.Response;
-using static AutoMapper.Internal.ExpressionFactory;
-using ApiLayer.Interface;
 
 namespace UnitTest.Test.TermTest
 {
@@ -429,6 +424,7 @@ namespace UnitTest.Test.TermTest
             // Assert
             Assert.IsTrue(result == (ErrorCodeDefine)errorCodeNumber);
         }
+
         [TestMethod]
         public void 取得條款細項資料_成功_回傳條款資料()
         {

@@ -11,7 +11,6 @@ using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
 using ApiLayer.Models.Response.PlanTemplate;
-using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;

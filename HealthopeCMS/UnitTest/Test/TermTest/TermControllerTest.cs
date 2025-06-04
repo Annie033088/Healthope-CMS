@@ -4,15 +4,12 @@ using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Models.Member.Response;
-using ApiLayer.Models.Member;
 using ApiLayer.Models.Term.Request;
 using ApiLayer.Models.Term.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;
 using UnitTest.utils;
-using ApiLayer.Models.Admin.RequestAdminDto;
 
 namespace UnitTest.Test.TermTest
 {

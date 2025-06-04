@@ -1,16 +1,16 @@
 using System;
+using System.Configuration;
 using System.Web;
-using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using ApiLayer.App_Start;
 using ApiLayer.Models;
-using Newtonsoft.Json;
-using NLog;
+using Autofac;
 using Hangfire;
 using Hangfire.SqlServer;
-using System.Configuration;
+using Newtonsoft.Json;
+using NLog;
 
 namespace ApiLayer
 {
@@ -25,14 +25,7 @@ namespace ApiLayer
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AutofacConfig.RegisterDependencies();
             LogManager.Setup().LoadConfigurationFromFile("NLog.config");
-            // Hangfire 使用 SQL Server 儲存工作狀態
-            // 啟動 Hangfire Server
-            Hangfire.GlobalConfiguration.Configuration
-                .UseSqlServerStorage(ConfigurationManager.ConnectionStrings["ConnStr"].ConnectionString);
-            hangfireServer = new BackgroundJobServer();
-
             logger.Info("Application Start");
         }
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)

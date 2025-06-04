@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
-using System.Configuration;
 using PersistentLayer.Models;
 
 namespace PersistentLayer.Repository
@@ -15,6 +12,10 @@ namespace PersistentLayer.Repository
     public class LeaseAgreementRepository : ILeaseAgreementRepository
     {
         private readonly string ConnStr = ConfigurationManager.ConnectionStrings["ConnStr"].ConnectionString;
+
+        /// <summary>
+        /// 新增條款
+        /// </summary>
         public bool AddLeaseAgreement(LeaseAgreement leaseAgreement)
         {
             SqlCommand cmd = new SqlCommand();
@@ -27,7 +28,7 @@ namespace PersistentLayer.Repository
                 cmd.Parameters.Add("@startTime", SqlDbType.Date).Value = leaseAgreement.StartTime;
                 cmd.Parameters.Add("@endTime", SqlDbType.Date).Value = leaseAgreement.EndTime;
                 cmd.Parameters.Add("@reminderLeadTime", SqlDbType.Int).Value = leaseAgreement.ReminderLeadTime;
-                
+
                 cmd.Connection.Open();
 
                 int ExeCnt = cmd.ExecuteNonQuery();
@@ -118,16 +119,30 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 修改租約狀態 (僅限未啟用=>啟用, 啟用=>已完成、取消)
         /// </summary>
-        public (int errorCodeNumber, bool sendEmailFlag) EditLeaseAgreementStatus(LeaseAgreement leaseAgreement)
+        public (int errorCodeNumber, bool sendEmailFlag, DateTime leaseEndTime)
+            EditLeaseAgreementStatus(LeaseAgreement leaseAgreement)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
             int errorCodeNumber;
+            bool sendEmailFlag;
+            DateTime leaseEndTime;
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editLeaseAgreementStatus @leaseAgreementId, @status," +
+                cmd.CommandText = "EXEC pro_healthope_editLeaseAgreementStatus @leaseAgreementId, @status, @remark," +
                     " @updateTime, @errorCode OUTPUT";
+
+                if (leaseAgreement.Remark == null)
+                {
+                    cmd.Parameters.Add("@remark", SqlDbType.NVarChar).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@remark", SqlDbType.NVarChar).Value = leaseAgreement.Remark;
+                }
 
                 cmd.Parameters.Add("@leaseAgreementId", SqlDbType.Int).Value = leaseAgreement.LeaseAgreementId;
                 cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = leaseAgreement.Status;
@@ -140,11 +155,92 @@ namespace PersistentLayer.Repository
                 cmd.Parameters.Add(errorCodeOutput);
 
                 cmd.Connection.Open();
-                int result = (int)cmd.ExecuteScalar();
-                bool sendEmailFlag = result == 1;
+                da.SelectCommand = cmd;
+                da.Fill(dt);
                 errorCodeNumber = (int)errorCodeOutput.Value;
 
-                return (errorCodeNumber, sendEmailFlag);
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    sendEmailFlag = dr.IsNull("f_sendEmailFlag") ? false : dr.Field<int>("f_sendEmailFlag") == 1;
+                    leaseEndTime = dr.IsNull("f_leaseEndTime") ? DateTime.MinValue : dr.Field<DateTime>("f_leaseEndTime");
+                    return (errorCodeNumber, sendEmailFlag, leaseEndTime);
+                }
+
+                return (errorCodeNumber, false, DateTime.MinValue);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改是否提醒
+        /// </summary>
+        public int EditLeaseAgreementRemind(LeaseAgreement leaseAgreement)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editLeaseAgreementRemind @leaseAgreementId, @remind, @updateTime" +
+                    ", @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@leaseAgreementId", SqlDbType.Int).Value = leaseAgreement.LeaseAgreementId;
+                cmd.Parameters.Add("@remind", SqlDbType.Bit).Value = leaseAgreement.Remind;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = leaseAgreement.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 刪除租約(僅限未啟用租約)
+        /// </summary>
+        public bool DeleteLeaseAgreement(int leaseAgreementId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_delLeaseAgreement @leaseAgreementId";
+
+                cmd.Parameters.Add("@leaseAgreementId", SqlDbType.Int).Value = leaseAgreementId;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                if (ExeCnt == 1) return true;
+
+                return false;
             }
             catch (Exception)
             {

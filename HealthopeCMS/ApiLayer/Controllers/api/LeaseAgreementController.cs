@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using ApiLayer.Models.Term.Request;
-using ApiLayer.Models;
-using ApiLayer.Service;
-using DomainLayer.Utility;
-using NLog;
-using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Interface;
-using ApiLayer.Models.Term.Response;
-using ApiLayer.Models.Term;
-using PersistentLayer.Models;
+using ApiLayer.Models;
 using ApiLayer.Models.LeaseAgreement;
+using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
+using NLog;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {
@@ -118,7 +109,8 @@ namespace ApiLayer.Controllers.api
                 if (!ModelState.IsValid || editLeaseAgreementStatusDto.LeaseAgreementId < 1
                     || !Enum.IsDefined(typeof(LeaseAgreementStatus), editLeaseAgreementStatusDto.Status)
                     // 狀態不能轉成 未啟用
-                    || (LeaseAgreementStatus)editLeaseAgreementStatusDto.Status == LeaseAgreementStatus.Inactive)
+                    || (LeaseAgreementStatus)editLeaseAgreementStatusDto.Status == LeaseAgreementStatus.Inactive
+                    || ((editLeaseAgreementStatusDto.Remark != null) && (editLeaseAgreementStatusDto.Remark.Length > 50)))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
@@ -139,5 +131,66 @@ namespace ApiLayer.Controllers.api
             }
         }
 
+        /// <summary>
+        /// 修改是否提醒
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditLeaseAgreementRemind([FromBody] RequestEditLeaseAgreementRemindDto editLeaseAgreementRemindDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+                if (!ModelState.IsValid || editLeaseAgreementRemindDto.LeaseAgreementId < 1
+                    || editLeaseAgreementRemindDto.Remind != false)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse
+                {
+                    ErrorCode = leaseAgreementService.EditLeaseAgreementRemind(editLeaseAgreementRemindDto)
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 刪除租約(僅限未啟用租約)
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult DeleteLeaseAgreement([FromBody] RequestLeaseAgreementIdDto leaseAgreementIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+                if (!ModelState.IsValid || leaseAgreementIdDto.LeaseAgreementId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = leaseAgreementService.DeleteLeaseAgreement(leaseAgreementIdDto);
+                response = new ResultResponse
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.DeleteFailed
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

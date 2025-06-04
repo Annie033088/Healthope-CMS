@@ -305,6 +305,29 @@
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            d="M17 4H7C5.89543 4 5 4.89543 5 6V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V6C19 4.89543 18.1046 4 17 4Z"
+            stroke="#AA7F7F"
+          />
+          <path
+            d="M9 9H15M9 13H15M9 17H13"
+            stroke="#AA7F7F"
+            stroke-linecap="round"
+          />
+        </svg>
+        <b>訂單</b>
+      </button>
+    </div>
+    <div class="sidebarRow">
+      <button class="btnSidebar">
+        <svg
+          class="sidebarIcon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
             d="M4 19V20H22V22H2V2H4V17C7 17 10 15 12.1 11.4C15.1 6.4 18.4 4 22 4V6C19.2 6 16.5 8.1 13.9 12.5C11.3 16.6 7.7 19 4 19Z"
             fill="black"
           />

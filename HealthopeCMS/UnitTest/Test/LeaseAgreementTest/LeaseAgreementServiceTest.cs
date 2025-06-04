@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Controllers.api;
-using ApiLayer.Interface;
-using ApiLayer.Models.LeaseAgreement.Request;
-using ApiLayer.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System.Web.Http;
-using UnitTest.utils;
+using ApiLayer.Job;
+using ApiLayer.Models;
+using ApiLayer.Models.LeaseAgreement.Request;
+using ApiLayer.Models.LeaseAgreement.Response;
 using ApiLayer.Service;
-using PersistentLayer.Interface;
 using AutoMapper;
 using DomainLayer.Models;
-using ApiLayer.Models.LeaseAgreement.Response;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using ApiLayer.Models.Term.Response;
+using UnitTest.utils;
 
 namespace UnitTest.Test.LeaseAgreementTest
 {
@@ -27,13 +22,15 @@ namespace UnitTest.Test.LeaseAgreementTest
         private LeaseAgreementService service;
         private Mock<IMapper> mapperMock;
         private Mock<ILeaseAgreementRepository> leaseAgreementRepositoryMock;
+        private Mock<IJobDispatcher> jobDispatcherMock;
 
         [TestInitialize]
         public void Setup()
         {
             mapperMock = new Mock<IMapper>();
             leaseAgreementRepositoryMock = new Mock<ILeaseAgreementRepository>();
-            service = new LeaseAgreementService(mapperMock.Object, leaseAgreementRepositoryMock.Object);
+            jobDispatcherMock = new Mock<IJobDispatcher>();
+            service = new LeaseAgreementService(mapperMock.Object, leaseAgreementRepositoryMock.Object, jobDispatcherMock.Object);
         }
 
         [TestMethod]
@@ -189,6 +186,188 @@ namespace UnitTest.Test.LeaseAgreementTest
 
             // Assert
             CollectionAssert.AreEqual(responseGetLeaseAgreement, result.LeaseAgreementList);
+        }
+
+        [TestMethod]
+        public void 修改租約狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditLeaseAgreementStatusDto editLeaseAgreementStatusDto = new RequestEditLeaseAgreementStatusDto()
+            {
+                LeaseAgreementId = 1,
+                Remark = null,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+            LeaseAgreement leaseAgreement = new LeaseAgreement()
+            {
+                LeaseAgreementId = 1,
+                Remark = null,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            bool sendEmailFlag = false;
+            DateTime leaseEndTime = DateTime.MinValue;
+
+            // Mock 設定
+            mapperMock.Setup(s
+                => s.Map<LeaseAgreement>(editLeaseAgreementStatusDto)).Returns(leaseAgreement);
+            leaseAgreementRepositoryMock.Setup(s => s.EditLeaseAgreementStatus(leaseAgreement))
+                .Returns((errorCodeNumber, sendEmailFlag, leaseEndTime));
+
+            // Act
+            ErrorCodeDefine result = service.EditLeaseAgreementStatus(editLeaseAgreementStatusDto);
+
+            // Assert
+            Assert.IsTrue(result == ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改租約狀態_失敗_回傳資料已被修改()
+        {
+            // Arrange
+            RequestEditLeaseAgreementStatusDto editLeaseAgreementStatusDto = new RequestEditLeaseAgreementStatusDto()
+            {
+                LeaseAgreementId = 1,
+                Remark = null,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+            LeaseAgreement leaseAgreement = new LeaseAgreement()
+            {
+                LeaseAgreementId = 1,
+                Remark = null,
+                Status = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+            bool sendEmailFlag = false;
+            DateTime leaseEndTime = DateTime.MinValue;
+
+            // Mock 設定
+            mapperMock.Setup(s
+                => s.Map<LeaseAgreement>(editLeaseAgreementStatusDto)).Returns(leaseAgreement);
+            leaseAgreementRepositoryMock.Setup(s => s.EditLeaseAgreementStatus(leaseAgreement))
+                .Returns((errorCodeNumber, sendEmailFlag, leaseEndTime));
+
+            // Act
+            ErrorCodeDefine result = service.EditLeaseAgreementStatus(editLeaseAgreementStatusDto);
+
+            // Assert
+            Assert.IsTrue(result == ErrorCodeDefine.HasBeenModified);
+        }
+
+        [TestMethod]
+        public void 修改提醒狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditLeaseAgreementRemindDto editLeaseAgreementRemindDto = new RequestEditLeaseAgreementRemindDto()
+            {
+                LeaseAgreementId = 1,
+                Remind = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            LeaseAgreement leaseAgreement = new LeaseAgreement()
+            {
+                LeaseAgreementId = 1,
+                Remind = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            mapperMock.Setup(s
+                => s.Map<LeaseAgreement>(editLeaseAgreementRemindDto)).Returns(leaseAgreement);
+            leaseAgreementRepositoryMock.Setup(s => s.EditLeaseAgreementRemind(leaseAgreement))
+                .Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditLeaseAgreementRemind(editLeaseAgreementRemindDto);
+
+            // Assert
+            Assert.IsTrue(result == ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改提醒狀態_失敗_回傳資料已被修改()
+        {
+            // Arrange
+            RequestEditLeaseAgreementRemindDto editLeaseAgreementRemindDto = new RequestEditLeaseAgreementRemindDto()
+            {
+                LeaseAgreementId = 1,
+                Remind = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            LeaseAgreement leaseAgreement = new LeaseAgreement()
+            {
+                LeaseAgreementId = 1,
+                Remind = false,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+
+            // Mock 設定
+            mapperMock.Setup(s
+                => s.Map<LeaseAgreement>(editLeaseAgreementRemindDto)).Returns(leaseAgreement);
+            leaseAgreementRepositoryMock.Setup(s => s.EditLeaseAgreementRemind(leaseAgreement))
+                .Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditLeaseAgreementRemind(editLeaseAgreementRemindDto);
+
+            // Assert
+            Assert.IsTrue(result == ErrorCodeDefine.HasBeenModified);
+        }
+
+        [TestMethod]
+        public void 刪圖條款_成功_回傳成功()
+        {
+            // Arrange
+            RequestLeaseAgreementIdDto leaseAgreementIdDto = new RequestLeaseAgreementIdDto()
+            {
+                LeaseAgreementId = 10,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            leaseAgreementRepositoryMock.Setup(s => s.DeleteLeaseAgreement(leaseAgreementIdDto.LeaseAgreementId))
+                .Returns(successFlag);
+
+            // Act
+            bool result = service.DeleteLeaseAgreement(leaseAgreementIdDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 刪除條款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestLeaseAgreementIdDto leaseAgreementIdDto = new RequestLeaseAgreementIdDto()
+            {
+                LeaseAgreementId = 10,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            leaseAgreementRepositoryMock.Setup(s => s.DeleteLeaseAgreement(leaseAgreementIdDto.LeaseAgreementId))
+                .Returns(successFlag);
+
+            // Act
+            bool result = service.DeleteLeaseAgreement(leaseAgreementIdDto);
+
+            // Assert
+            Assert.IsFalse(result);
         }
     }
 }

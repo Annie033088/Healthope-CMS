@@ -10,7 +10,6 @@ using ApiLayer.Models;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
 using ApiLayer.Models.Other;
-using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;

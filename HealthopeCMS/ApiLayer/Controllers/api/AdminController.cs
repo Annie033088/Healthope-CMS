@@ -6,7 +6,6 @@ using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Admin.RequestAdminDto;
 using ApiLayer.Models.Admin.ResponseAdminDto;
-using ApiLayer.Service;
 using DomainLayer.Models;
 using DomainLayer.Utility;
 using NLog;

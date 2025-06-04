@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using MimeKit;
+using System.Threading.Tasks;
+using ApiLayer.Interface;
+using DomainLayer.Interface;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using ApiLayer.Interface;
-using DomainLayer.Utility;
-using DomainLayer.Interface;
+using MimeKit;
 
 namespace ApiLayer.Service
 {
@@ -47,18 +44,18 @@ namespace ApiLayer.Service
         /// <summary>
         /// 寄出 mail
         /// </summary>
-        public void SendEmail(string recipient, string subject, string htmlBody)
+        public Task SendEmail(string recipient, string subject, string htmlBody)
         {
-            MimeMessage message = new MimeMessage();
-            message.From.Add(MailboxAddress.Parse(fromEmail));
-            message.To.Add(MailboxAddress.Parse(recipient));
-            message.Subject = subject;
-
-            // 使用 HTML 郵件內容
-            message.Body = new TextPart("html") { Text = htmlBody };
-
             try
             {
+                MimeMessage message = new MimeMessage();
+                message.From.Add(MailboxAddress.Parse(fromEmail));
+                message.To.Add(MailboxAddress.Parse(recipient));
+                message.Subject = subject;
+
+                // 使用 HTML 郵件內容
+                message.Body = new TextPart("html") { Text = htmlBody };
+
                 using (SmtpClient smtp = new SmtpClient())
                 {
                     smtp.Connect(smtpHost, smtpPort, SecureSocketOptions.StartTls);
@@ -66,6 +63,8 @@ namespace ApiLayer.Service
                     smtp.Send(message);
                     smtp.Disconnect(true);
                 }
+
+                return Task.CompletedTask;
             }
             catch (Exception)
             {

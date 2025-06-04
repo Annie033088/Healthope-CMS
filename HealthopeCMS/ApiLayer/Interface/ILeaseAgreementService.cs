@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Models.LeaseAgreement.Request;
-using System.Web.Http;
-using PersistentLayer.Models;
-using ApiLayer.Models.LeaseAgreement.Response;
+﻿using System.Web.Http;
 using ApiLayer.Models;
+using ApiLayer.Models.LeaseAgreement.Request;
+using ApiLayer.Models.LeaseAgreement.Response;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Interface
 {
@@ -27,5 +22,15 @@ namespace ApiLayer.Interface
         /// 修改租約狀態 (僅限未啟用=>啟用, 啟用=>已完成、取消)
         /// </summary>
         ErrorCodeDefine EditLeaseAgreementStatus(RequestEditLeaseAgreementStatusDto editLeaseAgreementStatusDto);
+
+        /// <summary>
+        /// 修改是否提醒
+        /// </summary>
+        ErrorCodeDefine EditLeaseAgreementRemind(RequestEditLeaseAgreementRemindDto editLeaseAgreementRemindDto);
+
+        /// <summary>
+        /// 刪除租約(僅限未啟用租約)
+        /// </summary>
+        bool DeleteLeaseAgreement(RequestLeaseAgreementIdDto leaseAgreementIdDto);
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Configuration;
-using System;
-
-namespace DomainLayer.Interface
+﻿namespace DomainLayer.Interface
 {
     public interface IAppSetting
     {
