@@ -105,6 +105,21 @@ namespace ApiLayer.Models
                 AdminPermission.EditTerm} },
 
             // LeaseAgreementController
+            { "LeaseAgreement,AddLeaseAgreement", new List<AdminPermission> {
+                AdminPermission.EditLeaseAgreement} },
+            { "LeaseAgreement,GetLeaseAgreement", new List<AdminPermission> {
+                AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement} },
+            { "LeaseAgreement,EditLeaseAgreementStatus", new List<AdminPermission> {
+                AdminPermission.EditLeaseAgreement} },
+            { "LeaseAgreement,EditLeaseAgreementRemind", new List<AdminPermission> {
+                AdminPermission.EditLeaseAgreement} },
+            { "LeaseAgreement,DeleteLeaseAgreement", new List<AdminPermission> {
+                AdminPermission.EditLeaseAgreement} },
+
+            // InvoiceController
+            { "Invoice,AddInvoiceTrackNumber", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+
         };
     }
 }

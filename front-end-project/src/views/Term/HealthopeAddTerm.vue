@@ -2,8 +2,8 @@
   <div>
     <TitleCard text="條款" @refreshPage="$emit('refreshPage')"></TitleCard>
     <SubTitleCard text="新增條款"></SubTitleCard>
+      <div class="sectionTitle"><p>新增條款</p></div>
     <div class="StepOneContainer" v-if="step === 1">
-      <h2 class="">新增條款</h2>
       <!-- 1. 條款類型 -->
       <div class="input">
         <RadioInput
@@ -62,7 +62,6 @@
       </div>
     </div>
     <div class="stepTwoContainer" v-if="step === 2">
-      <h2 class="">新增條款</h2>
       <h3 class="">{{ name }}</h3>
       <label for="versionDescription">請描述更新內容</label>
       <textarea
@@ -108,6 +107,10 @@ export default {
     RadioInput,
     SelectInput,
     BtnConfirm,
+  },
+  props: {
+    permissionMap: {},
+    notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
@@ -241,7 +244,7 @@ export default {
     },
     async addTerm() {
       if (!this.validInput()) this.verifyFail = true;
-      
+
       this.detailContent = this.detailContent.trim();
       this.versionDescription = this.versionDescription.trim();
 
@@ -312,6 +315,17 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 15px;
+}
+
+.sectionTitle {
+  display: flex;
+  justify-content: center;
+  margin-top: 7px;
+}
+
+.sectionTitle p {
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .input {

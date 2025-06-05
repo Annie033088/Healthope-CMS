@@ -69,6 +69,9 @@ export default {
         SelectGroupClassSchedule: false,
         EditPlan: false,
         SelectPlan: false,
+        AddOrder: false,
+        EditOrder: false,
+        SelectOrder: false,
       },
     };
   },

@@ -139,7 +139,7 @@ namespace UnitTest.Test.TermTest
         }
 
         [TestMethod]
-        public void 新增_成功_回傳失敗()
+        public void 新增_失敗_回傳失敗()
         {
             // Arrange
             RequestAddTermDto addTermDto = new RequestAddTermDto()

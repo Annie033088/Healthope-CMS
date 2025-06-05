@@ -336,6 +336,7 @@ export default {
         this.$notificationBox.notificationBoxFlag = true;
         this.$notificationBox.notificationBoxTitle = "修改了錯誤的狀態!";
         this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
       }
 
       let editLeaseAgreementStauts = {

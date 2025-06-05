@@ -215,6 +215,15 @@ export const adminPermission = {
 
     // 查詢租約
     SelectLeaseAgreement: 18,
+
+    // 建立訂單(銷售員)
+    AddOrder: 19,
+
+    // 修改訂單 (EX:退款)
+    EditOrder: 20,
+
+    // 查詢訂單
+    SelectOrder: 21,
 }
 
 export default function adminIdentityToText(identity) {

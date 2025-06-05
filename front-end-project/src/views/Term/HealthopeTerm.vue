@@ -164,7 +164,7 @@ export default {
             term.ApplicableTarget = target.text;
 
             let statusOption = [];
-            
+
             termStatusAndText.forEach((status) => {
               if (term.Status === Number(status.value))
                 statusOption.push(status);
@@ -257,9 +257,6 @@ export default {
       // 添加監聽器，查看彈窗是否被按確認鍵
       this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
         if (newVal) {
-          let redirectRoute = "stop";
-          this.$emit("afterConfirmEvent", redirectRoute);
-
           try {
             this.submitDelTerm(row.TermId);
           } catch (error) {
@@ -330,6 +327,25 @@ export default {
         if (!Object.values(termStatus).includes(Number(this.selectStatus)))
           return false;
 
+      if (
+        !(
+          this.recordPerPage === "8" ||
+          this.recordPerPage === "12" ||
+          this.recordPerPage === "16"
+        )
+      )
+        return false;
+
+      const IntMax = 2147483647;
+      let searchingPage = Number(this.searchingPage);
+      if (
+        !Number.isInteger(searchingPage) ||
+        searchingPage < 1 ||
+        // 超出安全整數範圍
+        searchingPage > IntMax
+      )
+        return false;
+
       return true;
     },
     async editStatus(row) {
@@ -374,8 +390,8 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-              let redirectRoute = null;
-              this.$emit("afterConfirmEvent", redirectRoute);
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -392,11 +408,11 @@ export default {
         console.error("修改狀態時發生錯誤", error);
       }
     },
-    async goCheckDetail(row){
+    async goCheckDetail(row) {
       if (row.TermId < 1) return;
 
       this.$router.push({ path: "/term/detail", query: { id: row.TermId } });
-    }
+    },
   },
   computed: {
     termStatusAndTextOptions() {

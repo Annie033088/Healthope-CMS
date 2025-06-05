@@ -98,6 +98,21 @@ namespace DomainLayer.Models
         /// 查詢租約
         /// </summary>
         SelectLeaseAgreement = 18,
+
+        /// <summary>
+        /// 建立訂單(銷售員)
+        /// </summary>
+        AddOrder = 19,
+
+        /// <summary>
+        /// 修改訂單 (EX:退款)
+        /// </summary>
+        EditOrder = 20,
+
+        /// <summary>
+        /// 查詢訂單
+        /// </summary>
+        SelectOrder = 21,
     }
 
     public enum AdminIdentity : byte
@@ -160,6 +175,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditPlan, AdminPermission.SelectPlan,
                 AdminPermission.EditTerm, AdminPermission.SelectTerm,
                 AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
+                AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -169,11 +185,13 @@ namespace DomainLayer.Models
                 AdminPermission.EditPlan, AdminPermission.SelectPlan,
                 AdminPermission.EditTerm, AdminPermission.SelectTerm,
                 AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
+                AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,
                 AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.SelectGroupClassSchedule,
+                AdminPermission.AddOrder,
             } },
             {AdminIdentity.CoachManager, new List<AdminPermission>{
                 AdminPermission.SelectMember,
@@ -184,7 +202,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditGroupClassSchedule, AdminPermission.SelectGroupClassSchedule,
             } },
             {AdminIdentity.SalesRepresentative, new List<AdminPermission>{
-                AdminPermission.SelectMember
+                AdminPermission.SelectMember,
             } }
         };
     }

@@ -52,6 +52,7 @@
     <Compile Include="Models\Coach.cs" />
     <Compile Include="Models\GroupClassSchedule.cs" />
     <Compile Include="Models\GroupClassShowcase.cs" />
+    <Compile Include="Models\InvoiceTrackNumber.cs" />
     <Compile Include="Models\LeaseAgreement.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\MembershipPlan.cs" />

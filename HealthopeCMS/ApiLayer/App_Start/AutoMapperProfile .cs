@@ -5,6 +5,8 @@ using ApiLayer.Models.Coach.Response;
 using ApiLayer.Models.GroupClassSchedule.Response;
 using ApiLayer.Models.GroupClassShowcase.Request;
 using ApiLayer.Models.GroupClassShowcase.Response;
+using ApiLayer.Models.Invoice.Request;
+using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
 using ApiLayer.Models.Member.Response;
@@ -62,6 +64,8 @@ namespace ApiLayer.App_Start
             CreateMap<LeaseAgreement, ResponseGetLeaseAgreementDto>();
             CreateMap<RequestEditLeaseAgreementStatusDto, LeaseAgreement>();
             CreateMap<RequestEditLeaseAgreementRemindDto, LeaseAgreement>();
+            CreateMap<RequestAddInvoiceTrackNumberDto, InvoiceTrackNumber>();
+            CreateMap<InvoiceTrackNumber, ResponseGetInvoiceTrackNumberDto>();
         }
     }
 }

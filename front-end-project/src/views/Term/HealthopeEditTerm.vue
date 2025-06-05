@@ -47,6 +47,10 @@ export default {
     SubTitleCard,
     BtnConfirm,
   },
+  props: {
+    permissionMap: {},
+    notificationBoxConfirmFlag: Boolean,
+  },
   data() {
     return {
       verifyFail: false,

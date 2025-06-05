@@ -8,9 +8,11 @@ import memberRoutes from './routes/member';
 import coachRoutes from './routes/coach';
 import groupClassRoutes from './routes/groupClass';
 import planRoutes from './routes/planTemplate';
-import memberClass from './routes/memberClass';
-import term from './routes/term';
-import leaseAgreement from './routes/leaseAgreement';
+import memberClassRoutes from './routes/memberClass';
+import termRoutes from './routes/term';
+import leaseAgreementRoutes from './routes/leaseAgreement';
+import orderRoutes from './routes/order';
+import settingRoutes from './routes/setting';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -33,11 +35,15 @@ const routes = [
     // plan
     ...planRoutes,
     // memberClass
-    ...memberClass,
+    ...memberClassRoutes,
     // 條款
-    ...term,
+    ...termRoutes,
     // 租約
-    ...leaseAgreement,
+    ...leaseAgreementRoutes,
+    // 訂單
+    ...orderRoutes,
+    // 設定
+    ...settingRoutes,
 ]
 
 const router = new VueRouter({
