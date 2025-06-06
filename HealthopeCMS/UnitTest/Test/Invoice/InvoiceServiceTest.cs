@@ -181,5 +181,113 @@ namespace UnitTest.Test.Invoice
             // Assert
             CollectionAssert.AreEqual(responseGet, result.InvoiceTrackNumberList);
         }
+
+        [TestMethod]
+        public void 修改字軌狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto = new RequestEditInvoiceTrackNumberStatusDto()
+            {
+                Status = 2,
+                InvoiceTrackNumberId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            InvoiceTrackNumber invoiceTrackNumber = new InvoiceTrackNumber()
+            {
+                Status = 2,
+                InvoiceTrackNumberId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<InvoiceTrackNumber>(editInvoiceTrackNumberStatusDto)).Returns(invoiceTrackNumber);
+            invoiceRepositoryMock.Setup(s
+                => s.EditInvoiceTrackNumberStatus(invoiceTrackNumber)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditInvoiceTrackNumberStatus(editInvoiceTrackNumberStatusDto);
+
+            // Assert
+            Assert.IsTrue(result == ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改字軌狀態_失敗_資料已被異動()
+        {
+            // Arrange
+            RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto = new RequestEditInvoiceTrackNumberStatusDto()
+            {
+                Status = 2,
+                InvoiceTrackNumberId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            InvoiceTrackNumber invoiceTrackNumber = new InvoiceTrackNumber()
+            {
+                Status = 2,
+                InvoiceTrackNumberId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.HasBeenModified;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<InvoiceTrackNumber>(editInvoiceTrackNumberStatusDto)).Returns(invoiceTrackNumber);
+            invoiceRepositoryMock.Setup(s
+                => s.EditInvoiceTrackNumberStatus(invoiceTrackNumber)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditInvoiceTrackNumberStatus(editInvoiceTrackNumberStatusDto);
+
+            // Assert
+            Assert.IsTrue(result == ErrorCodeDefine.HasBeenModified);
+        }
+
+        [TestMethod]
+        public void 刪除字軌_成功_回傳成功()
+        {
+            // Arrange
+            InvoiceTrackNumberIdDto invoiceTrackNumberIdDto = new InvoiceTrackNumberIdDto()
+            {
+                InvoiceTrackNumberId = 1,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto.InvoiceTrackNumberId)).Returns(successFlag);
+
+            // Act
+            bool result = service.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 刪除字軌_失敗_回傳失敗()
+        {
+            // Arrange
+            InvoiceTrackNumberIdDto invoiceTrackNumberIdDto = new InvoiceTrackNumberIdDto()
+            {
+                InvoiceTrackNumberId = 1,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto.InvoiceTrackNumberId)).Returns(successFlag);
+
+            // Act
+            bool result = service.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
     }
 }

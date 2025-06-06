@@ -20,5 +20,15 @@ namespace PersistentLayer.Interface
         /// </summary>
         (List<InvoiceTrackNumber> invoiceTrackNumbers, int totalPage) GetInvoiceTrackNumber(
             RequestGetInvoiceTrackNumberDto getInvoiceTrackNumberDto);
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        int EditInvoiceTrackNumberStatus(InvoiceTrackNumber invoiceTrackNumber);
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        bool DeleteInvoiceTrackNumber(int invoiceTrackNumberId);
     }
 }

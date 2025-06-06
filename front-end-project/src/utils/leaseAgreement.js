@@ -22,13 +22,15 @@ export function leaseAgreementStatusTranslateTable(oldStatus, newStatus) {
 
     if (oldStatus === leaseAgreementStatus.Inactive) {
         if (newStatus === leaseAgreementStatus.Active) return true;
-        else false;
+
+        return false;
     }
 
     if (oldStatus === leaseAgreementStatus.Active) {
         if (newStatus === leaseAgreementStatus.Completed) return true;
         else if (newStatus === leaseAgreementStatus.Cancel) return true;
-        else false;
+
+        return false;
     }
 
     return false;

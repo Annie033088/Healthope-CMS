@@ -88,6 +88,11 @@ export default {
   },
   methods: {
     async addInvoiceTrackNumber() {
+      this.trackPrefix = this.trackPrefix.trim();
+      this.startNumber = this.startNumber.trim();
+      this.endNumber = this.endNumber.trim();
+      this.invoiceYear = this.invoiceYear.trim();
+      this.invoiceCycle = this.invoiceCycle.trim();
       if (!this.validInput()) {
         this.verifyFail = true;
         return;

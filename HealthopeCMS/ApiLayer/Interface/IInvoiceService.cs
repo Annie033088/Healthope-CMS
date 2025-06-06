@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
 using PersistentLayer.Models;
@@ -22,5 +23,15 @@ namespace ApiLayer.Interface
         /// </summary>
         ResponseGetInvoiceTrackNumberListDto GetInvoiceTrackNumber(
             RequestGetInvoiceTrackNumberDto getInvoiceTrackNumberDto);
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        ErrorCodeDefine EditInvoiceTrackNumberStatus(RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto);
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        bool DeleteInvoiceTrackNumber(InvoiceTrackNumberIdDto invoiceTrackNumberIdDto);
     }
 }

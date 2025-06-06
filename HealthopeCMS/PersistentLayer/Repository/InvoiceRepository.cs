@@ -126,5 +126,79 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        public int EditInvoiceTrackNumberStatus(InvoiceTrackNumber invoiceTrackNumber)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceTrackNumberStatus @invoiceTrackNumberId, @status, " +
+                    "@updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@invoiceTrackNumberId", SqlDbType.Int).Value = invoiceTrackNumber.InvoiceTrackNumberId;
+                cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = invoiceTrackNumber.Status;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = invoiceTrackNumber.UpdateTime;
+
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 刪除字軌
+        /// </summary>
+        public bool DeleteInvoiceTrackNumber(int invoiceTrackNumberId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_delInoviceTrackNumber @invoiceTrackNumberId";
+
+                cmd.Parameters.Add("@invoiceTrackNumberId", SqlDbType.Int).Value = invoiceTrackNumberId;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                if (ExeCnt > 0) return true;
+
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

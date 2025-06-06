@@ -350,4 +350,13 @@ export default function (mock) {
     mock.onPost("/api/PlanTemplate/EditPersonalTrainingPackage").reply(() => {
         return [200, { ErrorCode: 1 }]
     })
+
+    mock.onPost("/api/PlanTemplate/GetAllTypePlan").reply(() => {
+        let responseObject = {
+            MembershipPlanList: membershipPlans.filter(plan => plan.Status === true),
+            PersonalTrainingPackageList: personalTrainingPackages.filter(plan => plan.Status === true),
+            TicketPlanList: ticketPlans.filter(plan => plan.Status === true)
+        }
+        return [200, { ErrorCode: 1, ApiDataObject: responseObject }]
+    })
 }

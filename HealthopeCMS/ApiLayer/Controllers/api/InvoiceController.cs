@@ -112,5 +112,74 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditInvoiceTrackNumberStatus(
+            [FromBody] RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+                if (!ModelState.IsValid
+                    || (!Enum.IsDefined(typeof(InvoiceTrackNumberStatus), editInvoiceTrackNumberStatusDto.Status))
+                    || ((editInvoiceTrackNumberStatusDto.Status != (int)InvoiceTrackNumberStatus.Active)
+                        && (editInvoiceTrackNumberStatusDto.Status != (int)InvoiceTrackNumberStatus.Disabled))
+                    || editInvoiceTrackNumberStatusDto.InvoiceTrackNumberId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse
+                {
+                    ErrorCode = invoiceService.EditInvoiceTrackNumberStatus(editInvoiceTrackNumberStatusDto),
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 刪除字軌
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult DeleteInvoiceTrackNumber(
+            [FromBody] InvoiceTrackNumberIdDto invoiceTrackNumberIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || invoiceTrackNumberIdDto.InvoiceTrackNumberId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = invoiceService.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto);
+                response = new ResultResponse()
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.DeleteFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

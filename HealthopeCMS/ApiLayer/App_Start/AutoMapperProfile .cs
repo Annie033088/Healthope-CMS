@@ -66,6 +66,7 @@ namespace ApiLayer.App_Start
             CreateMap<RequestEditLeaseAgreementRemindDto, LeaseAgreement>();
             CreateMap<RequestAddInvoiceTrackNumberDto, InvoiceTrackNumber>();
             CreateMap<InvoiceTrackNumber, ResponseGetInvoiceTrackNumberDto>();
+            CreateMap<RequestEditInvoiceTrackNumberStatusDto, InvoiceTrackNumber>();
         }
     }
 }

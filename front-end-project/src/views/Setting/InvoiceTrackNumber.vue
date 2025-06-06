@@ -94,7 +94,7 @@ export default {
       totalPage: 1,
       searchingPage: 1,
       columns: [
-        { label: "期數", key: "InvoicePeriod" },
+        { label: "期數", key: "InvoicePeriodText" },
         { label: "字軌前二碼", key: "TrackPrefix" },
         { label: "起始碼", key: "StartNumber" },
         { label: "結束碼", key: "EndNumber" },
@@ -140,7 +140,7 @@ export default {
             response.data.ApiDataObject.InvoiceTrackNumberList;
 
           this.invoiceTrackNumberList.forEach((invoiceTrackNumber) => {
-            invoiceTrackNumber.InvoicePeriod = this.formatInvoicePeriod(
+            invoiceTrackNumber.InvoicePeriodText = this.formatInvoicePeriod(
               invoiceTrackNumber.InvoicePeriod
             );
 
@@ -276,24 +276,45 @@ export default {
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
+      
+      if (this.compareTerm(row.InvoicePeriod) < 0) {
+        // 添加監聽器，查看彈窗是否被按確認鍵
+        this.unwatchFlag = this.$watch(
+          "notificationBoxConfirmFlag",
+          (newVal) => {
+            if (newVal) {
+              let redirectRoute = null;
+              this.$emit("afterConfirmEvent", redirectRoute);
+              this.unwatchFlag(); // 移除監聽
+              this.unwatchFlag = null;
+            }
+          }
+        );
 
-      let editLeaseAgreementStauts = {
-        LeaseAgreementId: row.LeaseAgreementId,
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "請勿啟用過期字軌!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
+      let editInvoiceTrackNumberStauts = {
+        InvoiceTrackNumberId: row.InvoiceTrackNumberId,
         UpdateTime: row.UpdateTime,
         Status: row.Status.Value,
       };
-      this.submitEditStatus(editLeaseAgreementStauts);
+      this.submitEditStatus(editInvoiceTrackNumberStauts);
     },
-    async submitEditStatus(editLeaseAgreementStauts) {
+    async submitEditStatus(editInvoiceTrackNumberStauts) {
       try {
         // post
         const response = await this.$axios.post(
-          "/api/LeaseAgreement/EditLeaseAgreementStatus",
-          editLeaseAgreementStauts
+          "/api/Invoice/EditInvoiceTrackNumberStatus",
+          editInvoiceTrackNumberStauts
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.getLeaseAgreementData();
+          this.getInvoiceTrackNumberData();
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
@@ -318,7 +339,76 @@ export default {
         console.error("修改狀態時發生錯誤", error);
       }
     },
-    deleteInvoiceTrackNumber() {},
+    deleteInvoiceTrackNumber(row) {
+      if (row.Status.Value !== String(invoiceTrackNumberStatus.Inactive)) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle =
+          "請勿刪除使用中字軌及歷史字軌!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+      // 添加監聽器，查看彈窗是否被按確認鍵
+      this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
+        if (newVal) {
+          try {
+            this.submitDelInvoiceTrackNumber(row.InvoiceTrackNumberId);
+          } catch (error) {
+            console.error("刪除時發生錯誤", error);
+          } finally {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+        }
+      });
+
+      // 設定彈窗資料
+      this.$notificationBox.notificationBoxFlag = true;
+      this.$notificationBox.notificationBoxTitle = "此操作不可修改，確認刪除?";
+      this.$notificationBox.notificationBoxCancelFlag = true;
+      this.$notificationBox.notificationBoxErrorCode = 0;
+    },
+    async submitDelInvoiceTrackNumber(id) {
+      if (id < 1) return;
+
+      try {
+        // post
+        let invoiceTrackNumberIdDto = {
+          InvoiceTrackNumberId: id,
+        };
+
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/DeleteInvoiceTrackNumber",
+          invoiceTrackNumberIdDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.$emit("refreshPage");
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("刪除失敗", error);
+      }
+    },
     formatInvoicePeriod(periodNumber) {
       const period = periodNumber % 10;
       const startMonth = (period - 1) * 2 + 1;
@@ -327,6 +417,29 @@ export default {
       return `${Math.floor(periodNumber / 10)} 年 ${startMonth
         .toString()
         .padStart(2, "0")}-${endMonth.toString().padStart(2, "0")} 月`;
+    },
+    compareTerm(term) {
+      const now = new Date();
+      const rocYear = now.getFullYear() - 1911;
+      const month = now.getMonth() + 1;
+
+      // 發票期數從 1~6，每 2 個月為一個期
+      const period = Math.ceil(month / 2);
+      const nowTerm = rocYear * 10 + period;
+      const termParse = this.parseTerm(term);
+      const nowTermParse = this.parseTerm(nowTerm);
+
+      if (termParse.year !== nowTermParse.year) {
+        return termParse.year - nowTermParse.year;
+      } else {
+        return termParse.period - nowTermParse.period;
+      }
+    },
+    parseTerm(term) {
+      return {
+        year: Math.floor(term / 10),
+        period: term % 10,
+      };
     },
     searchPage(page) {
       this.searchingPage = page;

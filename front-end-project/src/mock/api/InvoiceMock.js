@@ -29,6 +29,16 @@ export default function (mock) {
             InvoicePeriod: 1144,
             Status: 1,
             CreateTime: "2025-07-01T14:45:20.567"
+        },
+        {
+            InvoiceTrackNumberId: 4,
+            TrackPrefix: "EF",
+            StartNumber: 1,
+            EndNumber: 29999,
+            CurrentNumber: 1,
+            InvoicePeriod: 1142,
+            Status: 1,
+            CreateTime: "2025-07-01T14:45:20.567"
         }
     ];
 
@@ -75,5 +85,13 @@ export default function (mock) {
         }
 
         return [200, { ErrorCode: 1, ApiDataObject }]
+    })
+
+    mock.onPost("/api/Invoice/DeleteInvoiceTrackNumber").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Invoice/EditInvoiceTrackNumberStatus").reply(() => {
+        return [200, { ErrorCode: 1 }]
     })
 }

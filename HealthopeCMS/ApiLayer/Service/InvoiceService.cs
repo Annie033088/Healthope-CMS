@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using ApiLayer.Interface;
+using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
 using AutoMapper;
@@ -54,6 +55,42 @@ namespace ApiLayer.Service
                     TotalPage = totalPage,
                 };
                 return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改字軌狀態
+        /// </summary>
+        public ErrorCodeDefine EditInvoiceTrackNumberStatus(RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto)
+        {
+            try
+            {
+                InvoiceTrackNumber invoiceTrackNumber = mapper.Map<InvoiceTrackNumber>(editInvoiceTrackNumberStatusDto);
+                int errorCodeNumber = invoiceRepository.EditInvoiceTrackNumberStatus(invoiceTrackNumber);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber)) return (ErrorCodeDefine.ServerError);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+                return errorCode;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 刪除字軌
+        /// </summary>
+        public bool DeleteInvoiceTrackNumber(InvoiceTrackNumberIdDto invoiceTrackNumberIdDto)
+        {
+            try
+            {
+                return invoiceRepository.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto.InvoiceTrackNumberId);
             }
             catch (Exception)
             {

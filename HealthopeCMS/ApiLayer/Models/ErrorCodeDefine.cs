@@ -126,5 +126,10 @@
         /// 已有啟用中的租約
         /// </summary>
         ActiveLeaseAgreement = 24,
+
+        /// <summary>
+        /// 已有啟用中的字軌
+        /// </summary>
+        ActiveInvoiceTrackNumber = 25,
     }
 }

@@ -124,5 +124,95 @@ namespace UnitTest.Test.Invoice
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
+
+        [TestMethod]
+        public void 修改字軌狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto = new RequestEditInvoiceTrackNumberStatusDto()
+            {
+                Status = 2,
+                InvoiceTrackNumberId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.EditInvoiceTrackNumberStatus(editInvoiceTrackNumberStatusDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.EditInvoiceTrackNumberStatus(editInvoiceTrackNumberStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改字軌狀態_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestEditInvoiceTrackNumberStatusDto editInvoiceTrackNumberStatusDto = new RequestEditInvoiceTrackNumberStatusDto()
+            {
+                Status = 1,
+                InvoiceTrackNumberId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.EditInvoiceTrackNumberStatus(editInvoiceTrackNumberStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 刪除字軌_成功_回傳成功()
+        {
+            // Arrange
+            InvoiceTrackNumberIdDto invoiceTrackNumberIdDto = new InvoiceTrackNumberIdDto()
+            {
+                InvoiceTrackNumberId = 1,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 刪除字軌_失敗_回傳失敗()
+        {
+            // Arrange
+            InvoiceTrackNumberIdDto invoiceTrackNumberIdDto = new InvoiceTrackNumberIdDto()
+            {
+                InvoiceTrackNumberId = 1,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.DeleteInvoiceTrackNumber(invoiceTrackNumberIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DeleteFailed));
+        }
     }
 }

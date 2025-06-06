@@ -23,12 +23,14 @@ export function invoiceTrackNumberStatusTranslateTable(oldStatus, newStatus) {
 
     if (oldStatus === invoiceTrackNumberStatus.Inactive) {
         if (newStatus === invoiceTrackNumberStatus.Active) return true;
-        else false;
+
+        return false;
     }
 
     if (oldStatus === invoiceTrackNumberStatus.Active) {
         if (newStatus === invoiceTrackNumberStatus.Disabled) return true;
-        else false;
+        
+        return false;
     }
 
     return false;

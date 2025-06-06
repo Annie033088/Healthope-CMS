@@ -73,6 +73,9 @@ export const errorCodeDefine = {
 
     // 已有啟用中的租約
     ActiveLeaseAgreement: 24,
+
+    // 已有啟用中的字軌
+    ActiveInvoiceTrackNumber: 25,
 };
 
 //設定errorCode對應資料
@@ -151,6 +154,9 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 24:
             message = "已有啟用中的租約";
+            return message;
+        case 25:
+            message = "已有啟用中的字軌，請先中斷啟用中的字軌";
             return message;
         default:
             message = "";
