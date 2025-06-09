@@ -260,7 +260,7 @@ namespace ApiLayer.Controllers.api
                 response = new ResultResponse()
                 {
                     ErrorCode = successFlag ?
-                    ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
+                    ErrorCodeDefine.Success : ErrorCodeDefine.DeleteFailed
                 };
                 return Ok(response);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Request;
 using ApiLayer.Models.Member.Response;
 using AutoMapper;
 using DomainLayer.Models;
@@ -111,6 +112,22 @@ namespace ApiLayer.Service
             {
                 Member member = memberRepository.GetMemberDetail(memberIdDto.MemberId);
                 return mapper.Map<ResponseGetMemberDetailDto>(member);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 根據電話或名稱取得會員
+        /// </summary>
+        public List<ResponseGetMemberByNameOrPhoneDto> GetMemberByNameOrPhone(RequestGetMemberByNameOrPhoneDto getMemberDto)
+        {
+            try
+            {
+                List<Member> member = memberRepository.GetMemberByNameOrPhone(getMemberDto);
+                return mapper.Map<List<ResponseGetMemberByNameOrPhoneDto>>(member);
             }
             catch (Exception)
             {

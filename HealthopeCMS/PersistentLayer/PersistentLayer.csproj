@@ -63,6 +63,7 @@
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
     <Compile Include="Models\RequestGetInvoiceTrackNumberDto.cs" />
     <Compile Include="Models\RequestGetLeaseAgreementDto.cs" />
+    <Compile Include="Models\RequestGetMemberByNameOrPhoneDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />
     <Compile Include="Models\RequestGetShowcaseDto.cs" />
     <Compile Include="Models\RequestGetTermDto.cs" />

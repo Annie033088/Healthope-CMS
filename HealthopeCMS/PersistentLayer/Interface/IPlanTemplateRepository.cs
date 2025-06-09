@@ -64,5 +64,11 @@ namespace PersistentLayer.Interface
         /// </summary>
         (ResultWithException result, string oldImageUrl) EditPersonalTrainingPackage(
             RequestEditPersonalTrainingPackageDto editPlanDto);
+
+        /// <summary>
+        /// (新增訂單時) 取得所有方案
+        /// </summary>
+        (List<MembershipPlan> membershipPlans, List<PersonalTrainingPackage> personalTrainingPackages,
+            List<TicketPlan> ticketPlans) GetAllTypePlan();
     }
 }

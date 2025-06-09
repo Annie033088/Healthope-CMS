@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ApiLayer.Controllers.api;
+using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Request;
 using ApiLayer.Models.Member.Response;
 using ApiLayer.Service;
 using AutoMapper;
@@ -12,6 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
+using UnitTest.utils;
 
 namespace UnitTest.Test.MemberTest
 {
@@ -307,6 +311,68 @@ namespace UnitTest.Test.MemberTest
 
             // Assert
             Assert.AreEqual(result, response);
+        }
+
+        [TestMethod]
+        public void 根據名稱或手機取得會員_成功_回傳會員資料()
+        {
+            // Arrange
+            RequestGetMemberByNameOrPhoneDto getMemberDto = new RequestGetMemberByNameOrPhoneDto()
+            {
+                Name = null,
+                Phone = 0987654321
+            };
+
+            ResponseGetMemberByNameOrPhoneDto response = new ResponseGetMemberByNameOrPhoneDto()
+            {
+                Name = "okwopekq122",
+                Phone = 987654342,
+                MemberId = 1,
+                PhoneVerified = true,
+                UpdateTime = DateTime.Now,
+            };
+
+            Member member = new Member()
+            {
+                Name = "okwopekq122",
+                Phone = 987654342,
+                MemberId = 1,
+                PhoneVerified = true,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(member);
+            mapperMock.Setup(s => s.Map<ResponseGetMemberByNameOrPhoneDto>(member)).Returns(response);
+
+            // Act
+            ResponseGetMemberByNameOrPhoneDto result = memberService.GetMemberByNameOrPhone(getMemberDto);
+
+            // Assert
+            Assert.IsTrue(result == response);
+        }
+
+        [TestMethod]
+        public void 根據名稱或手機取得會員_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetMemberByNameOrPhoneDto getMemberDto = new RequestGetMemberByNameOrPhoneDto()
+            {
+                Name = null,
+                Phone = 0987654321
+            };
+
+            ResponseGetMemberByNameOrPhoneDto response = null;
+            Member member = null;
+
+            // Mock 設定
+            memberRepositoryMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(member);
+
+            // Act
+            ResponseGetMemberByNameOrPhoneDto result = memberService.GetMemberByNameOrPhone(getMemberDto);
+
+            // Assert
+            Assert.IsTrue(result == response);
         }
     }
 }

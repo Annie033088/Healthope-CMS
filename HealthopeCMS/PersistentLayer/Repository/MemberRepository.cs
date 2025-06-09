@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using ApiLayer.Models.Member.Request;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
@@ -264,6 +265,65 @@ namespace PersistentLayer.Repository
                 }
 
                 return (null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 根據電話或名稱取得會員
+        /// </summary>
+        public List<Member> GetMemberByNameOrPhone(RequestGetMemberByNameOrPhoneDto getMemberDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            List<Member> members = new List<Member>();  
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getMemberByNameOrPhone @name, @phone";
+
+                if (getMemberDto.Name == null)
+                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = getMemberDto.Name;
+
+                if (getMemberDto.Phone == null)
+                    cmd.Parameters.Add("@phone", SqlDbType.Int).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@phone", SqlDbType.Int).Value = getMemberDto.Phone;
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                cmd.Connection.Close();
+
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    DataRow dr = dt.Rows[i];
+                    Member member = new Member()
+                    {
+                        MemberId = dr.IsNull("f_memberId") ? 0 : dr.Field<int>("f_memberId"),
+                        Phone = dr.IsNull("f_phone") ? 0 : dr.Field<int>("f_phone"),
+                        PhoneVerified = dr.IsNull("f_phoneVerified") ? false : dr.Field<bool>("f_phoneVerified"),
+                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
+                        UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
+                    };
+                    members.Add(member);
+                }
+
+                return (members);
             }
             catch (Exception)
             {

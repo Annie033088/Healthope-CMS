@@ -318,7 +318,7 @@ namespace UnitTest.Test.AdminTest
             // Arrange
             RequestAdminIdDto adminIdDto = new RequestAdminIdDto()
             {
-                AdminId = 1000000000,
+                AdminId = 100000000,
             };
 
             bool successFlag = false;

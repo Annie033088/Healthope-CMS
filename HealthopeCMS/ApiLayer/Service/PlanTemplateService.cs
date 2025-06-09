@@ -348,5 +348,34 @@ namespace ApiLayer.Service
                 throw;
             }
         }
+
+        /// <summary>
+        /// (新增訂單時) 取得所有方案
+        /// </summary>
+        public Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto GetAllTypePlan()
+        {
+            try
+            {
+                (List<MembershipPlan> membershipPlans, List<PersonalTrainingPackage> personalTrainingPackages,
+                    List<TicketPlan> ticketPlans) = planTemplateRepository.GetAllTypePlan();
+                Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto response
+                    = new Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto()
+                    {
+                        MembershipPlanList = mapper.Map<
+                            List<Models.PlanTemplate.Response.GetAllType.ResponseGetMembershipPlanDto>>(membershipPlans),
+                        PersonalTrainingPackageList = mapper.Map<
+                            List<Models.PlanTemplate.Response.GetAllType.ResponseGetPersonalTrainingPackageDto>>
+                            (personalTrainingPackages),
+                        TicketPlanList = mapper.Map<
+                            List<Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto>>(ticketPlans),
+                    };
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.PlanTemplate.Request;
@@ -876,6 +877,70 @@ namespace UnitTest.Test.PlanTemplateTest
             // Assert
             Assert.IsTrue(errorCode == ErrorCodeDefine.HasBeenModified);
             Assert.IsTrue(exception == null);
+        }
+
+        [TestMethod]
+        public void 取得全部有效方案清單_成功_回傳清單()
+        {
+            // Arrange
+            ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto response
+                = new ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto()
+            {
+                TicketPlanList = new List<ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto>()
+                {
+                    new ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto()
+                    {
+                        Price=100,
+                        TicketPlanId=1,
+                        UpdateTime=DateTime.Now,
+                    }
+                },
+                MembershipPlanList = null,
+                PersonalTrainingPackageList = null,
+            };
+
+            List<MembershipPlan> membershipPlans = new List<MembershipPlan>()
+            {
+                new MembershipPlan()
+                {
+                    MembershipPlanId=1,
+                    Name="qq",
+                    Price=100,
+                    UpdateTime = DateTime.Now,
+                }
+            };
+
+            List<PersonalTrainingPackage> personalTrainingPackageList = new List<PersonalTrainingPackage>()
+            {
+                new PersonalTrainingPackage()
+                {
+                    PersonalTrainingPackageId=1,
+                    Name="qq",
+                    Price=100,
+                    UpdateTime = DateTime.Now,
+                }
+            };
+
+            List<TicketPlan> TicketPlanList = new List<TicketPlan>()
+            {
+                new TicketPlan()
+                {
+                    TicketPlanId=1,
+                    Price=100,
+                    UpdateTime = DateTime.Now,
+                }
+            };
+
+
+            // Mock 設定
+            planTemplateRepositoryMock.Setup(s
+                => s.GetAllTypePlan()).Returns((membershipPlans, personalTrainingPackageList, TicketPlanList));
+
+            // Act
+            ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto result = service.GetAllTypePlan();
+
+            // Assert
+            Assert.IsTrue(result != null);
         }
     }
 }

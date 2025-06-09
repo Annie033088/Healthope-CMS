@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Web.Http;
 using ApiLayer.Models;
 using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.PlanTemplate.Response.GetAllType;
 using ApiLayer.Models.Response.PlanTemplate;
 using PersistentLayer.Models;
 
@@ -69,5 +71,10 @@ namespace ApiLayer.Interface
         /// </summary>
         (ErrorCodeDefine errorCode, Exception exception) EditPersonalTrainingPackage(
             RequestEditPersonalTrainingPackageDto editPlanDto, FileDto file);
+
+        /// <summary>
+        /// (新增訂單時) 取得所有方案
+        /// </summary>
+        ResponseGetAllTypePlanDto GetAllTypePlan();
     }
 }

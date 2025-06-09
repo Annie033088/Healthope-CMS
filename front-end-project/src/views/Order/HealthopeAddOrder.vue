@@ -17,6 +17,7 @@
             { value: 'training', text: '教練課方案' },
             { value: 'ticket', text: '票券方案' },
           ]"
+          @change="changePlanType"
         />
       </section>
 
@@ -35,37 +36,39 @@
         <h3>3. 選擇會員</h3>
         <SearchInput
           @search="searchMember"
-          placeholder="搜尋會員（姓名或電話）"
+          placeholder="搜尋（姓名或電話）"
           v-model="memberKeyword"
           @enter="searchMember"
         ></SearchInput>
-        <div v-if="filteredMembers.length > 0">
+        <div v-if="filteredMembers.length != 0">
           <h3>搜尋結果：</h3>
-          <div class="member-list">
+          <div class="">
             <div
               v-for="member in filteredMembers"
-              :key="member.id"
-              class="member-card"
+              :key="member.MemberId"
+              class="filterMemberCard"
               @click="selectMember(member)"
             >
               <p>
-                <strong>{{ member.name }}</strong>
+                <strong>{{ member.Name }}</strong>
               </p>
-              <p>電話：{{ member.phone }}</p>
+              <p>電話：{{ "0" + member.Phone }}</p>
             </div>
           </div>
         </div>
-        <div v-else-if="memberKeyword">
+        <div v-else-if="!selectDefaultFlag">
           <p>查無會員</p>
         </div>
         <div v-if="selectedMember">
           <h3>已選擇會員</h3>
-          <div class="member-selected">
-            <p>
-              <strong>{{ selectedMember.name }}</strong>
+          <div class="filterMemberCard">
+            <p class="">
+              <strong>{{ selectedMember.Name }}</strong>
             </p>
-            <p>電話：{{ selectedMember.phone }}</p>
-            <button @click="clearSelected">取消選擇</button>
+            <p>
+              電話：{{ "0" + selectedMember.Phone }}
+              <BtnNormal @click="clearSelected" text="取消選擇"></BtnNormal>
+            </p>
           </div>
         </div>
       </section>
@@ -89,8 +92,8 @@
           labelText="請選擇讀卡機："
           :parentValue.sync="selectedReader"
           :options="[
-            { value: '1', text: 'Pax A920' },
-            { value: '2', text: 'USB Reader' },
+            { value: 'Reader01', text: 'Pax A920' },
+            { value: 'Reader02', text: 'USB Reader' },
           ]"
         />
         <div v-if="addOrderDto.paymentMethod === '1'">
@@ -100,7 +103,7 @@
             inputType="number"
             v-model="paymentAmount"
           ></InputSpan>
-          <p>找零：{{ paymentAmount ? paymentAmount - 100 : "X" }}</p>
+          <p>找零：{{ change ? change + "元" : "X" }}</p>
         </div>
       </section>
 
@@ -147,6 +150,7 @@ export default {
       selectedReader: "",
       filteredMembers: [],
       selectedMember: null,
+      selectDefaultFlag: true,
       products: {
         membership: [
           { Id: "m1", Name: "1個月會籍", Price: 1200 },
@@ -155,6 +159,7 @@ export default {
         training: [{ Id: "t5", Name: "5堂教練課", Price: 5000 }],
         ticket: [{ Id: "tk10", Name: "10次入場券", Price: 1000 }],
       },
+      hintText: "",
     };
   },
   computed: {
@@ -165,17 +170,30 @@ export default {
       let options = [];
       this.filteredProducts.forEach((product) => {
         const option = {
-          value: product.id,
+          value: product.Id,
           text: `${product.Name} - $${product.Price}`,
         };
         options.push(option);
       });
       return options;
     },
+    change() {
+      if (this.addOrderDto.productId && this.paymentAmount) {
+        const product = this.filteredProducts.find(
+          (product) => product.Id === this.addOrderDto.productId
+        );
+
+        if (product) return this.paymentAmount - product.Price;
+      }
+      return null;
+    },
   },
   methods: {
+    changePlanType() {
+      this.addOrderDto.productId = "";
+    },
     async searchMember() {
-      const keyword = this.keyword.trim();
+      const keyword = this.memberKeyword.trim();
       if (!keyword) {
         this.filteredMembers = [];
         return;
@@ -187,6 +205,7 @@ export default {
         Phone: phoneRegex.test(keyword) ? keyword : null,
         Name: phoneRegex.test(keyword) ? null : keyword,
       };
+
       try {
         // post
         const response = await this.$axios.post(
@@ -195,7 +214,11 @@ export default {
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.filteredMembers = response.data.ApiDataObject.MemberList;
+          this.filteredMembers = response.data.ApiDataObject;
+
+          if (response.data.ApiDataObject.length === 0)
+            this.selectDefaultFlag = false;
+          else this.selectDefaultFlag = true;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
@@ -221,26 +244,97 @@ export default {
       }
     },
     selectMember(member) {
+      if (!member.PhoneVerified) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle =
+          "尚未驗證手機的會員不得購買方案!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
       this.selectedMember = member;
     },
     clearSelected() {
       this.selectedMember = null;
     },
-    submitOrder() {
-      if (!this.addOrderDto.productId || !this.addOrderDto.memberId) {
-        alert("請選擇商品與會員");
+    async submitOrder() {
+      if (!this.validInput()) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle =
+          "發生錯誤!" + this.hintText;
+        this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
 
-      const order = {
-        memberId: this.addOrderDto.memberId,
-        productType: this.addOrderDto.productType,
-        productId: this.addOrderDto.productId,
-        paymentMethod: this.addOrderDto.paymentMethod,
+      let amount = null;
+      let productName = null;
+
+      this.filteredProducts.forEach((product) => {
+        if (product.Id === this.addOrderDto.productId) {
+          amount = product.Price;
+          productName = product.Name;
+        }
+      });
+
+      if (!amount) return;
+
+      const addOrderDto = {
+        MemberId: this.selectedMember.MemberId,
+        ProductType: this.addOrderDto.productType,
+        ProductId: this.addOrderDto.productId,
+        PaymentMethod: this.addOrderDto.paymentMethod,
+        CardReaderId: this.selectedReader,
+        Amount: amount,
       };
 
-      // 前往結帳頁並傳入 order
-      this.$router.push({ name: "HealthopeCheckoutOrder", params: { order } });
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/AddOrder",
+          addOrderDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          const order = {
+            OrderId:response.data.ApiDataObject.OrderId,
+            MemberName: this.selectedMember.Name,
+            MemberPhone: this.selectedMember.Phone,
+            ProductName: productName,
+            PaymentMethod: this.addOrderDto.paymentMethod,
+            Amount: amount,
+          };
+          
+          this.$router.push({
+            name: "HealthopeCheckoutOrder",
+            query: {
+              order: JSON.stringify(order),
+            },
+          });
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "/";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("新增訂單時發生錯誤", error);
+      }
     },
     async getAllTypePlan() {
       try {
@@ -299,6 +393,59 @@ export default {
         console.error("取得方案時發生錯誤", error);
       }
     },
+    validInput() {
+      const IntMax = 2147483647;
+      let productId = Number(this.addOrderDto.productId);
+      if (
+        !Number.isInteger(productId) ||
+        productId < 1 ||
+        // 超出安全整數範圍
+        productId > IntMax
+      ) {
+        this.hintText = "方案錯誤";
+        return false;
+      }
+
+      if (!this.selectedMember) {
+        this.hintText = "請選擇會員";
+        return false;
+      }
+
+      let memberId = Number(this.selectedMember.MemberId);
+      if (
+        !Number.isInteger(memberId) ||
+        memberId < 1 ||
+        // 超出安全整數範圍
+        memberId > IntMax
+      ) {
+        this.hintText = "會員錯誤";
+        return false;
+      }
+
+      if (
+        this.addOrderDto.productType !== "membership" &&
+        this.addOrderDto.productType !== "training" &&
+        this.addOrderDto.productType !== "ticket"
+      ) {
+        this.hintText = "方案類別錯誤";
+        return false;
+      }
+
+      if (
+        this.addOrderDto.paymentMethod !== "1" &&
+        this.addOrderDto.paymentMethod !== "2"
+      ) {
+        this.hintText = "付款方式錯誤";
+        return false;
+      }
+
+      if (this.addOrderDto.paymentMethod === "2" && !this.selectedReader) {
+        this.hintText = "請選擇讀卡機";
+        return false;
+      }
+
+      return true;
+    },
   },
   created() {
     this.getAllTypePlan();
@@ -333,5 +480,18 @@ section {
 
 .inputSpanContainer {
   margin-top: 5px;
+}
+
+.filterMemberCard {
+  background-color: white;
+  margin: 1em 0;
+  padding: 1em;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.filterMemberCard:hover {
+  background: rgba(255, 255, 255, 0.668);
 }
 </style>

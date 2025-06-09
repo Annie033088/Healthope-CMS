@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Request;
 using ApiLayer.Models.Member.Response;
 using DomainLayer.Utility;
 using NLog;
@@ -186,6 +188,49 @@ namespace ApiLayer.Controllers.api
                     ApiDataObject = responseGetMemberDetail
                 };
 
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 根據電話或名稱取得會員
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetMemberByNameOrPhone([FromBody] RequestGetMemberByNameOrPhoneDto getMemberDto)
+        {
+            try
+            {
+                FormatValidation formatValidation = new FormatValidation();
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || (getMemberDto.Name != null && getMemberDto.Name.Length < 50)
+                    || (getMemberDto.Phone != null && !formatValidation.ValidPhone(getMemberDto.Phone.Value)))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                List<ResponseGetMemberByNameOrPhoneDto> reponseGet = memberService.GetMemberByNameOrPhone(getMemberDto);
+
+                if (reponseGet == null)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.GetFailed };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse<List<ResponseGetMemberByNameOrPhoneDto>>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = reponseGet
+                };
                 return Ok(response);
             }
             catch (Exception ex)

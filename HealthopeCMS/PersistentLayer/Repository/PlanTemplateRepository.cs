@@ -612,6 +612,9 @@ namespace PersistentLayer.Repository
             }
         }
 
+        /// <summary>
+        /// 修改教練課方案
+        /// </summary>
         public (ResultWithException result, string oldImageUrl) EditPersonalTrainingPackage(
             RequestEditPersonalTrainingPackageDto editPlanDto)
         {
@@ -678,6 +681,96 @@ namespace PersistentLayer.Repository
                     Exception = ex
                 };
                 return (result, string.Empty);
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// (新增訂單時) 取得所有方案
+        /// </summary>
+        public (List<MembershipPlan> membershipPlans, List<PersonalTrainingPackage> personalTrainingPackages,
+            List<TicketPlan> ticketPlans) GetAllTypePlan()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            List<MembershipPlan> membershipPlans = new List<MembershipPlan>();
+            List<PersonalTrainingPackage> personalTrainingPackages = new List<PersonalTrainingPackage>();
+            List<TicketPlan> ticketPlans = new List<TicketPlan>();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getAllTypePlan";
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                cmd.Connection.Close();
+
+                if (ds.Tables.Count > 0)
+                {
+                    // 取得會籍方案
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        MembershipPlan membershipPlan = new MembershipPlan();
+                        membershipPlan.MembershipPlanId = ds.Tables[0].Rows[i].IsNull("f_membershipPlanId") ? 0 :
+                            ds.Tables[0].Rows[i].Field<int>("f_membershipPlanId");
+                        membershipPlan.Name = ds.Tables[0].Rows[i].IsNull("f_name") ?
+                            string.Empty : ds.Tables[0].Rows[i].Field<string>("f_name");
+                        membershipPlan.Price = ds.Tables[0].Rows[i].IsNull("f_price") ? 0 :
+                            ds.Tables[0].Rows[i].Field<int>("f_price");
+                        membershipPlan.UpdateTime = ds.Tables[0].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[0].Rows[i].Field<DateTime>("f_updateTime");
+
+                        membershipPlans.Add(membershipPlan);
+                    }
+
+                    // 取得教練課
+                    for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                    {
+                        PersonalTrainingPackage personalTrainingPackage = new PersonalTrainingPackage();
+                        personalTrainingPackage.PersonalTrainingPackageId =
+                            ds.Tables[1].Rows[i].IsNull("f_personalTrainingPackageId") ? 0 :
+                            ds.Tables[1].Rows[i].Field<int>("f_personalTrainingPackageId");
+                        personalTrainingPackage.Name = ds.Tables[1].Rows[i].IsNull("f_name") ?
+                            string.Empty : ds.Tables[1].Rows[i].Field<string>("f_name");
+                        personalTrainingPackage.Price = ds.Tables[1].Rows[i].IsNull("f_price") ? 0 :
+                            ds.Tables[1].Rows[i].Field<int>("f_price");
+                        personalTrainingPackage.UpdateTime = ds.Tables[1].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[1].Rows[i].Field<DateTime>("f_updateTime");
+
+                        personalTrainingPackages.Add(personalTrainingPackage);
+                    }
+
+                    // 取得教練課
+                    for (int i = 0; i < ds.Tables[2].Rows.Count; i++)
+                    {
+                        TicketPlan ticketPlan = new TicketPlan();
+                        ticketPlan.TicketPlanId =
+                            ds.Tables[2].Rows[i].IsNull("f_ticketPlanId") ? 0 :
+                            ds.Tables[2].Rows[i].Field<int>("f_ticketPlanId");
+                        ticketPlan.Price = ds.Tables[2].Rows[i].IsNull("f_price") ? 0 :
+                            ds.Tables[2].Rows[i].Field<int>("f_price");
+                        ticketPlan.UpdateTime = ds.Tables[2].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[2].Rows[i].Field<DateTime>("f_updateTime");
+
+                        ticketPlans.Add(ticketPlan);
+                    }
+
+                    return (membershipPlans, personalTrainingPackages, ticketPlans);
+                }
+
+                return (null, null, null);
+            }
+            catch (Exception)
+            {
+                throw;
             }
             finally
             {

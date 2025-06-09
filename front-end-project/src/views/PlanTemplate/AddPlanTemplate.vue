@@ -180,7 +180,12 @@ export default {
         // post後回傳
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.verifyFail = false;
-          this.$router.push("/plan");
+          if (this.ticketFlag) this.$router.push("/plan/ticket");
+          else if (this.membershipFlag)
+            this.$router.push("/plan/membershipPlan");
+          else if (this.personalTrainingFlag)
+            this.$router.push("/plan/personalTrainingPackage");
+
           return;
         } else {
           // 設定彈窗資料

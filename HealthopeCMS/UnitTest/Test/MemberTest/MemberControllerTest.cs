@@ -4,6 +4,7 @@ using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
+using ApiLayer.Models.Member.Request;
 using ApiLayer.Models.Member.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -254,6 +255,60 @@ namespace UnitTest.Test.MemberTest
 
             // Act
             IHttpActionResult result = memberController.GetMemberDetail(memberIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
+        }
+
+        [TestMethod]
+        public void 根據名稱或手機取得會員_成功_回傳會員資料()
+        {
+            // Arrange
+            RequestGetMemberByNameOrPhoneDto getMemberDto = new RequestGetMemberByNameOrPhoneDto()
+            {
+                Name = null,
+                Phone = 0987654321
+            };
+
+            ResponseGetMemberByNameOrPhoneDto response = new ResponseGetMemberByNameOrPhoneDto()
+            {
+                Name = "okwopekq122",
+                Phone = 987654342,
+                MemberId = 1,
+                PhoneVerified = true,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Mock 設定
+            memberServiceMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(response);
+
+            // Act
+            IHttpActionResult result = memberController.GetMemberByNameOrPhone(getMemberDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetMemberByNameOrPhoneDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetMemberByNameOrPhoneDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, response));
+        }
+
+        [TestMethod]
+        public void 根據名稱或手機取得會員_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetMemberByNameOrPhoneDto getMemberDto = new RequestGetMemberByNameOrPhoneDto()
+            {
+                Name = null,
+                Phone = 0987654321
+            };
+
+            ResponseGetMemberByNameOrPhoneDto response = null;
+
+            // Mock 設定
+            memberServiceMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(response);
+
+            // Act
+            IHttpActionResult result = memberController.GetMemberByNameOrPhone(getMemberDto);
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();

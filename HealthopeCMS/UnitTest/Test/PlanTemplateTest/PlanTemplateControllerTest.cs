@@ -10,6 +10,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.PlanTemplate.Response.GetAllType;
 using ApiLayer.Models.Response.PlanTemplate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -839,48 +840,39 @@ namespace UnitTest.Test.PlanTemplateTest
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
-        //[TestMethod]
-        //public void 刪除_成功_回傳成功()
-        //{
-        //    // Arrange
-        //    RequestShowcaseIdDto showcaseIdDto = new RequestShowcaseIdDto()
-        //    {
-        //        GroupClassShowcaseId = 10,
-        //    };
 
-        //    bool successFlag = true;
+        [TestMethod]
+        public void 取得全部有效方案清單_成功_回傳清單()
+        {
+            // Arrange
+            ResponseGetAllTypePlanDto response = new ResponseGetAllTypePlanDto()
+            {
+                TicketPlanList = new List<ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto>()
+                {
+                    new ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto()
+                    {
+                        Price=100,
+                        TicketPlanId=1,
+                        UpdateTime=DateTime.Now,
+                    }
+                },
+                MembershipPlanList = null,
+                PersonalTrainingPackageList = null,
+            };
 
-        //    // Mock 設定
-        //    groupClassShowcaseServiceMock.Setup(s => s.DeleteShowcase(showcaseIdDto)).Returns(successFlag);
 
-        //    // Act
-        //    IHttpActionResult result = groupClassShowcaseController.DeleteShowcase(showcaseIdDto);
+            // Mock 設定
+            planTemplateServiceMock.Setup(s
+                => s.GetAllTypePlan()).Returns(response);
 
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
-        //}
+            // Act
+            IHttpActionResult result = controller.GetAllTypePlan();
 
-        //[TestMethod]
-        //public void 刪除_失敗_回傳失敗()
-        //{
-        //    // Arrange
-        //    RequestShowcaseIdDto showcaseIdDto = new RequestShowcaseIdDto()
-        //    {
-        //        GroupClassShowcaseId = 10,
-        //    };
-
-        //    bool successFlag = false;
-
-        //    // Mock 設定
-        //    groupClassShowcaseServiceMock.Setup(s => s.DeleteShowcase(showcaseIdDto)).Returns(successFlag);
-
-        //    // Act
-        //    IHttpActionResult result = groupClassShowcaseController.DeleteShowcase(showcaseIdDto);
-
-        //    // Assert
-        //    ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-        //    Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DeleteFailed));
-        //}
+            // Assert
+            ResponseIsEqual<ResponseGetAllTypePlanDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetAllTypePlanDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, response));
+        }
     }
 }

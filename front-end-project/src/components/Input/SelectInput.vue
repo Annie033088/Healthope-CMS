@@ -26,19 +26,20 @@
 export default {
   name: "SelectInput",
   props: {
-    labelText:{
-        type:String
+    labelText: {
+      type: String,
     },
     parentValue: {
       type: [String, Number],
       required: true,
+      default: "",
     },
     options: {
       type: Array,
     },
-    required:{
-      default:false
-    }
+    required: {
+      default: false,
+    },
   },
   data() {
     return {

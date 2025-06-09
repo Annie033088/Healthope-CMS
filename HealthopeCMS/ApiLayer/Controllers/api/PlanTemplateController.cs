@@ -10,6 +10,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.PlanTemplate.Response.GetAllType;
 using ApiLayer.Models.Response.PlanTemplate;
 using DomainLayer.Utility;
 using NLog;
@@ -618,6 +619,31 @@ namespace ApiLayer.Controllers.api
                 }
 
                 response = new ResultResponse() { ErrorCode = errorCode };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// (新增訂單時) 取得所有方案
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetAllTypePlan()
+        {
+            try
+            {
+                ResultResponse response;
+                ResponseGetAllTypePlanDto responseGetAllTypePlanDto = planTemplateService.GetAllTypePlan();
+                response = new ResultResponse<ResponseGetAllTypePlanDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGetAllTypePlanDto
+                };
                 return Ok(response);
             }
             catch (Exception ex)

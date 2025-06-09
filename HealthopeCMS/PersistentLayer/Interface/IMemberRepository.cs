@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ApiLayer.Models.Member.Request;
 using DomainLayer.Models;
 using PersistentLayer.Models;
 
@@ -25,5 +26,10 @@ namespace PersistentLayer.Interface
         /// 取得會員詳細資料
         /// </summary>
         Member GetMemberDetail(int memberId);
+
+        /// <summary>
+        /// 根據電話或名稱取得會員
+        /// </summary>
+        List<Member> GetMemberByNameOrPhone(RequestGetMemberByNameOrPhoneDto getMemberDto);
     }
 }

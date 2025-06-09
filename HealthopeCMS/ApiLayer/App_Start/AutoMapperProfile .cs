@@ -30,7 +30,8 @@ namespace ApiLayer.App_Start
             CreateMap<Admin, ResponseGetAdminDto>();
             CreateMap<Member, ResponseGetMemberDto>();
             CreateMap<Member, ResponseGetMemberEditDataByIdDto>();
-            CreateMap<Member, ResponseGetMemberDetailDto>();
+            CreateMap<Member, ResponseGetMemberByNameOrPhoneDto>();
+            CreateMap<Member, ResponseGetMemberByNameOrPhoneDto>();
             CreateMap<Coach, ResponseGetCoachEditDataByIdDto>();
             CreateMap<Coach, ResponseGetCoachDto>();
             CreateMap<RequestAddCoachDto, Coach>()
@@ -51,6 +52,9 @@ namespace ApiLayer.App_Start
             CreateMap<MembershipPlan, ResponseGetMembershipPlanDto>();
             CreateMap<PersonalTrainingPackage, ResponseGetPersonalTrainingPackageDto>();
             CreateMap<TicketPlan, ResponseGetTicketPlanDto>();
+            CreateMap<MembershipPlan, Models.PlanTemplate.Response.GetAllType.ResponseGetMembershipPlanDto>();
+            CreateMap<PersonalTrainingPackage, Models.PlanTemplate.Response.GetAllType.ResponseGetPersonalTrainingPackageDto>();
+            CreateMap<TicketPlan, Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto>();
             CreateMap<MembershipPlan, ResponseGetMembershipPlanEditDataDto>();
             CreateMap<PersonalTrainingPackage, ResponseGetPersonalTrainingPackageEditDataDto>();
             CreateMap<RequestGetOldTermDto, Term>();

@@ -189,6 +189,25 @@ export default function (mock) {
             EmergencyContactPhone: 0,
             EmergencyContactRelation: "",
             CreateTime: "2025-02-01T00:00:00",
+        },
+        {
+            MemberId: 11,
+            Name: "陳小明",
+            Phone: 920222233,
+            Email: "",
+            BirthDay: "0001-01-01",
+            Gender: 0,
+            Height: 0,
+            Weight: 0,
+            Status: true,
+            AbsenceTime: 3,
+            AllowGroupClass: "2025-05-01T00:00:00",
+            MembershipExpiry: "2025-11-01T00:00:00",
+            PhoneVerified: false,
+            EmergencyContactName: "",
+            EmergencyContactPhone: 0,
+            EmergencyContactRelation: "",
+            CreateTime: "2025-01-06T00:00:00",
         }
     ];
 
@@ -290,11 +309,11 @@ export default function (mock) {
 
         // 1️⃣ 篩選
         let filtered = members.filter(item => {
-            const matchPhone = Phone === null || item.Phone === Phone;
+            const matchPhone = Phone === null || item.Phone === Number(Phone);
             const matchName = !Name || item.Name.includes(Name);
             return matchName && matchPhone;
         });
 
-        return [200, { ErrorCode: 1, filtered }]
+        return [200, { ErrorCode: 1, ApiDataObject: filtered }]
     })
 }
