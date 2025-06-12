@@ -1,16 +1,10 @@
 <template>
-  <div v-if="visible" class="modalBackdrop">
+  <div class="modalBackdrop">
     <div class="modal">
       <h2>💳 刷卡付款</h2>
-      <p v-if="!done">{{ loadingMessage }}</p>
-      <p v-if="done">{{ resultMessage }}</p>
+      <p>{{ loadingMessage }}</p>
 
       <div class="spinner" v-if="isLoading"></div>
-
-      <div class="actions" v-if="done">
-        <button @click="retry">重新刷卡</button>
-        <button @click="close">關閉</button>
-      </div>
     </div>
   </div>
 </template>
@@ -19,61 +13,49 @@
 export default {
   name: "CardPaymentBox",
   props: {
-    orderId: {
-      type: Number,
+    order: {
+      type: Object,
       required: true,
-    },
-    visible: {
-      type: Boolean,
-      default: false,
     },
   },
   data() {
     return {
       isLoading: false,
-      done: false,
-      resultMessage: "",
       loadingMessage: "請將卡片放在讀卡機上...",
     };
   },
   methods: {
     async startPayment() {
       this.isLoading = true;
-      this.done = false;
-      this.resultMessage = "";
 
-      let orderIdDto = {
-        OrderId: this.orderId,
+      let payByCardDto = {
+        OrderId: this.order.OrderId,
+        CardReaderId: this.order.CardReaderId,
+        UpdateTime: this.order.UpdateTime,
       };
+
       try {
         // post
         const response = await this.$axios.post(
           "/api/Order/PayByCard",
-          orderIdDto
+          payByCardDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.resultMessage = "✅ 付款成功！";
+          this.$emit("cardPaySuccess");
         } else {
-          this.resultMessage = `❌ 付款失敗：${response.data.message}`;
+          this.$emit("cardPayFail");
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxTitle = "刷卡發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得會員時發生錯誤", error);
+        console.error("刷卡付款時發生錯誤", error);
       } finally {
         this.isLoading = false;
-        this.done = true;
       }
-    },
-    retry() {
-      this.startPayment();
-    },
-    close() {
-      this.$emit("close");
     },
   },
   mounted() {
@@ -117,20 +99,6 @@ export default {
 
 .actions {
   margin-top: 20px;
-}
-
-button {
-  margin: 0 5px;
-  padding: 6px 12px;
-  border: none;
-  background: #007bff;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #0056b3;
 }
 
 @keyframes spin {

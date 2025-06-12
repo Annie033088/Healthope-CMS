@@ -25,5 +25,10 @@ namespace PersistentLayer.Interface
         /// 修改教練
         /// </summary>
         (ResultWithException result, string oldPhotoUrl) EditCoach(RequestEditCoachDto editCoachDto);
+
+        /// <summary>
+        /// 取得私人教練
+        /// </summary>
+        List<Coach> GetPersonalCoach();
     }
 }

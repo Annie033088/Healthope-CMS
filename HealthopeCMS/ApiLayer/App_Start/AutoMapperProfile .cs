@@ -10,6 +10,8 @@ using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
 using ApiLayer.Models.Member.Response;
+using ApiLayer.Models.Order.Request;
+using ApiLayer.Models.Order.Response;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
 using ApiLayer.Models.Response.PlanTemplate;
@@ -71,6 +73,9 @@ namespace ApiLayer.App_Start
             CreateMap<RequestAddInvoiceTrackNumberDto, InvoiceTrackNumber>();
             CreateMap<InvoiceTrackNumber, ResponseGetInvoiceTrackNumberDto>();
             CreateMap<RequestEditInvoiceTrackNumberStatusDto, InvoiceTrackNumber>();
+            CreateMap<Order, ResponseAddOrderDto>();
+            CreateMap<RequestAddOrderDto, Order>();
+            CreateMap<Coach, ResponseGetPersonalCoachDto>();
         }
     }
 }

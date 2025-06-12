@@ -291,5 +291,31 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+
+        /// <summary>
+        /// 取得私人教練
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetPersonalCoach()
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+                List<ResponseGetPersonalCoachDto> responseGetPersonalCoachDto = coachService.GetPersonalCoach();
+                response = new ResultResponse<List<ResponseGetPersonalCoachDto>>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGetPersonalCoachDto
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

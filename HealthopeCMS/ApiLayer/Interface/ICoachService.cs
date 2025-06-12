@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ApiLayer.Models;
 using ApiLayer.Models.Coach.Request;
 using ApiLayer.Models.Coach.Response;
@@ -28,5 +29,10 @@ namespace ApiLayer.Interface
         /// 修改教練
         /// </summary>
         (ErrorCodeDefine errorCode, Exception exception) EditCoach(RequestEditCoachDto editCoachDto, FileDto file);
+
+        /// <summary>
+        /// 取得私人教練
+        /// </summary>
+        List<ResponseGetPersonalCoachDto> GetPersonalCoach();
     }
 }

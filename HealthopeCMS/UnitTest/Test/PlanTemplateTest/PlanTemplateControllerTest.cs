@@ -327,12 +327,6 @@ namespace UnitTest.Test.PlanTemplateTest
                 RecordPerPage = 10, // 只允許 8 或 12 或 16
             };
 
-            ResponseGetMembershipPlanListDto response = new ResponseGetMembershipPlanListDto()
-            {
-                MembershipPlanList = null,
-                TotalPage = 1,
-            };
-
             // Act
             IHttpActionResult result = controller.GetMembershipPlan(getPlanDto);
 
@@ -388,12 +382,6 @@ namespace UnitTest.Test.PlanTemplateTest
                 RecordPerPage = 10, // 只允許 8 或 12 或 16
             };
 
-            ResponseGetPersonalTrainingPackageListDto response = new ResponseGetPersonalTrainingPackageListDto()
-            {
-                PersonalTrainingPackageList = null,
-                TotalPage = 1,
-            };
-
             // Act
             IHttpActionResult result = controller.GetPersionalTrainingPackage(getPlanDto);
 
@@ -447,12 +435,6 @@ namespace UnitTest.Test.PlanTemplateTest
                 SortOrder = "descending", // 只允許 descending 或 ascending
                 SortOption = "name",// 只允許 status | price | null
                 RecordPerPage = 10, // 只允許 8 或 12 或 16
-            };
-
-            ResponseGetTicketPlanListDto response = new ResponseGetTicketPlanListDto()
-            {
-                TicketPlanList = null,
-                TotalPage = 1,
             };
 
             // Act
@@ -853,7 +835,6 @@ namespace UnitTest.Test.PlanTemplateTest
                     {
                         Price=100,
                         TicketPlanId=1,
-                        UpdateTime=DateTime.Now,
                     }
                 },
                 MembershipPlanList = null,

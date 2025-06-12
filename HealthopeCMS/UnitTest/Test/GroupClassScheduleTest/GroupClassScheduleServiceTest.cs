@@ -150,7 +150,7 @@ namespace UnitTest.Test.GroupClassScheduleTest
             ErrorCodeDefine result = service.AddSchedule(addScheduleDto);
 
             // Assert
-            Assert.IsTrue(result == ErrorCodeDefine.Success);
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
         }
 
         [TestMethod]
@@ -182,7 +182,7 @@ namespace UnitTest.Test.GroupClassScheduleTest
             ErrorCodeDefine result = service.AddSchedule(addScheduleDto);
 
             // Assert
-            Assert.IsTrue(result == ErrorCodeDefine.InvalidFormatOrEntry);
+            Assert.AreEqual(result, ErrorCodeDefine.InvalidFormatOrEntry);
         }
 
         [TestMethod]
@@ -214,7 +214,7 @@ namespace UnitTest.Test.GroupClassScheduleTest
             ErrorCodeDefine result = service.AddSchedule(addScheduleDto);
 
             // Assert
-            Assert.IsTrue(result == ErrorCodeDefine.DuplicatePlaceAndTime);
+            Assert.AreEqual(result, ErrorCodeDefine.DuplicatePlaceAndTime);
         }
 
         [TestMethod]

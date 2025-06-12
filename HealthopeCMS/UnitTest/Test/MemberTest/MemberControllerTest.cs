@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
@@ -271,13 +272,15 @@ namespace UnitTest.Test.MemberTest
                 Phone = 0987654321
             };
 
-            ResponseGetMemberByNameOrPhoneDto response = new ResponseGetMemberByNameOrPhoneDto()
+            List<ResponseGetMemberByNameOrPhoneDto> response = new List<ResponseGetMemberByNameOrPhoneDto>()
             {
-                Name = "okwopekq122",
-                Phone = 987654342,
-                MemberId = 1,
-                PhoneVerified = true,
-                UpdateTime = DateTime.Now,
+               new ResponseGetMemberByNameOrPhoneDto
+               {
+                    Name = "okwopekq122",
+                    Phone = 987654342,
+                    MemberId = 1,
+                    PhoneVerified = true,
+               }
             };
 
             // Mock 設定
@@ -287,8 +290,8 @@ namespace UnitTest.Test.MemberTest
             IHttpActionResult result = memberController.GetMemberByNameOrPhone(getMemberDto);
 
             // Assert
-            ResponseIsEqual<ResponseGetMemberByNameOrPhoneDto> responseIsEqual =
-                new ResponseIsEqual<ResponseGetMemberByNameOrPhoneDto>();
+            ResponseIsEqual<List<ResponseGetMemberByNameOrPhoneDto>> responseIsEqual =
+                new ResponseIsEqual<List<ResponseGetMemberByNameOrPhoneDto>>();
             Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, response));
         }
 
@@ -302,7 +305,7 @@ namespace UnitTest.Test.MemberTest
                 Phone = 0987654321
             };
 
-            ResponseGetMemberByNameOrPhoneDto response = null;
+            List<ResponseGetMemberByNameOrPhoneDto> response = null;
 
             // Mock 設定
             memberServiceMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(response);

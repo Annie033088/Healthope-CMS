@@ -9,23 +9,37 @@
       <section>
         <h3>訂單摘要</h3>
         <p>會員：{{ order.MemberName }}（0{{ order.MemberPhone }}）</p>
-        <p>商品：{{ order.ProductName }}</p>
+        <p>商品：{{ order.PlanName }}</p>
+        <p v-if="order.CoachName">教練：{{ order.CoachName }}</p>
         <p>價格：NT$ {{ order.Amount }}元</p>
         <p>付款方式： {{ paymentMethodLabel }}</p>
       </section>
 
       <!-- 2. 成功提示 -->
-      <div v-if="paid">
+      <div v-if="paid && paidSuccess">
         <h3>✅ 收款成功！</h3>
         <p>訂單已完成</p>
         <BtnNormal @click="redirect('/')" text="返回首頁"></BtnNormal>
+      </div>
+
+      <!-- 2. 失敗提示 -->
+      <div v-if="paid && !paidSuccess">
+        <h3>❌ 付款失敗：請再試一次</h3>
+        <BtnNormal @click="retryCardPay" text="重新刷卡"></BtnNormal>
+        <BtnNormal
+          class="btnFailToHome"
+          @click="redirect('/')"
+          text="返回首頁"
+        ></BtnNormal>
       </div>
     </div>
 
     <CardPaymentBox
       v-if="showPaymentBox"
-      :orderId="order.OrderId"
+      :order="order"
       @close="showPaymentBox = false"
+      @cardPaySuccess="cardPaySuccess"
+      @cardPayFail="cardPayFail"
     />
   </div>
 </template>
@@ -48,11 +62,57 @@ export default {
       paid: false,
       order: {},
       showPaymentBox: false,
+      paidSuccess: false,
     };
   },
   methods: {
     redirect(path) {
       this.$router.push(path);
+    },
+    cardPaySuccess() {
+      this.showPaymentBox = false;
+      this.paidSuccess = true;
+      this.paid = true;
+    },
+    cardPayFail() {
+      this.showPaymentBox = false;
+      this.paidSuccess = false;
+      this.paid = true;
+    },
+    retryCardPay() {
+      this.showPaymentBox = true;
+    },
+    async payByCash() {
+      let payByCashDto = {
+        OrderId: this.order.OrderId,
+        UpdateTime: this.order.UpdateTime,
+        CoachId: this.order.CoachId ?? null,
+      };
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/PayByCash",
+          payByCashDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.paid = true;
+          this.paidSuccess = true;
+        } else {
+          this.paid = true;
+          this.paidSuccess = false;
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "現金付款發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("現金付款時發生錯誤", error);
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
   computed: {
@@ -68,7 +128,9 @@ export default {
     },
   },
   mounted() {
-    if (this.order.PaymentMethod === "1") this.paid = true;
+    if (this.order.PaymentMethod === "1") {
+      this.payByCash();
+    }
     if (this.order.PaymentMethod === "2") this.showPaymentBox = true;
   },
   created() {
@@ -90,5 +152,9 @@ section {
   padding: 1em;
   border: 1px solid #ccc;
   border-radius: 8px;
+}
+
+.btnFailToHome {
+  margin-left: 5px;
 }
 </style>

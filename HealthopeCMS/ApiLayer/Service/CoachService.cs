@@ -180,5 +180,18 @@ namespace ApiLayer.Service
                 throw;
             }
         }
+
+        public List<ResponseGetPersonalCoachDto> GetPersonalCoach()
+        {
+            try
+            {
+                List<Coach> coaches = coachRepository.GetPersonalCoach();
+                return mapper.Map<List<ResponseGetPersonalCoachDto>>(coaches);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

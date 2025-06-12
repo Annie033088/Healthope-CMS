@@ -56,6 +56,7 @@
     <Compile Include="Models\LeaseAgreement.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\MembershipPlan.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\PersonalTrainingPackage.cs" />
     <Compile Include="Models\Term.cs" />
     <Compile Include="Models\TicketPlan.cs" />

@@ -131,5 +131,30 @@
         /// 已有啟用中的字軌
         /// </summary>
         ActiveInvoiceTrackNumber = 25,
+
+        /// <summary>
+        /// 會員被 ban
+        /// </summary>
+        MemberBaned = 26,
+
+        /// <summary>
+        /// 手機尚未驗證
+        /// </summary>
+        PhoneNotVerify = 27,
+
+        /// <summary>
+        /// 方案不可用(狀態為無效)
+        /// </summary>
+        PlanNotAvailable = 28,
+
+        /// <summary>
+        /// 字軌未設定(請使用者去設定)
+        /// </summary>
+        TrackNotSet = 29,
+
+        /// <summary>
+        /// 教練被設置無效
+        /// </summary>
+        CoachBaned = 30,
     }
 }

@@ -38,11 +38,6 @@ namespace ApiLayer.Models.PlanTemplate.Response.GetAllType
         /// 價格
         /// </summary>
         public int Price { get; set; }
-
-        /// <summary>
-        /// 最後更新時間
-        /// </summary>
-        public DateTime UpdateTime { get; set; }
     }
 
     public class ResponseGetPersonalTrainingPackageDto
@@ -61,11 +56,6 @@ namespace ApiLayer.Models.PlanTemplate.Response.GetAllType
         /// 價格
         /// </summary>
         public int Price { get; set; }
-
-        /// <summary>
-        /// 最後更新時間
-        /// </summary>
-        public DateTime UpdateTime { get; set; }
     }
 
     public class ResponseGetTicketPlanDto
@@ -79,10 +69,5 @@ namespace ApiLayer.Models.PlanTemplate.Response.GetAllType
         /// 價格
         /// </summary>
         public int Price { get; set; }
-
-        /// <summary>
-        /// 最後更新時間
-        /// </summary>
-        public DateTime UpdateTime { get; set; }
     }
 }

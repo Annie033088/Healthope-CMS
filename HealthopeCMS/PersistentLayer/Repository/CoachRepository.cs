@@ -327,5 +327,49 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        public List<Coach> GetPersonalCoach()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            List<Coach> coaches = new List<Coach>();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getPersonalCoach";
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                cmd.Connection.Close();
+
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    DataRow dr = dt.Rows[i];
+                    Coach coach = new Coach()
+                    {
+                        CoachId = dr.IsNull("f_coachId") ? 0 : dr.Field<int>("f_coachId"),
+                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
+                        Phone = dr.IsNull("f_phone") ? 0 : dr.Field<int>("f_phone"),
+                    };
+                    coaches.Add(coach);
+                }
+
+                return coaches;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

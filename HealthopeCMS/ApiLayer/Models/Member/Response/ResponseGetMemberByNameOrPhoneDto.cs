@@ -26,10 +26,5 @@ namespace ApiLayer.Models.Member.Response
         /// 名稱
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// 最後更新時間
-        /// </summary>
-        public DateTime UpdateTime { get; set; }
     }
 }

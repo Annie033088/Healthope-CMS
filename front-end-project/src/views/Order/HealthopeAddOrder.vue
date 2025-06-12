@@ -3,115 +3,129 @@
     <TitleCard text="訂單" @refreshPage="$emit('refreshPage')" />
     <SubTitleCard text="新增訂單"></SubTitleCard>
     <div class="createOrder">
-      <h2>新增訂單</h2>
+      <div v-if="step === 1">
+        <h2>新增訂單</h2>
 
-      <!-- 1. 選擇方案類型 -->
-      <section>
-        <h3>1. 選擇方案類型</h3>
-        <RadioInput
-          class="timeSelector"
-          v-model="addOrderDto.productType"
-          inputType="radioTime"
-          :options="[
-            { value: 'membership', text: '會籍方案' },
-            { value: 'training', text: '教練課方案' },
-            { value: 'ticket', text: '票券方案' },
-          ]"
-          @change="changePlanType"
-        />
-      </section>
+        <!-- 1. 選擇方案類型 -->
+        <section>
+          <h3>選擇方案類型</h3>
+          <RadioInput
+            class="timeSelector"
+            v-model="addOrderDto.planType"
+            inputType="radioTime"
+            :options="[
+              { value: '1', text: '會籍方案' },
+              { value: '2', text: '教練課方案' },
+              { value: '3', text: '票券方案' },
+            ]"
+            @change="changePlanType"
+          />
+        </section>
 
-      <!-- 2. 選擇商品 -->
-      <section v-if="addOrderDto.productType">
-        <h3>2. 選擇商品</h3>
-        <SelectInput
-          class="selectProduct"
-          :parentValue.sync="addOrderDto.productId"
-          :options="productOptions"
-        />
-      </section>
+        <!-- 2. 選擇方案 -->
+        <section v-if="addOrderDto.planType">
+          <h3>選擇方案</h3>
+          <SelectInput
+            class="selectPlan"
+            :parentValue.sync="addOrderDto.planId"
+            :options="planOptions"
+          />
+        </section>
 
-      <!-- 3. 搜尋或新增會員 -->
-      <section>
-        <h3>3. 選擇會員</h3>
-        <SearchInput
-          @search="searchMember"
-          placeholder="搜尋（姓名或電話）"
-          v-model="memberKeyword"
-          @enter="searchMember"
-        ></SearchInput>
-        <div v-if="filteredMembers.length != 0">
-          <h3>搜尋結果：</h3>
-          <div class="">
-            <div
-              v-for="member in filteredMembers"
-              :key="member.MemberId"
-              class="filterMemberCard"
-              @click="selectMember(member)"
-            >
-              <p>
-                <strong>{{ member.Name }}</strong>
-              </p>
-              <p>電話：{{ "0" + member.Phone }}</p>
+        <!-- 3. 搜尋或新增會員 -->
+        <section>
+          <h3>選擇會員</h3>
+          <SearchInput
+            @search="searchMember"
+            placeholder="搜尋（姓名或電話）"
+            v-model="memberKeyword"
+            @enter="searchMember"
+          ></SearchInput>
+          <div v-if="filteredMembers.length != 0">
+            <h3>搜尋結果：</h3>
+            <div class="">
+              <div
+                v-for="member in filteredMembers"
+                :key="member.MemberId"
+                class="filterMemberCard"
+                @click="selectMember(member)"
+              >
+                <p>
+                  <strong>{{ member.Name }}</strong>
+                </p>
+                <p>電話：{{ "0" + member.Phone }}</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-else-if="!selectDefaultFlag">
-          <p>查無會員</p>
-        </div>
-        <div v-if="selectedMember">
-          <h3>已選擇會員</h3>
-          <div class="filterMemberCard">
-            <p class="">
-              <strong>{{ selectedMember.Name }}</strong>
-            </p>
-            <p>
-              電話：{{ "0" + selectedMember.Phone }}
-              <BtnNormal @click="clearSelected" text="取消選擇"></BtnNormal>
-            </p>
+          <div v-else-if="!selectDefaultFlag">
+            <p>查無會員</p>
           </div>
-        </div>
-      </section>
+          <div v-if="selectedMember">
+            <h3>已選擇會員</h3>
+            <div class="filterMemberCard">
+              <p class="">
+                <strong>{{ selectedMember.Name }}</strong>
+              </p>
+              <p>
+                電話：{{ "0" + selectedMember.Phone }}
+                <BtnNormal @click="clearSelected" text="取消選擇"></BtnNormal>
+              </p>
+            </div>
+          </div>
+        </section>
 
-      <!-- 4. 選擇付款方式與發票 -->
-      <section class="">
-        <h3>4. 結帳資訊</h3>
-        <NormalSelector
-          class="paymentMethodSeletor selector"
-          labelText="付款方式："
-          :parentValue.sync="addOrderDto.paymentMethod"
-          :options="[
-            { value: '1', text: '現金' },
-            { value: '2', text: '信用卡' },
-          ]"
-        />
+        <!-- 4. 選擇付款方式與發票 -->
+        <section class="">
+          <h3>結帳資訊</h3>
+          <NormalSelector
+            class="paymentMethodSeletor selector"
+            labelText="付款方式："
+            :parentValue.sync="addOrderDto.paymentMethod"
+            :options="[
+              { value: '1', text: '現金' },
+              { value: '2', text: '信用卡' },
+            ]"
+          />
 
-        <NormalSelector
-          class="selector"
-          v-if="addOrderDto.paymentMethod === '2'"
-          labelText="請選擇讀卡機："
-          :parentValue.sync="selectedReader"
-          :options="[
-            { value: 'Reader01', text: 'Pax A920' },
-            { value: 'Reader02', text: 'USB Reader' },
-          ]"
-        />
-        <div v-if="addOrderDto.paymentMethod === '1'">
-          <InputSpan
-            class="inputSpanContainer"
-            labelText="付款金額"
-            inputType="number"
-            v-model="paymentAmount"
-          ></InputSpan>
-          <p>找零：{{ change ? change + "元" : "X" }}</p>
-        </div>
-      </section>
+          <NormalSelector
+            class="selector"
+            v-if="addOrderDto.paymentMethod === '2'"
+            labelText="請選擇讀卡機："
+            :parentValue.sync="selectedReader"
+            :options="[
+              { value: 'Reader01', text: 'Pax A920' },
+              { value: 'Reader02', text: 'USB Reader' },
+            ]"
+          />
+          <div v-if="addOrderDto.paymentMethod === '1'">
+            <InputSpan
+              class="inputSpanContainer"
+              labelText="付款金額"
+              inputType="number"
+              v-model="paymentAmount"
+            ></InputSpan>
+            <p>找零：{{ change ? change + "元" : "X" }}</p>
+          </div>
+        </section>
 
-      <!-- 5. 確認下單 -->
-      <section>
-        <h3>5. 完成訂單</h3>
-        <BtnNormal text="➕ 建立訂單並結帳" @click="submitOrder" />
-      </section>
+        <!-- 5. 確認下單 -->
+        <section>
+          <h3>完成訂單</h3>
+          <BtnNormal text="➕ 建立訂單並結帳" @click="submitOrder" />
+        </section>
+      </div>
+      <div v-else-if="step === 2">
+        <section>
+          <h3>選擇教練</h3>
+          <SelectInput
+            class="selectPlan"
+            :parentValue.sync="addOrderDto.coachId"
+            :options="coachOptions"
+          />
+          <h3>結帳</h3>
+          <BtnNormal text="➕ 進行結帳" @click="goCheckoutOrder" />
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -140,10 +154,11 @@ export default {
   data() {
     return {
       addOrderDto: {
-        productType: "",
-        productId: "",
+        planType: "",
+        planId: "",
         memberId: null,
         paymentMethod: "cash",
+        coachId: "",
       },
       memberKeyword: "",
       paymentAmount: "",
@@ -151,7 +166,7 @@ export default {
       filteredMembers: [],
       selectedMember: null,
       selectDefaultFlag: true,
-      products: {
+      plans: {
         membership: [
           { Id: "m1", Name: "1個月會籍", Price: 1200 },
           { Id: "m3", Name: "3個月會籍", Price: 3000 },
@@ -159,38 +174,56 @@ export default {
         training: [{ Id: "t5", Name: "5堂教練課", Price: 5000 }],
         ticket: [{ Id: "tk10", Name: "10次入場券", Price: 1000 }],
       },
+      coaches: [],
       hintText: "",
+      step: 1,
+      orderId: Number,
+      updateTime: String,
+      selectPlan: {},
     };
   },
   computed: {
-    filteredProducts() {
-      return this.products[this.addOrderDto.productType] || [];
+    filteredPlans() {
+      if (this.addOrderDto.planType === "1") return this.plans["membership"];
+      else if (this.addOrderDto.planType === "2") return this.plans["training"];
+      else if (this.addOrderDto.planType === "3") return this.plans["ticket"];
+
+      return [];
     },
-    productOptions() {
+    planOptions() {
       let options = [];
-      this.filteredProducts.forEach((product) => {
+      this.filteredPlans.forEach((plan) => {
         const option = {
-          value: product.Id,
-          text: `${product.Name} - $${product.Price}`,
+          value: plan.Id,
+          text: `${plan.Name} - $${plan.Price}`,
         };
         options.push(option);
       });
       return options;
     },
     change() {
-      if (this.addOrderDto.productId && this.paymentAmount) {
-        const product = this.filteredProducts.find(
-          (product) => product.Id === this.addOrderDto.productId
+      if (this.addOrderDto.planId && this.paymentAmount) {
+        const plan = this.filteredPlans.find(
+          (plan) => plan.Id === this.addOrderDto.planId
         );
 
-        if (product) return this.paymentAmount - product.Price;
+        if (plan) return this.paymentAmount - plan.Price;
       }
       return null;
+    },
+    coachOptions() {
+      if (this.addOrderDto.planType !== "2" || this.step !== 2) return [];
+
+      return this.coaches.map((coach) => ({
+        value: coach.CoachId,
+        text: coach.Name + ` (0${coach.Phone})`,
+      }));
     },
   },
   methods: {
     changePlanType() {
-      this.addOrderDto.productId = "";
+      this.addOrderDto.planId = "";
+      this.addOrderDto.coachId = "";
     },
     async searchMember() {
       const keyword = this.memberKeyword.trim();
@@ -268,44 +301,45 @@ export default {
         return;
       }
 
-      let amount = null;
-      let productName = null;
+      this.selectPlan = this.filteredPlans.find(
+        (plan) => plan.Id === this.addOrderDto.planId
+      );
 
-      this.filteredProducts.forEach((product) => {
-        if (product.Id === this.addOrderDto.productId) {
-          amount = product.Price;
-          productName = product.Name;
-        }
-      });
-
-      if (!amount) return;
+      if (!this.selectPlan) return;
 
       const addOrderDto = {
         MemberId: this.selectedMember.MemberId,
-        ProductType: this.addOrderDto.productType,
-        ProductId: this.addOrderDto.productId,
-        PaymentMethod: this.addOrderDto.paymentMethod,
-        CardReaderId: this.selectedReader,
-        Amount: amount,
+        PlanId: this.addOrderDto.planId,
+        Method: this.addOrderDto.paymentMethod,
+        PlanType: this.addOrderDto.planType,
       };
 
       try {
         // post
         const response = await this.$axios.post(
-          "/api/Order/AddOrder",
+          "/api/Order/AddOrderWithTicket",
           addOrderDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          if (this.addOrderDto.planType === "2") {
+            this.step = 2;
+            this.orderId = response.data.ApiDataObject.OrderId;
+            this.updateTime = response.data.ApiDataObject.UpdateTime;
+            return;
+          }
+
           const order = {
-            OrderId:response.data.ApiDataObject.OrderId,
+            OrderId: response.data.ApiDataObject.OrderId,
+            UpdateTime: response.data.ApiDataObject.UpdateTime,
             MemberName: this.selectedMember.Name,
             MemberPhone: this.selectedMember.Phone,
-            ProductName: productName,
+            PlanName: this.selectPlan.Name,
             PaymentMethod: this.addOrderDto.paymentMethod,
-            Amount: amount,
+            CardReaderId: this.selectedReader || null,
+            Amount: this.selectPlan.Price,
           };
-          
+
           this.$router.push({
             name: "HealthopeCheckoutOrder",
             query: {
@@ -336,6 +370,48 @@ export default {
         console.error("新增訂單時發生錯誤", error);
       }
     },
+    goCheckoutOrder() {
+      const IntMax = 2147483647;
+      let coachId = Number(this.addOrderDto.coachId);
+
+      if (
+        this.addOrderDto.planType === "2" &&
+        (!Number.isInteger(coachId) || coachId < 1 || coachId > IntMax)
+      ) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "請選擇教練!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
+      let selectCoach = null;
+
+      if (this.addOrderDto.coachId) {
+        selectCoach = this.coaches.find((coach) => coach.CoachId === coachId);
+      }
+
+      if (!selectCoach) return;
+
+      const order = {
+        OrderId: this.orderId,
+        UpdateTime: this.updateTimem,
+        MemberName: this.selectedMember.Name,
+        MemberPhone: this.selectedMember.Phone,
+        PlanName: this.selectPlan.Name,
+        PaymentMethod: this.addOrderDto.paymentMethod,
+        CardReaderId: this.selectedReader || null,
+        Amount: this.selectPlan.Price,
+        CoachName: selectCoach.Name,
+      };
+
+      this.$router.push({
+        name: "HealthopeCheckoutOrder",
+        query: {
+          order: JSON.stringify(order),
+        },
+      });
+    },
     async getAllTypePlan() {
       try {
         // post
@@ -344,10 +420,10 @@ export default {
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.products = { membership: [], training: [], ticket: [] };
+          this.plans = { membership: [], training: [], ticket: [] };
 
           response.data.ApiDataObject.MembershipPlanList.forEach((plan) => {
-            this.products.membership.push({
+            this.plans.membership.push({
               ...plan,
               Id: plan.MembershipPlanId,
             });
@@ -355,7 +431,7 @@ export default {
 
           response.data.ApiDataObject.PersonalTrainingPackageList.forEach(
             (plan) => {
-              this.products.training.push({
+              this.plans.training.push({
                 ...plan,
                 Id: plan.PersonalTrainingPackageId,
               });
@@ -363,7 +439,7 @@ export default {
           );
 
           response.data.ApiDataObject.TicketPlanList.forEach((plan) => {
-            this.products.ticket.push({
+            this.plans.ticket.push({
               ...plan,
               Id: plan.TicketPlanId,
               Name: "一次性票劵",
@@ -395,12 +471,12 @@ export default {
     },
     validInput() {
       const IntMax = 2147483647;
-      let productId = Number(this.addOrderDto.productId);
+      let planId = Number(this.addOrderDto.planId);
       if (
-        !Number.isInteger(productId) ||
-        productId < 1 ||
+        !Number.isInteger(planId) ||
+        planId < 1 ||
         // 超出安全整數範圍
-        productId > IntMax
+        planId > IntMax
       ) {
         this.hintText = "方案錯誤";
         return false;
@@ -423,9 +499,9 @@ export default {
       }
 
       if (
-        this.addOrderDto.productType !== "membership" &&
-        this.addOrderDto.productType !== "training" &&
-        this.addOrderDto.productType !== "ticket"
+        this.addOrderDto.planType !== "1" &&
+        this.addOrderDto.planType !== "2" &&
+        this.addOrderDto.planType !== "3"
       ) {
         this.hintText = "方案類別錯誤";
         return false;
@@ -445,6 +521,34 @@ export default {
       }
 
       return true;
+    },
+    async getPersonalCoach() {
+      // 已載入或非教練方案則跳過
+      if (this.coaches.length > 0 || this.addOrderDto.planType !== "2") return;
+      try {
+        // post
+        const response = await this.$axios.post("/api/Coach/GetPersonalCoach");
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.coaches = [];
+          response.data.ApiDataObject.forEach((coach) => {
+            this.coaches.push(coach);
+          });
+        } else {
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("取得教練時發生錯誤", error);
+      }
+    },
+  },
+  watch: {
+    step(newVal) {
+      if (newVal === 2) this.getPersonalCoach();
     },
   },
   created() {
@@ -469,7 +573,7 @@ section {
   border-radius: 8px;
 }
 
-.selectProduct {
+.selectPlan {
   width: 230px;
   max-width: 80%;
 }

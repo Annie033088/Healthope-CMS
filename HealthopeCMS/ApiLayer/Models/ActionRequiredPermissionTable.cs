@@ -28,7 +28,9 @@ namespace ApiLayer.Models
             { "Member,EditMember", new List<AdminPermission> {
                 AdminPermission.EditMember} },
             { "Member,GetMemberDetail", new List<AdminPermission> {
-                AdminPermission.SelectMember} },
+                AdminPermission.SelectMember, AdminPermission.EditMember} },
+            { "Member,GetMemberByNameOrPhone", new List<AdminPermission> {
+                AdminPermission.SelectMember, AdminPermission.EditMember} },
 
             // CoachController
             { "Coach,GetCoach", new List<AdminPermission> {
@@ -85,6 +87,8 @@ namespace ApiLayer.Models
                 AdminPermission.EditPlan, AdminPermission.SelectPlan} },
             { "PlanTemplate,GetTicketPlan", new List<AdminPermission> {
                 AdminPermission.EditPlan, AdminPermission.SelectPlan} },
+            { "PlanTemplate,GetAllTypePlan", new List<AdminPermission> {
+                AdminPermission.EditPlan, AdminPermission.SelectPlan} },
 
             // TermController
             { "Term,GetOldTerm", new List<AdminPermission> {
@@ -118,6 +122,12 @@ namespace ApiLayer.Models
 
             // InvoiceController
             { "Invoice,AddInvoiceTrackNumber", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Invoice,GetInvoiceTrackNumber", new List<AdminPermission> {
+                AdminPermission.EditOrder, AdminPermission.SelectOrder} },
+            { "Invoice,EditInvoiceTrackNumberStatus", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Invoice,DeleteInvoiceTrackNumber", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
 
         };

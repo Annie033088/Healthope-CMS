@@ -19,11 +19,11 @@ namespace UnitTest.Test.PlanTemplateTest
     [TestClass]
     public class PlanTemplateServiceTest
     {
-        private Mock<IMapper> mapperMock;
-        private Mock<IFileService> fileServiceMock;
-        private Mock<IHttpService> httpServiceMock;
-        private Mock<IPlanTemplateRepository> planTemplateRepositoryMock;
-        private PlanTemplateService service;
+        private readonly Mock<IMapper> mapperMock;
+        private readonly Mock<IFileService> fileServiceMock;
+        private readonly Mock<IHttpService> httpServiceMock;
+        private readonly Mock<IPlanTemplateRepository> planTemplateRepositoryMock;
+        private readonly PlanTemplateService service;
 
         public PlanTemplateServiceTest()
         {
@@ -133,7 +133,7 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Assert
             Assert.IsTrue(successFlag);
-            Assert.IsTrue(exception == null);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -176,7 +176,7 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Assert
             Assert.IsFalse(successFlag);
-            Assert.IsTrue(exception == null);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -219,7 +219,7 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Assert
             Assert.IsTrue(successFlag);
-            Assert.IsTrue(exception == null);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -262,7 +262,7 @@ namespace UnitTest.Test.PlanTemplateTest
 
             // Assert
             Assert.IsFalse(successFlag);
-            Assert.IsTrue(exception == null);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -641,7 +641,7 @@ namespace UnitTest.Test.PlanTemplateTest
             responseDto.ImageUrl = "/" + responseDto.ImageUrl;
 
             // Assert
-            Assert.IsTrue(response == responseDto);
+            Assert.AreEqual(response, responseDto);
         }
 
         [TestMethod]
@@ -665,7 +665,7 @@ namespace UnitTest.Test.PlanTemplateTest
             ResponseGetMembershipPlanEditDataDto response = service.GetMembershipPlanEditDataById(memebershipPlanIdDto);
 
             // Assert
-            Assert.IsTrue(response == null);
+            Assert.IsNull(response);
         }
 
         [TestMethod]
@@ -711,7 +711,7 @@ namespace UnitTest.Test.PlanTemplateTest
             responseDto.ImageUrl = "/" + responseDto.ImageUrl;
 
             // Assert
-            Assert.IsTrue(response == responseDto);
+            Assert.AreEqual(response, responseDto);
         }
 
         [TestMethod]
@@ -736,7 +736,7 @@ namespace UnitTest.Test.PlanTemplateTest
                 personalTrainingPackageIdDto);
 
             // Assert
-            Assert.IsTrue(response == null);
+            Assert.IsNull(response);
         }
 
         [TestMethod]
@@ -770,8 +770,8 @@ namespace UnitTest.Test.PlanTemplateTest
             (ErrorCodeDefine errorCode, Exception exception) = service.EditMembershipPlan(editMembershipPlanDto, null);
 
             // Assert
-            Assert.IsTrue(errorCode == ErrorCodeDefine.Success);
-            Assert.IsTrue(exception == null);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.Success);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -805,8 +805,8 @@ namespace UnitTest.Test.PlanTemplateTest
             (ErrorCodeDefine errorCode, Exception exception) = service.EditMembershipPlan(editMembershipPlanDto, null);
 
             // Assert
-            Assert.IsTrue(errorCode == ErrorCodeDefine.HasBeenModified);
-            Assert.IsTrue(exception == null);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.HasBeenModified);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -840,8 +840,8 @@ namespace UnitTest.Test.PlanTemplateTest
             (ErrorCodeDefine errorCode, Exception exception) = service.EditPersonalTrainingPackage(editPlanDto, null);
 
             // Assert
-            Assert.IsTrue(errorCode == ErrorCodeDefine.Success);
-            Assert.IsTrue(exception == null);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.Success);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -875,8 +875,8 @@ namespace UnitTest.Test.PlanTemplateTest
             (ErrorCodeDefine errorCode, Exception exception) = service.EditPersonalTrainingPackage(editPlanDto, null);
 
             // Assert
-            Assert.IsTrue(errorCode == ErrorCodeDefine.HasBeenModified);
-            Assert.IsTrue(exception == null);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.HasBeenModified);
+            Assert.IsNull(exception);
         }
 
         [TestMethod]
@@ -892,7 +892,6 @@ namespace UnitTest.Test.PlanTemplateTest
                     {
                         Price=100,
                         TicketPlanId=1,
-                        UpdateTime=DateTime.Now,
                     }
                 },
                 MembershipPlanList = null,
@@ -940,7 +939,7 @@ namespace UnitTest.Test.PlanTemplateTest
             ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto result = service.GetAllTypePlan();
 
             // Assert
-            Assert.IsTrue(result != null);
+            Assert.IsNotNull(result);
         }
     }
 }

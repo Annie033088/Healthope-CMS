@@ -322,34 +322,39 @@ namespace UnitTest.Test.MemberTest
                 Name = null,
                 Phone = 0987654321
             };
-
-            ResponseGetMemberByNameOrPhoneDto response = new ResponseGetMemberByNameOrPhoneDto()
+            List<ResponseGetMemberByNameOrPhoneDto> response = new List<ResponseGetMemberByNameOrPhoneDto>()
             {
-                Name = "okwopekq122",
-                Phone = 987654342,
-                MemberId = 1,
-                PhoneVerified = true,
-                UpdateTime = DateTime.Now,
+                new ResponseGetMemberByNameOrPhoneDto
+                {
+                    Name = "okwopekq122",
+                    Phone = 987654342,
+                    MemberId = 1,
+                    PhoneVerified = true,
+                }
             };
 
-            Member member = new Member()
+            List<Member> members = new List<Member>()
             {
-                Name = "okwopekq122",
-                Phone = 987654342,
-                MemberId = 1,
-                PhoneVerified = true,
-                UpdateTime = DateTime.Now,
+                new Member()
+                {
+                    Name = "okwopekq122",
+                    Phone = 987654342,
+                    MemberId = 1,
+                    PhoneVerified = true,
+                    UpdateTime = DateTime.Now,
+                }
             };
+
 
             // Mock 設定
-            memberRepositoryMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(member);
-            mapperMock.Setup(s => s.Map<ResponseGetMemberByNameOrPhoneDto>(member)).Returns(response);
+            memberRepositoryMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(members);
+            mapperMock.Setup(s => s.Map<List<ResponseGetMemberByNameOrPhoneDto>>(members)).Returns(response);
 
             // Act
-            ResponseGetMemberByNameOrPhoneDto result = memberService.GetMemberByNameOrPhone(getMemberDto);
+            List<ResponseGetMemberByNameOrPhoneDto> result = memberService.GetMemberByNameOrPhone(getMemberDto);
 
             // Assert
-            Assert.IsTrue(result == response);
+            Assert.IsTrue(result.SequenceEqual(response));
         }
 
         [TestMethod]
@@ -362,17 +367,18 @@ namespace UnitTest.Test.MemberTest
                 Phone = 0987654321
             };
 
-            ResponseGetMemberByNameOrPhoneDto response = null;
-            Member member = null;
+            List<ResponseGetMemberByNameOrPhoneDto> response = null;
+            List<Member> members = null;
 
             // Mock 設定
-            memberRepositoryMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(member);
+            memberRepositoryMock.Setup(s => s.GetMemberByNameOrPhone(getMemberDto)).Returns(members);
+            mapperMock.Setup(s => s.Map<List<ResponseGetMemberByNameOrPhoneDto>>(members)).Returns(response);
 
             // Act
-            ResponseGetMemberByNameOrPhoneDto result = memberService.GetMemberByNameOrPhone(getMemberDto);
+            List<ResponseGetMemberByNameOrPhoneDto> result = memberService.GetMemberByNameOrPhone(getMemberDto);
 
             // Assert
-            Assert.IsTrue(result == response);
+            Assert.IsNull(result);
         }
     }
 }

@@ -403,5 +403,22 @@ namespace UnitTest.Test.CoachTest
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
+
+        [TestMethod]
+        public void 取得私人教練_成功_回傳清單()
+        {
+            // Arrange
+            List<ResponseGetPersonalCoachDto> response = new List<ResponseGetPersonalCoachDto>();
+
+            // Mock 設定
+            coachServiceMock.Setup(s => s.GetPersonalCoach()).Returns(response);
+
+            // Act
+            IHttpActionResult result = coachController.GetPersonalCoach();
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
     }
 }
