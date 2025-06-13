@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.LeaseAgreement.Request;
@@ -12,7 +11,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using UnitTest.utils;
 
 namespace UnitTest.Test.LeaseAgreementTest
 {

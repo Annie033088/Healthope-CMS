@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PersistentLayer.Models
+﻿namespace PersistentLayer.Models
 {
     public class RequestGetInvoiceTrackNumberDto
     {
@@ -16,7 +10,7 @@ namespace PersistentLayer.Models
         /// <summary>
         /// 過期/未過期
         /// </summary>
-        public bool? Time {  get; set; }
+        public bool? Time { get; set; }
 
         /// <summary>
         /// 一頁顯示 x 筆

@@ -50,6 +50,7 @@
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminIdentityAndPermission.cs" />
     <Compile Include="Models\Coach.cs" />
+    <Compile Include="Models\ElectronicInvoice.cs" />
     <Compile Include="Models\GroupClassSchedule.cs" />
     <Compile Include="Models\GroupClassShowcase.cs" />
     <Compile Include="Models\InvoiceTrackNumber.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Models\MembershipPlan.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\PersonalTrainingPackage.cs" />
+    <Compile Include="Models\SingleEntryPass.cs" />
     <Compile Include="Models\Term.cs" />
     <Compile Include="Models\TicketPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

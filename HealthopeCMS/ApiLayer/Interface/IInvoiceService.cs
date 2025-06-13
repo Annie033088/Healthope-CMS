@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+﻿using System.Threading.Tasks;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
+using ApiLayer.Models.Job;
 using PersistentLayer.Models;
 
 namespace ApiLayer.Interface
@@ -33,5 +29,15 @@ namespace ApiLayer.Interface
         /// 修改字軌狀態
         /// </summary>
         bool DeleteInvoiceTrackNumber(InvoiceTrackNumberIdDto invoiceTrackNumberIdDto);
+
+        /// <summary>
+        /// 請求第三方開立發票
+        /// </summary>
+        Task PrintInvoice(RequestPrintInvoiceDto requestPrintInvoiceDto);
+
+        /// <summary>
+        /// 修改電子發票狀態
+        /// </summary>
+        bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime);
     }
 }

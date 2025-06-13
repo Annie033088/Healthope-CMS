@@ -228,12 +228,14 @@
     <Compile Include="Test\GroupClassScheduleTest\GroupClassScheduleServiceTest.cs" />
     <Compile Include="Test\GroupClassShowcaseTest\GroupClassShowcaseControllerTest.cs" />
     <Compile Include="Test\GroupClassShowcaseTest\GroupClassShowcaseServiceTest.cs" />
-    <Compile Include="Test\Invoice\InvoiceControllerTest.cs" />
-    <Compile Include="Test\Invoice\InvoiceServiceTest.cs" />
+    <Compile Include="Test\InvoiceTest\InvoiceControllerTest.cs" />
+    <Compile Include="Test\InvoiceTest\InvoiceServiceTest.cs" />
     <Compile Include="Test\LeaseAgreementTest\LeaseAgreementControllerTest.cs" />
     <Compile Include="Test\LeaseAgreementTest\LeaseAgreementServiceTest.cs" />
     <Compile Include="Test\MemberTest\MemberControllerTest.cs" />
     <Compile Include="Test\MemberTest\MemberServiceTest.cs" />
+    <Compile Include="Test\OrderTest\OrderControllerTest.cs" />
+    <Compile Include="Test\OrderTest\OrderServiceTest.cs" />
     <Compile Include="Test\PlanTemplateTest\PlanTemplateControllerTest.cs" />
     <Compile Include="Test\PlanTemplateTest\PlanTemplateServiceTest.cs" />
     <Compile Include="Test\TermTest\TermControllerTest.cs" />

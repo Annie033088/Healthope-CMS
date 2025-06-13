@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
-using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Request;
+using ApiLayer.Models.Invoice.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using UnitTest.utils;
-using ApiLayer.Models.Invoice.Request;
-using ApiLayer.Models.Term.Response;
 using PersistentLayer.Models;
-using ApiLayer.Models.Invoice.Response;
+using UnitTest.utils;
 
 namespace UnitTest.Test.Invoice
 {

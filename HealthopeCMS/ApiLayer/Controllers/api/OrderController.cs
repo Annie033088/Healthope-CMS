@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Web.Http;
 using ApiLayer.Filters;
-using ApiLayer.Models.Invoice.Request;
-using ApiLayer.Models;
-using ApiLayer.Service;
-using DomainLayer.Utility;
-using NLog;
-using ApiLayer.Models.Order.Request;
-using ApiLayer.Models.PlanTemplate;
-using ApiLayer.Models.Order;
 using ApiLayer.Interface;
+using ApiLayer.Models;
+using ApiLayer.Models.Order;
+using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
+using ApiLayer.Models.PlanTemplate;
+using NLog;
 using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
@@ -58,7 +50,7 @@ namespace ApiLayer.Controllers.api
                 response = new ResultResponse<ResponseAddOrderDto>()
                 {
                     ApiDataObject = result,
-                    ErrorCode = result == null ? ErrorCodeDefine.CreateFailed : ErrorCodeDefine.Success
+                    ErrorCode = errorCode
                 };
                 return Ok(response);
             }
@@ -89,11 +81,11 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                (ResponseAddOrderDto result, ErrorCodeDefine errorCode) = orderService.AddOrder(payByCashDto);
-                response = new ResultResponse<ResponseAddOrderDto>()
+                (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) = orderService.PayByCash(payByCashDto);
+                response = new ResultResponse<ResponseQrCodeStringDto>()
                 {
-                    ApiDataObject = result,
-                    ErrorCode = result == null ? ErrorCodeDefine.CreateFailed : ErrorCodeDefine.Success
+                    ApiDataObject = QrCodeStringDto,
+                    ErrorCode = errorCode
                 };
                 return Ok(response);
             }

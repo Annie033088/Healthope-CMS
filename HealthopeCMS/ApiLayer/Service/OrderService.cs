@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http.Results;
 using ApiLayer.Interface;
+using ApiLayer.Job;
 using ApiLayer.Models;
+using ApiLayer.Models.Job;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using AutoMapper;
 using DomainLayer.Models;
+using DomainLayer.Utility;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Service
 {
@@ -17,11 +17,13 @@ namespace ApiLayer.Service
     {
         private readonly IOrderRepository orderRepository;
         private readonly IMapper mapper;
+        private readonly IJobDispatcher jobDispatcher;
 
-        public OrderService(IOrderRepository orderRepository, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper, IJobDispatcher jobDispatcher)
         {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
+            this.jobDispatcher = jobDispatcher;
         }
 
         /// <summary>
@@ -59,7 +61,52 @@ namespace ApiLayer.Service
                 throw;
             }
         }
-    
-        
+
+        /// <summary>
+        /// 現金付款
+        /// </summary>
+        public (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) PayByCash(RequestPayByCashDto payByCashDto)
+        {
+            try
+            {
+                (int errorCodeNumber, DBResponsePayByCashDto dbResponse) = orderRepository.PayByCash(payByCashDto);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                // 排程 開立發票 任務
+                if (errorCode == ErrorCodeDefine.Success)
+                {
+                    RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
+                    {
+                        ElectronicInvoiceId = dbResponse.ElectronicInvoiceId,
+                        InvoiceNumber = dbResponse.InvoiceNumber,
+                        PlanName = dbResponse.PlanName,
+                        RandomNumber = dbResponse.RandomNumber,
+                        TotalAmount = dbResponse.TotalAmount,
+                    };
+                    jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto);
+                }
+
+                // 若是票劵方案 需即時顯示票劵 qr code
+                string qrCodeString = "";
+
+                if (dbResponse.SingleEntryPassId != null)
+                {
+                    Hash hash = new Hash();
+                    string qrCodeStringBefaoreHash = dbResponse.SingleEntryPassId.ToString() + ";" + payByCashDto.OrderId.ToString()
+                        + ";" + dbResponse.TicketCode.ToString();
+                    qrCodeString = hash.QrCodeStringHash(qrCodeStringBefaoreHash);
+                }
+
+                return ((ErrorCodeDefine)errorCodeNumber, new ResponseQrCodeStringDto { QrCodeString = qrCodeString });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

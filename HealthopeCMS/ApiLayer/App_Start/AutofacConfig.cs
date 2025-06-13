@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
@@ -10,7 +9,6 @@ using Autofac.Integration.WebApi;
 using AutoMapper;
 using DomainLayer.Interface;
 using DomainLayer.Utility;
-using Hangfire;
 using PersistentLayer.Interface;
 using PersistentLayer.Repository;
 using StackExchange.Redis;

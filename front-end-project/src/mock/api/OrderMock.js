@@ -25,8 +25,12 @@ export default function (mock) {
         return new Promise(resolve => {
             setTimeout(() => {
                 const isSuccess = Math.random() > 0.5;
-                resolve([200, { ErrorCode: isSuccess ? 10 : 1 }]);
+                resolve([200, { ErrorCode: isSuccess ? 10 : 1, ApiDataObject:{QrCodeString:"kpqwjej12312opkwqeopqkw12"} }]);
             }, 3000);
         });
     });
+
+    mock.onPost("/api/Order/PayByCash").reply(() => {
+        return [200, { ErrorCode: 1, ApiDataObject:{QrCodeString:"kpqwjej12312opkwqeopqkw12"} }];
+    })
 }

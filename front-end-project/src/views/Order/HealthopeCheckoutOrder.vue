@@ -16,14 +16,14 @@
       </section>
 
       <!-- 2. 成功提示 -->
-      <div v-if="paid && paidSuccess">
+      <section v-if="paid && paidSuccess">
         <h3>✅ 收款成功！</h3>
         <p>訂單已完成</p>
         <BtnNormal @click="redirect('/')" text="返回首頁"></BtnNormal>
-      </div>
+      </section>
 
       <!-- 2. 失敗提示 -->
-      <div v-if="paid && !paidSuccess">
+      <section v-if="paid && !paidSuccess">
         <h3>❌ 付款失敗：請再試一次</h3>
         <BtnNormal @click="retryCardPay" text="重新刷卡"></BtnNormal>
         <BtnNormal
@@ -31,6 +31,11 @@
           @click="redirect('/')"
           text="返回首頁"
         ></BtnNormal>
+      </section>
+
+      <div v-show="qrCodeString && paid && paidSuccess">
+        <canvas ref="canvas" @click="copyQrCodeString"></canvas>
+        <p v-if="copied" class="qrCodeCopyHint">已複製到剪貼簿！</p>
       </div>
     </div>
 
@@ -49,6 +54,8 @@ import BtnNormal from "@/components/Btn/BtnNormal";
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import CardPaymentBox from "@/components/Box/CardPaymentBox";
+import QRCode from "qrcode";
+
 export default {
   name: "HealthopeCheckoutOrder",
   components: {
@@ -63,16 +70,30 @@ export default {
       order: {},
       showPaymentBox: false,
       paidSuccess: false,
+      qrCodeString: "",
+      copied: false,
     };
   },
   methods: {
+    async copyQrCodeString() {
+      try {
+        await navigator.clipboard.writeText(this.qrCodeString);
+        this.copied = true;
+        setTimeout(() => (this.copied = false), 2000);
+      } catch (err) {
+        console.error("複製失敗:", err);
+      }
+    },
     redirect(path) {
       this.$router.push(path);
     },
-    cardPaySuccess() {
+    cardPaySuccess(qrCodeString) {
       this.showPaymentBox = false;
       this.paidSuccess = true;
       this.paid = true;
+      if (qrCodeString) {
+        this.qrCodeString = qrCodeString;
+      }
     },
     cardPayFail() {
       this.showPaymentBox = false;
@@ -99,6 +120,9 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.paid = true;
           this.paidSuccess = true;
+          if (response.data.ApiDataObject) {
+            this.qrCodeString = response.data.ApiDataObject.QrCodeString;
+          }
         } else {
           this.paid = true;
           this.paidSuccess = false;
@@ -113,6 +137,16 @@ export default {
       } finally {
         this.isLoading = false;
       }
+    },
+    drawQrCode(text) {
+      QRCode.toCanvas(
+        this.$refs.canvas,
+        text,
+        { errorCorrectionLevel: "H" },
+        (error) => {
+          if (error) console.error(error);
+        }
+      );
     },
   },
   computed: {
@@ -137,6 +171,13 @@ export default {
     const orderStr = this.$route.query.order;
     this.order = orderStr ? JSON.parse(orderStr) : null;
   },
+  watch: {
+    qrCodeString(val) {
+      if (val) {
+        this.drawQrCode(val);
+      }
+    },
+  },
 };
 </script>
 
@@ -156,5 +197,14 @@ section {
 
 .btnFailToHome {
   margin-left: 5px;
+}
+
+canvas {
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.qrCodeCopyHint {
+  color: green;
 }
 </style>

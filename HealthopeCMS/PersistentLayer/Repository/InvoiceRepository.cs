@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
-using System.Configuration;
 using PersistentLayer.Models;
 
 namespace PersistentLayer.Repository
@@ -62,7 +59,7 @@ namespace PersistentLayer.Repository
             cmd.Connection = new SqlConnection(this.ConnStr);
             SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
-            int totalPage = 1;
+            int totalPage;
             List<InvoiceTrackNumber> invoiceTrackNumbers = new List<InvoiceTrackNumber>();
 
             try
@@ -181,6 +178,46 @@ namespace PersistentLayer.Repository
                 cmd.CommandText = "EXEC pro_healthope_delInoviceTrackNumber @invoiceTrackNumberId";
 
                 cmd.Parameters.Add("@invoiceTrackNumberId", SqlDbType.Int).Value = invoiceTrackNumberId;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                if (ExeCnt > 0) return true;
+
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        public bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editElectronicInvoiceStatus @success, @electronicInvoiceId, @invocieTime";
+
+                cmd.Parameters.Add("@success", SqlDbType.Bit).Value = success;
+                cmd.Parameters.Add("@electronicInvoiceId", SqlDbType.Int).Value = electronicInvoiceId;
+
+                if (string.IsNullOrEmpty(invocieTime))
+                {
+                    cmd.Parameters.Add("@invocieTime", SqlDbType.DateTime2).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@invocieTime", SqlDbType.DateTime2).Value = invocieTime;
+                }
 
                 cmd.Connection.Open();
 

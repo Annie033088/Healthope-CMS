@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Models.Job;
 using Hangfire;
+using Hangfire.Server;
 using NLog;
 
 namespace ApiLayer.Job
@@ -18,7 +19,7 @@ namespace ApiLayer.Job
             this.emailService = emailService;
         }
 
-        public async Task Execute(SendEmailDto sendEmailDto)
+        public async Task Execute(SendEmailDto sendEmailDto, PerformContext context)
         {
             try
             {

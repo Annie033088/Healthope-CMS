@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.Http;
 using ApiLayer.Models;
 using ApiLayer.Models.Other;
 using ApiLayer.Models.PlanTemplate.Request;

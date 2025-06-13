@@ -286,7 +286,7 @@ namespace PersistentLayer.Repository
             cmd.Connection = new SqlConnection(this.ConnStr);
             SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
-            List<Member> members = new List<Member>();  
+            List<Member> members = new List<Member>();
 
             try
             {

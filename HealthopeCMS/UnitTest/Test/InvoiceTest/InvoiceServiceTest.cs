@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using ApiLayer.Job;
-using ApiLayer.Models.Invoice.Request;
+using ApiLayer.Interface;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Request;
+using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Service;
 using AutoMapper;
+using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
-using UnitTest.utils;
-using DomainLayer.Models;
-using ApiLayer.Models.Invoice.Response;
 using PersistentLayer.Models;
 
 namespace UnitTest.Test.Invoice
@@ -25,13 +20,15 @@ namespace UnitTest.Test.Invoice
         private InvoiceService service;
         private Mock<IMapper> mapperMock;
         private Mock<IInvoiceRepository> invoiceRepositoryMock;
+        private Mock<IHttpService> httpServiceMock;
 
         [TestInitialize]
         public void Setup()
         {
             mapperMock = new Mock<IMapper>();
             invoiceRepositoryMock = new Mock<IInvoiceRepository>();
-            service = new InvoiceService(mapperMock.Object, invoiceRepositoryMock.Object);
+            httpServiceMock = new Mock<IHttpService>();
+            service = new InvoiceService(mapperMock.Object, invoiceRepositoryMock.Object, httpServiceMock.Object);
         }
 
         [TestMethod]

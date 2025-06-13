@@ -9,7 +9,7 @@ namespace ApiLayer.Job
         {
             try
             {
-                BackgroundJob.Enqueue<TJob>(job => job.Execute(dto));
+                BackgroundJob.Enqueue<TJob>(job => job.Execute(dto, null));
             }
             catch (Exception)
             {

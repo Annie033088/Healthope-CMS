@@ -252,6 +252,7 @@
     <Compile Include="Interface\IGroupClassShowcaseService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Interface\ITermService.cs" />
+    <Compile Include="Job\RequestPrintInoviceJob.cs" />
     <Compile Include="Job\SendEmailJob.cs" />
     <Compile Include="Job\IJob.cs" />
     <Compile Include="Job\IJobDispatcher.cs" />
@@ -282,10 +283,13 @@
     <Compile Include="Models\GroupClassShowcase\Response\ResponseGetShowcaseEditDataDto.cs" />
     <Compile Include="Models\GroupClassShowcase\Response\ResponseGetShowcaseListDto.cs" />
     <Compile Include="Models\Invoice\InvoiceTrackNumberStatus.cs" />
+    <Compile Include="Models\Invoice\PrintInvoiceErrorCode.cs" />
     <Compile Include="Models\Invoice\Request\InvoiceTrackNumberIdDto.cs" />
     <Compile Include="Models\Invoice\Request\RequestAddInvoiceTrackNumberDto.cs" />
     <Compile Include="Models\Invoice\Request\RequestEditInvoiceTrackNumberStatusDto.cs" />
     <Compile Include="Models\Invoice\Response\ResponseGetInvoiceTrackNumberListDto.cs" />
+    <Compile Include="Models\Job\RequestPrintInvoiceDto.cs" />
+    <Compile Include="Models\Job\ResponsePrintInvoiceDto.cs" />
     <Compile Include="Models\Job\SendEmailDto.cs" />
     <Compile Include="Models\LeaseAgreement\LeaseAgreementStatus.cs" />
     <Compile Include="Models\LeaseAgreement\Request\RequestAddLeaseAgreementDto.cs" />
@@ -301,6 +305,7 @@
     <Compile Include="Models\Order\PaymentMethod.cs" />
     <Compile Include="Models\Order\Request\RequestAddOrderDto.cs" />
     <Compile Include="Models\Order\Response\ResponseAddOrderDto.cs" />
+    <Compile Include="Models\Order\Response\ResponseQrCodeStringDto.cs" />
     <Compile Include="Models\Other\FileDto.cs" />
     <Compile Include="Models\PlanTemplate\PlanType.cs" />
     <Compile Include="Models\PlanTemplate\Request\RequestAddMembershipPlanDto.cs" />

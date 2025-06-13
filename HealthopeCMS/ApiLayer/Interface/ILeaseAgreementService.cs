@@ -1,5 +1,4 @@
-﻿using System.Web.Http;
-using ApiLayer.Models;
+﻿using ApiLayer.Models;
 using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
 using PersistentLayer.Models;

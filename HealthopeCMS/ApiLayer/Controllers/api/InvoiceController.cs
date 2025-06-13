@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web.Http;
-using ApiLayer.Models.Term.Request;
+using ApiLayer.Filters;
+using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Service;
+using ApiLayer.Models.Invoice;
+using ApiLayer.Models.Invoice.Request;
+using ApiLayer.Models.Invoice.Response;
 using DomainLayer.Utility;
 using NLog;
-using ApiLayer.Models.Invoice.Request;
-using System.Text.RegularExpressions;
-using ApiLayer.Interface;
-using ApiLayer.Filters;
-using ApiLayer.Models.Term.Response;
-using ApiLayer.Models.Term;
 using PersistentLayer.Models;
-using ApiLayer.Models.Invoice;
-using ApiLayer.Models.Invoice.Response;
 
 namespace ApiLayer.Controllers.api
 {

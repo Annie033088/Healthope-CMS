@@ -42,7 +42,12 @@ export default {
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.$emit("cardPaySuccess");
+          let qrCodeString = "";
+
+          if (response.data.ApiDataObject)
+            qrCodeString = response.data.ApiDataObject.QrCodeString;
+          
+          this.$emit("cardPaySuccess", qrCodeString);
         } else {
           this.$emit("cardPayFail");
           // 設定彈窗資料

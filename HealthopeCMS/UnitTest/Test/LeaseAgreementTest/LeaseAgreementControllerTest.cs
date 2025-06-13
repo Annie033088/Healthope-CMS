@@ -5,7 +5,6 @@ using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
-using ApiLayer.Models.Term.Request;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;

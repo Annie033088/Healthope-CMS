@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Models;
+﻿using ApiLayer.Models;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using PersistentLayer.Models;
@@ -20,6 +15,6 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 現金付款
         /// </summary>
-        ErrorCodeDefine PayByCash(RequestPayByCashDto payByCashDto);
+        (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) PayByCash(RequestPayByCashDto payByCashDto);
     }
 }

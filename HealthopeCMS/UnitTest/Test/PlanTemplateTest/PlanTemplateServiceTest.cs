@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.PlanTemplate.Request;
@@ -885,8 +884,8 @@ namespace UnitTest.Test.PlanTemplateTest
             // Arrange
             ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto response
                 = new ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetAllTypePlanDto()
-            {
-                TicketPlanList = new List<ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto>()
+                {
+                    TicketPlanList = new List<ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto>()
                 {
                     new ApiLayer.Models.PlanTemplate.Response.GetAllType.ResponseGetTicketPlanDto()
                     {
@@ -894,9 +893,9 @@ namespace UnitTest.Test.PlanTemplateTest
                         TicketPlanId=1,
                     }
                 },
-                MembershipPlanList = null,
-                PersonalTrainingPackageList = null,
-            };
+                    MembershipPlanList = null,
+                    PersonalTrainingPackageList = null,
+                };
 
             List<MembershipPlan> membershipPlans = new List<MembershipPlan>()
             {

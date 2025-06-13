@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
+using PersistentLayer.Models;
 
 namespace PersistentLayer.Repository
 {
@@ -62,6 +59,88 @@ namespace PersistentLayer.Repository
                 }
 
                 return (null, errorCodeNumber);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 現金付款
+        /// </summary>
+        public (int errorCodeNumber, DBResponsePayByCashDto dBResponsePayByCashDto) PayByCash(RequestPayByCashDto payByCashDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStatusAndPayByCash @orderId, @coachId, " +
+                    "@updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = payByCashDto.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.TinyInt).Value = payByCashDto.UpdateTime;
+
+                if (payByCashDto.CoachId == null)
+                    cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = payByCashDto.CoachId;
+
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (ds.Tables.Count > 0)
+                {
+                    DBResponsePayByCashDto response = new DBResponsePayByCashDto
+                    {
+                        ElectronicInvoiceId = ds.Tables[0].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_electronicInvoiceId"),
+                        InvoiceNumber = ds.Tables[0].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_invoiceNumber"),
+                        RandomNumber = ds.Tables[0].Rows[0].IsNull("f_randomNumber") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_randomNumber"),
+                        TotalAmount = ds.Tables[0].Rows[0].IsNull("f_totalAmount") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_totalAmount"),
+                        PlanName = ds.Tables[0].Rows[0].IsNull("f_planName") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_planName"),
+                        SingleEntryPassId = null,
+                        TicketCode = null,
+                    };
+
+                    // 若是票劵方案, 取得票劵資訊
+
+                    if (ds.Tables.Count > 1)
+                    {
+                        response.SingleEntryPassId = ds.Tables[1].Rows[0].IsNull("f_singleEntryPassId") ? 0 :
+                                ds.Tables[1].Rows[0].Field<int>("f_singleEntryPassId");
+                        response.TicketCode = ds.Tables[1].Rows[0].IsNull("f_singleEntryPassId") ? Guid.Empty :
+                                ds.Tables[1].Rows[0].Field<Guid>("f_singleEntryPassId");
+                    }
+
+                    return (errorCodeNumber, response);
+                }
+
+                return (0, null);
             }
             catch (Exception)
             {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DomainLayer.Models;
 using PersistentLayer.Models;
 
@@ -30,5 +26,10 @@ namespace PersistentLayer.Interface
         /// 修改字軌狀態
         /// </summary>
         bool DeleteInvoiceTrackNumber(int invoiceTrackNumberId);
+
+        /// <summary>
+        /// 根據開立成功與否設置
+        /// </summary>
+        bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime);
     }
 }

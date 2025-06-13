@@ -1,4 +1,5 @@
-﻿using System.Web.Http.Controllers;
+﻿using System.Net.Http;
+using System.Web.Http.Controllers;
 
 namespace ApiLayer.Interface
 {
@@ -18,5 +19,10 @@ namespace ApiLayer.Interface
         /// 取得當前源地址
         /// </summary>
         string GetRootPath();
+
+        /// <summary>
+        /// 發送 post, 回傳以 json string 接收
+        /// </summary>
+        string SendPost(string url, StringContent content);
     }
 }
