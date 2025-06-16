@@ -88,7 +88,7 @@ namespace PersistentLayer.Repository
                     "@updateTime, @errorCode OUTPUT";
 
                 cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = payByCashDto.OrderId;
-                cmd.Parameters.Add("@updateTime", SqlDbType.TinyInt).Value = payByCashDto.UpdateTime;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = payByCashDto.UpdateTime;
 
                 if (payByCashDto.CoachId == null)
                     cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = DBNull.Value;
@@ -133,14 +133,14 @@ namespace PersistentLayer.Repository
                     {
                         response.SingleEntryPassId = ds.Tables[1].Rows[0].IsNull("f_singleEntryPassId") ? 0 :
                                 ds.Tables[1].Rows[0].Field<int>("f_singleEntryPassId");
-                        response.TicketCode = ds.Tables[1].Rows[0].IsNull("f_singleEntryPassId") ? Guid.Empty :
-                                ds.Tables[1].Rows[0].Field<Guid>("f_singleEntryPassId");
+                        response.TicketCode = ds.Tables[1].Rows[0].IsNull("f_ticketCode") ? Guid.Empty :
+                                ds.Tables[1].Rows[0].Field<Guid>("f_ticketCode");
                     }
 
                     return (errorCodeNumber, response);
                 }
 
-                return (0, null);
+                return (errorCodeNumber, null);
             }
             catch (Exception)
             {

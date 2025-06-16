@@ -25,7 +25,11 @@
       <!-- 2. 失敗提示 -->
       <section v-if="paid && !paidSuccess">
         <h3>❌ 付款失敗：請再試一次</h3>
-        <BtnNormal @click="retryCardPay" text="重新刷卡"></BtnNormal>
+        <BtnNormal
+          v-if="order.paymentMethod == '1'"
+          @click="retryCardPay"
+          text="重新刷卡"
+        ></BtnNormal>
         <BtnNormal
           class="btnFailToHome"
           @click="redirect('/')"

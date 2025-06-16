@@ -17,6 +17,10 @@ using Moq;
 using PersistentLayer.Interface;
 using UnitTest.utils;
 using DomainLayer.Models;
+using PersistentLayer.Models;
+using System.Net;
+using ApiLayer.Models.Job;
+using System.Web.Http.Results;
 
 namespace UnitTest.Test.OrderTest
 {
@@ -93,29 +97,10 @@ namespace UnitTest.Test.OrderTest
         }
 
         [TestMethod]
-        public void 新增訂單_失敗_請求參數格式錯誤()
-        {
-            // Arrange
-            RequestAddOrderDto addOrderDto = new RequestAddOrderDto()
-            {
-                MemberId = 1,
-                Method = 1,
-                PlanId = 1,
-                PlanType = 10,
-            };
-
-            // Act
-            IHttpActionResult result = controller.AddOrder(addOrderDto);
-
-            // Assert
-            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
-            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
-        }
-
-        [TestMethod]
         public void 新增訂單_失敗_回傳失敗()
         {
             // Arrange
+            DateTime time = DateTime.Now;
             RequestAddOrderDto addOrderDto = new RequestAddOrderDto()
             {
                 MemberId = 1,
@@ -124,19 +109,119 @@ namespace UnitTest.Test.OrderTest
                 PlanType = 1,
             };
 
-            ResponseAddOrderDto response = null;
+            Order addOrder = new Order
+            {
+                MemberId = 1,
+                Method = 1,
+                PlanId = 1,
+                PlanType = 1,
+            };
 
-            ErrorCodeDefine errorCode = ErrorCodeDefine.MemberBaned;
+            ResponseAddOrderDto response = new ResponseAddOrderDto()
+            {
+                OrderId = 1,
+                UpdateTime = time,
+            };
+
+            string datePart = time.ToString("yyMMdd");
+            int totalSeconds = (int)(time.TimeOfDay.TotalSeconds);
+            string secondsPart = totalSeconds.ToString("D5"); // 補零到5位
+            string memberPart = (addOrderDto.MemberId % 10_000_000).ToString("D7"); // 確保7位
+            string orderNumberString = $"{datePart}{secondsPart}{memberPart}";
+            long orderNumber = long.Parse(orderNumberString);
+
+            int errorCodeNumber = (int)ErrorCodeDefine.MemberBaned;
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = time,
+            };
 
             // Mock 設定
-            orderService.Setup(s => s.AddOrder(addOrderDto)).Returns((response, errorCode));
+            orderRepositoryMock.Setup(s => s.AddOrder(addOrder, orderNumber)).Returns((order, errorCodeNumber));
+            mapperMock.Setup(s => s.Map<Order>(addOrderDto)).Returns(addOrder);
+            mapperMock.Setup(s => s.Map<ResponseAddOrderDto>(order)).Returns(response);
 
             // Act
-            IHttpActionResult result = controller.AddOrder(addOrderDto);
+            (ResponseAddOrderDto result, ErrorCodeDefine errorCode) = service.AddOrder(addOrderDto);
 
             // Assert
-            ResponseIsEqual<ResponseAddOrderDto> responseIsEqual = new ResponseIsEqual<ResponseAddOrderDto>();
-            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.MemberBaned));
+            Assert.AreEqual(response, result);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.MemberBaned);
+        }
+
+        [TestMethod]
+        public void 訂單用現金付款_成功_回傳成功()
+        {
+            // Arrange
+            RequestPayByCashDto payByCashDto = new RequestPayByCashDto()
+            {
+                CoachId = 1,
+                OrderId = 0,
+                UpdateTime = DateTime.Now,
+            };
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            DBResponsePayByCashDto dbResponse = new DBResponsePayByCashDto
+            {
+                ElectronicInvoiceId = 1,
+                InvoiceNumber = "wq12345678",
+                PlanName = "一個月會籍",
+                RandomNumber = "1234",
+                TotalAmount = 1000,
+                SingleEntryPassId = null,
+            };
+
+            RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
+            {
+                ElectronicInvoiceId = dbResponse.ElectronicInvoiceId,
+                InvoiceNumber = dbResponse.InvoiceNumber,
+                PlanName = dbResponse.PlanName,
+                RandomNumber = dbResponse.RandomNumber,
+                TotalAmount = dbResponse.TotalAmount,
+            };
+            // Mock 設定
+            orderRepositoryMock.Setup(s => s.PayByCash(payByCashDto)).Returns((errorCodeNumber, dbResponse));
+            jobDispatcherMock.Setup(s => s.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) = service.PayByCash(payByCashDto);
+
+            // Assert
+            Assert.AreEqual(QrCodeStringDto.QrCodeString, string.Empty);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 訂單用現金付款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestPayByCashDto payByCashDto = new RequestPayByCashDto()
+            {
+                CoachId = 1,
+                OrderId = 0,
+                UpdateTime = DateTime.Now,
+            };
+            int errorCodeNumber = (int)ErrorCodeDefine.TrackNotSet;
+            DBResponsePayByCashDto dbResponse = new DBResponsePayByCashDto
+            {
+                ElectronicInvoiceId = 1,
+                InvoiceNumber = "wq12345678",
+                PlanName = "一個月會籍",
+                RandomNumber = "1234",
+                TotalAmount = 1000,
+                SingleEntryPassId = null,
+            };
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s => s.PayByCash(payByCashDto)).Returns((errorCodeNumber, dbResponse));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) = service.PayByCash(payByCashDto);
+
+            // Assert
+            Assert.AreEqual(QrCodeStringDto.QrCodeString, string.Empty);
+            Assert.AreEqual(errorCode, ErrorCodeDefine.TrackNotSet);
         }
     }
 }

@@ -14,7 +14,7 @@ export default function (mock) {
         return [200, { ErrorCode: 1, ApiDataObject: orderIdDto }];
     })
 
-    mock.onPost("/api/Order/AddOrderWithTicket").reply(() => {
+    mock.onPost("/api/Order/AddOrder").reply(() => {
         const orderIdDto = {
             OrderId: 1
         }

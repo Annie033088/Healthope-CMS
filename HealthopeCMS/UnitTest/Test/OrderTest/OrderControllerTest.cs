@@ -7,6 +7,7 @@ using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using PersistentLayer.Models;
 using UnitTest.utils;
 
 namespace UnitTest.Test.OrderTest
@@ -100,6 +101,83 @@ namespace UnitTest.Test.OrderTest
             // Assert
             ResponseIsEqual<ResponseAddOrderDto> responseIsEqual = new ResponseIsEqual<ResponseAddOrderDto>();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.MemberBaned));
+        }
+
+        [TestMethod]
+        public void 訂單用現金付款_成功_回傳成功()
+        {
+            // Arrange
+            RequestPayByCashDto payByCashDto = new RequestPayByCashDto()
+            {
+                CoachId = 1,
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ResponseQrCodeStringDto response = new ResponseQrCodeStringDto()
+            {
+                QrCodeString = "wqelw22pqw1111"
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            orderServiceMock.Setup(s => s.PayByCash(payByCashDto)).Returns((errorCode, response));
+
+            // Act
+            IHttpActionResult result = controller.PayByCash(payByCashDto);
+
+            // Assert
+            ResponseIsEqual<ResponseQrCodeStringDto> responseIsEqual = new ResponseIsEqual<ResponseQrCodeStringDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, response));
+        }
+
+        [TestMethod]
+        public void 訂單用現金付款_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestPayByCashDto payByCashDto = new RequestPayByCashDto()
+            {
+                CoachId = 1,
+                OrderId = 0,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.PayByCash(payByCashDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 訂單用現金付款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestPayByCashDto payByCashDto = new RequestPayByCashDto()
+            {
+                CoachId = 1,
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ResponseQrCodeStringDto response = new ResponseQrCodeStringDto()
+            {
+                QrCodeString = "wqelw22pqw1111"
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.TrackNotSet;
+
+            // Mock 設定
+            orderServiceMock.Setup(s => s.PayByCash(payByCashDto)).Returns((errorCode, response));
+
+            // Act
+            IHttpActionResult result = controller.PayByCash(payByCashDto);
+
+            // Assert
+            ResponseIsEqual<ResponseQrCodeStringDto> responseIsEqual = new ResponseIsEqual<ResponseQrCodeStringDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.TrackNotSet));
         }
     }
 }

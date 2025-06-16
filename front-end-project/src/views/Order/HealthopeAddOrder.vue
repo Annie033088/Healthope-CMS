@@ -104,7 +104,7 @@
               inputType="number"
               v-model="paymentAmount"
             ></InputSpan>
-            <p>找零：{{ change ? change + "元" : "X" }}</p>
+            <p>找零：{{ change || change === 0 ? change + "元" : "X" }}</p>
           </div>
         </section>
 
@@ -317,12 +317,13 @@ export default {
       try {
         // post
         const response = await this.$axios.post(
-          "/api/Order/AddOrderWithTicket",
+          "/api/Order/AddOrder",
           addOrderDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           if (this.addOrderDto.planType === "2") {
+            // 教練方案的話
             this.step = 2;
             this.orderId = response.data.ApiDataObject.OrderId;
             this.updateTime = response.data.ApiDataObject.UpdateTime;
@@ -395,7 +396,7 @@ export default {
 
       const order = {
         OrderId: this.orderId,
-        UpdateTime: this.updateTimem,
+        UpdateTime: this.updateTime,
         MemberName: this.selectedMember.Name,
         MemberPhone: this.selectedMember.Phone,
         PlanName: this.selectPlan.Name,
@@ -403,6 +404,7 @@ export default {
         CardReaderId: this.selectedReader || null,
         Amount: this.selectPlan.Price,
         CoachName: selectCoach.Name,
+        CoachId: coachId,
       };
 
       this.$router.push({

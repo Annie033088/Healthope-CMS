@@ -211,7 +211,7 @@ namespace ApiLayer.Controllers.api
 
                 // 格式錯誤
                 if (!ModelState.IsValid
-                    || (getMemberDto.Name != null && getMemberDto.Name.Length < 50)
+                    || (getMemberDto.Name != null && getMemberDto.Name.Length > 50)
                     || (getMemberDto.Phone != null && !formatValidation.ValidPhone(getMemberDto.Phone.Value)))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };

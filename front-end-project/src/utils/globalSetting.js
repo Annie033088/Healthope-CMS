@@ -76,6 +76,21 @@ export const errorCodeDefine = {
 
     // 已有啟用中的字軌
     ActiveInvoiceTrackNumber: 25,
+
+    // 會員被 ban
+    MemberBaned: 26,
+
+    // 手機尚未驗證
+    PhoneNotVerify: 27,
+
+    // 方案不可用(狀態為無效)
+    PlanNotAvailable: 28,
+
+    // 字軌未設定(請使用者去設定)
+    TrackNotSet: 29,
+
+    // 教練被設置無效
+    CoachBaned: 30,
 };
 
 //設定errorCode對應資料
@@ -157,6 +172,21 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 25:
             message = "已有啟用中的字軌，請先中斷啟用中的字軌";
+            return message;
+        case 26:
+            message = "會員被禁用";
+            return message;
+        case 27:
+            message = "手機尚為驗證";
+            return message;
+        case 28:
+            message = "方案不可用";
+            return message;
+        case 29:
+            message = "字軌未設定，請前去設定";
+            return message;
+        case 30:
+            message = "教練狀態無效";
             return message;
         default:
             message = "";

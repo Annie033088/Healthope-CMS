@@ -62,12 +62,11 @@ namespace ApiLayer.App_Start
             builder.RegisterType<LeaseAgreementService>().As<ILeaseAgreementService>().InstancePerRequest();
             builder.RegisterType<LeaseAgreementRepository>().As<ILeaseAgreementRepository>().InstancePerRequest();
 
-            builder.RegisterType<InvoiceService>().As<IInvoiceService>().InstancePerRequest();
-            builder.RegisterType<InvoiceRepository>().As<IInvoiceRepository>().InstancePerRequest();
+            builder.RegisterType<InvoiceService>().As<IInvoiceService>().InstancePerLifetimeScope();
+            builder.RegisterType<InvoiceRepository>().As<IInvoiceRepository>().InstancePerLifetimeScope();
 
             builder.RegisterType<OrderService>().As<IOrderService>().InstancePerRequest();
             builder.RegisterType<OrderRepository>().As<IOrderRepository>().InstancePerRequest();
-
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

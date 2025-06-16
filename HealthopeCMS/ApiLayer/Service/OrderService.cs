@@ -91,14 +91,16 @@ namespace ApiLayer.Service
                 }
 
                 // 若是票劵方案 需即時顯示票劵 qr code
-                string qrCodeString = "";
+                string qrCodeString = string.Empty;
 
-                if (dbResponse.SingleEntryPassId != null)
+                if (dbResponse != null && dbResponse.SingleEntryPassId != null)
                 {
                     Hash hash = new Hash();
-                    string qrCodeStringBefaoreHash = dbResponse.SingleEntryPassId.ToString() + ";" + payByCashDto.OrderId.ToString()
-                        + ";" + dbResponse.TicketCode.ToString();
-                    qrCodeString = hash.QrCodeStringHash(qrCodeStringBefaoreHash);
+                    string qrCodeStringBefaoreHash = dbResponse.SingleEntryPassId.ToString() + payByCashDto.OrderId.ToString()
+                        + dbResponse.TicketCode.ToString();
+
+                    qrCodeString = dbResponse.SingleEntryPassId.ToString() + ";" + payByCashDto.OrderId.ToString()
+                        + ";" + dbResponse.TicketCode.ToString() + ";" + hash.QrCodeStringHash(qrCodeStringBefaoreHash);
                 }
 
                 return ((ErrorCodeDefine)errorCodeNumber, new ResponseQrCodeStringDto { QrCodeString = qrCodeString });
