@@ -365,7 +365,7 @@
             permissionMap.AddOrder
           "
           text="查詢訂單"
-          @click="redirect('/plan/membershipPlan')"
+          @click="redirect('/order')"
         ></BtnSubSideBar>
         <BtnSubSideBar
           v-if="permissionMap.EditOrder || permissionMap.SelectOrder"
@@ -499,6 +499,15 @@ export default {
   },
   methods: {
     openDropdown(key) {
+      this.showElement.Course = false;
+      this.showElement.Order = false;
+      this.showElement.PlanTemplate = false
+      this.showElement.Setting = false
+      this.dropDownFlag.Course = false;
+      this.dropDownFlag.Order = false;
+      this.dropDownFlag.PlanTemplate = false
+      this.dropDownFlag.Setting = false
+      
       this.showElement[key] = true;
       this.dropDownFlag[key] = true;
     },

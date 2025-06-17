@@ -223,5 +223,81 @@ namespace UnitTest.Test.OrderTest
             Assert.AreEqual(QrCodeStringDto.QrCodeString, string.Empty);
             Assert.AreEqual(errorCode, ErrorCodeDefine.TrackNotSet);
         }
+
+        [TestMethod]
+        public void 取得訂單_成功_回傳訂單()
+        {
+            // Arrange
+            RequestGetOrderDto getOrderDto = new RequestGetOrderDto()
+            {
+                State = 1,
+                Method = null,
+                SortOption = null,
+                SortOrder = "ascending",
+                RecordPerPage = 8,
+                Page = 1
+            };
+
+            List<ResponseGetOrderDto> responseGetOrder = new List<ResponseGetOrderDto>()
+            {
+                new ResponseGetOrderDto
+                {
+                    Amount=200,
+                    MemberId=1,
+                    MemberName="AA",
+                    MemberPhone=987654321,
+                    Method=2,
+                    OrderId=1,
+                    OrderNumber=250106000010000001,
+                    PlanName="健身體驗",
+                    PlanType=1,
+                    State=1,
+                    UpdateTime=DateTime.Now,
+                }
+            };
+
+            ResponseGetOrderListDto response = new ResponseGetOrderListDto
+            {
+                OrderList = responseGetOrder,
+                TotalPage = 1,
+            };
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.GetOrder(getOrderDto)).Returns(response);
+
+            // Act
+            ResponseGetOrderListDto result = service.GetOrder(getOrderDto);
+
+            // Assert
+            Assert.IsTrue(result.OrderList.SequenceEqual(responseGetOrder));
+        }
+
+        [TestMethod]
+        public void 取得訂單_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetOrderDto getOrderDto = new RequestGetOrderDto()
+            {
+                State = 1,
+                Method = null,
+                SortOption = "null",
+                SortOrder = "ascending",
+                RecordPerPage = 8,
+                Page = 1
+            };
+
+            ResponseGetOrderListDto response = null;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.GetOrder(getOrderDto)).Returns(response);
+
+            // Act
+            ResponseGetOrderListDto result = service.GetOrder(getOrderDto);
+
+            // Assert
+            Assert.AreEqual(result, null);
+        }
     }
 }

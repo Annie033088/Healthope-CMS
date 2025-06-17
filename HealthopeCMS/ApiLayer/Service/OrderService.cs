@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
@@ -104,6 +105,22 @@ namespace ApiLayer.Service
                 }
 
                 return ((ErrorCodeDefine)errorCodeNumber, new ResponseQrCodeStringDto { QrCodeString = qrCodeString });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 取得訂單
+        /// </summary>
+        public ResponseGetOrderListDto GetOrder(RequestGetOrderDto getOrderDto)
+        {
+            try
+            {
+                ResponseGetOrderListDto orderList = orderRepository.GetOrder(getOrderDto);
+                return orderList;
             }
             catch (Exception)
             {

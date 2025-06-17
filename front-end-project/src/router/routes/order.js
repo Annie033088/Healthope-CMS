@@ -15,6 +15,27 @@ export default [
         component: () => import('@/views/Order/HealthopeCheckoutOrder'),
         meta: {
             requireAuth: [{ adminPermission: adminPermission.AddOrder }
+                , { adminPermission: adminPermission.EditOrder },],
+            disableBack: true,
+            backPath: "/order"
+        },
+        props: route => ({ order: route.params.order })
+    },
+    {
+        path: '/order',
+        name: 'HealthopeOrder',
+        component: () => import('@/views/Order/HealthopeOrder'),
+        meta: {
+            requireAuth: [{ adminPermission: adminPermission.AddOrder }
+                , { adminPermission: adminPermission.EditOrder }, { adminPermission: adminPermission.SelectOrder }]
+        },
+    },
+    {
+        path: '/order/beforeCheckout',
+        name: 'HealthopeBerforeCheckout',
+        component: () => import('@/views/Order/HealthopeBerforeCheckout'),
+        meta: {
+            requireAuth: [{ adminPermission: adminPermission.AddOrder }
                 , { adminPermission: adminPermission.EditOrder }]
         },
         props: route => ({ order: route.params.order })

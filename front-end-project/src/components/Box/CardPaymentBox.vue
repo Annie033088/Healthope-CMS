@@ -32,6 +32,7 @@ export default {
         OrderId: this.order.OrderId,
         CardReaderId: this.order.CardReaderId,
         UpdateTime: this.order.UpdateTime,
+        CoachId: this.order.CoachId ?? null,
       };
 
       try {
@@ -46,7 +47,7 @@ export default {
 
           if (response.data.ApiDataObject)
             qrCodeString = response.data.ApiDataObject.QrCodeString;
-          
+
           this.$emit("cardPaySuccess", qrCodeString);
         } else {
           this.$emit("cardPayFail");

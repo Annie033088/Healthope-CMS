@@ -1,4 +1,5 @@
-﻿using ApiLayer.Models;
+﻿using System.Web.Http;
+using ApiLayer.Models;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using PersistentLayer.Models;
@@ -16,5 +17,15 @@ namespace ApiLayer.Interface
         /// 現金付款
         /// </summary>
         (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) PayByCash(RequestPayByCashDto payByCashDto);
+
+        /// <summary>
+        /// 刷卡付款
+        /// </summary>
+        (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) PayByCard(RequestPayByCardDto payByCardDto);
+
+        /// <summary>
+        /// 取得訂單
+        /// </summary>
+        ResponseGetOrderListDto GetOrder(RequestGetOrderDto getOrderDto);
     }
 }

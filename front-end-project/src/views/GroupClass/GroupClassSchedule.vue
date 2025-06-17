@@ -46,6 +46,7 @@
       :columns="columns"
       :rows="classList"
       :expandable="true"
+      :resetDetailIndexFlag="resetDetailIndexFlag"
       @changeStatus="editStatus"
     >
       <template #detail="{ row }">
@@ -133,6 +134,7 @@ export default {
         },
       ],
       classList: [{ Date: "2025-06-30" }],
+      resetDetailIndexFlag: false,
     };
   },
   methods: {
@@ -195,6 +197,7 @@ export default {
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.resetDetailIndexFlag = !this.resetDetailIndexFlag;
           this.currentPage = this.searchingPage;
           this.classList = response.data.ApiDataObject.ScheduleList;
 

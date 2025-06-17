@@ -66,10 +66,13 @@
     <Compile Include="Models\RequestGetInvoiceTrackNumberDto.cs" />
     <Compile Include="Models\RequestGetLeaseAgreementDto.cs" />
     <Compile Include="Models\RequestGetMemberByNameOrPhoneDto.cs" />
+    <Compile Include="Models\RequestGetOrderDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />
     <Compile Include="Models\RequestGetShowcaseDto.cs" />
     <Compile Include="Models\RequestGetTermDto.cs" />
+    <Compile Include="Models\RequestPayByCardDto.cs" />
     <Compile Include="Models\RequestPayByCashDto.cs" />
+    <Compile Include="Models\ResponseGetOrderListDto.cs" />
     <Compile Include="Models\ResultWithException.cs" />
     <Compile Include="Models\RequestEditAdminDto.cs" />
     <Compile Include="Models\RequestEditCoachDto.cs" />

@@ -151,6 +151,10 @@ export default {
     TitleCard,
     SubTitleCard,
   },
+  props: {
+    permissionMap: {},
+    notificationBoxConfirmFlag: Boolean,
+  },
   data() {
     return {
       addOrderDto: {

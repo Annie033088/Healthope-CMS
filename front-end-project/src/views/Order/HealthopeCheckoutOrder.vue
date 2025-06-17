@@ -68,6 +68,10 @@ export default {
     SubTitleCard,
     CardPaymentBox,
   },
+  props: {
+    permissionMap: {},
+    notificationBoxConfirmFlag: Boolean,
+  },
   data() {
     return {
       paid: false,

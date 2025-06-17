@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
+using ApiLayer.Models.Term.Request;
+using ApiLayer.Models.Term.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;
@@ -178,6 +181,79 @@ namespace UnitTest.Test.OrderTest
             // Assert
             ResponseIsEqual<ResponseQrCodeStringDto> responseIsEqual = new ResponseIsEqual<ResponseQrCodeStringDto>();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.TrackNotSet));
+        }
+
+        [TestMethod]
+        public void 取得訂單_成功_回傳訂單()
+        {
+            // Arrange
+            RequestGetOrderDto getOrderDto = new RequestGetOrderDto()
+            {
+                State = 1,
+                Method = null,
+                SortOption = null,
+                SortOrder = "ascending",
+                RecordPerPage = 8,
+                Page = 1
+            };
+
+            List<ResponseGetOrderDto> responseGetOrder = new List<ResponseGetOrderDto>()
+            {
+                new ResponseGetOrderDto
+                {
+                    Amount=200,
+                    MemberId=1,
+                    MemberName="AA",
+                    MemberPhone=987654321,
+                    Method=2,
+                    OrderId=1,
+                    OrderNumber=250106000010000001,
+                    PlanName="健身體驗",
+                    PlanType=1,
+                    State=1,
+                    UpdateTime=DateTime.Now,
+                }
+            };
+
+            ResponseGetOrderListDto response = new ResponseGetOrderListDto
+            {
+                OrderList = responseGetOrder,
+                TotalPage = 1,
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.GetOrder(getOrderDto)).Returns(response);
+
+            // Act
+            IHttpActionResult result = controller.GetOrder(getOrderDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetOrderListDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetOrderListDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 取得訂單_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestGetOrderDto getOrderDto = new RequestGetOrderDto()
+            {
+                State = 1,
+                Method = null,
+                SortOption = "null",
+                SortOrder = "ascending",
+                RecordPerPage = 8,
+                Page = 1
+            };
+
+            // Act
+            IHttpActionResult result = controller.GetOrder(getOrderDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
         }
     }
 }

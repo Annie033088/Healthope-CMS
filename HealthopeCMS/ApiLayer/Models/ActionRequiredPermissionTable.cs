@@ -130,6 +130,11 @@ namespace ApiLayer.Models
             { "Invoice,DeleteInvoiceTrackNumber", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
 
+            // OrderController
+            { "Order,AddOrder", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Order,PayByCash", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
         };
     }
 }

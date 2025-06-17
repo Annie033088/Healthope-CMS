@@ -30,6 +30,11 @@ export default {
   },
   methods: {
     redirectBack() {
+      if (this.$route.meta.disableBack) {
+        this.$router.push(this.$route.meta.backPath);
+        return
+      }
+
       this.$router.back();
     },
   },
@@ -51,7 +56,7 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 3px 0px inset;
 }
 
-.goBack{
+.goBack {
   width: 30px;
   height: 30px;
   border-radius: 50%;

@@ -35,7 +35,6 @@
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
-      class="tableContainer"
       :columns="columns"
       :rows="classList"
       :editBtnFlag="permissionMap.EditGroupClassSchedule"
