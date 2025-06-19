@@ -109,7 +109,7 @@ namespace ApiLayer.Service
         /// <summary>
         /// 請求開立發票
         /// </summary>
-        public Task PrintInvoice(RequestPrintInvoiceDto requestPrintInvoiceDto)
+        public async Task<Task> PrintInvoice(RequestPrintInvoiceDto requestPrintInvoiceDto)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace ApiLayer.Service
                 };
                 string json = JsonConvert.SerializeObject(dictionaryContent);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                string responseString = httpService.SendPost(url, content);
+                string responseString = await httpService.SendPostAsync(url, content);
 
                 ResponsePrintInvoiceDto response = JsonConvert.DeserializeObject<ResponsePrintInvoiceDto>(responseString);
                 PrintInvoiceErrorCode responseCode = (PrintInvoiceErrorCode)(int.Parse(response.Code));

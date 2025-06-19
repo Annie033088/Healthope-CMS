@@ -50,6 +50,7 @@
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminIdentityAndPermission.cs" />
     <Compile Include="Models\Coach.cs" />
+    <Compile Include="Models\CreditCardTransaction.cs" />
     <Compile Include="Models\ElectronicInvoice.cs" />
     <Compile Include="Models\GroupClassSchedule.cs" />
     <Compile Include="Models\GroupClassShowcase.cs" />

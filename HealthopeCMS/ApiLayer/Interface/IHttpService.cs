@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 
 namespace ApiLayer.Interface
@@ -23,6 +25,6 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 發送 post, 回傳以 json string 接收
         /// </summary>
-        string SendPost(string url, StringContent content);
+        Task<string> SendPostAsync(string url, StringContent content, TimeSpan? timeOut = null);
     }
 }

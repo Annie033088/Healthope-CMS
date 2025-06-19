@@ -162,7 +162,7 @@ namespace UnitTest.Test.OrderTest
                 UpdateTime = DateTime.Now,
             };
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
-            DBResponsePayByCashDto dbResponse = new DBResponsePayByCashDto
+            DBResponsePaymentDto dbResponse = new DBResponsePaymentDto
             {
                 ElectronicInvoiceId = 1,
                 InvoiceNumber = "wq12345678",
@@ -203,7 +203,7 @@ namespace UnitTest.Test.OrderTest
                 UpdateTime = DateTime.Now,
             };
             int errorCodeNumber = (int)ErrorCodeDefine.TrackNotSet;
-            DBResponsePayByCashDto dbResponse = new DBResponsePayByCashDto
+            DBResponsePaymentDto dbResponse = new DBResponsePaymentDto
             {
                 ElectronicInvoiceId = 1,
                 InvoiceNumber = "wq12345678",

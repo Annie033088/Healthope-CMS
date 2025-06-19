@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.Job;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
+using ApiLayer.Models.Other;
 using AutoMapper;
 using DomainLayer.Models;
 using DomainLayer.Utility;
@@ -19,12 +22,14 @@ namespace ApiLayer.Service
         private readonly IOrderRepository orderRepository;
         private readonly IMapper mapper;
         private readonly IJobDispatcher jobDispatcher;
+        private readonly IPaymentService paymentService;
 
-        public OrderService(IOrderRepository orderRepository, IMapper mapper, IJobDispatcher jobDispatcher)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper, IJobDispatcher jobDispatcher, IPaymentService paymentService)
         {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.jobDispatcher = jobDispatcher;
+            this.paymentService = paymentService;
         }
 
         /// <summary>
@@ -70,7 +75,7 @@ namespace ApiLayer.Service
         {
             try
             {
-                (int errorCodeNumber, DBResponsePayByCashDto dbResponse) = orderRepository.PayByCash(payByCashDto);
+                (int errorCodeNumber, DBResponsePaymentDto dbResponse) = orderRepository.PayByCash(payByCashDto);
 
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (ErrorCodeDefine.ServerError, null);
@@ -105,6 +110,54 @@ namespace ApiLayer.Service
                 }
 
                 return ((ErrorCodeDefine)errorCodeNumber, new ResponseQrCodeStringDto { QrCodeString = qrCodeString });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 信用卡付款
+        /// </summary>
+        public async Task<(ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto)> PayByCard(RequestPayByCardDto payByCardDto)
+        {
+            try
+            {
+                // 新增交易紀錄
+                (CreditCardTransaction creditCardTransaction, int errorCodeNumberAddTransaction)
+                    = orderRepository.AddCreditCardTransaction(payByCardDto);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumberAddTransaction))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                if ((ErrorCodeDefine)errorCodeNumberAddTransaction != ErrorCodeDefine.Success)
+                    return (ErrorCodeDefine.ServerError, null);
+
+                // 開始請求第三方進行交易
+                RequestCardPaymentDto requestCardPayment = new RequestCardPaymentDto
+                {
+                    TransactionId = string.Empty,
+                    OrderId = payByCardDto.OrderId,
+                    Amount = creditCardTransaction.Amount,
+                };
+
+                (ErrorCodeDefine errorCode, DBResponsePaymentDto dbResponse) = await paymentService.PayByCard(
+                    requestCardPayment, creditCardTransaction.CreditCardTransactionId, payByCardDto);
+
+                string qrCodeString = string.Empty;
+
+                if (dbResponse != null && dbResponse.SingleEntryPassId != null)
+                {
+                    Hash hash = new Hash();
+                    string qrCodeStringBefaoreHash = dbResponse.SingleEntryPassId.ToString() + payByCardDto.OrderId.ToString()
+                        + dbResponse.TicketCode.ToString();
+
+                    qrCodeString = dbResponse.SingleEntryPassId.ToString() + ";" + payByCardDto.OrderId.ToString()
+                        + ";" + dbResponse.TicketCode.ToString() + ";" + hash.QrCodeStringHash(qrCodeStringBefaoreHash);
+                }
+
+                return (errorCode, new ResponseQrCodeStringDto { QrCodeString = qrCodeString });
             }
             catch (Exception)
             {

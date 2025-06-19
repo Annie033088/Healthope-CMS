@@ -9,7 +9,7 @@ export const orderState = {
     Terminate: 4,
     // 違約
     Breach: 5,
-    // 付款處理中(刷卡成功但資料尚未被更新)
+    // 付款處理中
     Paying: 6,
 }
 

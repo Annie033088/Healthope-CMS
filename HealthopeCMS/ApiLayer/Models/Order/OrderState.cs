@@ -31,5 +31,10 @@ namespace ApiLayer.Models.Order
         /// 違約
         /// </summary>
         Breach = 5,
+
+        /// <summary>
+        /// 付款處理中
+        /// </summary>
+        Paying = 6,
     }
 }

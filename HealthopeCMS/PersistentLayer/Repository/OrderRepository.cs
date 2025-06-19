@@ -76,7 +76,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 現金付款
         /// </summary>
-        public (int errorCodeNumber, DBResponsePayByCashDto dBResponsePayByCashDto) PayByCash(RequestPayByCashDto payByCashDto)
+        public (int errorCodeNumber, DBResponsePaymentDto dBResponsePaymentDto) PayByCash(RequestPayByCashDto payByCashDto)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -113,7 +113,7 @@ namespace PersistentLayer.Repository
 
                 if (ds.Tables.Count > 0)
                 {
-                    DBResponsePayByCashDto response = new DBResponsePayByCashDto
+                    DBResponsePaymentDto response = new DBResponsePaymentDto
                     {
                         ElectronicInvoiceId = ds.Tables[0].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
                             ds.Tables[0].Rows[0].Field<int>("f_electronicInvoiceId"),
@@ -158,15 +158,79 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 刷卡付款
         /// </summary>
-        public (int errorCodeNumber, DBResponsePayByCashDto dBResponsePayByCashDto) PayByCard(RequestPayByCardDto payByCardDto)
+        public (int errorCodeNumber, DBResponsePaymentDto dBResponsePaymentDto) PayByCardSuccess(RequestPayByCardDto payByCardDto)
         {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            int errorCodeNumber;
+
             try
             {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStatusPayByCardSuccess @orderId, @coachId, @errorCode OUTPUT";
 
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = payByCardDto.OrderId;
+
+                if (payByCardDto.CoachId == null)
+                    cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = payByCardDto.CoachId;
+
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (ds.Tables.Count > 0)
+                {
+                    DBResponsePaymentDto response = new DBResponsePaymentDto
+                    {
+                        ElectronicInvoiceId = ds.Tables[0].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_electronicInvoiceId"),
+                        InvoiceNumber = ds.Tables[0].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_invoiceNumber"),
+                        RandomNumber = ds.Tables[0].Rows[0].IsNull("f_randomNumber") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_randomNumber"),
+                        TotalAmount = ds.Tables[0].Rows[0].IsNull("f_totalAmount") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_totalAmount"),
+                        PlanName = ds.Tables[0].Rows[0].IsNull("f_planName") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_planName"),
+                        SingleEntryPassId = null,
+                        TicketCode = null,
+                    };
+
+                    // 若是票劵方案, 取得票劵資訊
+                    if (ds.Tables.Count > 1)
+                    {
+                        response.SingleEntryPassId = ds.Tables[1].Rows[0].IsNull("f_singleEntryPassId") ? 0 :
+                                ds.Tables[1].Rows[0].Field<int>("f_singleEntryPassId");
+                        response.TicketCode = ds.Tables[1].Rows[0].IsNull("f_ticketCode") ? Guid.Empty :
+                                ds.Tables[1].Rows[0].Field<Guid>("f_ticketCode");
+                    }
+
+                    return (errorCodeNumber, response);
+                }
+
+                return (errorCodeNumber, null);
             }
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
             }
         }
 
@@ -244,6 +308,74 @@ namespace PersistentLayer.Repository
 
                 response.OrderList = orders;
                 return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 新增信用卡交易紀錄 (待付款)
+        /// </summary>
+        public (CreditCardTransaction creditCardTransaction, int errorCodeNumber) AddCreditCardTransaction(RequestPayByCardDto payByCardDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_addCreditCardTransaction @orderId, @updateTime, " +
+                    "@coachId, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = payByCardDto.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = payByCardDto.UpdateTime;
+
+                if (payByCardDto.CoachId == null)
+                {
+                    cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = DBNull.Value;
+                }
+                else
+                {
+                    cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = payByCardDto.CoachId;
+                }
+
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    CreditCardTransaction creditCardTransaction = new CreditCardTransaction()
+                    {
+                        CreditCardTransactionId = dr.IsNull("f_creditCardTransactionId") ?
+                            0 : dr.Field<int>("f_creditCardTransactionId"),
+                        Amount = dr.IsNull("f_amount") ? 0 : dr.Field<int>("f_amount"),
+                    };
+
+                    return (creditCardTransaction, errorCodeNumber);
+                }
+
+                return (null, errorCodeNumber);
             }
             catch (Exception)
             {

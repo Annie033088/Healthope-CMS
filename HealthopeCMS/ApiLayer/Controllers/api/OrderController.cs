@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
@@ -104,7 +105,7 @@ namespace ApiLayer.Controllers.api
         /// 刷卡付款
         /// </summary>
         [HttpPost]
-        public IHttpActionResult PayByCard([FromBody] RequestPayByCardDto payByCardDto)
+        public async Task<IHttpActionResult> PayByCard([FromBody] RequestPayByCardDto payByCardDto)
         {
             try
             {
@@ -119,7 +120,7 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) = orderService.PayByCash(payByCardDto);
+                (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) = await orderService.PayByCard(payByCardDto);
                 response = new ResultResponse<ResponseQrCodeStringDto>()
                 {
                     ApiDataObject = QrCodeStringDto,

@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Threading.Tasks;
+using System.Web.Http;
 using ApiLayer.Models;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
@@ -21,7 +22,7 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 刷卡付款
         /// </summary>
-        (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) PayByCard(RequestPayByCardDto payByCardDto);
+        Task<(ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto)> PayByCard(RequestPayByCardDto payByCardDto);
 
         /// <summary>
         /// 取得訂單

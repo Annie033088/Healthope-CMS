@@ -156,5 +156,20 @@
         /// 教練被設置無效
         /// </summary>
         CoachBaned = 30,
+
+        /// <summary>
+        /// 付款失敗
+        /// </summary>
+        PayFailed = 31,
+
+        /// <summary>
+        /// 刷卡成功但交易紀錄更新失敗
+        /// </summary>
+        CardPaySuccessTransactionUpdateFail = 32,
+
+        /// <summary>
+        /// 交易紀錄更新成功但訂單更新失敗
+        /// </summary>
+        TransactionSuccessOrderUpdateFail = 33,
     }
 }

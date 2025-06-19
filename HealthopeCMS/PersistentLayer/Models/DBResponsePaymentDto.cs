@@ -2,7 +2,7 @@
 
 namespace PersistentLayer.Models
 {
-    public class DBResponsePayByCashDto
+    public class DBResponsePaymentDto
     {
         /// <summary>
         /// 電子發票 Id

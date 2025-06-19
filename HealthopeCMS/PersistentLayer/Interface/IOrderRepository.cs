@@ -15,16 +15,24 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 現金付款
         /// </summary>
-        (int errorCodeNumber, DBResponsePayByCashDto dBResponsePayByCashDto) PayByCash(RequestPayByCashDto payByCashDto);
+        (int errorCodeNumber, DBResponsePaymentDto dBResponsePaymentDto) PayByCash(RequestPayByCashDto payByCashDto);
 
         /// <summary>
         /// 刷卡付款
         /// </summary>
-        (int errorCodeNumber, DBResponsePayByCashDto dBResponsePayByCashDto) PayByCard(RequestPayByCardDto payByCardDto);
+        (int errorCodeNumber, DBResponsePaymentDto dBResponsePaymentDto) PayByCardSuccess(RequestPayByCardDto payByCardDto);
 
         /// <summary>
         /// 取得訂單
         /// </summary>
         ResponseGetOrderListDto GetOrder(RequestGetOrderDto getOrderDto);
+
+        /// <summary>
+        /// 新增信用卡交易紀錄 (待付款)
+        /// </summary>
+        (CreditCardTransaction creditCardTransaction, int errorCodeNumber) AddCreditCardTransaction(
+            RequestPayByCardDto payByCardDto);
+
+
     }
 }

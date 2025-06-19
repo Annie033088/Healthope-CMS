@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Controllers;
 using ApiLayer.Interface;
@@ -45,14 +46,23 @@ namespace ApiLayer.Service
             }
         }
 
-        public string SendPost(string url, StringContent content)
+        public async Task<string> SendPostAsync(string url, StringContent content, TimeSpan? timeOut = null)
         {
             try
             {
-                HttpClient httpClient = new HttpClient();
-                HttpResponseMessage response = httpClient.PostAsync(url, content).Result;
-                string responseString = response.Content.ReadAsStringAsync().Result;
-                return responseString;
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    if (timeOut != null) httpClient.Timeout = timeOut.Value; // ✅ 設定 timeout
+
+                    HttpResponseMessage response = await httpClient.PostAsync(url, content);
+                    response.EnsureSuccessStatusCode(); // 如果不是 2xx，會丟出例外
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    return responseString;
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                throw new TimeoutException("連線逾時", ex);
             }
             catch (Exception)
             {

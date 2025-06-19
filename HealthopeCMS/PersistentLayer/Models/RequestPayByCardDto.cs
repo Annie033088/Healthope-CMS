@@ -24,7 +24,7 @@ namespace PersistentLayer.Models
         public int? CoachId { get; set; }
 
         /// <summary>
-        /// 教練 ID，主鍵
+        /// 刷卡機 Id
         /// </summary>
         public string CardReaderId { get; set; }
     }

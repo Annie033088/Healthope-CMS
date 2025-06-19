@@ -33,7 +33,7 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 請求第三方開立發票
         /// </summary>
-        Task PrintInvoice(RequestPrintInvoiceDto requestPrintInvoiceDto);
+        Task<Task> PrintInvoice(RequestPrintInvoiceDto requestPrintInvoiceDto);
 
         /// <summary>
         /// 修改電子發票狀態
