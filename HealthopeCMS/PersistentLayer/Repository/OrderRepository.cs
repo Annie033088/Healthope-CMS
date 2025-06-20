@@ -301,6 +301,7 @@ namespace PersistentLayer.Repository
                         State = (byte)(dr.IsNull("f_state") ? 0 : dr.Field<byte>("f_state")),
                         Amount = dr.IsNull("f_amount") ? 0 : dr.Field<int>("f_amount"),
                         Method = (byte)(dr.IsNull("f_method") ? 0 : dr.Field<byte>("f_method")),
+                        InvoiceStatus = (byte)(dr.IsNull("f_invoiceStatus") ? 0 : dr.Field<byte>("f_invoiceStatus")),
                         UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
                     };
                     orders.Add(order);

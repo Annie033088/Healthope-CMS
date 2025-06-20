@@ -3,10 +3,13 @@ using System.Text.RegularExpressions;
 using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
+using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
+using ApiLayer.Models.Job;
+using ApiLayer.Models.Order.Request;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
@@ -19,11 +22,13 @@ namespace ApiLayer.Controllers.api
     public class InvoiceController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly IJobDispatcher jobDispatcher;
         private readonly IInvoiceService invoiceService;
 
-        public InvoiceController(IInvoiceService invoiceService)
+        public InvoiceController(IInvoiceService invoiceService, IJobDispatcher jobDispatcher)
         {
             this.invoiceService = invoiceService;
+            this.jobDispatcher = jobDispatcher;
         }
 
         /// <summary>
@@ -163,6 +168,53 @@ namespace ApiLayer.Controllers.api
                 response = new ResultResponse()
                 {
                     ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.DeleteFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 取得字軌並列印
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult PrintInvoice(
+            [FromBody] RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || orderIdDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) = invoiceService.GetInvoiceNumber(orderIdDto);
+
+                if (printInvoiceDto == null || errorCode != ErrorCodeDefine.Success)
+                {
+                    response = new ResultResponse()
+                    {
+                        ErrorCode = errorCode,
+                    };
+                    return Ok(response);
+                }
+
+                // 請求第三放列印方票
+                jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto);
+
+                response = new ResultResponse()
+                {
+                    ErrorCode = errorCode,
                 };
                 return Ok(response);
             }

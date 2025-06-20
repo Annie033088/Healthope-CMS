@@ -198,6 +198,9 @@ namespace PersistentLayer.Repository
             }
         }
 
+        /// <summary>
+        /// 修改電子發票狀態
+        /// </summary>
         public bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime)
         {
             SqlCommand cmd = new SqlCommand();
@@ -226,6 +229,70 @@ namespace PersistentLayer.Repository
                 if (ExeCnt > 0) return true;
 
                 return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 取得發票號碼
+        /// </summary>
+        public (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) GetInvoiceNumber(int orderId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getInvoiceNumber @orderId, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (ds.Tables.Count > 0)
+                {
+                    ElectronicInvoice response = new ElectronicInvoice
+                    {
+                        ElectronicInvoiceId = ds.Tables[0].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_electronicInvoiceId"),
+                        InvoiceNumber = ds.Tables[0].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_invoiceNumber"),
+                        RandomNumber = ds.Tables[0].Rows[0].IsNull("f_randomNumber") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_randomNumber"),
+                        TotalAmount = ds.Tables[0].Rows[0].IsNull("f_totalAmount") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_totalAmount"),
+                    };
+
+                    string planName = ds.Tables[0].Rows[0].IsNull("f_planName") ? string.Empty :
+                            ds.Tables[0].Rows[0].Field<string>("f_planName");
+
+                    return (errorCodeNumber, response, planName);
+                }
+
+                return (errorCodeNumber, null, null);
             }
             catch (Exception)
             {

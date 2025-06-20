@@ -9,6 +9,7 @@ using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Job;
+using ApiLayer.Models.Order.Request;
 using AutoMapper;
 using DomainLayer.Models;
 using Newtonsoft.Json;
@@ -189,6 +190,36 @@ namespace ApiLayer.Service
             try
             {
                 return invoiceRepository.EditElectronicInvoiceStatus(success, electronicInvoiceId, invocieTime);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 取得發票號碼
+        /// </summary>
+        public (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) GetInvoiceNumber(RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) = invoiceRepository.GetInvoiceNumber(orderIdDto.OrderId);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber) || electronicInvoice == null)
+                    return (ErrorCodeDefine.ServerError, null);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                RequestPrintInvoiceDto requestPrintInvoiceDto = new RequestPrintInvoiceDto
+                {
+                    ElectronicInvoiceId = electronicInvoice.ElectronicInvoiceId,
+                    InvoiceNumber = electronicInvoice.InvoiceNumber,
+                    PlanName = planName,
+                    RandomNumber = electronicInvoice.RandomNumber,
+                    TotalAmount = electronicInvoice.TotalAmount,
+                };
+                return (errorCode, requestPrintInvoiceDto);
             }
             catch (Exception)
             {

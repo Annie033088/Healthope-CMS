@@ -69,6 +69,11 @@ namespace ApiLayer.Models.Order.Response
         public byte Method { get; set; }
 
         /// <summary>
+        /// 發票狀態
+        /// </summary>
+        public byte InvoiceStatus { get; set; }
+
+        /// <summary>
         /// 最後修改時間
         /// </summary>
         public DateTime UpdateTime { get; set; }

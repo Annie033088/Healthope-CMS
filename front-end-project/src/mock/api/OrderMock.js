@@ -1,11 +1,10 @@
-
 export default function (mock) {
     const orders = [
         {
             OrderId: 1,
             MemberId: 101,
-            MemberName:"AA",
-            MemberPhone:987654321,
+            MemberName: "AA",
+            MemberPhone: 987654321,
             PlanId: 201,
             PlanType: 2,
             PlanName: "健身月卡",
@@ -14,14 +13,15 @@ export default function (mock) {
             Amount: 1200,
             Method: 2,
             Remark: "首次購買",
+            InvoiceStatus: 3,
             CreateTime: "2025-06-17T10:01:00.123",
             UpdateTime: "2025-06-17T10:01:00.123"
         },
         {
             OrderId: 2,
             MemberId: 102,
-            MemberName:"BB",
-            MemberPhone:987654322,
+            MemberName: "BB",
+            MemberPhone: 987654322,
             PlanId: 202,
             PlanType: 2,
             PlanName: "瑜伽季卡",
@@ -36,8 +36,8 @@ export default function (mock) {
         {
             OrderId: 3,
             MemberId: 103,
-            MemberName:"CC",
-            MemberPhone:987654323,
+            MemberName: "CC",
+            MemberPhone: 987654323,
             PlanId: 203,
             PlanType: 1,
             PlanName: "私人教練體驗",
@@ -52,8 +52,8 @@ export default function (mock) {
         {
             OrderId: 4,
             MemberId: 104,
-            MemberName:"DD",
-            MemberPhone:987654324,
+            MemberName: "DD",
+            MemberPhone: 987654324,
             PlanId: 204,
             PlanType: 3,
             PlanName: "團體課半年卡",
@@ -68,8 +68,8 @@ export default function (mock) {
         {
             OrderId: 5,
             MemberId: 105,
-            MemberName:"EE",
-            MemberPhone:987654325,
+            MemberName: "EE",
+            MemberPhone: 987654325,
             PlanId: 205,
             PlanType: 1,
             PlanName: "健身單次票",
@@ -84,8 +84,8 @@ export default function (mock) {
         {
             OrderId: 6,
             MemberId: 106,
-            MemberName:"FF",
-            MemberPhone:987654326,
+            MemberName: "FF",
+            MemberPhone: 987654326,
             PlanId: 206,
             PlanType: 2,
             PlanName: "瑜伽月卡",
@@ -100,8 +100,8 @@ export default function (mock) {
         {
             OrderId: 7,
             MemberId: 107,
-            MemberName:"GG",
-            MemberPhone:987654327,
+            MemberName: "GG",
+            MemberPhone: 987654327,
             PlanId: 207,
             PlanType: 1,
             PlanName: "舞蹈月卡",
@@ -116,8 +116,8 @@ export default function (mock) {
         {
             OrderId: 8,
             MemberId: 108,
-            MemberName:"HH",
-            MemberPhone:987654328,
+            MemberName: "HH",
+            MemberPhone: 987654328,
             PlanId: 208,
             PlanType: 3,
             PlanName: "健身年卡",
@@ -132,8 +132,8 @@ export default function (mock) {
         {
             OrderId: 9,
             MemberId: 109,
-            MemberName:"II",
-            MemberPhone:987654329,
+            MemberName: "II",
+            MemberPhone: 987654329,
             PlanId: 209,
             PlanType: 2,
             PlanName: "私人教練三個月",
@@ -147,6 +147,80 @@ export default function (mock) {
         }
     ];
 
+    const orderStates = [
+        {
+            "OrderStateId": 1,
+            "OrderId": 1,
+            "State": 1,
+            "Remark": "付款完成",
+            "CreateTime": "2025-06-20T10:00:12.000Z",
+            "UpdateTime": "2025-06-20T10:02:15.000Z"
+        },
+        {
+            "OrderStateId": 2,
+            "OrderId": 2,
+            "State": 2,
+            "Remark": "處理中",
+            "CreateTime": "2025-06-19T15:20:33.000Z",
+            "UpdateTime": "2025-06-19T15:30:00.000Z"
+        },
+        {
+            "OrderStateId": 3,
+            "OrderId": 3,
+            "State": 6,
+            "Remark": "處理中",
+            "CreateTime": "2025-06-18T08:15:42.000Z",
+            "UpdateTime": "2025-06-18T08:16:10.000Z"
+        },
+        {
+            "OrderStateId": 4,
+            "OrderId": 4,
+            "State": 3,
+            "Remark": "已出貨",
+            "CreateTime": "2025-06-17T11:00:00.000Z",
+            "UpdateTime": "2025-06-17T11:10:00.000Z"
+        },
+        {
+            "OrderStateId": 5,
+            "OrderId": 5,
+            "State": 4,
+            "Remark": "完成",
+            "CreateTime": "2025-06-16T12:00:00.000Z",
+            "UpdateTime": "2025-06-16T13:00:00.000Z"
+        },
+        {
+            "OrderStateId": 6,
+            "OrderId": 6,
+            "State": 5,
+            "Remark": "已取消",
+            "CreateTime": "2025-06-15T10:00:00.000Z",
+            "UpdateTime": "2025-06-15T10:05:00.000Z"
+        },
+        {
+            "OrderStateId": 7,
+            "OrderId": 7,
+            "State": 2,
+            "Remark": "補發票",
+            "CreateTime": "2025-06-14T09:20:00.000Z",
+            "UpdateTime": "2025-06-14T09:25:00.000Z"
+        },
+        {
+            "OrderStateId": 8,
+            "OrderId": 8,
+            "State": 3,
+            "Remark": "發票失敗",
+            "CreateTime": "2025-06-13T14:30:00.000Z",
+            "UpdateTime": "2025-06-13T14:35:00.000Z"
+        },
+        {
+            "OrderStateId": 9,
+            "OrderId": 9,
+            "State": 1,
+            "Remark": "付款完成",
+            "CreateTime": "2025-06-12T16:45:00.000Z",
+            "UpdateTime": "2025-06-12T16:50:00.000Z"
+        }
+    ]
 
     mock.onPost("/api/Order/AddOrderWithMembershipPlan").reply(() => {
         const orderIdDto = {
@@ -231,5 +305,29 @@ export default function (mock) {
         }
 
         return [200, { ErrorCode: 1, ApiDataObject }]
+    })
+
+    mock.onPost("/api/Order/GetOrderById").reply((config) => {
+        let orderIdDto = JSON.parse(config.data);
+        let orderTarget = orders.find(order => order.OrderId === Number(orderIdDto.OrderId));
+        let orderStateTargets = orderStates.filter(orderState => orderState.OrderId === Number(orderIdDto.OrderId));
+
+        const ApiDataObject = { Order: orderTarget, OrderStateList: orderStateTargets }
+        if (orderTarget) {
+            return [200, { ErrorCode: 1, ApiDataObject }]
+        } else {
+            return [200, { ErrorCode: 13 }]
+        }
+    })
+
+    mock.onPost("/api/Order/EditOrderStateRemark").reply((config) => {
+        let editOrderStateRemarkDto = JSON.parse(config.data);
+        let orderStateTarget = orderStates.find(orderState => orderState.OrderStateId === Number(editOrderStateRemarkDto.OrderStateId));
+
+        if (orderStateTarget) {
+            orderStateTarget.Remark = editOrderStateRemarkDto.Remark
+        }
+
+        return [200, { ErrorCode: 1 }]
     })
 }

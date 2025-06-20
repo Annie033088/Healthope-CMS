@@ -6,7 +6,7 @@
       <RadioSelector
         class="radioState"
         v-model="selectState"
-        @change="getOrder"
+        @change="getOrderByState"
         inputTitle="狀態："
         inputType="radioState"
         :options="orderStateOptions"
@@ -14,7 +14,7 @@
       <RadioSelector
         class="radioMethod"
         v-model="selectMethod"
-        @change="getOrder"
+        @change="getOrderByMethod"
         inputTitle="付款方式："
         inputType="radioMethod"
         :options="paymentMethodOptions"
@@ -42,11 +42,16 @@
       <template #detail="{ row }">
         <div class="detailRowContainer">
           <strong>操作：{{ row.Member }}</strong>
-          <BtnNormal text="查看會員" />
+          <BtnNormal text="查看會員" @click="goMemberDetail(row)" />
           <BtnNormal
             v-if="row.State === '待付款'"
             text="付款"
             @click="goCheckoutOrder(row)"
+          />
+          <BtnNormal
+            v-if="row.InvoiceStatus === '失敗'"
+            text="重開發票"
+            @click="printInvoice(row)"
           />
         </div>
       </template>
@@ -69,6 +74,7 @@ import {
   orderState,
   paymentMethod,
 } from "@/utils/order";
+import { electronicInvoiceStatus } from "@/utils/electronicInvoice";
 import BtnNormal from "@/components/Btn/BtnNormal";
 import RadioSelector from "@/components/Selector/RadioSelector";
 import TableNormal from "@/components/Table/TableNormal";
@@ -105,9 +111,10 @@ export default {
         { label: "訂單編號", key: "OrderNumber" },
         { label: "會員", key: "Member" },
         { label: "方案", key: "PlanName" },
-        { label: "狀態", key: "State" },
+        { label: "訂單狀態", key: "State" },
         { label: "金額", key: "Amount" },
         { label: "付款方式", key: "Method" },
+        { label: "發票狀態", key: "InvoiceStatus" },
       ],
       currentPage: 1,
       totalPage: 1,
@@ -116,11 +123,63 @@ export default {
     };
   },
   methods: {
+    getOrderByState() {
+      this.searchingPage = 1;
+      this.getOrder();
+    },
+    getOrderByMethod() {
+      this.searchingPage = 1;
+      this.getOrder();
+    },
     searchPage(page) {
       this.searchingPage = page;
       this.getOrder();
     },
-    goDetail() {},
+    async printInvoice(row) {
+      try {
+        const OrderIdDto = {
+          OrderId: row.OrderId,
+        };
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/PrintInvoice",
+          OrderIdDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "/order";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("取得訂單列表時發生錯誤", error);
+      }
+    },
+    goDetail(row) {
+      console.log(row.OrderId);
+      if (row.OrderId < 1) return;
+      this.$router.push({
+        path: "/order/detail",
+        query: { id: row.OrderId },
+      });
+    },
     redirect(path) {
       this.$router.push(path);
     },
@@ -140,7 +199,7 @@ export default {
         PlanType: row.PlanType,
         Amount: row.Amount,
       };
-      
+
       if (row.Method === "2" || row.PlanType === 2) {
         this.$router.push({
           name: "HealthopeBerforeCheckout",
@@ -156,6 +215,13 @@ export default {
           },
         });
       }
+    },
+    goMemberDetail(row) {
+      if (row.MemberId < 1) return;
+      this.$router.push({
+        path: "/member/detail",
+        query: { id: row.MemberId },
+      });
     },
     async getOrder() {
       if (!this.validInput()) return;
@@ -192,6 +258,16 @@ export default {
             order.Method = method.text;
 
             order.Member = order.MemberName + `(0${order.MemberPhone})`;
+
+            order.Amount = "$" + order.Amount;
+
+            if (order.InvoiceStatus === electronicInvoiceStatus.Processing)
+              order.InvoiceStatus = "處理中";
+            else if (order.InvoiceStatus === electronicInvoiceStatus.Success)
+              order.InvoiceStatus = "成功";
+            else if (order.InvoiceStatus === electronicInvoiceStatus.Fail)
+              order.InvoiceStatus = "失敗";
+            else order.InvoiceStatus = "無";
           });
 
           this.totalPage = response.data.ApiDataObject.TotalPage;

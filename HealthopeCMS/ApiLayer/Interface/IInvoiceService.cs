@@ -3,6 +3,7 @@ using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Job;
+using ApiLayer.Models.Order.Request;
 using PersistentLayer.Models;
 
 namespace ApiLayer.Interface
@@ -39,5 +40,10 @@ namespace ApiLayer.Interface
         /// 修改電子發票狀態
         /// </summary>
         bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime);
+
+        /// <summary>
+        /// 取得發票號碼
+        /// </summary>
+        (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) GetInvoiceNumber(RequestOrderIdDto orderIdDto);
     }
 }

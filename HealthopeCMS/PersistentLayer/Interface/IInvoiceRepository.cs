@@ -31,5 +31,10 @@ namespace PersistentLayer.Interface
         /// 根據開立成功與否設置
         /// </summary>
         bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime);
+
+        /// <summary>
+        /// 取得發票號碼
+        /// </summary>
+        (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) GetInvoiceNumber(int orderId);
     }
 }

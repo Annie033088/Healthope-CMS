@@ -3,12 +3,12 @@
     <div class="paginationBtnContainer">
       <BtnNormal
         text="＜"
-        class="btnNormal"
+        class="btnNormalPagination"
         @click="searchPage(currentPage - 1)"
       ></BtnNormal>
       <BtnNormal
         text="1"
-        class="btnNormal"
+        class="btnNormalPagination"
         :class="{ currentPage: isCurrentPage('1') }"
         @click="searchPage(1)"
       ></BtnNormal>
@@ -16,20 +16,20 @@
         v-for="(btnText, index) in visibleBtnTextList"
         :key="index"
         :text="btnText"
-        class="btnNormal"
+        class="btnNormalPagination"
         :class="{ currentPage: isCurrentPage(btnText) }"
         @click="searchPage(btnText)"
       ></BtnNormal>
       <BtnNormal
         v-if="totalPage > 5"
         :text="totalPage"
-        class="btnNormal"
+        class="btnNormalPagination"
         :class="{ currentPage: isCurrentPage(totalPage) }"
         @click="searchPage(totalPage)"
       ></BtnNormal>
       <BtnNormal
         text="＞"
-        class="btnNormal"
+        class="btnNormalPagination"
         @click="searchPage(currentPage + 1)"
       ></BtnNormal>
     </div>
@@ -117,7 +117,7 @@ export default {
 </script>
 
 <style scoped>
-.btnNormal {
+.btnNormalPagination {
   color: #5c5c5cc6;
   max-width: 38px;
   display: flex;

@@ -40,4 +40,13 @@ export default [
         },
         props: route => ({ order: route.params.order })
     },
+    {
+        path: '/order/detail',
+        name: 'HealthopeOrderDetail',
+        component: () => import('@/views/Order/HealthopeOrderDetail'),
+        meta: {
+            requireAuth: [{ adminPermission: adminPermission.AddOrder }
+                , { adminPermission: adminPermission.EditOrder }, { adminPermission: adminPermission.SelectOrder }]
+        }
+    },
 ];
