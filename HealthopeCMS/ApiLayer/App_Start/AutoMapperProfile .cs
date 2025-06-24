@@ -33,7 +33,7 @@ namespace ApiLayer.App_Start
             CreateMap<Member, ResponseGetMemberDto>();
             CreateMap<Member, ResponseGetMemberEditDataByIdDto>();
             CreateMap<Member, ResponseGetMemberByNameOrPhoneDto>();
-            CreateMap<Member, ResponseGetMemberByNameOrPhoneDto>();
+            CreateMap<Member, ResponseGetMemberDetailDto>();
             CreateMap<Coach, ResponseGetCoachEditDataByIdDto>();
             CreateMap<Coach, ResponseGetCoachDto>();
             CreateMap<RequestAddCoachDto, Coach>()
@@ -76,6 +76,10 @@ namespace ApiLayer.App_Start
             CreateMap<Order, ResponseAddOrderDto>();
             CreateMap<RequestAddOrderDto, Order>();
             CreateMap<Coach, ResponseGetPersonalCoachDto>();
+            CreateMap<Order, ResponseGetOrderByIdDto>();
+            CreateMap<OrderState, ResponseGetOrderStateByIdDto>();
+            CreateMap<RequestEditOrderStateRemarkDto, OrderState>();
+            CreateMap<RequestEditOrderRemarkDto, Order>();
         }
     }
 }

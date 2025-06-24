@@ -22,6 +22,7 @@
       @afterConfirmEvent="afterConfirmEvent"
     ></AppHeader>
     <router-view
+      v-if="permissionMapReady || !this.$loginFlag"
       :key="routerViewKey"
       :class="{ contentContainer: this.$loginFlag }"
       :title="title"
@@ -55,6 +56,7 @@ export default {
       title: "Healthope 健望館後台管理網站",
       routerViewKey: 0,
       notificationBoxConfirmFlag: false,
+      permissionMapReady: false,
       permissionMap: {
         None: false,
         EditAdmin: false,
@@ -101,7 +103,12 @@ export default {
       // 遍歷權限對照表並根據用戶權限設定對應結果
       for (let key in adminPermission) {
         const permissionValue = adminPermission[key];
-        this.permissionMap[key] = permissionList.includes(permissionValue);
+        this.$set(
+          this.permissionMap,
+          key,
+          permissionList.includes(permissionValue)
+        );
+        this.permissionMapReady = true;
       }
     },
     // 發送請求取得權限

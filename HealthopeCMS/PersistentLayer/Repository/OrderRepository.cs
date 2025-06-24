@@ -297,11 +297,12 @@ namespace PersistentLayer.Repository
                         MemberPhone = dr.IsNull("f_memberPhone") ? 0 : dr.Field<int>("f_memberPhone"),
                         PlanType = (byte)(dr.IsNull("f_planType") ? 0 : dr.Field<byte>("f_planType")),
                         PlanName = dr.IsNull("f_planName") ? string.Empty : dr.Field<string>("f_planName"),
-                        OrderNumber = dr.IsNull("f_orderNumber") ? 0 : dr.Field<long>("f_orderNumber"),
+                        OrderNumber = dr.IsNull("f_orderNumber") ? string.Empty : dr.Field<long>("f_orderNumber").ToString(),
                         State = (byte)(dr.IsNull("f_state") ? 0 : dr.Field<byte>("f_state")),
                         Amount = dr.IsNull("f_amount") ? 0 : dr.Field<int>("f_amount"),
                         Method = (byte)(dr.IsNull("f_method") ? 0 : dr.Field<byte>("f_method")),
                         InvoiceStatus = (byte)(dr.IsNull("f_invoiceStatus") ? 0 : dr.Field<byte>("f_invoiceStatus")),
+                        Remark = dr.IsNull("f_remark") ? string.Empty : dr.Field<string>("f_remark"),
                         UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
                     };
                     orders.Add(order);
@@ -377,6 +378,168 @@ namespace PersistentLayer.Repository
                 }
 
                 return (null, errorCodeNumber);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 根據 id 取得訂單
+        /// </summary>
+        public (Order order, List<OrderState> orderStates) GetOrderDetailById(int orderId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            Order order = new Order();
+            List<OrderState> orderStates = new List<OrderState>();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getOrderDetailById @orderId";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                cmd.Connection.Close();
+                if (ds.Tables.Count > 0)
+                {
+                    // 取得訂單細項
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        order.OrderNumber = ds.Tables[0].Rows[i].IsNull("f_orderNumber") ? 0 :
+                            ds.Tables[0].Rows[i].Field<long>("f_orderNumber");
+                        order.PlanName = ds.Tables[0].Rows[i].IsNull("f_planName") ?
+                            string.Empty : ds.Tables[0].Rows[i].Field<string>("f_planName");
+                        order.Remark = ds.Tables[0].Rows[i].IsNull("f_remark") ?
+                            string.Empty : ds.Tables[0].Rows[i].Field<string>("f_remark");
+                        order.Amount = ds.Tables[0].Rows[i].IsNull("f_amount") ? 0 :
+                            ds.Tables[0].Rows[i].Field<int>("f_amount");
+                        order.State = (byte)(ds.Tables[0].Rows[i].IsNull("f_state") ? 0 :
+                            ds.Tables[0].Rows[i].Field<byte>("f_state"));
+                        order.Method = (byte)(ds.Tables[0].Rows[i].IsNull("f_method") ? 0 :
+                            ds.Tables[0].Rows[i].Field<byte>("f_method"));
+                        order.CreateTime = ds.Tables[0].Rows[i].IsNull("f_createTime") ?
+                            DateTime.MinValue : ds.Tables[0].Rows[i].Field<DateTime>("f_createTime");
+                    }
+
+                    // 取得訂單狀態
+                    for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                    {
+                        OrderState orderState = new OrderState();
+                        orderState.OrderStateId =
+                            ds.Tables[1].Rows[i].IsNull("f_orderStateId") ? 0 :
+                            ds.Tables[1].Rows[i].Field<int>("f_orderStateId");
+                        orderState.Remark = ds.Tables[1].Rows[i].IsNull("f_remark") ?
+                            string.Empty : ds.Tables[1].Rows[i].Field<string>("f_remark");
+                        orderState.State = (byte)(ds.Tables[1].Rows[i].IsNull("f_state") ? 0 :
+                            ds.Tables[1].Rows[i].Field<byte>("f_state"));
+                        orderState.CreateTime = ds.Tables[1].Rows[i].IsNull("f_createTime") ?
+                            DateTime.MinValue : ds.Tables[1].Rows[i].Field<DateTime>("f_createTime");
+                        orderState.UpdateTime = ds.Tables[1].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[1].Rows[i].Field<DateTime>("f_updateTime");
+
+                        orderStates.Add(orderState);
+                    }
+
+                    return (order, orderStates);
+                }
+
+                return (null, null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態備註
+        /// </summary>
+        public bool EditOrderStateRemark(OrderState orderState)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateRemark @orderStateId, @remark, @updateTime";
+
+                cmd.Parameters.Add("@orderStateId", SqlDbType.Int).Value = orderState.OrderStateId;
+                cmd.Parameters.Add("@remark", SqlDbType.NVarChar).Value = orderState.Remark;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = orderState.UpdateTime;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數>0代表成功
+                if (ExeCnt > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單備註
+        /// </summary>
+        public bool EditOrderRemark(Order order)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderRemark @orderId, @remark, @updateTime";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
+                cmd.Parameters.Add("@remark", SqlDbType.NVarChar).Value = order.Remark;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數>0代表成功
+                if (ExeCnt > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {

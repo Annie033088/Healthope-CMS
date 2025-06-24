@@ -36,5 +36,10 @@ namespace ApiLayer.Models.Order
         /// 付款處理中
         /// </summary>
         Paying = 6,
+
+        /// <summary>
+        /// 7日內無條件退費
+        /// </summary>
+        RefundIn7Days = 7,
     }
 }

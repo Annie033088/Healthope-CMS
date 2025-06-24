@@ -25,6 +25,7 @@
           <tr :key="'main-' + index" @click="toggleDetail(index)">
             <td v-for="col in columns" :key="col.key">
               <NormalSelector
+                class="tableNormalSelector"
                 @click.stop=""
                 v-if="col.type === 'dropDownSelector' && row[col.key]"
                 :options="row[col.key].Options"
@@ -224,4 +225,5 @@ tbody td {
   display: flex;
   justify-content: start;
 }
+
 </style>

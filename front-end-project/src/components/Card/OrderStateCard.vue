@@ -5,11 +5,11 @@
     <div class="stateTime">更改：{{ formatTime(state.UpdateTime) }}</div>
     <div class="stateNote">
       <div v-if="!editing">
-        備註：{{ state.note || "無" }}
+        備註：{{ state.Remark || "無" }}
         <button @click="enableEdit" class="editBtn">✏️ 編輯</button>
       </div>
       <div v-else>
-        <textarea v-model="editNote" class="noteInput" />
+        <textarea v-model="editRemark" class="noteInput" />
         <button @click="save" class="sabeBtn">💾 儲存</button>
         <button @click="cancel" class="cancelBtn">取消</button>
       </div>
@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       editing: false,
-      editNote: this.state.note || "",
+      editRemark: this.state.Remark || "",
     };
   },
   methods: {
@@ -38,12 +38,13 @@ export default {
     },
     cancel() {
       this.editing = false;
-      this.editNote = this.state.note || "";
+      this.editRemark = this.state.Remark || "";
     },
     save() {
       this.$emit("saveNote", {
         OrderStateId: this.state.OrderStateId,
-        Remark: this.editNote,
+        Remark: this.editRemark,
+        UpdateTime: this.state.UpdateTime,
       });
       this.editing = false;
     },

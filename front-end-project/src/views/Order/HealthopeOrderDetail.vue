@@ -79,17 +79,27 @@ export default {
     };
   },
   methods: {
-    async handleSaveNote({ OrderStateId, Remark }) {
+    async handleSaveNote({ OrderStateId, Remark, UpdateTime }) {
       try {
-        const editOrderStateDto = {
+        Remark = Remark.trim();
+        
+        if (OrderStateId < 1) return;
+        if (Remark.length > 50) {
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode = 0;
+        }
+
+        const editOrderStateRemarkDto = {
           OrderStateId,
-          Remark,
+          Remark: Remark ? Remark : "",
+          UpdateTime,
         };
 
         // post
         const response = await this.$axios.post(
           "/api/Order/EditOrderStateRemark",
-          editOrderStateDto
+          editOrderStateRemarkDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
@@ -125,7 +135,7 @@ export default {
         };
         // post
         const response = await this.$axios.post(
-          "/api/Order/GetOrderById",
+          "/api/Order/GetOrderDetailById",
           OrderIdDto
         );
 
@@ -134,7 +144,7 @@ export default {
           this.orderStateList = response.data.ApiDataObject.OrderStateList;
 
           this.order.OrderId = orderId;
-          
+
           orderStateAndText.forEach((state) => {
             if (Number(state.value) === this.order.State) {
               this.order.State = state.text;
@@ -270,5 +280,7 @@ export default {
   font-family: "Segoe UI", sans-serif;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 </style>

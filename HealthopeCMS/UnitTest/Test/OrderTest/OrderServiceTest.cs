@@ -21,6 +21,8 @@ using PersistentLayer.Models;
 using System.Net;
 using ApiLayer.Models.Job;
 using System.Web.Http.Results;
+using ApiLayer.Models.Other;
+using DomainLayer.Utility;
 
 namespace UnitTest.Test.OrderTest
 {
@@ -31,6 +33,7 @@ namespace UnitTest.Test.OrderTest
         private Mock<IOrderRepository> orderRepositoryMock;
         private Mock<IMapper> mapperMock;
         private Mock<IJobDispatcher> jobDispatcherMock;
+        private Mock<IPaymentService> paymentServiceMock;
 
         [TestInitialize]
         public void Setup()
@@ -38,7 +41,8 @@ namespace UnitTest.Test.OrderTest
             orderRepositoryMock = new Mock<IOrderRepository>();
             mapperMock = new Mock<IMapper>();
             jobDispatcherMock = new Mock<IJobDispatcher>();
-            service = new OrderService(orderRepositoryMock.Object, mapperMock.Object, jobDispatcherMock.Object);
+            paymentServiceMock = new Mock<IPaymentService>();
+            service = new OrderService(orderRepositoryMock.Object, mapperMock.Object, jobDispatcherMock.Object, paymentServiceMock.Object);
         }
 
         [TestMethod]
@@ -248,7 +252,7 @@ namespace UnitTest.Test.OrderTest
                     MemberPhone=987654321,
                     Method=2,
                     OrderId=1,
-                    OrderNumber=250106000010000001,
+                    OrderNumber="250106000010000001",
                     PlanName="健身體驗",
                     PlanType=1,
                     State=1,
@@ -298,6 +302,316 @@ namespace UnitTest.Test.OrderTest
 
             // Assert
             Assert.AreEqual(result, null);
+        }
+
+        [TestMethod]
+        public async Task 訂單用信用卡付款_成功_回傳成功()
+        {
+            // Arrange
+            RequestPayByCardDto payByCardDto = new RequestPayByCardDto()
+            {
+                CoachId = 1,
+                OrderId = 1,
+                CardReaderId = "WEQXX-1",
+                UpdateTime = DateTime.Now,
+            };
+
+            CreditCardTransaction creditCardTransaction = new CreditCardTransaction()
+            {
+                Amount = 1000,
+                CreditCardTransactionId = 2
+            };
+
+            int errorCodeNumberAddTransaction = (int)ErrorCodeDefine.Success;
+
+            RequestCardPaymentDto requestCardPayment = new RequestCardPaymentDto()
+            {
+                Amount = creditCardTransaction.Amount,
+                OrderId = payByCardDto.OrderId,
+                TransactionId = string.Empty,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            DBResponsePaymentDto dbResponse = new DBResponsePaymentDto()
+            {
+                SingleEntryPassId = 1,
+                TicketCode = Guid.NewGuid(),
+            };
+
+            Hash hash = new Hash();
+            string qrCodeStringBefaoreHash = dbResponse.SingleEntryPassId.ToString() + payByCardDto.OrderId.ToString()
+                + dbResponse.TicketCode.ToString();
+
+            string qrCodeString = dbResponse.SingleEntryPassId.ToString() + ";" + payByCardDto.OrderId.ToString()
+                + ";" + dbResponse.TicketCode.ToString() + ";" + hash.QrCodeStringHash(qrCodeStringBefaoreHash);
+
+            ResponseQrCodeStringDto response = new ResponseQrCodeStringDto()
+            {
+                QrCodeString = qrCodeString,
+            };
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s => s.AddCreditCardTransaction(payByCardDto))
+                .Returns((creditCardTransaction, errorCodeNumberAddTransaction));
+            paymentServiceMock.Setup(s => s.PayByCard(It.IsAny<RequestCardPaymentDto>(), It.IsAny<int>(), It.IsAny<RequestPayByCardDto>()))
+                .ReturnsAsync((errorCode, dbResponse));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) result = await service.PayByCard(payByCardDto);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.Success);
+            Assert.AreEqual(result.QrCodeStringDto.QrCodeString, response.QrCodeString);
+        }
+
+        [TestMethod]
+        public async Task 訂單用信用卡付款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestPayByCardDto payByCardDto = new RequestPayByCardDto()
+            {
+                CoachId = 1,
+                OrderId = 1,
+                CardReaderId = "WEQXX-1",
+                UpdateTime = DateTime.Now,
+            };
+
+            CreditCardTransaction creditCardTransaction = new CreditCardTransaction()
+            {
+                Amount = 1000,
+                CreditCardTransactionId = 2
+            };
+
+            int errorCodeNumberAddTransaction = (int)ErrorCodeDefine.Success;
+
+            RequestCardPaymentDto requestCardPayment = new RequestCardPaymentDto()
+            {
+                Amount = creditCardTransaction.Amount,
+                OrderId = payByCardDto.OrderId,
+                TransactionId = string.Empty,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.PayFailed;
+            DBResponsePaymentDto dbResponse = null;
+
+            string qrCodeString = string.Empty;
+
+            ResponseQrCodeStringDto response = new ResponseQrCodeStringDto()
+            {
+                QrCodeString = qrCodeString,
+            };
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s => s.AddCreditCardTransaction(payByCardDto))
+                .Returns((creditCardTransaction, errorCodeNumberAddTransaction));
+            paymentServiceMock.Setup(s => s.PayByCard(It.IsAny<RequestCardPaymentDto>(), It.IsAny<int>(), It.IsAny<RequestPayByCardDto>()))
+                .ReturnsAsync((errorCode, dbResponse));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseQrCodeStringDto QrCodeStringDto) result = await service.PayByCard(payByCardDto);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.PayFailed);
+            Assert.AreEqual(result.QrCodeStringDto.QrCodeString, response.QrCodeString);
+        }
+
+        [TestMethod]
+        public void 取得訂單細項_成功_回傳訂單細項()
+        {
+            // Arrange
+            RequestOrderIdDto requestOrderIdDto = new RequestOrderIdDto { OrderId = 1 };
+
+            ResponseGetOrderDetailByIdDto responseGet = new ResponseGetOrderDetailByIdDto
+            {
+                Order = new ResponseGetOrderByIdDto
+                {
+                    Amount = 2000
+                },
+                OrderStateList = new List<ResponseGetOrderStateByIdDto>
+                {
+                    new ResponseGetOrderStateByIdDto
+                    {
+                        OrderStateId = 20,
+                    }
+                }
+            };
+
+            Order order = new Order
+            {
+                Amount = 2000
+            };
+
+            List<OrderState> orderStates = new List<OrderState>
+            {
+                new OrderState
+                {
+                    OrderStateId = 20,
+                }
+            };
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.GetOrderDetailById(requestOrderIdDto.OrderId)).Returns((order, orderStates));
+            mapperMock.Setup(s => s.Map<ResponseGetOrderByIdDto>(order)).Returns(responseGet.Order);
+            mapperMock.Setup(s => s.Map<List<ResponseGetOrderStateByIdDto>>(orderStates)).Returns(responseGet.OrderStateList);
+
+            // Act
+            ResponseGetOrderDetailByIdDto result = service.GetOrderDetailById(requestOrderIdDto);
+
+            // Assert
+            Assert.AreEqual(result.Order, responseGet.Order);
+            Assert.IsTrue(result.OrderStateList.SequenceEqual(responseGet.OrderStateList));
+        }
+
+        [TestMethod]
+        public void 取得訂單細項_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestOrderIdDto requestOrderIdDto = new RequestOrderIdDto { OrderId = 1 };
+            Order order = null;
+            List<OrderState> orderStates = null;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.GetOrderDetailById(requestOrderIdDto.OrderId)).Returns((order, orderStates));
+
+            // Act
+            ResponseGetOrderDetailByIdDto result = service.GetOrderDetailById(requestOrderIdDto);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態備註_成功_回傳訂單細項()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateRemarkDto requestEdit = new RequestEditOrderStateRemarkDto
+            {
+                OrderStateId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            OrderState orderState = new OrderState
+            {
+                OrderStateId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.EditOrderStateRemark(orderState)).Returns(successFlag);
+            mapperMock.Setup(s => s.Map<OrderState>(requestEdit)).Returns(orderState);
+
+            // Act
+            bool result = service.EditOrderStateRemark(requestEdit);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態備註_失敗_回傳失敗()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateRemarkDto requestEdit = new RequestEditOrderStateRemarkDto
+            {
+                OrderStateId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            OrderState orderState = new OrderState
+            {
+                OrderStateId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.EditOrderStateRemark(orderState)).Returns(successFlag);
+            mapperMock.Setup(s => s.Map<OrderState>(requestEdit)).Returns(orderState);
+
+            // Act
+            bool result = service.EditOrderStateRemark(requestEdit);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void 修改訂單備註_成功_回傳成功()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderRemarkDto requestEdit = new RequestEditOrderRemarkDto
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.EditOrderRemark(order)).Returns(successFlag);
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+
+            // Act
+            bool result = service.EditOrderRemark(requestEdit);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 修改訂單備註_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderRemarkDto requestEdit = new RequestEditOrderRemarkDto
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.EditOrderRemark(order)).Returns(successFlag);
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+
+            // Act
+            bool result = service.EditOrderRemark(requestEdit);
+
+            // Assert
+            Assert.IsFalse(result);
         }
     }
 }

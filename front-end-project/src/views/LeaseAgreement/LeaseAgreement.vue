@@ -398,7 +398,6 @@ export default {
       }
     },
     async editRemind(row) {
-      console.log(row.Remind.OldValue);
       if (Boolean(row.Remind.OldValue) === false) {
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(

@@ -44,15 +44,19 @@
           <strong>操作：{{ row.Member }}</strong>
           <BtnNormal text="查看會員" @click="goMemberDetail(row)" />
           <BtnNormal
-            v-if="row.State === '待付款'"
+            v-if="Number(row.State.Value) === orderState.Pending"
             text="付款"
             @click="goCheckoutOrder(row)"
           />
           <BtnNormal
             v-if="row.InvoiceStatus === '失敗'"
-            text="重開發票"
+            text="完成訂單/補印發票"
             @click="printInvoice(row)"
           />
+        </div>
+        <div class="detailRowContainer">
+          <strong>備註：</strong> {{ row.Remark ? row.Remark : "無" }}
+          <SvgEdit @click="editRemark(row)" />
         </div>
       </template>
     </TableNormal>
@@ -73,6 +77,7 @@ import {
   paymentMethodAndText,
   orderState,
   paymentMethod,
+  orderCache,
 } from "@/utils/order";
 import { electronicInvoiceStatus } from "@/utils/electronicInvoice";
 import BtnNormal from "@/components/Btn/BtnNormal";
@@ -82,6 +87,7 @@ import SortSelector from "@/components/Selector/SortSelector";
 import PaginationComponent from "@/components/PaginationComponent";
 import RecordSelector from "@/components/Selector/RecordSelector";
 import SvgReset from "@/components/Btn/SvgReset";
+import SvgEdit from "@/components/Btn/SvgEdit";
 
 export default {
   name: "HealthopeOrder",
@@ -94,6 +100,7 @@ export default {
     PaginationComponent,
     RecordSelector,
     SvgReset,
+    SvgEdit,
   },
   props: {
     permissionMap: {},
@@ -111,7 +118,13 @@ export default {
         { label: "訂單編號", key: "OrderNumber" },
         { label: "會員", key: "Member" },
         { label: "方案", key: "PlanName" },
-        { label: "訂單狀態", key: "State" },
+        {
+          label: "訂單狀態",
+          key: "State",
+          type: "dropDownSelector",
+          enableFlag:
+            this.permissionMap.EditOrder || this.permissionMap.AddOrder,
+        },
         { label: "金額", key: "Amount" },
         { label: "付款方式", key: "Method" },
         { label: "發票狀態", key: "InvoiceStatus" },
@@ -135,6 +148,58 @@ export default {
       this.searchingPage = page;
       this.getOrder();
     },
+    async editRemark(row) {
+      let remarkInput = "";
+
+      while (!remarkInput || remarkInput.length > 50) {
+        remarkInput = prompt("請輸入備註（不能留空，50 字內）：");
+        if (remarkInput === null) {
+          return; // 取消的話就中斷 function
+        }
+      }
+
+      // 沒修改的話就中斷 function
+      if (remarkInput === row.Remark) return;
+
+      let editOrderRemarkDto = {
+        OrderId: row.OrderId,
+        Remark: remarkInput,
+        UpdateTime: row.UpdateTime,
+      };
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/EditOrderRemark",
+          editOrderRemarkDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
     async printInvoice(row) {
       try {
         const OrderIdDto = {
@@ -142,7 +207,7 @@ export default {
         };
         // post
         const response = await this.$axios.post(
-          "/api/Invoice/PrintInvoice",
+          "/api/Invoice/CompleteOrderAndPrintInvoice",
           OrderIdDto
         );
 
@@ -189,7 +254,7 @@ export default {
       if (row.Method === "現金") row.Method = "1";
       if (row.Method === "信用卡") row.Method = "2";
 
-      const order = {
+      orderCache.tempOrder = {
         OrderId: row.OrderId,
         UpdateTime: row.UpdateTime,
         MemberName: row.MemberName,
@@ -203,16 +268,10 @@ export default {
       if (row.Method === "2" || row.PlanType === 2) {
         this.$router.push({
           name: "HealthopeBerforeCheckout",
-          query: {
-            order: JSON.stringify(order),
-          },
         });
       } else {
         this.$router.push({
           name: "HealthopeCheckoutOrder",
-          query: {
-            order: JSON.stringify(order),
-          },
         });
       }
     },
@@ -247,10 +306,43 @@ export default {
           this.orderList = response.data.ApiDataObject.OrderList;
 
           this.orderList.forEach((order) => {
-            let state = orderStateAndText.find(
-              (item) => item.value === String(order.State)
-            );
-            order.State = state.text;
+            let stateOption = [];
+
+            orderStateAndText.forEach((state) => {
+              if (order.State === Number(state.value)) stateOption.push(state);
+
+              if (
+                Number(state.value) === orderState.Cancel &&
+                (order.State === orderState.Pending ||
+                  order.State === orderState.Paid ||
+                  order.State === orderState.Paid)
+              )
+                stateOption.push(state);
+
+              if (
+                Number(state.value) === orderState.Terminate &&
+                order.State === orderState.Paid
+              )
+                stateOption.push(state);
+
+              if (
+                Number(state.value) === orderState.Breach &&
+                order.State === orderState.Paid
+              )
+                stateOption.push(state);
+
+              if (
+                Number(state.value) === orderState.RefundIn7Days &&
+                order.State === orderState.Paid
+              )
+                stateOption.push(state);
+            });
+
+            order.State = {
+              Value: String(order.State),
+              Options: stateOption,
+              OldValue: String(order.State),
+            };
 
             let method = paymentMethodAndText.find(
               (item) => item.value === String(order.Method)
@@ -358,6 +450,7 @@ export default {
   },
   created() {
     this.getOrder();
+    console.log(orderCache.tempOrder)
   },
   computed: {
     orderStateOptions() {
@@ -369,6 +462,9 @@ export default {
       let options = [...paymentMethodAndText];
       options.push({ value: "", text: "全部" });
       return options;
+    },
+    orderState() {
+      return orderState;
     },
   },
 };
@@ -383,7 +479,7 @@ export default {
 }
 
 .radioState {
-  width: 500px;
+  width: 650px;
 }
 
 .radioMethod {

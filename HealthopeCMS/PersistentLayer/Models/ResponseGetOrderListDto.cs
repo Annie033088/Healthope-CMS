@@ -39,6 +39,11 @@ namespace ApiLayer.Models.Order.Response
         public int MemberPhone { get; set; }
 
         /// <summary>
+        /// 備註
+        /// </summary>
+        public string Remark { get; set; }
+
+        /// <summary>
         /// 方案類別
         /// </summary>
         public byte PlanType { get; set; }
@@ -51,7 +56,7 @@ namespace ApiLayer.Models.Order.Response
         /// <summary>
         /// 訂單編號
         /// </summary>
-        public long OrderNumber { get; set; }
+        public string OrderNumber { get; set; }
 
         /// <summary>
         /// 狀態

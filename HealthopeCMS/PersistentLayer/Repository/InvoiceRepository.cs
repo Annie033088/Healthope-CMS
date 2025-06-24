@@ -244,7 +244,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 取得發票號碼
         /// </summary>
-        public (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) GetInvoiceNumber(int orderId)
+        public (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(int orderId)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -254,7 +254,7 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_getInvoiceNumber @orderId, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateAndGetInvoiceNumber @orderId, @errorCode OUTPUT";
 
                 cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
 

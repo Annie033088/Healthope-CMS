@@ -72,7 +72,6 @@ namespace ApiLayer.Service
                 // 查看回傳是成功/失敗
                 if (response.Status)
                 {
-
                     bool editTransactionFlag = transactionRepository.EditCreditCardTransactionStatusSuccess(transaction);
 
                     if (!editTransactionFlag)
@@ -104,14 +103,12 @@ namespace ApiLayer.Service
 
                 bool successEditStatusFail = transactionRepository.EditCreditCardTransactionStatusFail(transaction);
 
-                if (!successEditStatusFail) logger.Fatal("交易失敗但修改交易紀錄訂單狀態失敗! 會導致該筆訂單無法重試付款");
+                if (!successEditStatusFail) logger.Fatal("交易失敗但修改交易紀錄及訂單狀態失敗! 會導致該筆訂單無法重試付款");
 
                 return (ErrorCodeDefine.PayFailed, null);
             }
             catch (Exception)
             {
-                // post出錯的話
-
                 throw;
             }
         }

@@ -11,6 +11,9 @@ export const orderState = {
     Breach: 5,
     // 付款處理中
     Paying: 6,
+    // 7日內無條件退費
+    RefundIn7Days: 7,
+
 }
 
 export const orderStateAndText = [
@@ -20,6 +23,7 @@ export const orderStateAndText = [
     { value: "4", text: '解約' },
     { value: "5", text: '違約' },
     { value: "6", text: '付款處理中' },
+    { value: "7", text: '7日內退費' },
 ]
 
 export const paymentMethod = {
@@ -33,3 +37,5 @@ export const paymentMethodAndText = [
     { value: "1", text: '現金' },
     { value: "2", text: '信用卡' },
 ]
+
+export let orderCache = { tempOrder: null };

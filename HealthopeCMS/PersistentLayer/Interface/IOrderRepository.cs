@@ -33,6 +33,19 @@ namespace PersistentLayer.Interface
         (CreditCardTransaction creditCardTransaction, int errorCodeNumber) AddCreditCardTransaction(
             RequestPayByCardDto payByCardDto);
 
+        /// <summary>
+        /// 根據 id 取得訂單
+        /// </summary>
+        (Order order, List<OrderState> orderStates) GetOrderDetailById(int orderId);
 
+        /// <summary>
+        /// 修改訂單狀態備註
+        /// </summary>
+        bool EditOrderStateRemark(OrderState orderState);
+
+        /// <summary>
+        /// 修改訂單備註
+        /// </summary>
+        bool EditOrderRemark(Order order);
     }
 }

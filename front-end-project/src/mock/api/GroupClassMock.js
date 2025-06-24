@@ -100,6 +100,726 @@ export default function (mock) {
             Icon: 3,
             Sort: 10,
             ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 2,
+            Name: "有氧燃脂",
+            Summary: "",
+            DetailContent: "",
+            Category: 1,
+            Icon: 15,
+            Sort: 2,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 3,
+            Name: "重量訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 4,
+            Sort: 3,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 4,
+            Name: "舞力全開",
+            Summary: "",
+            DetailContent: "",
+            Category: 4,
+            Icon: 11,
+            Sort: 4,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 5,
+            Name: "飛輪挑戰",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 19,
+            Sort: 5,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 6,
+            Name: "核心訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 6,
+            Icon: 7,
+            Sort: 6,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 7,
+            Name: "舒緩伸展",
+            Summary: "",
+            DetailContent: "",
+            Category: 3,
+            Icon: 22,
+            Sort: 7,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 8,
+            Name: "燃脂飛輪",
+            Summary: "",
+            DetailContent: "",
+            Category: 5,
+            Icon: 10,
+            Sort: 8,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 9,
+            Name: "戰繩訓練",
+            Summary: "",
+            DetailContent: "",
+            Category: 2,
+            Icon: 6,
+            Sort: 9,
+            ImageUrl: avatar1
+        },
+        {
+            GroupClassShowcaseId: 10,
+            Name: "多元體適能",
+            Summary: "",
+            DetailContent: "",
+            Category: 7,
+            Icon: 3,
+            Sort: 10,
+            ImageUrl: avatar1
         }
     ]
 

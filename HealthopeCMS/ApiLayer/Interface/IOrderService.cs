@@ -28,5 +28,20 @@ namespace ApiLayer.Interface
         /// 取得訂單
         /// </summary>
         ResponseGetOrderListDto GetOrder(RequestGetOrderDto getOrderDto);
+
+        /// <summary>
+        /// 根據 id 取得訂單
+        /// </summary>
+        ResponseGetOrderDetailByIdDto GetOrderDetailById(RequestOrderIdDto orderIdDto);
+
+        /// <summary>
+        /// 修改訂單狀態備註
+        /// </summary>
+        bool EditOrderStateRemark(RequestEditOrderStateRemarkDto editOrderStateRemarkDto);
+
+        /// <summary>
+        /// 修改訂單備註
+        /// </summary>
+        bool EditOrderRemark(RequestEditOrderRemarkDto editOrderRemarkDto);
     }
 }

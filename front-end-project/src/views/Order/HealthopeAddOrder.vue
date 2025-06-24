@@ -139,6 +139,8 @@ import BtnNormal from "@/components/Btn/BtnNormal";
 import InputSpan from "@/components/Input/InputSpan";
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
+import { orderCache } from "@/utils/order";
+
 export default {
   name: "HealthopeAddOrder",
   components: {
@@ -334,7 +336,7 @@ export default {
             return;
           }
 
-          const order = {
+          orderCache.tempOrder = {
             OrderId: response.data.ApiDataObject.OrderId,
             UpdateTime: response.data.ApiDataObject.UpdateTime,
             MemberName: this.selectedMember.Name,
@@ -347,9 +349,6 @@ export default {
 
           this.$router.push({
             name: "HealthopeCheckoutOrder",
-            query: {
-              order: JSON.stringify(order),
-            },
           });
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
@@ -398,7 +397,7 @@ export default {
 
       if (!selectCoach) return;
 
-      const order = {
+      orderCache.tempOrder = {
         OrderId: this.orderId,
         UpdateTime: this.updateTime,
         MemberName: this.selectedMember.Name,
@@ -413,9 +412,6 @@ export default {
 
       this.$router.push({
         name: "HealthopeCheckoutOrder",
-        query: {
-          order: JSON.stringify(order),
-        },
       });
     },
     async getAllTypePlan() {

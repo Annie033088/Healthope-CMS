@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
@@ -207,7 +208,7 @@ namespace UnitTest.Test.OrderTest
                     MemberPhone=987654321,
                     Method=2,
                     OrderId=1,
-                    OrderNumber=250106000010000001,
+                    OrderNumber="250106000010000001",
                     PlanName="健身體驗",
                     PlanType=1,
                     State=1,
@@ -250,6 +251,222 @@ namespace UnitTest.Test.OrderTest
 
             // Act
             IHttpActionResult result = controller.GetOrder(getOrderDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public async Task 訂單用信用卡付款_成功_回傳成功()
+        {
+            // Arrange
+            RequestPayByCardDto payByCardDto = new RequestPayByCardDto()
+            {
+                CoachId = 1,
+                OrderId = 1,
+                CardReaderId = "WEQXX-1",
+                UpdateTime = DateTime.Now,
+            };
+
+            ResponseQrCodeStringDto response = new ResponseQrCodeStringDto()
+            {
+                QrCodeString = "wqelw22pqw1111"
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            orderServiceMock.Setup(s => s.PayByCard(payByCardDto)).ReturnsAsync((errorCode, response));
+
+            // Act
+            IHttpActionResult result = await controller.PayByCard(payByCardDto);
+
+            // Assert
+            ResponseIsEqual<ResponseQrCodeStringDto> responseIsEqual = new ResponseIsEqual<ResponseQrCodeStringDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.Success, response));
+        }
+
+        [TestMethod]
+        public async Task 訂單用信用卡付款_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestPayByCardDto payByCardDto = new RequestPayByCardDto()
+            {
+                CoachId = 1,
+                OrderId = 0,
+                CardReaderId = "WEQXX-1",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = await controller.PayByCard(payByCardDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public async Task 訂單用信用卡付款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestPayByCardDto payByCardDto = new RequestPayByCardDto()
+            {
+                CoachId = 1,
+                OrderId = 1,
+                CardReaderId = "WEQXX-1",
+                UpdateTime = DateTime.Now,
+            };
+
+            ResponseQrCodeStringDto response = new ResponseQrCodeStringDto()
+            {
+                QrCodeString = "wqelw22pqw1111"
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.TrackNotSet;
+
+            // Mock 設定
+            orderServiceMock.Setup(s => s.PayByCard(payByCardDto)).ReturnsAsync((errorCode, response));
+
+            // Act
+            IHttpActionResult result = await controller.PayByCard(payByCardDto);
+
+            // Assert
+            ResponseIsEqual<ResponseQrCodeStringDto> responseIsEqual = new ResponseIsEqual<ResponseQrCodeStringDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result, ErrorCodeDefine.TrackNotSet, response));
+        }
+
+        [TestMethod]
+        public void 取得訂單細項_成功_回傳訂單細項()
+        {
+            // Arrange
+            RequestOrderIdDto requestOrderIdDto = new RequestOrderIdDto { OrderId = 1 };
+
+            ResponseGetOrderDetailByIdDto responseGet = new ResponseGetOrderDetailByIdDto
+            {
+                Order = new ResponseGetOrderByIdDto
+                {
+                    Amount = 2000
+                },
+                OrderStateList = new List<ResponseGetOrderStateByIdDto>
+                {
+                    new ResponseGetOrderStateByIdDto
+                    {
+                        CreateTime = DateTime.Now,
+                    }
+                }
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.GetOrderDetailById(requestOrderIdDto)).Returns(responseGet);
+
+            // Act
+            IHttpActionResult result = controller.GetOrderDetailById(requestOrderIdDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetOrderDetailByIdDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetOrderDetailByIdDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 取得訂單細項_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestOrderIdDto requestOrderIdDto = new RequestOrderIdDto { OrderId = 0 };
+
+            // Act
+            IHttpActionResult result = controller.GetOrderDetailById(requestOrderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態備註_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditOrderStateRemarkDto requestEdit = new RequestEditOrderStateRemarkDto
+            {
+                OrderStateId = 1,
+                Remark = "今天第一次",
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.EditOrderStateRemark(requestEdit)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.EditOrderStateRemark(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態備註_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditOrderStateRemarkDto requestEdit = new RequestEditOrderStateRemarkDto
+            {
+                OrderStateId = 0,
+                Remark = "今天第一次",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.EditOrderStateRemark(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改訂單備註_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditOrderRemarkDto requestEdit = new RequestEditOrderRemarkDto
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.EditOrderRemark(requestEdit)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.EditOrderRemark(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改訂單備註_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditOrderRemarkDto requestEdit = new RequestEditOrderRemarkDto
+            {
+                OrderId = 0,
+                Remark = "今天第一次",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.EditOrderRemark(requestEdit);
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();

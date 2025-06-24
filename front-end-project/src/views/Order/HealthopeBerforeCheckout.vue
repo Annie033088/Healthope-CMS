@@ -35,6 +35,7 @@ import TitleCard from "@/components/Card/TitleCard";
 import BtnNormal from "@/components/Btn/BtnNormal";
 import NormalSelector from "@/components/Selector/NormalSelector";
 import SelectInput from "@/components/Input/SelectInput";
+import { orderCache } from "@/utils/order";
 
 export default {
   name: "HealthopeBerforeCheckout",
@@ -98,11 +99,10 @@ export default {
         this.order.CoachName = selectCoach.Name;
       }
 
+      orderCache.tempOrder = this.order;
+
       this.$router.push({
         name: "HealthopeCheckoutOrder",
-        query: {
-          order: JSON.stringify(this.order),
-        },
       });
     },
     async getPersonalCoach() {
@@ -140,12 +140,18 @@ export default {
     },
   },
   created() {
-    const orderStr = this.$route.query.order;
-    this.order = orderStr ? JSON.parse(orderStr) : null;
+    if (!orderCache || !orderCache.tempOrder) {
+      this.$router.push("/order");
+    }
+    this.order = orderCache.tempOrder;
 
     if (this.order.PlanType === 2) {
       this.getPersonalCoach();
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.name !== "HealthopeCheckoutOrder") orderCache.tempOrder = null;
+    next();
   },
 };
 </script>

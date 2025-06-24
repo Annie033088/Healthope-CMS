@@ -2,9 +2,12 @@
 using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
+using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
+using ApiLayer.Models.Job;
+using ApiLayer.Models.Order.Request;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;
@@ -17,12 +20,14 @@ namespace UnitTest.Test.Invoice
     {
         private InvoiceController controller;
         private Mock<IInvoiceService> invoiceServiceMock;
+        private Mock<IJobDispatcher> jobDispatcherMock;
 
         [TestInitialize]
         public void Setup()
         {
             invoiceServiceMock = new Mock<IInvoiceService>();
-            controller = new InvoiceController(invoiceServiceMock.Object);
+            jobDispatcherMock = new Mock<IJobDispatcher>();
+            controller = new InvoiceController(invoiceServiceMock.Object, jobDispatcherMock.Object);
         }
 
         [TestMethod]
@@ -207,6 +212,62 @@ namespace UnitTest.Test.Invoice
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.DeleteFailed));
+        }
+
+        [TestMethod]
+        public void 完成訂單和補印發票_成功_回傳成功()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
+            {
+                ElectronicInvoiceId = 1,
+                InvoiceNumber = "EQ-12345677",
+                PlanName = "一個月會籍",
+                RandomNumber = "1234",
+                TotalAmount = 3000
+            };
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.EditOrderStateAndGetInvoiceNumber(orderIdDto)).Returns((errorCode, printInvoiceDto));
+            jobDispatcherMock.Setup(s => s.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto));
+
+            // Act
+            IHttpActionResult result = controller.CompleteOrderAndPrintInvoice(orderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 完成訂單和補印發票_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.GetFailed;
+            RequestPrintInvoiceDto printInvoiceDto = null;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.EditOrderStateAndGetInvoiceNumber(orderIdDto)).Returns((errorCode, printInvoiceDto));
+
+            // Act
+            IHttpActionResult result = controller.CompleteOrderAndPrintInvoice(orderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
         }
     }
 }

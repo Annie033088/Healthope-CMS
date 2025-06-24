@@ -151,8 +151,16 @@ export default function (mock) {
         {
             "OrderStateId": 1,
             "OrderId": 1,
-            "State": 1,
+            "State": 2,
             "Remark": "付款完成",
+            "CreateTime": "2025-06-20T10:00:12.000Z",
+            "UpdateTime": "2025-06-20T10:02:15.000Z"
+        },
+        {
+            "OrderStateId": 12,
+            "OrderId": 1,
+            "State": 1,
+            "Remark": "待付款",
             "CreateTime": "2025-06-20T10:00:12.000Z",
             "UpdateTime": "2025-06-20T10:02:15.000Z"
         },
@@ -328,6 +336,10 @@ export default function (mock) {
             orderStateTarget.Remark = editOrderStateRemarkDto.Remark
         }
 
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Order/EditOrderRemark").reply(() => {
         return [200, { ErrorCode: 1 }]
     })
 }

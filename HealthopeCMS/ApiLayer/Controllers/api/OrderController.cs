@@ -189,5 +189,106 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+
+        /// <summary>
+        /// 根據 id 取得訂單
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetOrderDetailById([FromBody] RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid || orderIdDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetOrderDetailByIdDto responseGet = orderService.GetOrderDetailById(orderIdDto);
+                response = new ResultResponse<ResponseGetOrderDetailByIdDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = responseGet
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態備註
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditOrderStateRemark([FromBody] RequestEditOrderStateRemarkDto editOrderStateRemarkDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editOrderStateRemarkDto.OrderStateId < 1
+                    || editOrderStateRemarkDto.Remark.Length > 50)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = orderService.EditOrderStateRemark(editOrderStateRemarkDto);
+                response = new ResultResponse
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單備註
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditOrderRemark([FromBody] RequestEditOrderRemarkDto editOrderRemarkDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editOrderRemarkDto.OrderId < 1
+                    || editOrderRemarkDto.Remark.Length > 50)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = orderService.EditOrderRemark(editOrderRemarkDto);
+                response = new ResultResponse
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

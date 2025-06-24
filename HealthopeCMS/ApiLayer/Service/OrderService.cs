@@ -180,5 +180,63 @@ namespace ApiLayer.Service
                 throw;
             }
         }
+
+        /// <summary>
+        /// 根據 id 取得訂單
+        /// </summary>
+        public ResponseGetOrderDetailByIdDto GetOrderDetailById(RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                (Order order, List<OrderState> orderStates) = orderRepository.GetOrderDetailById(orderIdDto.OrderId);
+
+                if (order == null) return null;
+
+                ResponseGetOrderDetailByIdDto response = new ResponseGetOrderDetailByIdDto
+                {
+                    Order = mapper.Map<ResponseGetOrderByIdDto>(order),
+                    OrderStateList = mapper.Map<List<ResponseGetOrderStateByIdDto>>(orderStates),
+                };
+
+                return response;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態備註
+        /// </summary>
+        public bool EditOrderStateRemark(RequestEditOrderStateRemarkDto editOrderStateRemarkDto)
+        {
+            try
+            {
+                OrderState orderState = mapper.Map<OrderState>(editOrderStateRemarkDto);
+                return orderRepository.EditOrderStateRemark(orderState);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單備註
+        /// </summary>
+        public bool EditOrderRemark(RequestEditOrderRemarkDto editOrderRemarkDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderRemarkDto);
+                return orderRepository.EditOrderRemark(order);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -59,6 +59,7 @@ import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import CardPaymentBox from "@/components/Box/CardPaymentBox";
 import QRCode from "qrcode";
+import { orderCache } from "@/utils/order";
 
 export default {
   name: "HealthopeCheckoutOrder",
@@ -176,8 +177,11 @@ export default {
     if (this.order.PaymentMethod === "2") this.showPaymentBox = true;
   },
   created() {
-    const orderStr = this.$route.query.order;
-    this.order = orderStr ? JSON.parse(orderStr) : null;
+    if (!orderCache || !orderCache.tempOrder) {
+      this.$router.push("/order");
+    }
+
+    this.order = orderCache.tempOrder;
   },
   watch: {
     qrCodeString(val) {
@@ -185,6 +189,10 @@ export default {
         this.drawQrCode(val);
       }
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    orderCache.tempOrder = null;
+    next();
   },
 };
 </script>

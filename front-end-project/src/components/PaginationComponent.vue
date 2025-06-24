@@ -87,11 +87,20 @@ export default {
   },
   computed: {
     visibleBtnTextList() {
-      return this.btnTextList.filter((_, index) => this.totalPage > index + 1);
+      return this.btnTextList.filter((_, index) => index < this.totalPage - 1);
     },
     btnTextList() {
       if (this.currentPage < 5) {
         return ["2", "3", "4", "5", "‧‧‧"];
+      }
+
+      if (this.currentPage === 5 && this.totalPage === 5) {
+        return [
+          this.totalPage - 3,
+          this.totalPage - 2,
+          this.totalPage - 1,
+          this.totalPage,
+        ];
       }
 
       if (this.currentPage > this.totalPage - 4) {

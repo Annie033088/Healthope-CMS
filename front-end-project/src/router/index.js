@@ -81,6 +81,11 @@ router.beforeEach(async (to, from, next) => {
         return next({ name: 'HealthopeHome' });
     }
 
+    if (to.name === 'HealthopeCheckoutOrder' &&
+        (from.name !== 'HealthopeAddOrder' && from.name !== 'HealthopeOrder' && from.name !== 'HealthopeBerforeCheckout')) {
+        return next('/order');
+    }
+
     // 有權限且有登入
     if (response.data.ErrorCode === errorCodeDefine.Success) {
         Vue.prototype.$loginFlag = true;

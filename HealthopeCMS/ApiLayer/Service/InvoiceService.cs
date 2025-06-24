@@ -196,15 +196,15 @@ namespace ApiLayer.Service
                 throw;
             }
         }
-
+        
         /// <summary>
-        /// 取得發票號碼
+        /// 針對「現金發票列印失敗」或「刷卡未完成訂單狀態」或「刷卡發票列印失敗」進行補印與補狀態處理
         /// </summary>
-        public (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) GetInvoiceNumber(RequestOrderIdDto orderIdDto)
+        public (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(RequestOrderIdDto orderIdDto)
         {
             try
             {
-                (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) = invoiceRepository.GetInvoiceNumber(orderIdDto.OrderId);
+                (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) = invoiceRepository.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId);
 
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber) || electronicInvoice == null)
                     return (ErrorCodeDefine.ServerError, null);

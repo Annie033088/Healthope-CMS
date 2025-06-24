@@ -19,7 +19,6 @@ export default [
             disableBack: true,
             backPath: "/order"
         },
-        props: route => ({ order: route.params.order })
     },
     {
         path: '/order',
@@ -38,7 +37,6 @@ export default [
             requireAuth: [{ adminPermission: adminPermission.AddOrder }
                 , { adminPermission: adminPermission.EditOrder }]
         },
-        props: route => ({ order: route.params.order })
     },
     {
         path: '/order/detail',

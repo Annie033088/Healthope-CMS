@@ -44,6 +44,6 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 取得發票號碼
         /// </summary>
-        (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) GetInvoiceNumber(RequestOrderIdDto orderIdDto);
+        (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(RequestOrderIdDto orderIdDto);
     }
 }

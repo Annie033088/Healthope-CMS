@@ -129,12 +129,18 @@ namespace ApiLayer.Models
                 AdminPermission.EditOrder} },
             { "Invoice,DeleteInvoiceTrackNumber", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
+            { "Invoice,CompleteOrderAndPrintInvoice", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
 
             // OrderController
             { "Order,AddOrder", new List<AdminPermission> {
                 AdminPermission.AddOrder, AdminPermission.EditOrder} },
             { "Order,PayByCash", new List<AdminPermission> {
                 AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Order,PayByCard", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Order,GetOrder", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder} },
         };
     }
 }

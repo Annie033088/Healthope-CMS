@@ -180,10 +180,10 @@ namespace ApiLayer.Controllers.api
         }
 
         /// <summary>
-        /// 取得字軌並列印
+        /// 針對「現金發票列印失敗」或「刷卡未完成訂單狀態」或「刷卡發票列印失敗」進行補印與補狀態處理
         /// </summary>
         [HttpPost]
-        public IHttpActionResult PrintInvoice(
+        public IHttpActionResult CompleteOrderAndPrintInvoice(
             [FromBody] RequestOrderIdDto orderIdDto)
         {
             try
@@ -198,7 +198,7 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) = invoiceService.GetInvoiceNumber(orderIdDto);
+                (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) = invoiceService.EditOrderStateAndGetInvoiceNumber(orderIdDto);
 
                 if (printInvoiceDto == null || errorCode != ErrorCodeDefine.Success)
                 {
@@ -209,7 +209,7 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                // 請求第三放列印方票
+                // 請求第三放列印發票
                 jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto);
 
                 response = new ResultResponse()

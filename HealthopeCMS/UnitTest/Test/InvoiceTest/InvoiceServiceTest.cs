@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
+using ApiLayer.Models.Job;
+using ApiLayer.Models.Order.Request;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Models;
@@ -11,6 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
+using UnitTest.utils;
 
 namespace UnitTest.Test.Invoice
 {
@@ -285,6 +289,73 @@ namespace UnitTest.Test.Invoice
 
             // Assert
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void 完成訂單和補印發票_成功_回傳成功()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            ElectronicInvoice electronicInvoice = new ElectronicInvoice
+            {
+                ElectronicInvoiceId = 1,
+                InvoiceNumber = "EQ-12345677",
+                RandomNumber = "1234",
+                TotalAmount = 3000
+            };
+
+            string planName = "一個月會籍";
+
+            RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
+            {
+                ElectronicInvoiceId = electronicInvoice.ElectronicInvoiceId,
+                InvoiceNumber = electronicInvoice.InvoiceNumber,
+                PlanName = planName,
+                RandomNumber = electronicInvoice.RandomNumber,
+                TotalAmount = electronicInvoice.TotalAmount,
+            };
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId)).Returns((errorCodeNumber, electronicInvoice, planName));
+
+            // Act
+            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdDto);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 完成訂單和補印發票_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.ServerError;
+
+            ElectronicInvoice electronicInvoice = null;
+
+            string planName = "一個月會籍";
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId)).Returns((errorCodeNumber, electronicInvoice, planName));
+
+            // Act
+            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdDto);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
         }
     }
 }
