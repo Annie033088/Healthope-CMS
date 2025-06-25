@@ -551,5 +551,96 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 修改訂單狀態：待付款 => 取消
+        /// </summary>
+        public bool CancelPendingOrder(Order order)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateCancelPendingOrder @orderId, @updateTime";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數>0代表成功
+                if (ExeCnt > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 7日內退款
+        /// </summary>
+        public (int errorCodeNumber, string invoiceNumber) RefundIn7Days(Order order)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateRefundIn7Days @orderId, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    string inoviceNumber = dr.IsNull("f_invoiceNumber") ? string.Empty : dr.Field<string>("f_invoiceNumber");
+
+                    return (errorCodeNumber, inoviceNumber);
+                }
+
+                return (errorCodeNumber, null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

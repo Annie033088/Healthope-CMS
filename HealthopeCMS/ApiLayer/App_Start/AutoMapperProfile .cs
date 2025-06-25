@@ -80,6 +80,7 @@ namespace ApiLayer.App_Start
             CreateMap<OrderState, ResponseGetOrderStateByIdDto>();
             CreateMap<RequestEditOrderStateRemarkDto, OrderState>();
             CreateMap<RequestEditOrderRemarkDto, Order>();
+            CreateMap<RequestEditOrderStateDto, Order>();
         }
     }
 }

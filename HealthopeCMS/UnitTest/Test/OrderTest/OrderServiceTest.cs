@@ -613,5 +613,69 @@ namespace UnitTest.Test.OrderTest
             // Assert
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void 修改訂單狀態為取消_成功_回傳成功()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.CancelPendingOrder(order)).Returns(successFlag);
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+
+            // Act
+            bool result = service.CancelPendingOrder(requestEdit);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態為取消_失敗_回傳失敗()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.CancelPendingOrder(order)).Returns(successFlag);
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+
+            // Act
+            bool result = service.CancelPendingOrder(requestEdit);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
     }
 }

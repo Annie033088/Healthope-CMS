@@ -171,5 +171,15 @@
         /// 交易紀錄更新成功但訂單更新失敗
         /// </summary>
         TransactionSuccessOrderUpdateFail = 33,
+
+        /// <summary>
+        /// 時間/日期超過
+        /// </summary>
+        OverTime = 34,
+
+        /// <summary>
+        /// 商品已使用
+        /// </summary>
+        ProductUsed = 35,
     }
 }

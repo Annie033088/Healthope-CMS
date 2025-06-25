@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -17,6 +18,7 @@ using Newtonsoft.Json;
 using NLog;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
+using static Hangfire.Storage.JobStorageFeatures;
 
 namespace ApiLayer.Service
 {
@@ -101,11 +103,21 @@ namespace ApiLayer.Service
                     return (ErrorCodeDefine.Success, dbResponse);
                 }
 
-                bool successEditStatusFail = transactionRepository.EditCreditCardTransactionStatusFail(transaction);
+                bool successEditStatusFail = transactionRepository.EditCreditCardTransactionStatusFail(creditCardTransactionId);
 
                 if (!successEditStatusFail) logger.Fatal("交易失敗但修改交易紀錄及訂單狀態失敗! 會導致該筆訂單無法重試付款");
 
                 return (ErrorCodeDefine.PayFailed, null);
+            }
+            catch (TimeoutException)
+            {
+                transactionRepository.EditCreditCardTransactionStatusFail(creditCardTransactionId);
+                throw;
+            }
+            catch (HttpRequestException)
+            {
+                transactionRepository.EditCreditCardTransactionStatusFail(creditCardTransactionId);
+                throw;
             }
             catch (Exception)
             {

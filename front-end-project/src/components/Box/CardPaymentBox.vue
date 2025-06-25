@@ -27,6 +27,13 @@ export default {
   methods: {
     async startPayment() {
       this.isLoading = true;
+      if (
+        Number(this.order.OrderId) < 1 ||
+        (this.order.CoachId && Number(this.order.CoachId) < 1)
+      ) {
+        this.$emit("cardPayFail");
+        return;
+      }
 
       let payByCardDto = {
         OrderId: this.order.OrderId,

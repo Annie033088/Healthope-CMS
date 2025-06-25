@@ -18,7 +18,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 付款失敗時, 修改狀態
         /// </summary>
-        public bool EditCreditCardTransactionStatusFail(CreditCardTransaction creditCardTransaction)
+        public bool EditCreditCardTransactionStatusFail(int creditCardTransactionId)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -27,7 +27,7 @@ namespace PersistentLayer.Repository
             {
                 cmd.CommandText = "EXEC pro_healthope_editCreditCardTransactionStatusFail @creditCardTransactionId";
 
-                cmd.Parameters.Add("@creditCardTransactionId", SqlDbType.Int).Value = creditCardTransaction.CreditCardTransactionId;
+                cmd.Parameters.Add("@creditCardTransactionId", SqlDbType.Int).Value = creditCardTransactionId;
 
                 cmd.Connection.Open();
 

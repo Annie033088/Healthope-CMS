@@ -38,6 +38,7 @@
       :expandable="true"
       :resetDetailIndexFlag="resetDetailIndexFlag"
       @goCheckDetail="goDetail"
+      @changeState="editState"
     >
       <template #detail="{ row }">
         <div class="detailRowContainer">
@@ -49,7 +50,11 @@
             @click="goCheckoutOrder(row)"
           />
           <BtnNormal
-            v-if="row.InvoiceStatus === '失敗'"
+            v-if="
+              (row.InvoiceStatus === '失敗' || row.InvoiceStatus === '無') &&
+              (row.State.Value === String(orderState.Paid) ||
+                row.State.Value === String(orderState.Paying))
+            "
             text="完成訂單/補印發票"
             @click="printInvoice(row)"
           />
@@ -313,9 +318,7 @@ export default {
 
               if (
                 Number(state.value) === orderState.Cancel &&
-                (order.State === orderState.Pending ||
-                  order.State === orderState.Paid ||
-                  order.State === orderState.Paid)
+                order.State === orderState.Pending
               )
                 stateOption.push(state);
 
@@ -447,10 +450,209 @@ export default {
       this.searchingPage = 1;
       this.getOrder();
     },
+    editState(row) {
+      // 待付款 => 取消
+      if (
+        row.State.OldValue === String(orderState.Pending) &&
+        row.State.Value === String(orderState.Cancel)
+      ) {
+        let ediOrderStateDto = {
+          OrderId: row.OrderId,
+          UpdateTime: row.UpdateTime,
+        };
+        this.cancelPendingOrder(ediOrderStateDto);
+        return;
+      }
+
+      // 已付款 => 解約
+      if (
+        row.State.OldValue === String(orderState.Paid) &&
+        row.State.Value === String(orderState.Terminate)
+      ) {
+        let ediOrderStateDto = {
+          OrderId: row.OrderId,
+          UpdateTime: row.UpdateTime,
+        };
+        this.terminateOrder(ediOrderStateDto);
+        return;
+      }
+
+      // 已付款 => 違約
+      if (
+        row.State.OldValue === String(orderState.Paid) &&
+        row.State.Value === String(orderState.Breach)
+      ) {
+        let ediOrderStateDto = {
+          OrderId: row.OrderId,
+          UpdateTime: row.UpdateTime,
+        };
+        this.breachOrder(ediOrderStateDto);
+        return;
+      }
+
+      // 已付款 => 7日內退費(無條件)
+      if (
+        row.State.OldValue === String(orderState.Paid) &&
+        row.State.Value === String(orderState.RefundIn7Days)
+      ) {
+        let ediOrderStateDto = {
+          OrderId: row.OrderId,
+          UpdateTime: row.UpdateTime,
+        };
+        this.refundIn7Days(ediOrderStateDto);
+        return;
+      }
+
+      // 設定彈窗資料
+      this.$notificationBox.notificationBoxFlag = true;
+      this.$notificationBox.notificationBoxTitle = "發生錯誤!無效的狀態轉換";
+      this.$notificationBox.notificationBoxErrorCode = 0;
+    },
+    async cancelPendingOrder(ediOrderStateDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/CancelPendingOrder",
+          ediOrderStateDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async terminateOrder(ediOrderStateDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/TerminateOrder",
+          ediOrderStateDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async breachOrder(ediOrderStateDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/BreachOrder",
+          ediOrderStateDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async refundIn7Days(ediOrderStateDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/RefundIn7Days",
+          ediOrderStateDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+          let invoiceNumber = response.data.ApiDataObject.InvoiceNumber;
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle =
+            "字軌號碼為：" + invoiceNumber;
+          this.$notificationBox.notificationBoxErrorCode = 0;
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
   },
   created() {
     this.getOrder();
-    console.log(orderCache.tempOrder)
   },
   computed: {
     orderStateOptions() {

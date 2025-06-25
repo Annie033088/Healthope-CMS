@@ -289,6 +289,7 @@
     <Compile Include="Models\Invoice\Request\RequestAddInvoiceTrackNumberDto.cs" />
     <Compile Include="Models\Invoice\Request\RequestEditInvoiceTrackNumberStatusDto.cs" />
     <Compile Include="Models\Invoice\Response\ResponseGetInvoiceTrackNumberListDto.cs" />
+    <Compile Include="Models\Invoice\Response\ResponseInvoiceNumberDto.cs" />
     <Compile Include="Models\Job\RequestPrintInvoiceDto.cs" />
     <Compile Include="Models\Job\ResponsePrintInvoiceDto.cs" />
     <Compile Include="Models\Job\SendEmailDto.cs" />
@@ -307,6 +308,7 @@
     <Compile Include="Models\Order\PaymentMethod.cs" />
     <Compile Include="Models\Order\Request\RequestAddOrderDto.cs" />
     <Compile Include="Models\Order\Request\RequestEditOrderRemarkDto.cs" />
+    <Compile Include="Models\Order\Request\RequestEditOrderStateDto.cs" />
     <Compile Include="Models\Order\Request\RequestEditOrderStateRemarkDto.cs" />
     <Compile Include="Models\Order\Request\RequestOrderIdDto.cs" />
     <Compile Include="Models\Order\Response\ResponseAddOrderDto.cs" />
@@ -375,6 +377,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="wwwroot\css\1.b8a80241.css" />
     <Content Include="wwwroot\css\101.841e0399.css" />
+    <Content Include="wwwroot\css\109.87dbbdd9.css" />
     <Content Include="wwwroot\css\110.85309e14.css" />
     <Content Include="wwwroot\css\111.6499924e.css" />
     <Content Include="wwwroot\css\119.e323cb8c.css" />
@@ -382,9 +385,8 @@
     <Content Include="wwwroot\css\131.5bdde61f.css" />
     <Content Include="wwwroot\css\144.280410a7.css" />
     <Content Include="wwwroot\css\149.58088de3.css" />
-    <Content Include="wwwroot\css\168.31b55d31.css" />
+    <Content Include="wwwroot\css\225.909bd92e.css" />
     <Content Include="wwwroot\css\255.b91b84eb.css" />
-    <Content Include="wwwroot\css\281.c859f44d.css" />
     <Content Include="wwwroot\css\296.07932181.css" />
     <Content Include="wwwroot\css\314.c13fef91.css" />
     <Content Include="wwwroot\css\315.2d7304c4.css" />
@@ -418,6 +420,7 @@
     <Content Include="wwwroot\index.html" />
     <Content Include="wwwroot\js\1.13e910dd.js" />
     <Content Include="wwwroot\js\101.d5598db0.js" />
+    <Content Include="wwwroot\js\109.1ba0b505.js" />
     <Content Include="wwwroot\js\110.22e9328b.js" />
     <Content Include="wwwroot\js\111.14c057ef.js" />
     <Content Include="wwwroot\js\119.f4e2b766.js" />
@@ -425,9 +428,8 @@
     <Content Include="wwwroot\js\131.4c3c730a.js" />
     <Content Include="wwwroot\js\144.f02529fc.js" />
     <Content Include="wwwroot\js\149.21c85385.js" />
-    <Content Include="wwwroot\js\168.402f2446.js" />
+    <Content Include="wwwroot\js\225.d46c4e21.js" />
     <Content Include="wwwroot\js\255.0c63f220.js" />
-    <Content Include="wwwroot\js\281.a8fb26e8.js" />
     <Content Include="wwwroot\js\296.e56f2905.js" />
     <Content Include="wwwroot\js\314.23f888dd.js" />
     <Content Include="wwwroot\js\315.02e0f583.js" />
@@ -457,7 +459,7 @@
     <Content Include="wwwroot\js\972.e74e4aa8.js" />
     <Content Include="wwwroot\js\979.e428bf44.js" />
     <Content Include="wwwroot\js\994.009e5d62.js" />
-    <Content Include="wwwroot\js\app.d4f2f10c.js" />
+    <Content Include="wwwroot\js\app.9adef8a8.js" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js" />
   </ItemGroup>
   <ItemGroup>
@@ -468,6 +470,7 @@
     <None Include="packages.config" />
     <Content Include="wwwroot\js\1.13e910dd.js.map" />
     <Content Include="wwwroot\js\101.d5598db0.js.map" />
+    <Content Include="wwwroot\js\109.1ba0b505.js.map" />
     <Content Include="wwwroot\js\110.22e9328b.js.map" />
     <Content Include="wwwroot\js\111.14c057ef.js.map" />
     <Content Include="wwwroot\js\119.f4e2b766.js.map" />
@@ -475,9 +478,8 @@
     <Content Include="wwwroot\js\131.4c3c730a.js.map" />
     <Content Include="wwwroot\js\144.f02529fc.js.map" />
     <Content Include="wwwroot\js\149.21c85385.js.map" />
-    <Content Include="wwwroot\js\168.402f2446.js.map" />
+    <Content Include="wwwroot\js\225.d46c4e21.js.map" />
     <Content Include="wwwroot\js\255.0c63f220.js.map" />
-    <Content Include="wwwroot\js\281.a8fb26e8.js.map" />
     <Content Include="wwwroot\js\296.e56f2905.js.map" />
     <Content Include="wwwroot\js\314.23f888dd.js.map" />
     <Content Include="wwwroot\js\315.02e0f583.js.map" />
@@ -507,7 +509,7 @@
     <Content Include="wwwroot\js\972.e74e4aa8.js.map" />
     <Content Include="wwwroot\js\979.e428bf44.js.map" />
     <Content Include="wwwroot\js\994.009e5d62.js.map" />
-    <Content Include="wwwroot\js\app.d4f2f10c.js.map" />
+    <Content Include="wwwroot\js\app.9adef8a8.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js.map" />
   </ItemGroup>
   <ItemGroup>

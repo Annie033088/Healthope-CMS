@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Job;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
@@ -232,6 +233,43 @@ namespace ApiLayer.Service
             {
                 Order order = mapper.Map<Order>(editOrderRemarkDto);
                 return orderRepository.EditOrderRemark(order);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：待付款 => 取消
+        /// </summary>
+        public bool CancelPendingOrder(RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderStateDto);
+                return orderRepository.CancelPendingOrder(order);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 7日內退款
+        /// </summary>
+        public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) RefundIn7Days(RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderStateDto);
+                (int errorCodeNumber, string invoiceNumber) = orderRepository.RefundIn7Days(order);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                return ((ErrorCodeDefine)errorCodeNumber, new ResponseInvoiceNumberDto { InvoiceNumber = invoiceNumber });
             }
             catch (Exception)
             {

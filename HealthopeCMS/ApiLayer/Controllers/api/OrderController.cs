@@ -4,6 +4,7 @@ using System.Web.Http;
 using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Member.Response;
 using ApiLayer.Models.Order;
 using ApiLayer.Models.Order.Request;
@@ -280,6 +281,73 @@ namespace ApiLayer.Controllers.api
                 response = new ResultResponse
                 {
                     ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：待付款 => 取消
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult CancelPendingOrder([FromBody] RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editOrderStateDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = orderService.CancelPendingOrder(editOrderStateDto);
+                response = new ResultResponse
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 7日內退款
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult RefundIn7Days([FromBody] RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editOrderStateDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) = orderService.RefundIn7Days(editOrderStateDto);
+                response = new ResultResponse<ResponseInvoiceNumberDto>
+                {
+                    ErrorCode = errorCode,
+                    ApiDataObject = invoiceNumberDto,
                 };
                 return Ok(response);
             }

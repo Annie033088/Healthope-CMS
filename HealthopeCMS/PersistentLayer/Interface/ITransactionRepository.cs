@@ -17,6 +17,6 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 付款失敗時, 修改狀態
         /// </summary>
-        bool EditCreditCardTransactionStatusFail(CreditCardTransaction creditCardTransaction);
+        bool EditCreditCardTransactionStatusFail(int creditCardTransactionId);
     }
 }

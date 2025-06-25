@@ -47,5 +47,15 @@ namespace PersistentLayer.Interface
         /// 修改訂單備註
         /// </summary>
         bool EditOrderRemark(Order order);
+
+        /// <summary>
+        /// 修改訂單狀態：待付款 => 取消
+        /// </summary>
+        bool CancelPendingOrder(Order order);
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 7日內退款
+        /// </summary>
+        (int errorCodeNumber, string invoiceNumber) RefundIn7Days(Order order);
     }
 }

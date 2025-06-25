@@ -113,6 +113,30 @@ export default {
       this.showPaymentBox = true;
     },
     async payByCash() {
+      if (
+        Number(this.order.OrderId) < 1 ||
+        (this.order.CoachId && Number(this.order.CoachId) < 1)
+      ) {
+        // 添加監聽器，查看彈窗是否被按確認鍵
+        this.unwatchFlag = this.$watch(
+          "notificationBoxConfirmFlag",
+          (newVal) => {
+            if (newVal) {
+              let redirectRoute = "/order";
+              this.$emit("afterConfirmEvent", redirectRoute);
+              this.unwatchFlag(); // 移除監聽
+              this.unwatchFlag = null;
+            }
+          }
+        );
+
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "參數格式錯誤!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
       let payByCashDto = {
         OrderId: this.order.OrderId,
         UpdateTime: this.order.UpdateTime,

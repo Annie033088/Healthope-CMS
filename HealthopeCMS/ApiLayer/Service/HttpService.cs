@@ -64,6 +64,11 @@ namespace ApiLayer.Service
             {
                 throw new TimeoutException("連線逾時", ex);
             }
+            catch (HttpRequestException ex)
+            {
+                // 🌐 網路錯誤（例如：主機拒絕連線）
+                throw new HttpRequestException("無法連線到遠端伺服器", ex);
+            }
             catch (Exception)
             {
                 throw;

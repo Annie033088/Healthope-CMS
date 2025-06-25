@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using PersistentLayer.Models;
@@ -43,5 +44,15 @@ namespace ApiLayer.Interface
         /// 修改訂單備註
         /// </summary>
         bool EditOrderRemark(RequestEditOrderRemarkDto editOrderRemarkDto);
+
+        /// <summary>
+        /// 修改訂單狀態：待付款 => 取消
+        /// </summary>
+        bool CancelPendingOrder(RequestEditOrderStateDto editOrderStateDto);
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 7日內退款
+        /// </summary>
+        (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) RefundIn7Days(RequestEditOrderStateDto editOrderStateDto);
     }
 }

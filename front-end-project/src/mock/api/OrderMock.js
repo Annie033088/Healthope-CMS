@@ -122,7 +122,7 @@ export default function (mock) {
             PlanType: 3,
             PlanName: "健身年卡",
             OrderNumber: 202406170008,
-            State: 1,
+            State: 6,
             Amount: 9600,
             Method: 2,
             Remark: "信用卡付款",
@@ -341,5 +341,22 @@ export default function (mock) {
 
     mock.onPost("/api/Order/EditOrderRemark").reply(() => {
         return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Order/CancelPendingOrder").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Order/TerminateOrder").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Order/BreachOrder").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Order/RefundIn7Days").reply(() => {
+        let ApiDataObject = { InvoiceNumber: "QC-55662340" }
+        return [200, { ErrorCode: 1, ApiDataObject }]
     })
 }
