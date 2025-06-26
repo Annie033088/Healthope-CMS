@@ -196,7 +196,7 @@ namespace ApiLayer.Service
                 throw;
             }
         }
-        
+
         /// <summary>
         /// 針對「現金發票列印失敗」或「刷卡未完成訂單狀態」或「刷卡發票列印失敗」進行補印與補狀態處理
         /// </summary>
@@ -220,6 +220,30 @@ namespace ApiLayer.Service
                     TotalAmount = electronicInvoice.TotalAmount,
                 };
                 return (errorCode, requestPrintInvoiceDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool VoidInvoice(RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                return invoiceRepository.VoidInvoice(orderIdDto.OrderId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool DiscountInvoice(RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                return invoiceRepository.DiscountInvoice(orderIdDto.OrderId);
             }
             catch (Exception)
             {

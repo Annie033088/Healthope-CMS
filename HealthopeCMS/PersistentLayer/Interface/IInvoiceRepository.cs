@@ -36,5 +36,15 @@ namespace PersistentLayer.Interface
         /// 取得發票號碼
         /// </summary>
         (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(int orderId);
+
+        /// <summary>
+        /// 作廢發票
+        /// </summary>
+        bool VoidInvoice(int orderId);
+
+        /// <summary>
+        /// 折讓發票
+        /// </summary>
+        bool DiscountInvoice(int orderId);
     }
 }

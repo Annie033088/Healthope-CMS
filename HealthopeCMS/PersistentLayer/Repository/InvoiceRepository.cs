@@ -304,5 +304,68 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 作廢發票
+        /// </summary>
+        public bool VoidInvoice(int orderId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusVoided @orderId";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Char).Value = orderId;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                if (ExeCnt > 0) return true;
+
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        public bool DiscountInvoice(int orderId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusDiscounted @orderId";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Char).Value = orderId;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                if (ExeCnt > 0) return true;
+
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

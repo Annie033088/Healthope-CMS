@@ -98,4 +98,12 @@ export default function (mock) {
     mock.onPost("/api/Invoice/PrintInvoice").reply(() => {
         return [200, { ErrorCode: 1 }]
     })
+
+    mock.onPost("/api/Invoice/VoidInvoice").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
+
+    mock.onPost("/api/Invoice/DiscountInvoice").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
 }

@@ -642,5 +642,107 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要解約而不是無條件退費, 若否=>直接走解約流程
+        /// </summary>
+        public (int errorCodeNumber, bool haveRefundQualify) CheckoutRefundQualify(Order order)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateTerminate @orderId, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    bool haveRefundQualify = dr.IsNull("f_haveRefundQualify") ? false : dr.Field<bool>("f_haveRefundQualify");
+
+                    return (errorCodeNumber, haveRefundQualify);
+                }
+
+                return (errorCodeNumber, false);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 解約
+        /// </summary>
+        public (int errorCodeNumber, string invoiceNumber) TerminateOrder(Order order)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateTerminate @orderId, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    string inoviceNumber = dr.IsNull("f_invoiceNumber") ? string.Empty : dr.Field<string>("f_invoiceNumber");
+
+                    return (errorCodeNumber, inoviceNumber);
+                }
+
+                return (errorCodeNumber, null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

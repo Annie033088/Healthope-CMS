@@ -23,6 +23,7 @@ using ApiLayer.Models.Job;
 using System.Web.Http.Results;
 using ApiLayer.Models.Other;
 using DomainLayer.Utility;
+using ApiLayer.Models.Invoice.Response;
 
 namespace UnitTest.Test.OrderTest
 {
@@ -676,6 +677,72 @@ namespace UnitTest.Test.OrderTest
 
             // Assert
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態為7日內退款_成功_回傳成功()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            string invoiceNumber = "AB12345678";
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.RefundIn7Days(order)).Returns((errorCodeNumber, invoiceNumber));
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result = service.RefundIn7Days(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態為7日內退款_失敗_回傳失敗()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                Remark = "今天第一次",
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.TimeExceeded;
+            string invoiceNumber = "AB12345678";
+
+            // Mock 設定
+            orderRepositoryMock.Setup(s
+                => s.RefundIn7Days(order)).Returns((errorCodeNumber, invoiceNumber));
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result = service.RefundIn7Days(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
         }
     }
 }

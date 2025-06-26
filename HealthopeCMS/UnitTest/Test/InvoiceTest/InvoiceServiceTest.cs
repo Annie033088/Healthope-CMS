@@ -357,5 +357,49 @@ namespace UnitTest.Test.Invoice
             // Assert
             Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
         }
+
+        [TestMethod]
+        public void 作廢發票_成功_回傳成功()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.VoidInvoice(orderIdDto.OrderId)).Returns(successFlag);
+
+            // Act
+            bool result = service.VoidInvoice(orderIdDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 作廢發票_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.VoidInvoice(orderIdDto.OrderId)).Returns(successFlag);
+
+            // Act
+            bool result = service.VoidInvoice(orderIdDto);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
     }
 }

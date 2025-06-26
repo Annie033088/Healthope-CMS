@@ -91,6 +91,21 @@ export const errorCodeDefine = {
 
     // 教練被設置無效
     CoachBaned: 30,
+
+    // 付款失敗
+    PayFailed: 31,
+
+    // 刷卡成功但交易紀錄更新失敗
+    CardPaySuccessTransactionUpdateFail: 32,
+
+    // 交易紀錄更新成功但訂單更新失敗
+    TransactionSuccessOrderUpdateFail: 33,
+
+    // 時間/日期超過
+    TimeExceeded: 34,
+
+    // 商品已使用
+    ProductUsed: 35,
 };
 
 //設定errorCode對應資料
@@ -187,6 +202,21 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 30:
             message = "教練狀態無效";
+            return message;
+        case 31:
+            message = "付款失敗";
+            return message;
+        case 32:
+            message = "刷卡成功但交易紀錄更新失敗!";
+            return message;
+        case 33:
+            message = "交易紀錄更新成功但訂單更新失敗!";
+            return message;
+        case 34:
+            message = "時間/日期超過";
+            return message;
+        case 35:
+            message = "商品已使用";
             return message;
         default:
             message = "";

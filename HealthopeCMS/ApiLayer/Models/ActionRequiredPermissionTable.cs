@@ -141,6 +141,16 @@ namespace ApiLayer.Models
                 AdminPermission.AddOrder, AdminPermission.EditOrder} },
             { "Order,GetOrder", new List<AdminPermission> {
                 AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder} },
+            { "Order,GetOrderDetailById", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder} },
+            { "Order,EditOrderStateRemark", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Order,EditOrderRemark", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Order,CancelPendingOrder", new List<AdminPermission> {
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Order,RefundIn7Days", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
         };
     }
 }

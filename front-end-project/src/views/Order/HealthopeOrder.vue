@@ -39,6 +39,7 @@
       :resetDetailIndexFlag="resetDetailIndexFlag"
       @goCheckDetail="goDetail"
       @changeState="editState"
+      @changeInvoiceStatus="editInvoiceStatus"
     >
       <template #detail="{ row }">
         <div class="detailRowContainer">
@@ -84,7 +85,10 @@ import {
   paymentMethod,
   orderCache,
 } from "@/utils/order";
-import { electronicInvoiceStatus } from "@/utils/electronicInvoice";
+import {
+  electronicInvoiceStatusAndText,
+  electronicInvoiceStatus,
+} from "@/utils/electronicInvoice";
 import BtnNormal from "@/components/Btn/BtnNormal";
 import RadioSelector from "@/components/Selector/RadioSelector";
 import TableNormal from "@/components/Table/TableNormal";
@@ -132,7 +136,12 @@ export default {
         },
         { label: "金額", key: "Amount" },
         { label: "付款方式", key: "Method" },
-        { label: "發票狀態", key: "InvoiceStatus" },
+        {
+          label: "發票狀態",
+          key: "InvoiceStatus",
+          type: "dropDownSelector",
+          enableFlag: this.permissionMap.EditOrder,
+        },
       ],
       currentPage: 1,
       totalPage: 1,
@@ -324,13 +333,15 @@ export default {
 
               if (
                 Number(state.value) === orderState.Terminate &&
-                order.State === orderState.Paid
+                order.State === orderState.Paid &&
+                order.PlanType !== 3 // 票劵方案
               )
                 stateOption.push(state);
 
               if (
                 Number(state.value) === orderState.Breach &&
-                order.State === orderState.Paid
+                order.State === orderState.Paid &&
+                order.PlanType !== 3 // 票劵方案
               )
                 stateOption.push(state);
 
@@ -351,18 +362,40 @@ export default {
               (item) => item.value === String(order.Method)
             );
             order.Method = method.text;
-
             order.Member = order.MemberName + `(0${order.MemberPhone})`;
-
             order.Amount = "$" + order.Amount;
+            let invoiceStatusOption = [];
 
-            if (order.InvoiceStatus === electronicInvoiceStatus.Processing)
-              order.InvoiceStatus = "處理中";
-            else if (order.InvoiceStatus === electronicInvoiceStatus.Success)
-              order.InvoiceStatus = "成功";
-            else if (order.InvoiceStatus === electronicInvoiceStatus.Fail)
-              order.InvoiceStatus = "失敗";
-            else order.InvoiceStatus = "無";
+            if (!order.InvoiceStatus) {
+              invoiceStatusOption.push({ value: "", text: "無" });
+            }
+
+            electronicInvoiceStatusAndText.forEach((status) => {
+              if (order.InvoiceStatus === Number(status.value)) {
+                invoiceStatusOption.push(status);
+              }
+
+              if (
+                order.InvoiceStatus === electronicInvoiceStatus.PendingVoid &&
+                Number(status.value) === electronicInvoiceStatus.Voided
+              ) {
+                invoiceStatusOption.push(status);
+              }
+
+              if (
+                order.InvoiceStatus ===
+                  electronicInvoiceStatus.PendingDiscount &&
+                Number(status.value) === electronicInvoiceStatus.Discounted
+              ) {
+                invoiceStatusOption.push(status);
+              }
+            });
+
+            order.InvoiceStatus = {
+              Value: order.InvoiceStatus ? String(order.InvoiceStatus) : "",
+              Options: invoiceStatusOption,
+              OldValue: order.InvoiceStatus ? String(order.InvoiceStatus) : "",
+            };
           });
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
@@ -508,6 +541,97 @@ export default {
       this.$notificationBox.notificationBoxTitle = "發生錯誤!無效的狀態轉換";
       this.$notificationBox.notificationBoxErrorCode = 0;
     },
+    editInvoiceStatus(row) {
+      // 確認轉換狀態 待作廢 => 作廢
+      if (
+        row.InvoiceStatus.Value === String(electronicInvoiceStatus.Voided) &&
+        row.InvoiceStatus.OldValue ===
+          String(electronicInvoiceStatus.PendingVoid)
+      ) {
+        let editInvoiceStatusDto = {
+          OrderId: row.OrderId,
+        };
+        this.voidInvoice(editInvoiceStatusDto);
+      } else if (
+        row.InvoiceStatus.Value ===
+          String(electronicInvoiceStatus.Discounted) &&
+        row.InvoiceStatus.OldValue ===
+          String(electronicInvoiceStatus.PendingDiscount)
+      ) {
+        let editInvoiceStatusDto = {
+          OrderId: row.OrderId,
+        };
+        this.discountInvoice(editInvoiceStatusDto);
+      }
+    },
+    async voidInvoice(editInvoiceStatusDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/VoidInvoice",
+          editInvoiceStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async discountInvoice(editInvoiceStatusDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/DiscountInvoice",
+          editInvoiceStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
     async cancelPendingOrder(ediOrderStateDto) {
       try {
         // post
@@ -552,6 +676,15 @@ export default {
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
+          let invoiceNumber = response.data.ApiDataObject.InvoiceNumber;
+
+          if (invoiceNumber) {
+            // 設定彈窗資料
+            this.$notificationBox.notificationBoxFlag = true;
+            this.$notificationBox.notificationBoxTitle =
+              "字軌號碼為：" + invoiceNumber;
+            this.$notificationBox.notificationBoxErrorCode = 0;
+          }
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
@@ -621,11 +754,14 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
           let invoiceNumber = response.data.ApiDataObject.InvoiceNumber;
-          // 設定彈窗資料
-          this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle =
-            "字軌號碼為：" + invoiceNumber;
-          this.$notificationBox.notificationBoxErrorCode = 0;
+
+          if (invoiceNumber) {
+            // 設定彈窗資料
+            this.$notificationBox.notificationBoxFlag = true;
+            this.$notificationBox.notificationBoxTitle =
+              "字軌號碼為：" + invoiceNumber;
+            this.$notificationBox.notificationBoxErrorCode = 0;
+          }
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(

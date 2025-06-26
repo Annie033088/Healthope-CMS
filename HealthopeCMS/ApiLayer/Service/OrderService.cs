@@ -276,5 +276,56 @@ namespace ApiLayer.Service
                 throw;
             }
         }
+
+        /// <summary>
+        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要解約而不是無條件退費, 若否=>直接走解約流程
+        /// </summary>
+        public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) CheckoutRefundQualifyAndTerminateOrder(RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderStateDto);
+                (int errorCodeNumber, bool haveRefundQualify) = orderRepository.CheckoutRefundQualify(order);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                // 判斷有 無條件退費資格!
+                if(errorCode == ErrorCodeDefine.Success && haveRefundQualify)
+                {
+                    return (ErrorCodeDefine.ConfirmAgain, null);
+                }
+
+                // 沒有 無條件退費資格 => 照常執行解約
+                return TerminateOrder(editOrderStateDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 解約
+        /// </summary>
+        public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) TerminateOrder(RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderStateDto);
+                (int errorCodeNumber, string invoiceNumber) = orderRepository.TerminateOrder(order);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                return ((ErrorCodeDefine)errorCodeNumber, new ResponseInvoiceNumberDto { InvoiceNumber = invoiceNumber });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

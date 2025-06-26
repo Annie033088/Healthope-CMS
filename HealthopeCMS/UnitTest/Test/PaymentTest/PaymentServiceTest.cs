@@ -139,7 +139,7 @@ namespace UnitTest.Test.PaymentTest
             // Mock 設定
             httpServiceMock.Setup(s => s.SendPostAsync(It.IsAny<string>(), It.IsAny<StringContent>(), It.IsAny<TimeSpan>()))
                 .ReturnsAsync(responseString);
-            transactionRepositoryMock.Setup(s => s.EditCreditCardTransactionStatusFail(It.IsAny<CreditCardTransaction>()))
+            transactionRepositoryMock.Setup(s => s.EditCreditCardTransactionStatusFail(It.IsAny<int>()))
                 .Returns(successEditStatusFail);
 
             // Act

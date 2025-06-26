@@ -385,8 +385,8 @@
     <Content Include="wwwroot\css\131.5bdde61f.css" />
     <Content Include="wwwroot\css\144.280410a7.css" />
     <Content Include="wwwroot\css\149.58088de3.css" />
-    <Content Include="wwwroot\css\225.909bd92e.css" />
     <Content Include="wwwroot\css\255.b91b84eb.css" />
+    <Content Include="wwwroot\css\285.f82b0c3a.css" />
     <Content Include="wwwroot\css\296.07932181.css" />
     <Content Include="wwwroot\css\314.c13fef91.css" />
     <Content Include="wwwroot\css\315.2d7304c4.css" />
@@ -428,8 +428,8 @@
     <Content Include="wwwroot\js\131.4c3c730a.js" />
     <Content Include="wwwroot\js\144.f02529fc.js" />
     <Content Include="wwwroot\js\149.21c85385.js" />
-    <Content Include="wwwroot\js\225.d46c4e21.js" />
     <Content Include="wwwroot\js\255.0c63f220.js" />
+    <Content Include="wwwroot\js\285.f52e89a6.js" />
     <Content Include="wwwroot\js\296.e56f2905.js" />
     <Content Include="wwwroot\js\314.23f888dd.js" />
     <Content Include="wwwroot\js\315.02e0f583.js" />
@@ -459,7 +459,7 @@
     <Content Include="wwwroot\js\972.e74e4aa8.js" />
     <Content Include="wwwroot\js\979.e428bf44.js" />
     <Content Include="wwwroot\js\994.009e5d62.js" />
-    <Content Include="wwwroot\js\app.9adef8a8.js" />
+    <Content Include="wwwroot\js\app.8b971c2b.js" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js" />
   </ItemGroup>
   <ItemGroup>
@@ -478,8 +478,8 @@
     <Content Include="wwwroot\js\131.4c3c730a.js.map" />
     <Content Include="wwwroot\js\144.f02529fc.js.map" />
     <Content Include="wwwroot\js\149.21c85385.js.map" />
-    <Content Include="wwwroot\js\225.d46c4e21.js.map" />
     <Content Include="wwwroot\js\255.0c63f220.js.map" />
+    <Content Include="wwwroot\js\285.f52e89a6.js.map" />
     <Content Include="wwwroot\js\296.e56f2905.js.map" />
     <Content Include="wwwroot\js\314.23f888dd.js.map" />
     <Content Include="wwwroot\js\315.02e0f583.js.map" />
@@ -509,7 +509,7 @@
     <Content Include="wwwroot\js\972.e74e4aa8.js.map" />
     <Content Include="wwwroot\js\979.e428bf44.js.map" />
     <Content Include="wwwroot\js\994.009e5d62.js.map" />
-    <Content Include="wwwroot\js\app.9adef8a8.js.map" />
+    <Content Include="wwwroot\js\app.8b971c2b.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js.map" />
   </ItemGroup>
   <ItemGroup>

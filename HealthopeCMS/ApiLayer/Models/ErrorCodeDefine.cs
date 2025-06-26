@@ -175,11 +175,16 @@
         /// <summary>
         /// 時間/日期超過
         /// </summary>
-        OverTime = 34,
+        TimeExceeded = 34,
 
         /// <summary>
         /// 商品已使用
         /// </summary>
         ProductUsed = 35,
+
+        /// <summary>
+        /// 再次確認是否執行這個操作
+        /// </summary>
+        ConfirmAgain = 36,
     }
 }

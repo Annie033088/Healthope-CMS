@@ -5,6 +5,7 @@ using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using ApiLayer.Models.Term.Request;
@@ -538,6 +539,81 @@ namespace UnitTest.Test.OrderTest
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態為7日內退款_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            ResponseInvoiceNumberDto invoiceNumberDto = new ResponseInvoiceNumberDto
+            {
+                InvoiceNumber = "QC-12456778"
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.RefundIn7Days(requestEdit)).Returns((errorCode, invoiceNumberDto));
+
+            // Act
+            IHttpActionResult result = controller.RefundIn7Days(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態為7日內退款_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 0,
+                UpdateTime = DateTime.Now,
+            };
+
+
+            // Act
+            IHttpActionResult result = controller.RefundIn7Days(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改訂單狀態為7日內退款_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.TimeExceeded;
+            ResponseInvoiceNumberDto invoiceNumberDto = new ResponseInvoiceNumberDto
+            {
+                InvoiceNumber = "QC-12456778"
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.RefundIn7Days(requestEdit)).Returns((errorCode, invoiceNumberDto));
+
+            // Act
+            IHttpActionResult result = controller.RefundIn7Days(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.TimeExceeded));
         }
     }
 }

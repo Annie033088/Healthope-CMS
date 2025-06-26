@@ -225,5 +225,75 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+
+        /// <summary>
+        /// 作廢發票
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult VoidInvoice(
+           [FromBody] RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || orderIdDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = invoiceService.VoidInvoice(orderIdDto);
+
+                response = new ResultResponse()
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 折讓發票
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult DiscountInvoice(
+           [FromBody] RequestOrderIdDto orderIdDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || orderIdDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = invoiceService.DiscountInvoice(orderIdDto);
+
+                response = new ResultResponse()
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

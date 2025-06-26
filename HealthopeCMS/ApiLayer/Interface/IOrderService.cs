@@ -54,5 +54,16 @@ namespace ApiLayer.Interface
         /// 修改訂單狀態：已付款 => 7日內退款
         /// </summary>
         (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) RefundIn7Days(RequestEditOrderStateDto editOrderStateDto);
+
+        /// <summary>
+        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要解約而不是無條件退費, 若否=>直接走解約流程
+        /// </summary>
+        (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) CheckoutRefundQualifyAndTerminateOrder(
+            RequestEditOrderStateDto editOrderStateDto);
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 解約
+        /// </summary>
+        (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) TerminateOrder(RequestEditOrderStateDto editOrderStateDto);
     }
 }

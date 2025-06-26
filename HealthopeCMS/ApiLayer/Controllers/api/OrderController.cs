@@ -358,5 +358,74 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+
+        /// <summary>
+        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要解約而不是無條件退費, 若否=>直接走解約流程
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult CheckoutRefundQualifyAndTerminateOrder([FromBody] RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editOrderStateDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) = orderService.TerminateOrder(editOrderStateDto);
+                response = new ResultResponse<ResponseInvoiceNumberDto>
+                {
+                    ErrorCode = errorCode,
+                    ApiDataObject = invoiceNumberDto,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+
+        /// <summary>
+        /// 修改訂單狀態：已付款 => 解約
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult TerminateOrder([FromBody] RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editOrderStateDto.OrderId < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) = orderService.TerminateOrder(editOrderStateDto);
+                response = new ResultResponse<ResponseInvoiceNumberDto>
+                {
+                    ErrorCode = errorCode,
+                    ApiDataObject = invoiceNumberDto,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
     }
 }

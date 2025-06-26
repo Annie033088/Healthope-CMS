@@ -269,5 +269,51 @@ namespace UnitTest.Test.Invoice
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
         }
+
+        [TestMethod]
+        public void 作廢發票_成功_回傳成功()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.VoidInvoice(orderIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.VoidInvoice(orderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 作廢發票_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.VoidInvoice(orderIdDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.VoidInvoice(orderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
+        }
     }
 }
