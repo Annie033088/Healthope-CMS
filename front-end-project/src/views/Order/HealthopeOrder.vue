@@ -51,6 +51,21 @@
             @click="goCheckoutOrder(row)"
           />
           <BtnNormal
+            v-if="row.State.Value === String(orderState.Paid)"
+            text="7 日內無條件退款"
+            @click="refundIn7Days(row)"
+          />
+          <BtnNormal
+            v-if="row.State.Value === String(orderState.Paid)"
+            text="解約"
+            @click="checkoutRefundQualifyAndTerminateOrder(row)"
+          />
+          <BtnNormal
+            v-if="row.State.Value === String(orderState.Paid)"
+            text="違約"
+            @click="breachOrder(row)"
+          />
+          <BtnNormal
             v-if="
               (row.InvoiceStatus === '失敗' || row.InvoiceStatus === '無') &&
               (row.State.Value === String(orderState.Paid) ||
@@ -497,45 +512,6 @@ export default {
         return;
       }
 
-      // 已付款 => 解約
-      if (
-        row.State.OldValue === String(orderState.Paid) &&
-        row.State.Value === String(orderState.Terminate)
-      ) {
-        let ediOrderStateDto = {
-          OrderId: row.OrderId,
-          UpdateTime: row.UpdateTime,
-        };
-        this.terminateOrder(ediOrderStateDto);
-        return;
-      }
-
-      // 已付款 => 違約
-      if (
-        row.State.OldValue === String(orderState.Paid) &&
-        row.State.Value === String(orderState.Breach)
-      ) {
-        let ediOrderStateDto = {
-          OrderId: row.OrderId,
-          UpdateTime: row.UpdateTime,
-        };
-        this.breachOrder(ediOrderStateDto);
-        return;
-      }
-
-      // 已付款 => 7日內退費(無條件)
-      if (
-        row.State.OldValue === String(orderState.Paid) &&
-        row.State.Value === String(orderState.RefundIn7Days)
-      ) {
-        let ediOrderStateDto = {
-          OrderId: row.OrderId,
-          UpdateTime: row.UpdateTime,
-        };
-        this.refundIn7Days(ediOrderStateDto);
-        return;
-      }
-
       // 設定彈窗資料
       this.$notificationBox.notificationBoxFlag = true;
       this.$notificationBox.notificationBoxTitle = "發生錯誤!無效的狀態轉換";
@@ -666,11 +642,16 @@ export default {
         console.error("修改備註時發生錯誤", error);
       }
     },
-    async terminateOrder(ediOrderStateDto) {
+    async checkoutRefundQualifyAndTerminateOrder(row) {
+      let ediOrderStateDto = {
+        OrderId: row.OrderId,
+        UpdateTime: row.UpdateTime,
+      };
+
       try {
         // post
         const response = await this.$axios.post(
-          "/api/Order/TerminateOrder",
+          "/api/Order/CheckoutRefundQualifyAndTerminateOrder",
           ediOrderStateDto
         );
 
@@ -685,6 +666,24 @@ export default {
               "字軌號碼為：" + invoiceNumber;
             this.$notificationBox.notificationBoxErrorCode = 0;
           }
+        } else if (
+          response.data.ErrorCode === this.$errorCodeDefine.ConfirmAgain
+        ) {
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                this.terminateOrder(ediOrderStateDto);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "這筆訂單因尚未使用，且符合 7 日內條件，將全額退費。請確認是否要繼續執行解約？";
+          this.$notificationBox.notificationBoxErrorCode = 0 ;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
@@ -709,7 +708,53 @@ export default {
         console.error("修改備註時發生錯誤", error);
       }
     },
-    async breachOrder(ediOrderStateDto) {
+    async terminateOrder(ediOrderStateDto) {
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/TerminateOrder",
+          ediOrderStateDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+          let invoiceNumber = response.data.ApiDataObject.InvoiceNumber;
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle =
+            "字軌號碼為：" + invoiceNumber;
+          this.$notificationBox.notificationBoxErrorCode = 0;
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async breachOrder(row) {
+      let ediOrderStateDto = {
+        OrderId: row.OrderId,
+        UpdateTime: row.UpdateTime,
+      };
+
       try {
         // post
         const response = await this.$axios.post(
@@ -743,7 +788,12 @@ export default {
         console.error("修改備註時發生錯誤", error);
       }
     },
-    async refundIn7Days(ediOrderStateDto) {
+    async refundIn7Days(row) {
+      let ediOrderStateDto = {
+        OrderId: row.OrderId,
+        UpdateTime: row.UpdateTime,
+      };
+
       try {
         // post
         const response = await this.$axios.post(

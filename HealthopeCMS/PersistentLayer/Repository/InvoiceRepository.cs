@@ -308,24 +308,29 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 作廢發票
         /// </summary>
-        public bool VoidInvoice(int orderId)
+        public int VoidInvoice(int orderId)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusVoided @orderId";
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusVoided @orderId, @errorCode OUTPUT";
 
                 cmd.Parameters.Add("@orderId", SqlDbType.Char).Value = orderId;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
 
                 cmd.Connection.Open();
 
-                int ExeCnt = cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
 
-                if (ExeCnt > 0) return true;
-
-                return false;
+                return errorCodeNumber;
             }
             catch (Exception)
             {
@@ -338,24 +343,29 @@ namespace PersistentLayer.Repository
             }
         }
 
-        public bool DiscountInvoice(int orderId)
+        public int DiscountInvoice(int orderId)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusDiscounted @orderId";
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusDiscounted @orderId, @errorCode OUTPUT";
 
                 cmd.Parameters.Add("@orderId", SqlDbType.Char).Value = orderId;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
 
                 cmd.Connection.Open();
 
-                int ExeCnt = cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
 
-                if (ExeCnt > 0) return true;
-
-                return false;
+                return errorCodeNumber;
             }
             catch (Exception)
             {

@@ -279,11 +279,11 @@ namespace UnitTest.Test.Invoice
                 OrderId = 1,
             };
 
-            bool successFlag = true;
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
 
             // Mock 設定
             invoiceServiceMock.Setup(s
-                => s.VoidInvoice(orderIdDto)).Returns(successFlag);
+                => s.VoidInvoice(orderIdDto)).Returns(errorCode);
 
             // Act
             IHttpActionResult result = controller.VoidInvoice(orderIdDto);
@@ -302,14 +302,60 @@ namespace UnitTest.Test.Invoice
                 OrderId = 1,
             };
 
-            bool successFlag = false;
+            ErrorCodeDefine errorCode = ErrorCodeDefine.ModifiedFailed;
 
             // Mock 設定
             invoiceServiceMock.Setup(s
-                => s.VoidInvoice(orderIdDto)).Returns(successFlag);
+                => s.VoidInvoice(orderIdDto)).Returns(errorCode);
 
             // Act
             IHttpActionResult result = controller.VoidInvoice(orderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
+        }
+
+        [TestMethod]
+        public void 折讓發票_成功_回傳成功()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.DiscountInvoice(orderIdDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.DiscountInvoice(orderIdDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 折讓發票_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.ModifiedFailed;
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.DiscountInvoice(orderIdDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.DiscountInvoice(orderIdDto);
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();

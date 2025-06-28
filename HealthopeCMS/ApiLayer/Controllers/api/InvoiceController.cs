@@ -245,11 +245,9 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                bool successFlag = invoiceService.VoidInvoice(orderIdDto);
-
                 response = new ResultResponse()
                 {
-                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                    ErrorCode = invoiceService.VoidInvoice(orderIdDto),
                 };
                 return Ok(response);
             }
@@ -280,11 +278,9 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                bool successFlag = invoiceService.DiscountInvoice(orderIdDto);
-
                 response = new ResultResponse()
                 {
-                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                    ErrorCode = invoiceService.DiscountInvoice(orderIdDto),
                 };
                 return Ok(response);
             }

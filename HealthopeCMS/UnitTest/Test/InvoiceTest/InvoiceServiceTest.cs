@@ -367,17 +367,17 @@ namespace UnitTest.Test.Invoice
                 OrderId = 1,
             };
 
-            bool successFlag = true;
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
 
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.VoidInvoice(orderIdDto.OrderId)).Returns(successFlag);
+                => s.VoidInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
 
             // Act
-            bool result = service.VoidInvoice(orderIdDto);
+            ErrorCodeDefine result = service.VoidInvoice(orderIdDto);
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
         }
 
         [TestMethod]
@@ -389,17 +389,61 @@ namespace UnitTest.Test.Invoice
                 OrderId = 1,
             };
 
-            bool successFlag = false;
+            int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
 
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.VoidInvoice(orderIdDto.OrderId)).Returns(successFlag);
+                => s.VoidInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
 
             // Act
-            bool result = service.VoidInvoice(orderIdDto);
+            ErrorCodeDefine result = service.VoidInvoice(orderIdDto);
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
+        }
+
+        [TestMethod]
+        public void 折讓發票_成功_回傳成功()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.DiscountInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.DiscountInvoice(orderIdDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 折讓發票_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            {
+                OrderId = 1,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.DiscountInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.DiscountInvoice(orderIdDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
         }
     }
 }

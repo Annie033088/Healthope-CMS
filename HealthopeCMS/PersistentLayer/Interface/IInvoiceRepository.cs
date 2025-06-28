@@ -40,11 +40,11 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 作廢發票
         /// </summary>
-        bool VoidInvoice(int orderId);
+        int VoidInvoice(int orderId);
 
         /// <summary>
         /// 折讓發票
         /// </summary>
-        bool DiscountInvoice(int orderId);
+        int DiscountInvoice(int orderId);
     }
 }

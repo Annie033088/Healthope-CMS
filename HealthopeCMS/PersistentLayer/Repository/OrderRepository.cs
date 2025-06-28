@@ -646,7 +646,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要解約而不是無條件退費, 若否=>直接走解約流程
         /// </summary>
-        public (int errorCodeNumber, bool haveRefundQualify) CheckoutRefundQualify(Order order)
+        public (int errorCodeNumber, bool haveRefundQualify) CheckoutUnconditionalRefundQualify(Order order)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -656,10 +656,9 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editOrderStateTerminate @orderId, @updateTime, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_getUnconditionalRefundQualify @orderId, @errorCode OUTPUT";
 
-                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
-                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId ;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output

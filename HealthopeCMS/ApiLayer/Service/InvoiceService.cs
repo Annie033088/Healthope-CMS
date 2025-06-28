@@ -227,11 +227,18 @@ namespace ApiLayer.Service
             }
         }
 
-        public bool VoidInvoice(RequestOrderIdDto orderIdDto)
+        public ErrorCodeDefine VoidInvoice(RequestOrderIdDto orderIdDto)
         {
             try
             {
-                return invoiceRepository.VoidInvoice(orderIdDto.OrderId);
+                int errorCodeNumber = invoiceRepository.VoidInvoice(orderIdDto.OrderId);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                return errorCode;
             }
             catch (Exception)
             {
@@ -239,11 +246,18 @@ namespace ApiLayer.Service
             }
         }
 
-        public bool DiscountInvoice(RequestOrderIdDto orderIdDto)
+        public ErrorCodeDefine DiscountInvoice(RequestOrderIdDto orderIdDto)
         {
             try
             {
-                return invoiceRepository.DiscountInvoice(orderIdDto.OrderId);
+                int errorCodeNumber = invoiceRepository.DiscountInvoice(orderIdDto.OrderId);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                return errorCode;
             }
             catch (Exception)
             {

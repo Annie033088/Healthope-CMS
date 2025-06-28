@@ -106,7 +106,17 @@ export const errorCodeDefine = {
 
     // 商品已使用
     ProductUsed: 35,
+
+    // 再次確認是否執行這個操作
+    ConfirmAgain: 36,
+
+    /// 已預約/預約中課程, 不得此時進行解約/退費 動作
+    HasBooked: 37,
+
+    /// 發票不存在(未開)
+    InvoiceNotExist: 38,
 };
+
 
 //設定errorCode對應資料
 export function errorCodeToMessage(errorCode) {
@@ -217,6 +227,12 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 35:
             message = "商品已使用";
+            return message;
+        case 37:
+            message = "已有 預約中/已預約 課程，請先取消課程再執行動作";
+            return message;
+        case 38:
+            message = "發票尚未開立";
             return message;
         default:
             message = "";

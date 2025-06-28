@@ -49,11 +49,11 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 作廢發票
         /// </summary>
-        bool VoidInvoice(RequestOrderIdDto orderIdDto);
+        ErrorCodeDefine VoidInvoice(RequestOrderIdDto orderIdDto);
 
         /// <summary>
         /// 折讓發票
         /// </summary>
-        bool DiscountInvoice(RequestOrderIdDto orderIdDto);
+        ErrorCodeDefine DiscountInvoice(RequestOrderIdDto orderIdDto);
     }
 }

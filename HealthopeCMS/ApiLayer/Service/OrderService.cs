@@ -285,15 +285,18 @@ namespace ApiLayer.Service
             try
             {
                 Order order = mapper.Map<Order>(editOrderStateDto);
-                (int errorCodeNumber, bool haveRefundQualify) = orderRepository.CheckoutRefundQualify(order);
+                (int errorCodeNumber, bool haveRefundQualify) = orderRepository.CheckoutUnconditionalRefundQualify(order);
 
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (ErrorCodeDefine.ServerError, null);
 
                 ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
 
+                if (errorCode != ErrorCodeDefine.Success)
+                    return (errorCode, null);
+
                 // 判斷有 無條件退費資格!
-                if(errorCode == ErrorCodeDefine.Success && haveRefundQualify)
+                if (errorCode == ErrorCodeDefine.Success && haveRefundQualify)
                 {
                     return (ErrorCodeDefine.ConfirmAgain, null);
                 }

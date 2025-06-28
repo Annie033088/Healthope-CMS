@@ -377,7 +377,8 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) = orderService.TerminateOrder(editOrderStateDto);
+                (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) =
+                    orderService.CheckoutRefundQualifyAndTerminateOrder(editOrderStateDto);
                 response = new ResultResponse<ResponseInvoiceNumberDto>
                 {
                     ErrorCode = errorCode,

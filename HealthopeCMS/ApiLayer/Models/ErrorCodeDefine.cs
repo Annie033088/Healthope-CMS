@@ -186,5 +186,15 @@
         /// 再次確認是否執行這個操作
         /// </summary>
         ConfirmAgain = 36,
+
+        /// <summary>
+        /// 已預約/預約中課程, 不得此時進行解約/退費 動作
+        /// </summary>
+        HasBooked = 37,
+
+        /// <summary>
+        /// 發票不存在(未開)
+        /// </summary>
+        InvoiceNotExist = 38,
     }
 }

@@ -744,5 +744,107 @@ namespace UnitTest.Test.OrderTest
             // Assert
             Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
         }
+
+        [TestMethod]
+        public void 確認是否可以無條件退費if有的話解約_成功並確認到有無條件退費資格_回傳請管理者再確認一次是否解約()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            bool haveRefundQualify = true;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.CheckoutUnconditionalRefundQualify(order)).Returns((errorCodeNumber, haveRefundQualify));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.CheckoutRefundQualifyAndTerminateOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.ConfirmAgain);
+        }
+
+        [TestMethod]
+        public void 確認是否可以無條件退費if有的話解約_解約成功_回傳成功()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            bool haveRefundQualify = false;
+            string invoiceNumber = "AB12345678";
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.CheckoutUnconditionalRefundQualify(order)).Returns((errorCodeNumber, haveRefundQualify));
+            orderRepositoryMock.Setup(s
+                => s.TerminateOrder(order)).Returns((errorCodeNumber, invoiceNumber));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.CheckoutRefundQualifyAndTerminateOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 確認是否可以無條件退費if有的話解約_失敗_回傳失敗()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.GetFailed;
+            bool haveRefundQualify = false;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.CheckoutUnconditionalRefundQualify(order)).Returns((errorCodeNumber, haveRefundQualify));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.CheckoutRefundQualifyAndTerminateOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.GetFailed);
+        }
     }
 }
