@@ -257,7 +257,7 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 7日內退款
+        /// 訂單 7 日內無條件退款
         /// </summary>
         public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) RefundIn7Days(RequestEditOrderStateDto editOrderStateDto)
         {
@@ -311,7 +311,7 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 解約
+        /// 解約訂單
         /// </summary>
         public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) TerminateOrder(RequestEditOrderStateDto editOrderStateDto)
         {
@@ -324,6 +324,74 @@ namespace ApiLayer.Service
                     return (ErrorCodeDefine.ServerError, null);
 
                 return ((ErrorCodeDefine)errorCodeNumber, new ResponseInvoiceNumberDto { InvoiceNumber = invoiceNumber });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要設置違約而不是無條件退費, 若否=>直接走違約流程
+        public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) CheckoutRefundQualifyAndBreachOrder(RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderStateDto);
+                (int errorCodeNumber, bool haveRefundQualify) = orderRepository.CheckoutUnconditionalRefundQualify(order);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                if (errorCode != ErrorCodeDefine.Success)
+                    return (errorCode, null);
+
+                // 判斷有 無條件退費資格!
+                if (errorCode == ErrorCodeDefine.Success && haveRefundQualify)
+                {
+                    return (ErrorCodeDefine.ConfirmAgain, null);
+                }
+
+                // 沒有 無條件退費資格 => 照常執行解約
+                return BreachOrder(editOrderStateDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 違約訂單
+        /// </summary>
+        public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) BreachOrder(RequestEditOrderStateDto editOrderStateDto)
+        {
+            try
+            {
+                Order order = mapper.Map<Order>(editOrderStateDto);
+                (int errorCodeNumber, string invoiceNumber, DBResponsePrintInvoiceDto dbResponse) = orderRepository.BreachOrder(order);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError, null);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                // 排程 開立(違約金)發票 任務
+                if (errorCode == ErrorCodeDefine.Success && dbResponse != null)
+                {
+                    RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
+                    {
+                        ElectronicInvoiceId = dbResponse.ElectronicInvoiceId,
+                        InvoiceNumber = dbResponse.InvoiceNumber,
+                        PlanName = dbResponse.PlanName,
+                        RandomNumber = dbResponse.RandomNumber,
+                        TotalAmount = dbResponse.TotalAmount,
+                    };
+                    jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto);
+                }
+
+                return (errorCode, new ResponseInvoiceNumberDto { InvoiceNumber = invoiceNumber });
             }
             catch (Exception)
             {

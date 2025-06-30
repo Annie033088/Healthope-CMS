@@ -593,7 +593,7 @@ namespace PersistentLayer.Repository
         }
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 7日內退款
+        /// 訂單 7 日內無條件退款
         /// </summary>
         public (int errorCodeNumber, string invoiceNumber) RefundIn7Days(Order order)
         {
@@ -694,7 +694,7 @@ namespace PersistentLayer.Repository
         }
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 解約
+        /// 解約訂單
         /// </summary>
         public (int errorCodeNumber, string invoiceNumber) TerminateOrder(Order order)
         {
@@ -732,6 +732,78 @@ namespace PersistentLayer.Repository
                 }
 
                 return (errorCodeNumber, null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 違約訂單
+        /// </summary>
+        public (int errorCodeNumber, string invoiceNumber, DBResponsePrintInvoiceDto dbResponse) BreachOrder(Order order)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateBreach @orderId, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = order.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (ds.Tables.Count > 0)
+                {
+                    string invoiceNumber = ds.Tables[0].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
+                                ds.Tables[0].Rows[0].Field<string>("f_invoiceNumber");
+
+                    // 若有違約金，需開立違約金發票
+
+                    if (ds.Tables.Count > 1)
+                    {
+                        DBResponsePrintInvoiceDto response = new DBResponsePrintInvoiceDto
+                        {
+                            ElectronicInvoiceId = ds.Tables[1].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
+                                ds.Tables[1].Rows[0].Field<int>("f_electronicInvoiceId"),
+                            InvoiceNumber = ds.Tables[1].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
+                                ds.Tables[1].Rows[0].Field<string>("f_invoiceNumber"),
+                            RandomNumber = ds.Tables[1].Rows[0].IsNull("f_randomNumber") ? string.Empty :
+                                ds.Tables[1].Rows[0].Field<string>("f_randomNumber"),
+                            TotalAmount = ds.Tables[1].Rows[0].IsNull("f_totalAmount") ? 0 :
+                                ds.Tables[1].Rows[0].Field<int>("f_totalAmount"),
+                            PlanName = ds.Tables[1].Rows[0].IsNull("f_planName") ? string.Empty :
+                                ds.Tables[1].Rows[0].Field<string>("f_planName"),
+                        };
+
+                        return (errorCodeNumber, invoiceNumber, response);
+                    }
+
+                    return (errorCodeNumber, invoiceNumber, null);
+                }
+
+                return (errorCodeNumber, null, null);
             }
             catch (Exception)
             {

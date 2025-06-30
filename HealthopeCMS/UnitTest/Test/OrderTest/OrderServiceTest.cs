@@ -846,5 +846,153 @@ namespace UnitTest.Test.OrderTest
             // Assert
             Assert.AreEqual(result.errorCode, ErrorCodeDefine.GetFailed);
         }
+
+        [TestMethod]
+        public void 解約訂單_解約成功_回傳成功()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            string invoiceNumber = "AB12345678";
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.TerminateOrder(order)).Returns((errorCodeNumber, invoiceNumber));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.TerminateOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 解約訂單_失敗_回傳失敗()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.GetFailed;
+            string invoiceNumber = "AB12345678";
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.TerminateOrder(order)).Returns((errorCodeNumber, invoiceNumber));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.TerminateOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.GetFailed);
+        }
+
+        [TestMethod]
+        public void 違約訂單_解約成功_回傳成功()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+            string invoiceNumber = "AB12345678";
+            DBResponsePrintInvoiceDto dbResponse = new DBResponsePrintInvoiceDto
+            {
+                InvoiceNumber = invoiceNumber,
+                ElectronicInvoiceId = 1,
+                PlanName = "違約金",
+                RandomNumber = "2245",
+                TotalAmount = 1000,
+            };
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.BreachOrder(order)).Returns((errorCodeNumber, invoiceNumber, dbResponse));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.BreachOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 違約訂單_失敗_回傳失敗()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.Now;
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            Order order = new Order
+            {
+                OrderId = 1,
+                UpdateTime = dateTime,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.GetFailed;
+            string invoiceNumber = "AB12345678";
+            DBResponsePrintInvoiceDto dbResponse = new DBResponsePrintInvoiceDto
+            {
+                InvoiceNumber = invoiceNumber,
+                ElectronicInvoiceId = 1,
+                PlanName = "違約金",
+                RandomNumber = "2245",
+                TotalAmount = 1000,
+            };
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<Order>(requestEdit)).Returns(order);
+            orderRepositoryMock.Setup(s
+                => s.BreachOrder(order)).Returns((errorCodeNumber, invoiceNumber, dbResponse));
+
+            // Act
+            (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) result =
+                service.BreachOrder(requestEdit);
+
+            // Assert
+            Assert.AreEqual(result.errorCode, ErrorCodeDefine.GetFailed);
+        }
     }
 }

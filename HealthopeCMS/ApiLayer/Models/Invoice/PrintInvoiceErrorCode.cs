@@ -8,7 +8,7 @@
         Success = 200,
 
         /// <summary>
-        /// 發票號碼以使用
+        /// 發票號碼已使用
         /// </summary>
         Used = 4001,
 

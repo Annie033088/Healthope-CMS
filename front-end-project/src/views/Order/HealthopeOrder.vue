@@ -63,11 +63,13 @@
           <BtnNormal
             v-if="row.State.Value === String(orderState.Paid)"
             text="違約"
-            @click="breachOrder(row)"
+            @click="checkoutRefundQualifyAndBreachOrder(row)"
           />
           <BtnNormal
             v-if="
-              (row.InvoiceStatus === '失敗' || row.InvoiceStatus === '無') &&
+              (row.InvoiceStatus.Value ===
+                String(electronicInvoiceStatus.Fail) ||
+                row.InvoiceStatus.Value === '') &&
               (row.State.Value === String(orderState.Paid) ||
                 row.State.Value === String(orderState.Paying))
             "
@@ -669,21 +671,35 @@ export default {
         } else if (
           response.data.ErrorCode === this.$errorCodeDefine.ConfirmAgain
         ) {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.terminateOrder(ediOrderStateDto);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
+                let redirectRoute = "stop";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                try {
+                  this.terminateOrder(ediOrderStateDto);
+                } catch (error) {
+                  console.error("修改訂單狀態時發生錯誤", error);
+                } finally {
+                  this.unwatchFlag(); // 確保監聽被移除
+                  this.unwatchFlag = null;
+                }
               }
             }
           );
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle = "這筆訂單因尚未使用，且符合 7 日內條件，將全額退費。請確認是否要繼續執行解約？";
-          this.$notificationBox.notificationBoxErrorCode = 0 ;
+          this.$notificationBox.notificationBoxCancelFlag = true;
+          this.$notificationBox.notificationBoxTitle =
+            "這筆訂單因尚未使用，且符合 7 日內條件，將全額退費。請確認是否要繼續執行解約？";
+          this.$notificationBox.notificationBoxErrorCode = 0;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
@@ -724,6 +740,88 @@ export default {
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle =
             "字軌號碼為：" + invoiceNumber;
+          this.$notificationBox.notificationBoxErrorCode = 0;
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "stop";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.getOrder();
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async checkoutRefundQualifyAndBreachOrder(row) {
+      let ediOrderStateDto = {
+        OrderId: row.OrderId,
+        UpdateTime: row.UpdateTime,
+      };
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Order/CheckoutRefundQualifyAndBreachOrder",
+          ediOrderStateDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+          let invoiceNumber = response.data.ApiDataObject.InvoiceNumber;
+
+          if (invoiceNumber) {
+            // 設定彈窗資料
+            this.$notificationBox.notificationBoxFlag = true;
+            this.$notificationBox.notificationBoxTitle =
+              "字軌號碼為：" + invoiceNumber;
+            this.$notificationBox.notificationBoxErrorCode = 0;
+          }
+        } else if (
+          response.data.ErrorCode === this.$errorCodeDefine.ConfirmAgain
+        ) {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "stop";
+                this.$emit("afterConfirmEvent", redirectRoute);
+
+                try {
+                  this.breachOrder(ediOrderStateDto);
+                } catch (error) {
+                  console.error("修改訂單狀態時發生錯誤", error);
+                } finally {
+                  this.unwatchFlag(); // 確保監聽被移除
+                  this.unwatchFlag = null;
+                }
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxCancelFlag = true;
+          this.$notificationBox.notificationBoxTitle =
+            "這筆訂單因尚未使用，且符合 7 日內條件，將全額退費。請確認是否要繼續執行設置違約？";
           this.$notificationBox.notificationBoxErrorCode = 0;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
@@ -772,6 +870,7 @@ export default {
               if (newVal) {
                 let redirectRoute = null;
                 this.$emit("afterConfirmEvent", redirectRoute);
+                this.getOrder();
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -853,6 +952,9 @@ export default {
     },
     orderState() {
       return orderState;
+    },
+    electronicInvoiceStatus() {
+      return electronicInvoiceStatus;
     },
   },
 };

@@ -23,23 +23,18 @@ namespace ApiLayer.Models.Order
         Cancel = 3,
 
         /// <summary>
-        /// 解約
+        /// 違約取消
         /// </summary>
-        Terminate = 4,
+        TerminatedWithPenalty = 4,
 
         /// <summary>
-        /// 違約
+        /// 已部分退款
         /// </summary>
-        Breach = 5,
+        PartiallyRefunded = 5,
 
         /// <summary>
         /// 付款處理中
         /// </summary>
         Paying = 6,
-
-        /// <summary>
-        /// 7日內無條件退費
-        /// </summary>
-        RefundIn7Days = 7,
     }
 }

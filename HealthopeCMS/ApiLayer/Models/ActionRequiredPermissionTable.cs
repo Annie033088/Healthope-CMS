@@ -131,6 +131,10 @@ namespace ApiLayer.Models
                 AdminPermission.EditOrder} },
             { "Invoice,CompleteOrderAndPrintInvoice", new List<AdminPermission> {
                 AdminPermission.AddOrder, AdminPermission.EditOrder} },
+            { "Invoice,VoidInvoice", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Invoice,DiscountInvoice", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
 
             // OrderController
             { "Order,AddOrder", new List<AdminPermission> {
@@ -150,6 +154,10 @@ namespace ApiLayer.Models
             { "Order,CancelPendingOrder", new List<AdminPermission> {
                 AdminPermission.AddOrder, AdminPermission.EditOrder} },
             { "Order,RefundIn7Days", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Order,CheckoutRefundQualifyAndTerminateOrder", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Order,TerminateOrder", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
         };
     }

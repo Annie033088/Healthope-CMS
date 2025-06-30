@@ -125,7 +125,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.$emit("afterConfirmEvent");
+                this.afterConfirmEvent();
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }

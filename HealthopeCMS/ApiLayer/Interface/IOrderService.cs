@@ -51,7 +51,7 @@ namespace ApiLayer.Interface
         bool CancelPendingOrder(RequestEditOrderStateDto editOrderStateDto);
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 7日內退款
+        /// 訂單 7 日內無條件退款
         /// </summary>
         (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) RefundIn7Days(RequestEditOrderStateDto editOrderStateDto);
 
@@ -62,8 +62,19 @@ namespace ApiLayer.Interface
             RequestEditOrderStateDto editOrderStateDto);
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 解約
+        /// 解約訂單
         /// </summary>
         (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) TerminateOrder(RequestEditOrderStateDto editOrderStateDto);
+
+        /// <summary>
+        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要設置違約而不是無條件退費, 若否=>直接走違約流程
+        /// </summary>
+        (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) CheckoutRefundQualifyAndBreachOrder(
+            RequestEditOrderStateDto editOrderStateDto);
+
+        /// <summary>
+        /// 違約訂單
+        /// </summary>
+        (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) BreachOrder(RequestEditOrderStateDto editOrderStateDto);
     }
 }

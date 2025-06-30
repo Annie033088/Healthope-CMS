@@ -45,6 +45,11 @@ namespace DomainLayer.Models
         public byte Type { get; set; }
 
         /// <summary>
+        /// 分類 (1:主發票 2:違約金發票)
+        /// </summary>
+        public byte Category { get; set; }
+
+        /// <summary>
         /// 開立狀態 (1:處理中 2:成功 3:失敗)
         /// </summary>
         public byte Status { get; set; }

@@ -54,18 +54,23 @@ namespace PersistentLayer.Interface
         bool CancelPendingOrder(Order order);
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 7日內退款
+        /// 訂單 7 日內無條件退款
         /// </summary>
         (int errorCodeNumber, string invoiceNumber) RefundIn7Days(Order order);
 
         /// <summary>
-        /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要解約而不是無條件退費, 若否=>直接走解約流程
+        /// 確認是否有無條件退費資格
         /// </summary>
         (int errorCodeNumber, bool haveRefundQualify) CheckoutUnconditionalRefundQualify(Order order);
 
         /// <summary>
-        /// 修改訂單狀態：已付款 => 解約
+        /// 解約訂單
         /// </summary>
         (int errorCodeNumber, string invoiceNumber) TerminateOrder(Order order);
+
+        /// <summary>
+        /// 違約訂單
+        /// </summary>
+        (int errorCodeNumber, string invoiceNumber, DBResponsePrintInvoiceDto dbResponse) BreachOrder(Order order);
     }
 }

@@ -5,6 +5,8 @@ export const orderState = {
     Paid: 2,
     // 取消
     Cancel: 3,
+    // 違約取消
+    TerminatedWithPenalty: 4,
     // 已部分退款
     PartiallyRefunded: 5,
     // 付款處理中
@@ -15,6 +17,7 @@ export const orderStateAndText = [
     { value: "1", text: '待付款' },
     { value: "2", text: '已付款' },
     { value: "3", text: '取消' },
+    { value: "4", text: '違約取消' },
     { value: "5", text: '已部分退款' },
     { value: "6", text: '付款處理中' },
 ]

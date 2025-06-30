@@ -689,5 +689,153 @@ namespace UnitTest.Test.OrderTest
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
         }
+
+        [TestMethod]
+        public void 解約訂單_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            ResponseInvoiceNumberDto invoiceNumberDto = new ResponseInvoiceNumberDto
+            {
+                InvoiceNumber = "QC-12456778"
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.TerminateOrder(requestEdit)).Returns((errorCode, invoiceNumberDto));
+
+            // Act
+            IHttpActionResult result = controller.TerminateOrder(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 解約訂單_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 0,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.TerminateOrder(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 解約訂單_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.GetFailed;
+            ResponseInvoiceNumberDto invoiceNumberDto = new ResponseInvoiceNumberDto
+            {
+                InvoiceNumber = "QC-12456778"
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.TerminateOrder(requestEdit)).Returns((errorCode, invoiceNumberDto));
+
+            // Act
+            IHttpActionResult result = controller.TerminateOrder(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
+        }
+
+        [TestMethod]
+        public void 違約訂單_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+            ResponseInvoiceNumberDto invoiceNumberDto = new ResponseInvoiceNumberDto
+            {
+                InvoiceNumber = "QC-12456778"
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.BreachOrder(requestEdit)).Returns((errorCode, invoiceNumberDto));
+
+            // Act
+            IHttpActionResult result = controller.BreachOrder(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 違約訂單_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 0,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.BreachOrder(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 違約訂單_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditOrderStateDto requestEdit = new RequestEditOrderStateDto
+            {
+                OrderId = 1,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.GetFailed;
+            ResponseInvoiceNumberDto invoiceNumberDto = new ResponseInvoiceNumberDto
+            {
+                InvoiceNumber = "QC-12456778"
+            };
+
+            // Mock 設定
+            orderServiceMock.Setup(s
+                => s.BreachOrder(requestEdit)).Returns((errorCode, invoiceNumberDto));
+
+            // Act
+            IHttpActionResult result = controller.BreachOrder(requestEdit);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.GetFailed));
+        }
     }
 }
