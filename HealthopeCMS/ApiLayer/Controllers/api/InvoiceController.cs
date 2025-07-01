@@ -291,5 +291,46 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
+
+        /// <summary>
+        /// 取得發票清單
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult GetInvoice([FromBody] RequestGetInvoiceDto getInvoiceDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || (getInvoiceDto.Status != null
+                        && !Enum.IsDefined(typeof(ElectronicInvoiceStatus), getInvoiceDto.Status))
+                    || (getInvoiceDto.Category != null
+                        && !Enum.IsDefined(typeof(ElectronicInvoiceCategory), getInvoiceDto.Category))
+                    || (!((getInvoiceDto.RecordPerPage == 8) || (getInvoiceDto.RecordPerPage == 12)
+                        || (getInvoiceDto.RecordPerPage == 16)))
+                    || getInvoiceDto.Page < 1)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                ResponseGetInvoiceListDto invoiceList = invoiceService.GetInvoice(getInvoiceDto);
+                response = new ResultResponse<ResponseGetInvoiceListDto>
+                {
+                    ErrorCode = ErrorCodeDefine.Success,
+                    ApiDataObject = invoiceList
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
     }
 }

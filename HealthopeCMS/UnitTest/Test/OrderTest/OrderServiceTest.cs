@@ -1,29 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
-using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Job;
+using ApiLayer.Models;
+using ApiLayer.Models.Invoice.Response;
+using ApiLayer.Models.Job;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
-using ApiLayer.Models;
+using ApiLayer.Models.Other;
 using ApiLayer.Service;
 using AutoMapper;
+using DomainLayer.Models;
+using DomainLayer.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
-using UnitTest.utils;
-using DomainLayer.Models;
 using PersistentLayer.Models;
-using System.Net;
-using ApiLayer.Models.Job;
-using System.Web.Http.Results;
-using ApiLayer.Models.Other;
-using DomainLayer.Utility;
-using ApiLayer.Models.Invoice.Response;
 
 namespace UnitTest.Test.OrderTest
 {

@@ -343,6 +343,9 @@ namespace PersistentLayer.Repository
             }
         }
 
+        /// <summary>
+        /// 折讓發票
+        /// </summary>
         public int DiscountInvoice(int orderId)
         {
             SqlCommand cmd = new SqlCommand();
@@ -366,6 +369,80 @@ namespace PersistentLayer.Repository
                 errorCodeNumber = (int)errorCodeOutput.Value;
 
                 return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 取得發票清單
+        /// </summary>
+        public (List<ElectronicInvoice> invoices, int totalPage) GetInvoice(RequestGetInvoiceDto getInvoiceDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int totalPage;
+            List<ElectronicInvoice> invoices = new List<ElectronicInvoice>(); 
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getElectronicInvoice @status, @category, " +
+                    "@recordPerPage, @page, @totalPage OUTPUT";
+
+                if (getInvoiceDto.Status == null)
+                    cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = getInvoiceDto.Status;
+
+                if (getInvoiceDto.Category == null)
+                    cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = getInvoiceDto.Category;
+
+                cmd.Parameters.Add("@recordPerPage", SqlDbType.Int).Value = getInvoiceDto.RecordPerPage;
+                cmd.Parameters.Add("@page", SqlDbType.Int).Value = getInvoiceDto.Page;
+                SqlParameter totalPageOutput = new SqlParameter("@totalPage", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(totalPageOutput);
+
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+                totalPage = (int)totalPageOutput.Value;
+
+                cmd.Connection.Close();
+
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    DataRow dr = dt.Rows[i];
+                    ElectronicInvoice invoice = new ElectronicInvoice()
+                    {
+                        ElectronicInvoiceId = dr.IsNull("f_electronicInvoiceId") ? 0 : dr.Field<int>("f_electronicInvoiceId"),
+                        OrderId = dr.IsNull("f_orderId") ? 0 : dr.Field<int>("f_orderId"),
+                        InvoiceNumber = dr.IsNull("f_invoiceNumber") ? string.Empty : dr.Field<string>("f_invoiceNumber"),
+                        RandomNumber = dr.IsNull("f_randomNumber") ? string.Empty : dr.Field<string>("f_randomNumber"),
+                        TotalAmount = dr.IsNull("f_totalAmount") ? 0 : dr.Field<int>("f_totalAmount"),
+                        Status = (byte)(dr.IsNull("f_status") ? 0 : dr.Field<byte>("f_status")),
+                        Category = (byte)(dr.IsNull("f_category") ? 0 : dr.Field<byte>("f_category")),
+                        InvoiceTime = dr.IsNull("f_invoiceTime") ? DateTime.MinValue : dr.Field<DateTime>("f_invoiceTime"),
+                    };
+                    invoices.Add(invoice);
+                }
+
+                return (invoices, totalPage);
             }
             catch (Exception)
             {

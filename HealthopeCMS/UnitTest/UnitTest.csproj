@@ -239,8 +239,12 @@
     <Compile Include="Test\PaymentTest\PaymentServiceTest.cs" />
     <Compile Include="Test\PlanTemplateTest\PlanTemplateControllerTest.cs" />
     <Compile Include="Test\PlanTemplateTest\PlanTemplateServiceTest.cs" />
+    <Compile Include="Test\RefundTest\RefundControllerTest.cs" />
+    <Compile Include="Test\RefundTest\RefundServiceTest.cs" />
     <Compile Include="Test\TermTest\TermControllerTest.cs" />
     <Compile Include="Test\TermTest\TermServiceTest.cs" />
+    <Compile Include="Test\TransactionTest\TransactionServiceTest.cs" />
+    <Compile Include="Test\TransactionTest\TransactionControllerTest.cs" />
     <Compile Include="utils\ResponseIsEqual.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -658,7 +658,7 @@ namespace PersistentLayer.Repository
             {
                 cmd.CommandText = "EXEC pro_healthope_getUnconditionalRefundQualify @orderId, @errorCode OUTPUT";
 
-                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId ;
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = order.OrderId;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output

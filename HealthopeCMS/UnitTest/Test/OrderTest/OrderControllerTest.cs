@@ -8,8 +8,6 @@ using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
-using ApiLayer.Models.Term.Request;
-using ApiLayer.Models.Term.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Models;

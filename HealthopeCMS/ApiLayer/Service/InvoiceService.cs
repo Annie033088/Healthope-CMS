@@ -227,6 +227,9 @@ namespace ApiLayer.Service
             }
         }
 
+        /// <summary>
+        /// 作廢發票
+        /// </summary>
         public ErrorCodeDefine VoidInvoice(RequestOrderIdDto orderIdDto)
         {
             try
@@ -246,6 +249,9 @@ namespace ApiLayer.Service
             }
         }
 
+        /// <summary>
+        /// 折讓發票
+        /// </summary>
         public ErrorCodeDefine DiscountInvoice(RequestOrderIdDto orderIdDto)
         {
             try
@@ -258,6 +264,27 @@ namespace ApiLayer.Service
                 ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
 
                 return errorCode;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 取得發票清單
+        /// </summary>
+        public ResponseGetInvoiceListDto GetInvoice(RequestGetInvoiceDto getInvoiceDto)
+        {
+            try
+            {
+                (List<ElectronicInvoice> invoices, int totalPage) = invoiceRepository.GetInvoice(getInvoiceDto);
+                ResponseGetInvoiceListDto response = new ResponseGetInvoiceListDto()
+                {
+                    InvoiceList = mapper.Map<List<ResponseGetInvoiceDto>>(invoices),
+                    TotalPage = totalPage,
+                };
+                return response;
             }
             catch (Exception)
             {

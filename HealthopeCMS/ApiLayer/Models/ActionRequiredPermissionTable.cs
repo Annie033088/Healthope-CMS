@@ -159,6 +159,20 @@ namespace ApiLayer.Models
                 AdminPermission.EditOrder} },
             { "Order,TerminateOrder", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
+            { "Order,CheckoutRefundQualifyAndBreachOrder", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Order,BreachOrder", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+
+            // TransactionController
+            { "Transaction,GetTransaction", new List<AdminPermission> {
+                AdminPermission.SelectTransaction} },
+            { "Transaction,GetCreditCardCashFlowData", new List<AdminPermission> {
+                AdminPermission.SelectTransaction} },
+
+            // RefundController
+            { "Refund,GetRefund", new List<AdminPermission> {
+                AdminPermission.SelectTransaction} },
         };
     }
 }

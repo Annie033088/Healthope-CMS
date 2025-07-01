@@ -56,12 +56,18 @@
             @click="refundIn7Days(row)"
           />
           <BtnNormal
-            v-if="row.State.Value === String(orderState.Paid)"
+            v-if="
+              row.State.Value === String(orderState.Paid) &&
+              row.PlanType !== planType.Ticket
+            "
             text="解約"
             @click="checkoutRefundQualifyAndTerminateOrder(row)"
           />
           <BtnNormal
-            v-if="row.State.Value === String(orderState.Paid)"
+            v-if="
+              row.State.Value === String(orderState.Paid) &&
+              row.PlanType !== planType.Ticket
+            "
             text="違約"
             @click="checkoutRefundQualifyAndBreachOrder(row)"
           />
@@ -101,6 +107,7 @@ import {
   orderState,
   paymentMethod,
   orderCache,
+  planType,
 } from "@/utils/order";
 import {
   electronicInvoiceStatusAndText,
@@ -955,6 +962,9 @@ export default {
     },
     electronicInvoiceStatus() {
       return electronicInvoiceStatus;
+    },
+    planType() {
+      return planType;
     },
   },
 };

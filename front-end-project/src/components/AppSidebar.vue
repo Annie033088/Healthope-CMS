@@ -368,14 +368,24 @@
           @click="redirect('/order')"
         ></BtnSubSideBar>
         <BtnSubSideBar
-          v-if="permissionMap.EditOrder || permissionMap.SelectOrder"
+          v-if="permissionMap.SelectTransaction"
           text="付款紀錄"
-          @click="redirect('/plan/personalTrainingPackage')"
+          @click="redirect('/transaction')"
         ></BtnSubSideBar>
         <BtnSubSideBar
-          v-if="permissionMap.EditOrder || permissionMap.SelectOrder"
+          v-if="permissionMap.SelectTransaction"
+          text="退款與違約金"
+          @click="redirect('/refund')"
+        ></BtnSubSideBar>
+        <BtnSubSideBar
+          v-if="
+            permissionMap.EditOrder ||
+            permissionMap.SelectOrder ||
+            permissionMap.AddOrder ||
+            permissionMap.SelectTransaction
+          "
           text="發票資訊"
-          @click="redirect('/plan/ticket')"
+          @click="redirect('/invoice')"
         ></BtnSubSideBar>
       </div>
     </div>
@@ -501,13 +511,13 @@ export default {
     openDropdown(key) {
       this.showElement.Course = false;
       this.showElement.Order = false;
-      this.showElement.PlanTemplate = false
-      this.showElement.Setting = false
+      this.showElement.PlanTemplate = false;
+      this.showElement.Setting = false;
       this.dropDownFlag.Course = false;
       this.dropDownFlag.Order = false;
-      this.dropDownFlag.PlanTemplate = false
-      this.dropDownFlag.Setting = false
-      
+      this.dropDownFlag.PlanTemplate = false;
+      this.dropDownFlag.Setting = false;
+
       this.showElement[key] = true;
       this.dropDownFlag[key] = true;
     },
@@ -583,6 +593,7 @@ export default {
   height: 100vh;
   border-radius: 3px;
   background: #e0e0e0;
+  overflow-y: auto;
 }
 
 .sidebarRow {

@@ -361,5 +361,53 @@ namespace UnitTest.Test.Invoice
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
         }
+
+        [TestMethod]
+        public void 取得發票清單_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetInvoiceDto getInvoiceDto = new RequestGetInvoiceDto()
+            {
+                Status = 1,
+                Category = 1,
+                Page = 1,
+                RecordPerPage = 8
+            };
+
+            ResponseGetInvoiceListDto response = new ResponseGetInvoiceListDto();
+
+            // Mock 設定
+            invoiceServiceMock.Setup(s
+                => s.GetInvoice(getInvoiceDto)).Returns(response);
+
+            // Act
+            IHttpActionResult result = controller.GetInvoice(getInvoiceDto);
+
+            // Assert
+            ResponseIsEqual<ResponseGetInvoiceListDto> responseIsEqual =
+                new ResponseIsEqual<ResponseGetInvoiceListDto>();
+            Assert.IsTrue(responseIsEqual.ErrorCodeAndObjectIsEqual(result,
+                ErrorCodeDefine.Success, response));
+        }
+
+        [TestMethod]
+        public void 取得發票清單_失敗_請求參數格式錯誤()
+        {
+            // Arrange
+            RequestGetInvoiceDto getInvoiceDto = new RequestGetInvoiceDto()
+            {
+                Status = 1,
+                Category = 10,
+                Page = 1,
+                RecordPerPage = 8
+            };
+
+            // Act
+            IHttpActionResult result = controller.GetInvoice(getInvoiceDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
     }
 }

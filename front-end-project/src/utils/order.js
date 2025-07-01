@@ -34,4 +34,13 @@ export const paymentMethodAndText = [
     { value: "2", text: '信用卡' },
 ]
 
+export const planType = {
+    // 會籍
+    Membership: 1,
+    // 私人教練課
+    PersonalPeckage: 2,
+    // 單次入場卷(票劵)
+    Ticket: 3,
+}
+
 export let orderCache = { tempOrder: null };

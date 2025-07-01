@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Web.Http;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
@@ -55,5 +56,10 @@ namespace ApiLayer.Interface
         /// 折讓發票
         /// </summary>
         ErrorCodeDefine DiscountInvoice(RequestOrderIdDto orderIdDto);
+
+        /// <summary>
+        /// 取得發票清單
+        /// </summary>
+        ResponseGetInvoiceListDto GetInvoice(RequestGetInvoiceDto getInvoiceDto);
     }
 }

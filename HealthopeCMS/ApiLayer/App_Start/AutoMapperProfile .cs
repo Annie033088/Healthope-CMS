@@ -14,9 +14,11 @@ using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Models.PlanTemplate.Response;
+using ApiLayer.Models.Refund.Response;
 using ApiLayer.Models.Response.PlanTemplate;
 using ApiLayer.Models.Term.Request;
 using ApiLayer.Models.Term.Response;
+using ApiLayer.Models.Transaction.Response;
 using AutoMapper;
 using DomainLayer.Models;
 
@@ -81,6 +83,9 @@ namespace ApiLayer.App_Start
             CreateMap<RequestEditOrderStateRemarkDto, OrderState>();
             CreateMap<RequestEditOrderRemarkDto, Order>();
             CreateMap<RequestEditOrderStateDto, Order>();
+            CreateMap<PaymentTransaction, ResponseGetTransactionDto>();
+            CreateMap<PaymentTransaction, ResponsetGetCreditCardCashFlowDto>();
+            CreateMap<ElectronicInvoice, ResponseGetInvoiceDto>();
         }
     }
 }

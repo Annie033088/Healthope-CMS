@@ -90,7 +90,7 @@ export default {
   box-sizing: border-box;
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
   padding: 0.25rem;
-  width: 300px;
+  width: 330px;
   font-size: 14px;
 }
 
@@ -108,7 +108,6 @@ export default {
   padding: 0.5rem 0.5rem;
   margin-right: 5px;
   background-color: #fafbfc;
-  max-width: 65px;
   cursor: pointer;
 }
 

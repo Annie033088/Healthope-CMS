@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ApiLayer.Models.Other
+﻿namespace ApiLayer.Models.Other
 {
     public class ResponseCardPaymentDto
     {

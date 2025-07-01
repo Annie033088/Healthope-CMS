@@ -3,7 +3,7 @@
     <div class="notificationBoxContainer">
       <span class="close" @click="notificationCancel">&times;</span>
       <div class="notificationBoxTitle">
-        <h2>{{ this.$notificationBox.notificationBoxTitle }}</h2>
+        <p>{{ this.$notificationBox.notificationBoxTitle }}</p>
       </div>
       <div class="notificationBoxContent">
         <p>
@@ -43,7 +43,7 @@ export default {
     },
     handleKeydown(e) {
       if (e.key === "Enter") {
-        this.notificationBoxConfirm(); 
+        this.notificationBoxConfirm();
       }
     },
   },
@@ -152,5 +152,11 @@ export default {
 
 .btnCancel:hover {
   background: #bc5858c0;
+}
+
+.notificationBoxTitle p {
+  font-weight: 600;
+  font-size: 22px;
+  white-space: pre-line;
 }
 </style>

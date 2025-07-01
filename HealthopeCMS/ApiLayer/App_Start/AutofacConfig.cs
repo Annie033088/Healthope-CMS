@@ -69,7 +69,12 @@ namespace ApiLayer.App_Start
             builder.RegisterType<OrderRepository>().As<IOrderRepository>().InstancePerRequest();
 
             builder.RegisterType<PaymentService>().As<IPaymentService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerRequest();
             builder.RegisterType<TransactionRepository>().As<ITransactionRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<RefundService>().As<IRefundService>().InstancePerRequest();
+            builder.RegisterType<RefundRepository>().As<IRefundRepository>().InstancePerRequest();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

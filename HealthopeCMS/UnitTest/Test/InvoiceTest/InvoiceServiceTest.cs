@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
@@ -14,7 +13,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using UnitTest.utils;
 
 namespace UnitTest.Test.Invoice
 {
@@ -444,6 +442,88 @@ namespace UnitTest.Test.Invoice
 
             // Assert
             Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
+        }
+
+        [TestMethod]
+        public void 取得發票清單_成功_回傳清單()
+        {
+            // Arrange
+            RequestGetInvoiceDto getInvoiceDto = new RequestGetInvoiceDto()
+            {
+                Status = 1,
+                Category = 1,
+                Page = 1,
+                RecordPerPage = 8
+            };
+
+            List<ResponseGetInvoiceDto> responseGet = new List<ResponseGetInvoiceDto>() {
+                new ResponseGetInvoiceDto(){
+                    ElectronicInvoiceId = 1,
+                    Category=1,
+                    InvoiceNumber="",
+                    InvoiceTime=DateTime.Now,
+                    Status = 1,
+                    OrderId=1,
+                    RandomNumber="1234",
+                    TotalAmount=200
+                }
+            };
+
+            List<ElectronicInvoice> invoiceTrackNumbers = new List<ElectronicInvoice>()
+            {
+                new ElectronicInvoice()
+                {
+                    ElectronicInvoiceId = 1,
+                    Category=1,
+                    InvoiceNumber="",
+                    InvoiceTime=DateTime.Now,
+                    Status = 1,
+                    OrderId=1,
+                    RandomNumber="1234",
+                    TotalAmount=200
+                }
+            };
+
+            int totalPage = 1;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<List<ResponseGetInvoiceDto>>(invoiceTrackNumbers)).Returns(responseGet);
+            invoiceRepositoryMock.Setup(s
+                => s.GetInvoice(getInvoiceDto)).Returns((invoiceTrackNumbers, totalPage));
+
+            // Act
+            ResponseGetInvoiceListDto result = service.GetInvoice(getInvoiceDto);
+
+            // Assert
+            CollectionAssert.AreEqual(responseGet, result.InvoiceList);
+        }
+
+        [TestMethod]
+        public void 取得發票清單_失敗_回傳空資料()
+        {
+            // Arrange
+            RequestGetInvoiceDto getInvoiceDto = new RequestGetInvoiceDto()
+            {
+                Status = 1,
+                Category = 1,
+                Page = 1,
+                RecordPerPage = 8
+            };
+
+            List<ResponseGetInvoiceDto> responseGet = null;
+            List<ElectronicInvoice> invoiceTrackNumbers = null;
+            int totalPage = 1;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<List<ResponseGetInvoiceDto>>(invoiceTrackNumbers)).Returns(responseGet);
+            invoiceRepositoryMock.Setup(s
+                => s.GetInvoice(getInvoiceDto)).Returns((invoiceTrackNumbers, totalPage));
+
+            // Act
+            ResponseGetInvoiceListDto result = service.GetInvoice(getInvoiceDto);
+
+            // Assert
+            CollectionAssert.AreEqual(responseGet, result.InvoiceList);
         }
     }
 }

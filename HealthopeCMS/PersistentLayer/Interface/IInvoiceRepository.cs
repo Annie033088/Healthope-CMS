@@ -46,5 +46,10 @@ namespace PersistentLayer.Interface
         /// 折讓發票
         /// </summary>
         int DiscountInvoice(int orderId);
+
+        /// <summary>
+        /// 取得字軌
+        /// </summary>
+        (List<ElectronicInvoice> invoices, int totalPage) GetInvoice(RequestGetInvoiceDto getInvoiceDto);
     }
 }

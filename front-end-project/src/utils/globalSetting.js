@@ -306,6 +306,9 @@ export const adminPermission = {
 
     // 查詢訂單
     SelectOrder: 21,
+
+    // 查詢付款紀錄
+    SelectTransaction: 22,
 }
 
 export default function adminIdentityToText(identity) {

@@ -24,3 +24,15 @@ export const electronicInvoiceStatusAndText = [
     { value: "6", text: '待折讓' },
     { value: "7", text: '已折讓' },
 ]
+
+export const electronicInvoiceCategory = {
+    // 主發票
+    Main: 1,
+    // 違約金發票
+    Penalty: 2,
+}
+
+export const electronicInvoiceCategoryAndText = [
+    { value: "1", text: '主發票' },
+    { value: "2", text: '違約金發票' },
+]

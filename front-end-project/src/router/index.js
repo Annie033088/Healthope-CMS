@@ -13,6 +13,9 @@ import termRoutes from './routes/term';
 import leaseAgreementRoutes from './routes/leaseAgreement';
 import orderRoutes from './routes/order';
 import settingRoutes from './routes/setting';
+import transactionRoutes from './routes/transaction';
+import refundRoutes from './routes/refund';
+import invoiceRoutes from './routes/invoice';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -44,6 +47,12 @@ const routes = [
     ...orderRoutes,
     // 設定
     ...settingRoutes,
+    // 付款紀錄
+    ...transactionRoutes,
+    // 退款與違約金紀錄
+    ...refundRoutes,
+    // 發票資訊
+    ...invoiceRoutes,
 ]
 
 const router = new VueRouter({

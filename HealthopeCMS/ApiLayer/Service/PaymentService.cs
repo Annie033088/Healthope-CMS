@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
-using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Job;
 using ApiLayer.Models.Other;
 using DomainLayer.Models;
@@ -18,7 +13,6 @@ using Newtonsoft.Json;
 using NLog;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using static Hangfire.Storage.JobStorageFeatures;
 
 namespace ApiLayer.Service
 {

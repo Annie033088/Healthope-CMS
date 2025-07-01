@@ -54,6 +54,7 @@
     <Compile Include="Interface\ILeaseAgreementRepository.cs" />
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Interface\IOrderRepository.cs" />
+    <Compile Include="Interface\IRefundRepository.cs" />
     <Compile Include="Interface\ITransactionRepository.cs" />
     <Compile Include="Interface\IPlanTemplateRepository.cs" />
     <Compile Include="Interface\ITermRepository.cs" />
@@ -65,13 +66,16 @@
     <Compile Include="Models\RequestEditShowcaseDto.cs" />
     <Compile Include="Models\RequestEditTermDto.cs" />
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
+    <Compile Include="Models\RequestGetInvoiceDto.cs" />
     <Compile Include="Models\RequestGetInvoiceTrackNumberDto.cs" />
     <Compile Include="Models\RequestGetLeaseAgreementDto.cs" />
     <Compile Include="Models\RequestGetMemberByNameOrPhoneDto.cs" />
     <Compile Include="Models\RequestGetOrderDto.cs" />
     <Compile Include="Models\RequestGetPlanDto.cs" />
+    <Compile Include="Models\RequestGetRefundDto.cs" />
     <Compile Include="Models\RequestGetShowcaseDto.cs" />
     <Compile Include="Models\RequestGetTermDto.cs" />
+    <Compile Include="Models\RequestGetTransactionDto.cs" />
     <Compile Include="Models\RequestPayByCardDto.cs" />
     <Compile Include="Models\RequestPayByCashDto.cs" />
     <Compile Include="Models\ResponseGetOrderListDto.cs" />
@@ -92,6 +96,7 @@
     <Compile Include="Repository\MemberRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
     <Compile Include="Repository\PlanTemplateRepository.cs" />
+    <Compile Include="Repository\RefundRepository.cs" />
     <Compile Include="Repository\TermRepository.cs" />
     <Compile Include="Repository\TransactionRepository.cs" />
   </ItemGroup>

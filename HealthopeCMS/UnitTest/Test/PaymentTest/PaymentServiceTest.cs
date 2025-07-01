@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.Job;
 using ApiLayer.Models.Other;
-using ApiLayer.Models.PlanTemplate.Request;
 using ApiLayer.Service;
-using AutoMapper;
 using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

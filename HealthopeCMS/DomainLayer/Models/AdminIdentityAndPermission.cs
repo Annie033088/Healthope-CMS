@@ -113,6 +113,11 @@ namespace DomainLayer.Models
         /// 查詢訂單
         /// </summary>
         SelectOrder = 21,
+
+        /// <summary>
+        /// 查詢付款紀錄
+        /// </summary>
+        SelectTransaction = 22,
     }
 
     public enum AdminIdentity : byte
@@ -176,6 +181,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditTerm, AdminPermission.SelectTerm,
                 AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
                 AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder,
+                AdminPermission.SelectTransaction,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -186,6 +192,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditTerm, AdminPermission.SelectTerm,
                 AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
                 AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder,
+                AdminPermission.SelectTransaction,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,
@@ -203,6 +210,9 @@ namespace DomainLayer.Models
             } },
             {AdminIdentity.SalesRepresentative, new List<AdminPermission>{
                 AdminPermission.SelectMember,
+            } },
+            {AdminIdentity.Accountant, new List<AdminPermission>{
+                AdminPermission.SelectTransaction,
             } }
         };
     }
