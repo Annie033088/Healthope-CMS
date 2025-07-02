@@ -196,5 +196,10 @@
         /// 發票不存在(未開)
         /// </summary>
         InvoiceNotExist = 38,
+
+        /// <summary>
+        /// 無法開立跨期發票，請手動開立發票
+        /// </summary>
+        CantPrintCrossDateInvoice = 39,
     }
 }

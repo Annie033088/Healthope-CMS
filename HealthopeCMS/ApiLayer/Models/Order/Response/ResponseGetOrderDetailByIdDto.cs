@@ -14,6 +14,11 @@ namespace ApiLayer.Models.Order.Response
         /// 訂單狀態列表
         /// </summary>
         public List<ResponseGetOrderStateByIdDto> OrderStateList { get; set; }
+
+        /// <summary>
+        /// 發票列表
+        /// </summary>
+        public List<ResponseGetEelectonicInvoiceByOrderIdDto> InvoiceList { get; set; }
     }
 
     public class ResponseGetOrderByIdDto
@@ -80,5 +85,28 @@ namespace ApiLayer.Models.Order.Response
         /// 最後更新時間
         /// </summary>
         public DateTime UpdateTime { get; set; }
+    }
+
+    public class ResponseGetEelectonicInvoiceByOrderIdDto
+    {
+        /// <summary>
+        /// 發票號碼
+        /// </summary>
+        public string InvoiceNumber { get; set; }
+
+        /// <summary>
+        /// 金額
+        /// </summary>
+        public int TotalAmount { get; set; }
+
+        /// <summary>
+        /// 分類 (1:主發票 2:違約金發票)
+        /// </summary>
+        public byte Category { get; set; }
+
+        /// <summary>
+        /// 開立狀態 (1:處理中 2:成功 3:失敗)
+        /// </summary>
+        public byte Status { get; set; }
     }
 }

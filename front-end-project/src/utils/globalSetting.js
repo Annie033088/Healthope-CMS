@@ -115,6 +115,9 @@ export const errorCodeDefine = {
 
     /// 發票不存在(未開)
     InvoiceNotExist: 38,
+
+    // 無法開立跨期發票，請手動開立發票
+    CantPrintCrossDateInvoice: 39,
 };
 
 
@@ -208,7 +211,7 @@ export function errorCodeToMessage(errorCode) {
             message = "方案不可用";
             return message;
         case 29:
-            message = "字軌未設定，請前去設定";
+            message = "當期字軌未設定，請前去設定";
             return message;
         case 30:
             message = "教練狀態無效";
@@ -233,6 +236,9 @@ export function errorCodeToMessage(errorCode) {
             return message;
         case 38:
             message = "發票尚未開立";
+            return message;
+        case 39:
+            message = "無法開立跨期發票，請手動開立發票";
             return message;
         default:
             message = "";

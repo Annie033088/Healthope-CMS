@@ -122,6 +122,32 @@ export default function (mock) {
             "CreateTime": "2025-06-20T06:58:27.384"
         },
         {
+            "ElectronicInvoiceId": 19,
+            "OrderId": 3,
+            "InvoiceNumber": "AC00000059",
+            "InvoiceTime": "2025-06-20T06:58:28.000",
+            "RandomNumber": "8985",
+            "Buyer": "00000000",
+            "TotalAmount": 8000,
+            "Type": 1,
+            "Category": 1,
+            "Status": 2,
+            "CreateTime": "2025-06-20T06:58:27.384"
+        },
+        {
+            "ElectronicInvoiceId": 90,
+            "OrderId": 3,
+            "InvoiceNumber": "AC00000066",
+            "InvoiceTime": "2025-06-25T02:58:28.000",
+            "RandomNumber": "8310",
+            "Buyer": "00000000",
+            "TotalAmount": 1000,
+            "Type": 1,
+            "Category": 2,
+            "Status": 3,
+            "CreateTime": "2025-06-20T06:58:27.384"
+        },
+        {
             "ElectronicInvoiceId": 14,
             "OrderId": 20,
             "InvoiceNumber": "AC00000013",

@@ -56,6 +56,20 @@
         @saveNote="handleSaveNote"
       />
     </div>
+    <div class="sectionTitle">
+      <h3>相關發票資訊</h3>
+    </div>
+    <div v-if="invoiceList.length === 0" class="emptyMessage">
+      尚未有任何發票紀錄。
+    </div>
+    <div v-else class="orderInvoiceContainer">
+      <OrderInvoiceTable
+        :invoices="invoiceList"
+        @retryPrintInvoice="retryPrintInvoice"
+        @discountInvoice="discountInvoice"
+        @voidInvoice="voidInvoice"
+      />
+    </div>
   </div>
 </template>
 
@@ -63,7 +77,9 @@
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 import OrderStateCard from "@/components/Card/OrderStateCard";
+import OrderInvoiceTable from "@/components/Table/OrderInvoiceTable";
 import { orderStateAndText, paymentMethodAndText } from "@/utils/order";
+import { electronicInvoiceCategory } from "@/utils/electronicInvoice";
 
 export default {
   name: "HealthopeOrderDetail",
@@ -71,18 +87,20 @@ export default {
     TitleCard,
     SubTitleCard,
     OrderStateCard,
+    OrderInvoiceTable,
   },
   data() {
     return {
       order: {},
       orderStateList: [],
+      invoiceList: [],
     };
   },
   methods: {
     async handleSaveNote({ OrderStateId, Remark, UpdateTime }) {
       try {
         Remark = Remark.trim();
-        
+
         if (OrderStateId < 1) return;
         if (Remark.length > 50) {
           this.$notificationBox.notificationBoxFlag = true;
@@ -142,6 +160,12 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.order = response.data.ApiDataObject.Order;
           this.orderStateList = response.data.ApiDataObject.OrderStateList;
+          this.invoiceList = response.data.ApiDataObject.InvoiceList;
+
+          this.invoiceList.forEach((invoice) => {
+            invoice.Status = { Value: invoice.Status };
+            invoice.Category = { Value: invoice.Category };
+          });
 
           this.order.OrderId = orderId;
 
@@ -183,6 +207,132 @@ export default {
         }
       } catch (error) {
         console.error("取得訂單詳情時發生錯誤", error);
+      }
+    },
+    async printInvoice(id) {
+      try {
+        const OrderIdDto = {
+          OrderId: id,
+        };
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/CompleteOrderAndPrintInvoice",
+          OrderIdDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else if (
+          response.data.ErrorCode ===
+          this.$errorCodeDefine.CantPrintCrossDateInvoice
+        ) {
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "/order";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("補印發票時發生錯誤", error);
+      }
+    },
+    retryPrintInvoice(invoice) {
+      // 主發票的話, 走主發票補印流程
+      if (invoice.Category === electronicInvoiceCategory.Main) {
+        this.printInvoice(this.order.OrderId);
+      }
+    },
+    async voidInvoice(invoice) {
+      const OrderIdDto = {
+        OrderId: invoice.OrderId,
+      };
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/VoidInvoice",
+          OrderIdDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async discountInvoice(invoice) {
+      const OrderIdDto = {
+        OrderId: invoice.OrderId,
+      };
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/DiscountInvoice",
+          OrderIdDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrder();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
       }
     },
   },
@@ -273,7 +423,7 @@ export default {
 </style>
 
 <style scoped>
-/* order state */
+/* order state/invoice */
 
 .orderStateContainer {
   padding: 16px;
@@ -282,5 +432,25 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   gap: 5px;
+}
+
+.orderInvoiceContainer {
+  width: 100%;
+  padding: 16px;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.emptyMessage {
+  padding: 16px;
+  text-align: center;
+  color: #777;
+  border: 1px dashed #ccc;
+  background-color: #fafafa;
+  border-radius: 6px;
+  margin-top: 12px;
 }
 </style>

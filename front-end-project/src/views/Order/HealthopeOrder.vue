@@ -251,6 +251,15 @@ export default {
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
+        } else if (
+          response.data.ErrorCode ===
+          this.$errorCodeDefine.CantPrintCrossDateInvoice
+        ) {
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
@@ -272,11 +281,10 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得訂單列表時發生錯誤", error);
+        console.error("補印發票時發生錯誤", error);
       }
     },
     goDetail(row) {
-      console.log(row.OrderId);
       if (row.OrderId < 1) return;
       this.$router.push({
         path: "/order/detail",

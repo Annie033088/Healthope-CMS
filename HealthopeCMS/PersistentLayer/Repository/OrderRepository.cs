@@ -393,7 +393,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 根據 id 取得訂單
         /// </summary>
-        public (Order order, List<OrderState> orderStates) GetOrderDetailById(int orderId)
+        public (Order order, List<OrderState> orderStates, List<ElectronicInvoice> electronicInvoices) GetOrderDetailById(int orderId)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -401,6 +401,7 @@ namespace PersistentLayer.Repository
             DataSet ds = new DataSet();
             Order order = new Order();
             List<OrderState> orderStates = new List<OrderState>();
+            List<ElectronicInvoice> electronicInvoices = new List<ElectronicInvoice>();
 
             try
             {
@@ -454,10 +455,27 @@ namespace PersistentLayer.Repository
                         orderStates.Add(orderState);
                     }
 
-                    return (order, orderStates);
+                    // 取得發票
+                    for (int i = 0; i < ds.Tables[2].Rows.Count; i++)
+                    {
+                        ElectronicInvoice invoice = new ElectronicInvoice();
+                        invoice.InvoiceNumber = ds.Tables[2].Rows[i].IsNull("f_invoiceNumber") ?
+                            string.Empty : ds.Tables[2].Rows[i].Field<string>("f_invoiceNumber");
+                        invoice.Category = (byte)(ds.Tables[2].Rows[i].IsNull("f_category") ? 0 :
+                            ds.Tables[2].Rows[i].Field<byte>("f_category"));
+                        invoice.Status = (byte)(ds.Tables[2].Rows[i].IsNull("f_status") ? 0 :
+                            ds.Tables[2].Rows[i].Field<byte>("f_status"));
+                        invoice.TotalAmount =
+                            ds.Tables[2].Rows[i].IsNull("f_totalAmount") ? 0 :
+                            ds.Tables[2].Rows[i].Field<int>("f_totalAmount");
+
+                        electronicInvoices.Add(invoice);
+                    }
+
+                    return (order, orderStates, electronicInvoices);
                 }
 
-                return (null, null);
+                return (null, null, null);
             }
             catch (Exception)
             {

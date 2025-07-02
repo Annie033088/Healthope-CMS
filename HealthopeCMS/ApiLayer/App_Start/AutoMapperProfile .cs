@@ -86,6 +86,7 @@ namespace ApiLayer.App_Start
             CreateMap<PaymentTransaction, ResponseGetTransactionDto>();
             CreateMap<PaymentTransaction, ResponsetGetCreditCardCashFlowDto>();
             CreateMap<ElectronicInvoice, ResponseGetInvoiceDto>();
+            CreateMap<ElectronicInvoice, ResponseGetEelectonicInvoiceByOrderIdDto>();
         }
     }
 }

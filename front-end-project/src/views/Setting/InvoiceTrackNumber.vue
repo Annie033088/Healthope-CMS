@@ -257,6 +257,10 @@ export default {
           row.Status.Value
         )
       ) {
+        if(this.unwatchFlag){
+              this.unwatchFlag(); // 移除監聽
+              this.unwatchFlag = null;
+        }
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
@@ -277,7 +281,11 @@ export default {
         return;
       }
       
-      if (this.compareTerm(row.InvoicePeriod) < 0) {
+      if (this.compareTerm(row.InvoicePeriod) < 0 && row.Status.Value === String(invoiceTrackNumberStatus.Active)) {
+        if(this.unwatchFlag){
+              this.unwatchFlag(); // 移除監聽
+              this.unwatchFlag = null;
+        }
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",

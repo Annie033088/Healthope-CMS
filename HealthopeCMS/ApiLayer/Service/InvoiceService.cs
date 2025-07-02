@@ -206,10 +206,12 @@ namespace ApiLayer.Service
             {
                 (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) = invoiceRepository.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId);
 
-                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber) || electronicInvoice == null)
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (ErrorCodeDefine.ServerError, null);
 
                 ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                if (electronicInvoice == null) return (errorCode, null);
 
                 RequestPrintInvoiceDto requestPrintInvoiceDto = new RequestPrintInvoiceDto
                 {

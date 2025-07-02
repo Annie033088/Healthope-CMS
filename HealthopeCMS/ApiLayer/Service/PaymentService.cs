@@ -72,7 +72,7 @@ namespace ApiLayer.Service
 
                     if (!editTransactionFlag)
                     {
-                        logger.Fatal("刷卡成功但交易紀錄更新失敗!");
+                        logger.Error("刷卡成功但交易紀錄更新失敗!");
                         return (ErrorCodeDefine.CardPaySuccessTransactionUpdateFail, null);
                     }
 
@@ -80,7 +80,7 @@ namespace ApiLayer.Service
 
                     if (errorCodeNumber != (int)ErrorCodeDefine.Success)
                     {
-                        logger.Fatal("刷卡及交易紀錄更新成功，但修改訂單失敗!");
+                        logger.Error("刷卡及交易紀錄更新成功，但修改訂單失敗!");
                         return (ErrorCodeDefine.TransactionSuccessOrderUpdateFail, null);
                     }
 

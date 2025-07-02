@@ -188,7 +188,8 @@ namespace ApiLayer.Service
         {
             try
             {
-                (Order order, List<OrderState> orderStates) = orderRepository.GetOrderDetailById(orderIdDto.OrderId);
+                (Order order, List<OrderState> orderStates, List<ElectronicInvoice> electronicInvoices) =
+                    orderRepository.GetOrderDetailById(orderIdDto.OrderId);
 
                 if (order == null) return null;
 
@@ -196,6 +197,7 @@ namespace ApiLayer.Service
                 {
                     Order = mapper.Map<ResponseGetOrderByIdDto>(order),
                     OrderStateList = mapper.Map<List<ResponseGetOrderStateByIdDto>>(orderStates),
+                    InvoiceList = mapper.Map<List<ResponseGetEelectonicInvoiceByOrderIdDto>>(electronicInvoices),
                 };
 
                 return response;

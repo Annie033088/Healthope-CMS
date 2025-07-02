@@ -36,7 +36,7 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 根據 id 取得訂單
         /// </summary>
-        (Order order, List<OrderState> orderStates) GetOrderDetailById(int orderId);
+        (Order order, List<OrderState> orderStates, List<ElectronicInvoice> electronicInvoices) GetOrderDetailById(int orderId);
 
         /// <summary>
         /// 修改訂單狀態備註
