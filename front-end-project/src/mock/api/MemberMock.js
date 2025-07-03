@@ -208,9 +208,437 @@ export default function (mock) {
             EmergencyContactPhone: 0,
             EmergencyContactRelation: "",
             CreateTime: "2025-01-06T00:00:00",
+        },
+        {
+            MemberId: 12,
+            Name: "陳千千",
+            Phone: 920221233,
+            Email: "",
+            BirthDay: "0001-01-01",
+            Gender: 0,
+            Height: 0,
+            Weight: 0,
+            Status: true,
+            AbsenceTime: 3,
+            AllowGroupClass: "2025-05-01T00:00:00",
+            MembershipExpiry: "2025-11-01T00:00:00",
+            PhoneVerified: false,
+            EmergencyContactName: "",
+            EmergencyContactPhone: 0,
+            EmergencyContactRelation: "",
+            CreateTime: "2025-01-06T00:00:00",
         }
     ];
 
+    const memberMembershipPlans = [
+        {
+            "MemberMembershipPlanId": 1,
+            "OrderId": 4,
+            "MemberId": 8,
+            "PlanName": "一年會籍",
+            "Duration": 12,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-16 06:23:52.274",
+            "UpdateTime": "2025-06-16 06:23:52.274"
+        },
+        {
+            "MemberMembershipPlanId": 2,
+            "OrderId": 5,
+            "MemberId": 1,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-16 06:48:35.004",
+            "UpdateTime": "2025-06-16 06:48:35.004"
+        },
+        {
+            "MemberMembershipPlanId": 3,
+            "OrderId": 6,
+            "MemberId": 10,
+            "PlanName": "一年會籍",
+            "Duration": 12,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-16 07:00:15.739",
+            "UpdateTime": "2025-06-16 07:00:15.739"
+        },
+        {
+            "MemberMembershipPlanId": 4,
+            "OrderId": 7,
+            "MemberId": 6,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-16 07:02:05.876",
+            "UpdateTime": "2025-06-16 07:02:05.876"
+        },
+        {
+            "MemberMembershipPlanId": 5,
+            "OrderId": 2,
+            "MemberId": 3,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-17 08:10:51.121",
+            "UpdateTime": "2025-06-17 08:10:51.121"
+        },
+        {
+            "MemberMembershipPlanId": 7,
+            "OrderId": 21,
+            "MemberId": 2,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-20 01:41:52.149",
+            "UpdateTime": "2025-06-20 01:41:52.149"
+        },
+        {
+            "MemberMembershipPlanId": 8,
+            "OrderId": 23,
+            "MemberId": 11,
+            "PlanName": "一年會籍",
+            "Duration": 12,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-20 01:56:35.795",
+            "UpdateTime": "2025-06-20 01:56:35.795"
+        },
+        {
+            "MemberMembershipPlanId": 9,
+            "OrderId": 24,
+            "MemberId": 1,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-20 02:03:14.480",
+            "UpdateTime": "2025-06-20 02:03:14.480"
+        },
+        {
+            "MemberMembershipPlanId": 10,
+            "OrderId": 25,
+            "MemberId": 12,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-20 02:12:42.028",
+            "UpdateTime": "2025-06-20 02:12:42.028"
+        },
+        {
+            "MemberMembershipPlanId": 11,
+            "OrderId": 26,
+            "MemberId": 4,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-20 02:15:07.469",
+            "UpdateTime": "2025-06-20 02:15:07.469"
+        },
+        {
+            "MemberMembershipPlanId": 12,
+            "OrderId": 31,
+            "MemberId": 6,
+            "PlanName": "半年會籍",
+            "Duration": 6,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-23 09:08:09.476",
+            "UpdateTime": "2025-06-23 09:08:09.476"
+        },
+        {
+            "MemberMembershipPlanId": 13,
+            "OrderId": 32,
+            "MemberId": 9,
+            "PlanName": "半年會籍",
+            "Duration": 6,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-23 09:39:31.146",
+            "UpdateTime": "2025-06-23 09:39:31.146"
+        },
+        {
+            "MemberMembershipPlanId": 14,
+            "OrderId": 33,
+            "MemberId": 2,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 07:08:23.095",
+            "UpdateTime": "2025-06-24 07:08:23.095"
+        },
+        {
+            "MemberMembershipPlanId": 15,
+            "OrderId": 34,
+            "MemberId": 10,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 07:08:59.773",
+            "UpdateTime": "2025-06-24 07:08:59.773"
+        },
+        {
+            "MemberMembershipPlanId": 16,
+            "OrderId": 35,
+            "MemberId": 7,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 08:00:05.123",
+            "UpdateTime": "2025-06-24 08:00:05.123"
+        },
+        {
+            "MemberMembershipPlanId": 17,
+            "OrderId": 36,
+            "MemberId": 5,
+            "PlanName": "一年會籍",
+            "Duration": 12,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 08:05:15.081",
+            "UpdateTime": "2025-06-24 08:05:15.081"
+        },
+        {
+            "MemberMembershipPlanId": 18,
+            "OrderId": 38,
+            "MemberId": 1,
+            "PlanName": "半年會籍",
+            "Duration": 6,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 08:45:18.012",
+            "UpdateTime": "2025-06-24 08:45:18.012"
+        },
+        {
+            "MemberMembershipPlanId": 19,
+            "OrderId": 37,
+            "MemberId": 11,
+            "PlanName": "一年會籍",
+            "Duration": 12,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 08:57:21.541",
+            "UpdateTime": "2025-06-24 08:57:21.541"
+        },
+        {
+            "MemberMembershipPlanId": 20,
+            "OrderId": 39,
+            "MemberId": 8,
+            "PlanName": "半年會籍",
+            "Duration": 6,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 09:16:07.656",
+            "UpdateTime": "2025-06-24 09:16:07.656"
+        },
+        {
+            "MemberMembershipPlanId": 21,
+            "OrderId": 40,
+            "MemberId": 3,
+            "PlanName": "一年會籍",
+            "Duration": 12,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-24 09:50:35.265",
+            "UpdateTime": "2025-06-24 09:50:35.265"
+        },
+        {
+            "MemberMembershipPlanId": 22,
+            "OrderId": 49,
+            "MemberId": 6,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-30 02:02:40.849",
+            "UpdateTime": "2025-06-30 02:02:40.849"
+        },
+        {
+            "MemberMembershipPlanId": 23,
+            "OrderId": 50,
+            "MemberId": 9,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 3,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-06-30 02:38:54.136",
+            "UpdateTime": "2025-06-30 02:38:54.136"
+        },
+        {
+            "MemberMembershipPlanId": 24,
+            "OrderId": 51,
+            "MemberId": 2,
+            "PlanName": "3 個月會籍",
+            "Duration": 3,
+            "Status": 1,
+            "EndDate": "0001-01-01",
+            "CreateTime": "2025-07-02 09:42:55.890",
+            "UpdateTime": "2025-07-02 09:42:55.890"
+        }
+    ]
+
+    const memberPersonalTrainingPackage = [
+        {
+            "MemberPersonalTrainingPackageId": 2,
+            "OrderId": 9,
+            "CoachId": 8,
+            "MemberId": 5,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-16 07:24:11.301",
+            "UpdateTime": "2025-06-16 07:24:11.301"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 3,
+            "OrderId": 10,
+            "CoachId": 8,
+            "MemberId": 11,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-16 07:25:54.136",
+            "UpdateTime": "2025-06-16 07:25:54.136"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 4,
+            "OrderId": 16,
+            "CoachId": 8,
+            "MemberId": 3,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-16 08:25:48.539",
+            "UpdateTime": "2025-06-16 08:25:48.539"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 5,
+            "OrderId": 12,
+            "CoachId": 8,
+            "MemberId": 7,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-17 08:11:14.658",
+            "UpdateTime": "2025-06-17 08:11:14.658"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 6,
+            "OrderId": 22,
+            "CoachId": 8,
+            "MemberId": 1,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-20 01:50:05.010",
+            "UpdateTime": "2025-06-20 01:50:05.010"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 7,
+            "OrderId": 27,
+            "CoachId": 8,
+            "MemberId": 9,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-23 05:47:03.224",
+            "UpdateTime": "2025-06-23 05:47:03.224"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 8,
+            "OrderId": 15,
+            "CoachId": 8,
+            "MemberId": 12,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 2,
+            "CreateTime": "2025-06-24 09:00:25.063",
+            "UpdateTime": "2025-06-24 09:00:25.063"
+        },
+        {
+            "MemberPersonalTrainingPackageId": 9,
+            "OrderId": 13,
+            "CoachId": 8,
+            "MemberId": 6,
+            "PlanName": "12 堂基本課",
+            "SessionCount": 12,
+            "Status": 1,
+            "CreateTime": "2025-06-24 09:08:36.987",
+            "UpdateTime": "2025-06-24 09:08:36.987"
+        }
+    ]
+
+    const coaches = [
+        {
+            "CoachId": 1,
+            "Name": "教練123",
+            "Email": "教練123@example.com"
+        },
+        {
+            "CoachId": 2,
+            "Name": "教練456",
+            "Email": "教練456@example.com"
+        },
+        {
+            "CoachId": 3,
+            "Name": "喵練",
+            "Email": "qweqwpp22@.poi.pp"
+        },
+        {
+            "CoachId": 4,
+            "Name": "草莓123",
+            "Email": "草莓123@example.com"
+        },
+        {
+            "CoachId": 5,
+            "Name": "草莓人456",
+            "Email": "草莓人456@example.com"
+        },
+        {
+            "CoachId": 6,
+            "Name": "戚戚",
+            "Email": "戚戚@example.com"
+        },
+        {
+            "CoachId": 7,
+            "Name": "Alice",
+            "Email": "QWEGGG@WEB.33"
+        },
+        {
+            "CoachId": 8,
+            "Name": "Cathy",
+            "Email": "ASDeath@gg.wc"
+        },
+        {
+            "CoachId": 9,
+            "Name": "Bob",
+            "Email": "bob@example.com"
+        },
+        {
+            "CoachId": 10,
+            "Name": "ChaCha",
+            "Email": "abcgg@ww.cc"
+        },
+        {
+            "CoachId": 11,
+            "Name": "Gellien",
+            "Email": "gellien@example.com"
+        },
+        {
+            "CoachId": 12,
+            "Name": "qwewq",
+            "Email": "qwewq@example.com"
+        }
+    ]
 
     mock.onPost("/api/Member/GetMemberEditDataById").reply(config => {
         let memberIdDto = JSON.parse(config.data);
@@ -226,9 +654,17 @@ export default function (mock) {
     mock.onPost("/api/Member/GetMemberDetail").reply(config => {
         let memberIdDto = JSON.parse(config.data);
         let memberTarget = members.find(member => member.MemberId === Number(memberIdDto.MemberId));
+        let memberMembershipPlanTargets = memberMembershipPlans.filter(plan => plan.MemberId === Number(memberIdDto.MemberId))
+        let memberPersonalTrainingPackageTargets = memberPersonalTrainingPackage.filter(plan => plan.MemberId === Number(memberIdDto.MemberId))
+
+        const ApiDataObject = {
+            Member: memberTarget, MemberMembershipPlanList: memberMembershipPlanTargets,
+            MemberPersonalTrainingPackageList: memberPersonalTrainingPackageTargets,
+            CoachList: coaches
+        }
 
         if (memberTarget) {
-            return [200, { ErrorCode: 1, ApiDataObject: memberTarget }]
+            return [200, { ErrorCode: 1, ApiDataObject }]
         } else {
             return [200, { ErrorCode: 13 }]
         }

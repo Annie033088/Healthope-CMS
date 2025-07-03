@@ -118,6 +118,16 @@ namespace DomainLayer.Models
         /// 查詢付款紀錄
         /// </summary>
         SelectTransaction = 22,
+
+        /// <summary>
+        /// 暫停會籍
+        /// </summary>
+        EditMemberMembershipPlan = 23,
+
+        /// <summary>
+        /// 修改會員的私人課程教練
+        /// </summary>
+        EditMemberPersonalPeckagePlan = 24,
     }
 
     public enum AdminIdentity : byte
@@ -182,6 +192,8 @@ namespace DomainLayer.Models
                 AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
                 AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder,
                 AdminPermission.SelectTransaction,
+                AdminPermission.EditMemberMembershipPlan,
+                AdminPermission.EditMemberPersonalPeckagePlan,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -193,16 +205,20 @@ namespace DomainLayer.Models
                 AdminPermission.EditLeaseAgreement, AdminPermission.SelectLeaseAgreement,
                 AdminPermission.AddOrder, AdminPermission.EditOrder, AdminPermission.SelectOrder,
                 AdminPermission.SelectTransaction,
+                AdminPermission.EditMemberMembershipPlan,
+                AdminPermission.EditMemberPersonalPeckagePlan,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,
                 AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.SelectGroupClassSchedule,
                 AdminPermission.AddOrder,
+                AdminPermission.EditMemberMembershipPlan,
             } },
             {AdminIdentity.CoachManager, new List<AdminPermission>{
                 AdminPermission.SelectMember,
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
+                AdminPermission.EditMemberPersonalPeckagePlan,
             } },
             {AdminIdentity.CourseManager, new List<AdminPermission>{
                 AdminPermission.EditGroupClassShowcase,AdminPermission.SelectGroupClassShowcase,

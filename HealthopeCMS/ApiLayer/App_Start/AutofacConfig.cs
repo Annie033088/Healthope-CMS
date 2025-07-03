@@ -76,6 +76,9 @@ namespace ApiLayer.App_Start
             builder.RegisterType<RefundService>().As<IRefundService>().InstancePerRequest();
             builder.RegisterType<RefundRepository>().As<IRefundRepository>().InstancePerRequest();
 
+            builder.RegisterType<MemberPlanService>().As<IMemberPlanService>().InstancePerRequest();
+            builder.RegisterType<MemberPlanRepository>().As<IMemberPlanRepository>().InstancePerRequest();
+
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>
             {

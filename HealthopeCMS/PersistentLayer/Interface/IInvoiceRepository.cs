@@ -35,17 +35,27 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 取得發票號碼
         /// </summary>
-        (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(int orderId);
+        (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(ElectronicInvoice invoice);
 
         /// <summary>
         /// 作廢發票
         /// </summary>
-        int VoidInvoice(int orderId);
+        int VoidInvoice(ElectronicInvoice invoice);
 
         /// <summary>
         /// 折讓發票
         /// </summary>
-        int DiscountInvoice(int orderId);
+        int DiscountInvoice(ElectronicInvoice invoice);
+
+        /// <summary>
+        /// 修改發票狀態 => 待作廢
+        /// </summary>
+        int PendingVoidInvoice(ElectronicInvoice invoice);
+
+        /// <summary>
+        /// 修改發票狀態 => 待折讓
+        /// </summary>
+        int PendingDiscountInvoice(ElectronicInvoice invoice);
 
         /// <summary>
         /// 取得字軌

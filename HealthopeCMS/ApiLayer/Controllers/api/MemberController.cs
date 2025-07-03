@@ -173,8 +173,7 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                ResponseGetMemberDetailDto responseGetMemberDetail =
-                    memberService.GetMemberDetail(memberIdDto);
+                ResponseGetMemberDetailDto responseGetMemberDetail = memberService.GetMemberDetail(memberIdDto);
 
                 if (responseGetMemberDetail == null)
                 {

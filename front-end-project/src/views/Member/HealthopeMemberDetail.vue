@@ -107,48 +107,187 @@
         </div>
       </div>
     </div>
-    <div class="sectionTitle"><h3>會籍方案</h3></div>
+    <div class="sectionTitle">
+      <h3>會籍方案</h3>
+    </div>
+    <div>
+      <TableNormal
+        :columns="memberMembershipPlanColumns"
+        :rows="memberMembershipPlanList"
+        @changeStatus="editMemberMembershipPlanStatus"
+      >
+      </TableNormal>
+    </div>
     <div class="sectionTitle"><h3>教練課程</h3></div>
+    <div>
+      <TableNormal
+        :columns="memberPersonalTrainingPackageColumns"
+        :rows="memberPersonalTrainingPackageList"
+        @changeCoach="editMemberPersonalPeckagePlanCoach"
+      >
+      </TableNormal>
+    </div>
   </div>
 </template>
 
 <script>
 import TitleCard from "@/components/Card/TitleCard";
 import SubTitleCard from "@/components/Card/SubTitleCard";
+import TableNormal from "@/components/Table/TableNormal";
+import {
+  memberMembershipPlanStatusAndText,
+  memberMembershipPlanStatus,
+  memberPersonalTrainingPackageStatusAndText,
+} from "@/utils/memberPlan";
 
 export default {
   components: {
     TitleCard,
     SubTitleCard,
+    TableNormal,
+  },
+  props: {
+    notificationBoxConfirmFlag: Boolean,
+    permissionMap: {},
   },
   data() {
     return {
-      props: {
-        notificationBoxConfirmFlag: Boolean,
-      },
-      member: {
-        MemberId: 1,
-        Name: "王小小",
-        Phone: 912345678,
-        Email: "qweko123@wwe.abc",
-        BirthDay: "2005-07-09",
-        Gender: 2,
-        Height: 159,
-        Weight: 50,
-        Status: true,
-        AbsenceTime: 2,
-        AllowGroupClass: "2025-06-01T00:00:00",
-        MembershipExpiry: "2025-12-01T00:00:00",
-        PhoneVerified: true,
-        EmergencyContactName: "陳小琪",
-        EmergencyContactPhone: 987654321,
-        EmergencyContactRelation: "母女",
-      },
+      member: {},
       AllowGroupClassFlag: false,
+      memberMembershipPlanList: [],
+      memberPersonalTrainingPackageList: [],
+      memberMembershipPlanColumns: [
+        { label: "方案名稱", key: "PlanName" },
+        { label: "期限(月)", key: "Duration" },
+        {
+          label: "狀態",
+          key: "Status",
+          type: "dropDownSelector",
+          enableFlag: this.permissionMap.EditMemberMembershipPlan,
+        },
+        { label: "最後修改日期", key: "LocalUpdateTime" },
+        { label: "結束日期", key: "EndDate" },
+      ],
+      memberPersonalTrainingPackageColumns: [
+        { label: "方案名稱", key: "PlanName" },
+        {
+          label: "教練",
+          key: "Coach",
+          type: "dropDownSelector",
+          enableFlag: this.permissionMap.EditMemberPersonalPeckagePlan,
+        },
+        { label: "課堂數", key: "SessionCount" },
+        { label: "狀態", key: "Status" },
+        { label: "最後修改日期", key: "LocalUpdateTime" },
+      ],
+      coachList: [],
     };
   },
   methods: {
+    async editMemberMembershipPlanStatus(row) {
+      // 檢查是否轉換成功
+      if (
+        !this.memberMembershipPlanStatusTranslator(
+          Number(row.Status.OldValue),
+          Number(row.Status.Value)
+        )
+      )
+        return;
+
+      const editStatusDto = {
+        MemberMembershipPlanId: row.MemberMembershipPlanId,
+        Status: row.Status.Value,
+        UpdateTime: row.UpdateTime,
+      };
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/MemberPlan/EditMemberMembershipPlanStatus",
+          editStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getMemberDetail(this.member.MemberId);
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "/member/detail";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改會員的會籍方案時發生錯誤", error);
+      }
+    },
+    async editMemberPersonalPeckagePlanCoach(row) {
+      if (row.Coach.Value < 1) return;
+
+      const editStatusDto = {
+        MemberPersonalTrainingPackageId: row.MemberPersonalTrainingPackageId,
+        CoachId: row.Coach.Value,
+        UpdateTime: row.UpdateTime,
+      };
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/MemberPlan/EditMemberPersonalPeckagePlanCoach",
+          editStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getMemberDetail(this.member.MemberId);
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = "/member/detail";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改會員的教練課方案時發生錯誤", error);
+      }
+    },
     async getMemberDetail(memberId) {
+      if (memberId < 1) return;
+
       try {
         let memberIdDto = {
           MemberId: memberId,
@@ -161,9 +300,91 @@ export default {
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.member = response.data.ApiDataObject;
+          this.member = response.data.ApiDataObject.Member;
+          this.memberMembershipPlanList =
+            response.data.ApiDataObject.MemberMembershipPlanList;
+          this.memberPersonalTrainingPackageList =
+            response.data.ApiDataObject.MemberPersonalTrainingPackageList;
+          this.coachList = response.data.ApiDataObject.CoachList;
+
           this.member.MemberId = memberId;
 
+          this.memberMembershipPlanList.forEach((plan) => {
+            let membershipPlanOptions = [];
+
+            memberMembershipPlanStatusAndText.forEach((status) => {
+              if (plan.Status === Number(status.value))
+                membershipPlanOptions.push(status);
+
+              if (
+                plan.Status === memberMembershipPlanStatus.Inactive &&
+                Number(status.value) === memberMembershipPlanStatus.Active
+              )
+                membershipPlanOptions.push(status);
+
+              if (
+                plan.Status === memberMembershipPlanStatus.Active &&
+                Number(status.value) === memberMembershipPlanStatus.Paused
+              )
+                membershipPlanOptions.push(status);
+
+              if (
+                plan.Status === memberMembershipPlanStatus.Paused &&
+                Number(status.value) === memberMembershipPlanStatus.Active
+              )
+                membershipPlanOptions.push(status);
+
+              if (
+                plan.Status === memberMembershipPlanStatus.Active &&
+                Number(status.value) === memberMembershipPlanStatus.Completed &&
+                plan.EndDate.substring(0, 10) !== "0001-01-01"
+              ) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const endDate = new Date(plan.EndDate);
+                endDate.setHours(0, 0, 0, 0);
+
+                if (endDate < today) membershipPlanOptions.push(status);
+              }
+            });
+
+            plan.Status = {
+              Value: String(plan.Status),
+              Options: membershipPlanOptions,
+              OldValue: String(plan.Status),
+            };
+
+            if (plan.EndDate.substring(0, 10) === "0001-01-01") {
+              plan.EndDate = "-";
+            }
+
+            const localUpdateTime = new Date(plan.UpdateTime);
+            plan.LocalUpdateTime = localUpdateTime.toLocaleString();
+          });
+
+          this.memberPersonalTrainingPackageList.forEach((plan) => {
+            memberPersonalTrainingPackageStatusAndText.forEach((status) => {
+              if (Number(status.value) === plan.Status)
+                plan.Status = status.text;
+            });
+
+            let coachOption = [];
+            this.coachList.forEach((coach) => {
+              coachOption.push({
+                value: coach.CoachId,
+                text: coach.Name + `(0${coach.Phone})`,
+              });
+            });
+
+            plan.Coach = {
+              Value: String(plan.CoachId),
+              Options: coachOption,
+              OldValue: String(plan.CoachId),
+            };
+
+            const localUpdateTime = new Date(plan.UpdateTime);
+            plan.LocalUpdateTime = localUpdateTime.toLocaleString();
+          });
           // 調整顯示格式
           this.member.Gender = this.genderToText(this.member.Gender);
           this.member.Phone = ("0" + this.member.Phone).replace(
@@ -244,6 +465,33 @@ export default {
       if (genderNum === 2) return "女";
       if (genderNum === 3) return "其他";
       return "無";
+    },
+    memberMembershipPlanStatusTranslator(oldStatus, newStatus) {
+      if (
+        oldStatus === memberMembershipPlanStatus.Inactive &&
+        newStatus === memberMembershipPlanStatus.Active
+      )
+        return true;
+
+      if (
+        oldStatus === memberMembershipPlanStatus.Active &&
+        newStatus === memberMembershipPlanStatus.Paused
+      )
+        return true;
+
+      if (
+        oldStatus === memberMembershipPlanStatus.Paused &&
+        newStatus === memberMembershipPlanStatus.Active
+      )
+        return true;
+
+      if (
+        oldStatus === memberMembershipPlanStatus.Active &&
+        newStatus === memberMembershipPlanStatus.Completed
+      )
+        return true;
+
+      return false;
     },
   },
   created() {

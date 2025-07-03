@@ -244,7 +244,8 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 取得發票號碼
         /// </summary>
-        public (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(int orderId)
+        public (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(
+            ElectronicInvoice invoice)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -254,9 +255,10 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editOrderStateAndGetInvoiceNumber @orderId, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_editOrderStateAndGetInvoiceNumber @orderId, @category, @errorCode OUTPUT";
 
-                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
+                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
 
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
@@ -308,7 +310,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 作廢發票
         /// </summary>
-        public int VoidInvoice(int orderId)
+        public int VoidInvoice(ElectronicInvoice invoice)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -316,9 +318,11 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusVoided @orderId, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusVoided @orderId, @category, @updateTime, @errorCode OUTPUT";
 
-                cmd.Parameters.Add("@orderId", SqlDbType.Char).Value = orderId;
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
+                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = invoice.UpdateTime;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -346,7 +350,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 折讓發票
         /// </summary>
-        public int DiscountInvoice(int orderId)
+        public int DiscountInvoice(ElectronicInvoice invoice)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -354,9 +358,91 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusDiscounted @orderId, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusDiscounted @orderId, @category, @updateTime, @errorCode OUTPUT";
 
-                cmd.Parameters.Add("@orderId", SqlDbType.Char).Value = orderId;
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
+                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = invoice.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改發票狀態 => 待作廢
+        /// </summary>
+        public int PendingVoidInvoice(ElectronicInvoice invoice)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusPendingVoid @orderId, @category, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
+                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = invoice.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改發票狀態 => 待折讓
+        /// </summary>
+        public int PendingDiscountInvoice(ElectronicInvoice invoice)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editInvoiceStatusPendingDiscount @orderId, @category, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
+                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = invoice.UpdateTime;
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -391,7 +477,7 @@ namespace PersistentLayer.Repository
             SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
             int totalPage;
-            List<ElectronicInvoice> invoices = new List<ElectronicInvoice>(); 
+            List<ElectronicInvoice> invoices = new List<ElectronicInvoice>();
 
             try
             {

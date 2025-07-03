@@ -427,7 +427,7 @@ export default function (mock) {
             "TotalAmount": 1000,
             "Type": 1,
             "Category": 2,
-            "Status": 3,
+            "Status": 2,
             "CreateTime": "2025-06-20T06:58:27.384"
         },
         {

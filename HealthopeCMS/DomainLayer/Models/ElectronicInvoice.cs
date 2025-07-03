@@ -55,6 +55,11 @@ namespace DomainLayer.Models
         public byte Status { get; set; }
 
         /// <summary>
+        /// 最後修改時間
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
+
+        /// <summary>
         /// 創建時間
         /// </summary>
         public DateTime CreateTime { get; set; }

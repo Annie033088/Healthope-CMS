@@ -10,6 +10,7 @@ using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
 using ApiLayer.Models.Member.Response;
+using ApiLayer.Models.MemberPlan.Request;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
 using ApiLayer.Models.PlanTemplate.Request;
@@ -35,7 +36,11 @@ namespace ApiLayer.App_Start
             CreateMap<Member, ResponseGetMemberDto>();
             CreateMap<Member, ResponseGetMemberEditDataByIdDto>();
             CreateMap<Member, ResponseGetMemberByNameOrPhoneDto>();
-            CreateMap<Member, ResponseGetMemberDetailDto>();
+            CreateMap<Member, ResponseGetMemberDetailMemberDto>();
+            CreateMap<MemberMembershipPlan, ResponseGetMemberDetailMembershipPlanDto>();
+            CreateMap<MemberPersonalTrainingPackage, ResponseGetMemberDetailPersonalTrainingPackageDto>();
+            CreateMap<RequestMemberMembershipPlanStatusDto, MemberMembershipPlan>();
+            CreateMap<Coach, ResponseGetMemberDetailCoachDto>();
             CreateMap<Coach, ResponseGetCoachEditDataByIdDto>();
             CreateMap<Coach, ResponseGetCoachDto>();
             CreateMap<RequestAddCoachDto, Coach>()
@@ -78,7 +83,8 @@ namespace ApiLayer.App_Start
             CreateMap<Order, ResponseAddOrderDto>();
             CreateMap<RequestAddOrderDto, Order>();
             CreateMap<Coach, ResponseGetPersonalCoachDto>();
-            CreateMap<Order, ResponseGetOrderByIdDto>();
+            CreateMap<Order, ResponseGetOrderByIdDto>()
+                .ForMember(dest => dest.OrderNumber, opt => opt.MapFrom(src => src.OrderNumber.ToString()));
             CreateMap<OrderState, ResponseGetOrderStateByIdDto>();
             CreateMap<RequestEditOrderStateRemarkDto, OrderState>();
             CreateMap<RequestEditOrderRemarkDto, Order>();
@@ -87,6 +93,8 @@ namespace ApiLayer.App_Start
             CreateMap<PaymentTransaction, ResponsetGetCreditCardCashFlowDto>();
             CreateMap<ElectronicInvoice, ResponseGetInvoiceDto>();
             CreateMap<ElectronicInvoice, ResponseGetEelectonicInvoiceByOrderIdDto>();
+            CreateMap<RequestOrderIdAndCategoryDto, ElectronicInvoice>();
+            CreateMap<RequestEditInvoiceStatusDto, ElectronicInvoice>();
         }
     }
 }

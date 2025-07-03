@@ -112,6 +112,7 @@ import {
 import {
   electronicInvoiceStatusAndText,
   electronicInvoiceStatus,
+  electronicInvoiceCategory,
 } from "@/utils/electronicInvoice";
 import BtnNormal from "@/components/Btn/BtnNormal";
 import RadioSelector from "@/components/Selector/RadioSelector";
@@ -240,13 +241,14 @@ export default {
     },
     async printInvoice(row) {
       try {
-        const OrderIdDto = {
+        const printInvoiceDto = {
+          Category: electronicInvoiceCategory.Main,
           OrderId: row.OrderId,
         };
         // post
         const response = await this.$axios.post(
           "/api/Invoice/CompleteOrderAndPrintInvoice",
-          OrderIdDto
+          printInvoiceDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
@@ -542,6 +544,8 @@ export default {
           String(electronicInvoiceStatus.PendingVoid)
       ) {
         let editInvoiceStatusDto = {
+          Category: electronicInvoiceCategory.Main,
+          UpdateTime: row.InvoiceUpdateTime,
           OrderId: row.OrderId,
         };
         this.voidInvoice(editInvoiceStatusDto);
@@ -552,6 +556,8 @@ export default {
           String(electronicInvoiceStatus.PendingDiscount)
       ) {
         let editInvoiceStatusDto = {
+          Category: electronicInvoiceCategory.Main,
+          UpdateTime: row.InvoiceUpdateTime,
           OrderId: row.OrderId,
         };
         this.discountInvoice(editInvoiceStatusDto);

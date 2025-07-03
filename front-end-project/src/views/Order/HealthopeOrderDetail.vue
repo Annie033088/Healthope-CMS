@@ -68,6 +68,8 @@
         @retryPrintInvoice="retryPrintInvoice"
         @discountInvoice="discountInvoice"
         @voidInvoice="voidInvoice"
+        @pendingDiscountInvoice="pendingDiscountInvoice"
+        @pendingVoidInvoice="pendingVoidInvoice"
       />
     </div>
   </div>
@@ -88,6 +90,9 @@ export default {
     SubTitleCard,
     OrderStateCard,
     OrderInvoiceTable,
+  },
+  props: {
+    notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
@@ -147,10 +152,11 @@ export default {
       }
     },
     async getOrderDetail(orderId) {
+      const OrderIdDto = {
+        OrderId: orderId,
+      };
+
       try {
-        const OrderIdDto = {
-          OrderId: orderId,
-        };
         // post
         const response = await this.$axios.post(
           "/api/Order/GetOrderDetailById",
@@ -187,6 +193,11 @@ export default {
           this.order.CreateTime = localTime;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
@@ -209,19 +220,29 @@ export default {
         console.error("取得訂單詳情時發生錯誤", error);
       }
     },
-    async printInvoice(id) {
+    async retryPrintInvoice(invoice) {
+      const printInvoiceDto = {
+        Category: invoice.Category.Value,
+        OrderId: this.order.OrderId,
+      };
+
+      if (!this.editStatusValidInput(printInvoiceDto)) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "格式錯誤!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
       try {
-        const OrderIdDto = {
-          OrderId: id,
-        };
         // post
         const response = await this.$axios.post(
           "/api/Invoice/CompleteOrderAndPrintInvoice",
-          OrderIdDto
+          printInvoiceDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.getOrder();
+          this.getOrderDetail(printInvoiceDto.OrderId);
         } else if (
           response.data.ErrorCode ===
           this.$errorCodeDefine.CantPrintCrossDateInvoice
@@ -233,6 +254,11 @@ export default {
             response.data.ErrorCode;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
@@ -255,26 +281,36 @@ export default {
         console.error("補印發票時發生錯誤", error);
       }
     },
-    retryPrintInvoice(invoice) {
-      // 主發票的話, 走主發票補印流程
-      if (invoice.Category === electronicInvoiceCategory.Main) {
-        this.printInvoice(this.order.OrderId);
-      }
-    },
     async voidInvoice(invoice) {
-      const OrderIdDto = {
-        OrderId: invoice.OrderId,
+      let editInvoiceStatusDto = {
+        Category: invoice.Category.Value,
+        UpdateTime: invoice.UpdateTime,
+        OrderId: this.order.OrderId,
       };
+
+      if (!this.editStatusValidInput(editInvoiceStatusDto)) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "格式錯誤!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
       try {
         // post
         const response = await this.$axios.post(
           "/api/Invoice/VoidInvoice",
-          OrderIdDto
+          editInvoiceStatusDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.getOrder();
+          this.getOrderDetail(this.order.OrderId);
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -299,19 +335,141 @@ export default {
       }
     },
     async discountInvoice(invoice) {
-      const OrderIdDto = {
-        OrderId: invoice.OrderId,
+      let editInvoiceStatusDto = {
+        Category: invoice.Category.Value,
+        UpdateTime: invoice.UpdateTime,
+        OrderId: this.order.OrderId,
       };
+
+      if (!this.editStatusValidInput(editInvoiceStatusDto)) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "格式錯誤!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
       try {
         // post
         const response = await this.$axios.post(
           "/api/Invoice/DiscountInvoice",
-          OrderIdDto
+          editInvoiceStatusDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          this.getOrder();
+          this.getOrderDetail(this.order.OrderId);
         } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async pendingDiscountInvoice(invoice) {
+      let editInvoiceStatusDto = {
+        Category: invoice.Category.Value,
+        UpdateTime: invoice.UpdateTime,
+        OrderId: this.order.OrderId,
+      };
+
+      if (!this.editStatusValidInput(editInvoiceStatusDto)) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "格式錯誤!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/PendingDiscountInvoice",
+          editInvoiceStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrderDetail(this.order.OrderId);
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                let redirectRoute = null;
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改備註時發生錯誤", error);
+      }
+    },
+    async pendingVoidInvoice(invoice) {
+      let editInvoiceStatusDto = {
+        Category: invoice.Category.Value,
+        UpdateTime: invoice.UpdateTime,
+        OrderId: this.order.OrderId,
+      };
+
+      if (!this.editStatusValidInput(editInvoiceStatusDto)) {
+        // 設定彈窗資料
+        this.$notificationBox.notificationBoxFlag = true;
+        this.$notificationBox.notificationBoxTitle = "格式錯誤!";
+        this.$notificationBox.notificationBoxErrorCode = 0;
+        return;
+      }
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/Invoice/PendingVoidInvoice",
+          editInvoiceStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getOrderDetail(this.order.OrderId);
+        } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -334,6 +492,19 @@ export default {
       } catch (error) {
         console.error("修改備註時發生錯誤", error);
       }
+    },
+    editStatusValidInput(editInvoiceStatusDto) {
+      if (editInvoiceStatusDto.OrderId < 1) return false;
+
+      if (
+        !Object.values(electronicInvoiceCategory).includes(
+          Number(editInvoiceStatusDto.Category)
+        )
+      ) {
+        return false;
+      }
+
+      return true;
     },
   },
   created() {

@@ -315,6 +315,12 @@ export const adminPermission = {
 
     // 查詢付款紀錄
     SelectTransaction: 22,
+
+    // 暫停會籍
+    EditMemberMembershipPlan: 23,
+
+    // 修改會員的私人課程教練
+    EditMemberPersonalPeckagePlan: 24,
 }
 
 export default function adminIdentityToText(identity) {

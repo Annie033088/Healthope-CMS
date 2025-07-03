@@ -25,7 +25,8 @@
               v-if="
                 invoice.BtnRetryFlag ||
                 invoice.BtnVoidFlag ||
-                invoice.BtnDiscountFlag
+                invoice.BtnDiscountFlag ||
+                invoice.BtnPendingFlag
               "
               class="operationBtn"
             >
@@ -50,6 +51,20 @@
               >
                 作廢
               </button>
+              <button
+                v-if="invoice.BtnPendingFlag"
+                @click="pendingDiscountInvoice(invoice)"
+                class="retryButton"
+              >
+                待折讓
+              </button>
+              <button
+                v-if="invoice.BtnPendingFlag"
+                @click="pendingVoidInvoice(invoice)"
+                class="retryButton"
+              >
+                待作廢
+              </button>
             </div>
             <span v-else class="noAction">—</span>
           </td>
@@ -63,6 +78,7 @@
 import {
   electronicInvoiceStatus,
   electronicInvoiceStatusAndText,
+  electronicInvoiceCategory,
   electronicInvoiceCategoryAndText,
 } from "@/utils/electronicInvoice";
 export default {
@@ -82,6 +98,12 @@ export default {
     },
     voidInvoice(invoice) {
       this.$emit("voidInvoice", invoice);
+    },
+    pendingDiscountInvoice(invoice) {
+      this.$emit("pendingDiscountInvoice", invoice);
+    },
+    pendingVoidInvoice(invoice) {
+      this.$emit("pendingVoidInvoice", invoice);
     },
   },
   created() {
@@ -103,6 +125,11 @@ export default {
 
       if (invoice.Status.Value === electronicInvoiceStatus.Success) {
         invoice.Status.Class = "success";
+
+        if (invoice.Category.Value === electronicInvoiceCategory.Penalty) {
+          invoice.BtnPendingFlag = true;
+        }
+        console.log(invoice.BtnPendingFlag)
       }
 
       electronicInvoiceStatusAndText.forEach((status) => {
@@ -116,6 +143,45 @@ export default {
         }
       });
     });
+  },
+  watch: {
+    invoices() {
+      this.invoices.forEach((invoice) => {
+        if (invoice.Status.Value === electronicInvoiceStatus.PendingDiscount) {
+          invoice.BtnDiscountFlag = true;
+          invoice.Status.Class = "pending";
+        }
+
+        if (invoice.Status.Value === electronicInvoiceStatus.PendingVoid) {
+          invoice.BtnVoidFlag = true;
+          invoice.Status.Class = "pending";
+        }
+
+        if (invoice.Status.Value === electronicInvoiceStatus.Fail) {
+          invoice.BtnRetryFlag = true;
+          invoice.Status.Class = "failed";
+        }
+
+        if (invoice.Status.Value === electronicInvoiceStatus.Success) {
+          invoice.Status.Class = "success";
+
+          if (invoice.Category.Value === electronicInvoiceCategory.Penalty) {
+            invoice.BtnPendingFlag = true;
+          }
+        }
+
+        electronicInvoiceStatusAndText.forEach((status) => {
+          if (Number(status.value) === invoice.Status.Value) {
+            invoice.Status.Text = status.text;
+          }
+        });
+        electronicInvoiceCategoryAndText.forEach((category) => {
+          if (Number(category.value) === invoice.Category.Value) {
+            invoice.Category.Text = category.text;
+          }
+        });
+      });
+    },
   },
 };
 </script>

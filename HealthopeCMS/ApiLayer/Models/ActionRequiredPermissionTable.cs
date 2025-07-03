@@ -135,6 +135,10 @@ namespace ApiLayer.Models
                 AdminPermission.EditOrder} },
             { "Invoice,DiscountInvoice", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
+            { "Invoice,PendingVoidInvoice", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
+            { "Invoice,PendingDiscountInvoice", new List<AdminPermission> {
+                AdminPermission.EditOrder} },
 
             // OrderController
             { "Order,AddOrder", new List<AdminPermission> {

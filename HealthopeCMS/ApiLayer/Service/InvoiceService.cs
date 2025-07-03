@@ -200,11 +200,14 @@ namespace ApiLayer.Service
         /// <summary>
         /// 針對「現金發票列印失敗」或「刷卡未完成訂單狀態」或「刷卡發票列印失敗」進行補印與補狀態處理
         /// </summary>
-        public (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(RequestOrderIdDto orderIdDto)
+        public (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(
+            RequestOrderIdAndCategoryDto orderIdAndCategoryDto)
         {
             try
             {
-                (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) = invoiceRepository.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId);
+                ElectronicInvoice requestElectronicInvoice = mapper.Map<ElectronicInvoice>(orderIdAndCategoryDto);
+                (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) =
+                    invoiceRepository.EditOrderStateAndGetInvoiceNumber(requestElectronicInvoice);
 
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (ErrorCodeDefine.ServerError, null);
@@ -232,11 +235,12 @@ namespace ApiLayer.Service
         /// <summary>
         /// 作廢發票
         /// </summary>
-        public ErrorCodeDefine VoidInvoice(RequestOrderIdDto orderIdDto)
+        public ErrorCodeDefine VoidInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto)
         {
             try
             {
-                int errorCodeNumber = invoiceRepository.VoidInvoice(orderIdDto.OrderId);
+                ElectronicInvoice requestElectronicInvoice = mapper.Map<ElectronicInvoice>(editInvoiceStatusDto);
+                int errorCodeNumber = invoiceRepository.VoidInvoice(requestElectronicInvoice);
 
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (ErrorCodeDefine.ServerError);
@@ -254,11 +258,58 @@ namespace ApiLayer.Service
         /// <summary>
         /// 折讓發票
         /// </summary>
-        public ErrorCodeDefine DiscountInvoice(RequestOrderIdDto orderIdDto)
+        public ErrorCodeDefine DiscountInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto)
         {
             try
             {
-                int errorCodeNumber = invoiceRepository.DiscountInvoice(orderIdDto.OrderId);
+                ElectronicInvoice requestElectronicInvoice = mapper.Map<ElectronicInvoice>(editInvoiceStatusDto);
+                int errorCodeNumber = invoiceRepository.DiscountInvoice(requestElectronicInvoice);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                return errorCode;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改發票狀態 => 待作廢
+        /// </summary>
+        public ErrorCodeDefine PendingVoidInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto)
+        {
+            try
+            {
+                ElectronicInvoice requestElectronicInvoice = mapper.Map<ElectronicInvoice>(editInvoiceStatusDto);
+                int errorCodeNumber = invoiceRepository.PendingVoidInvoice(requestElectronicInvoice);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                    return (ErrorCodeDefine.ServerError);
+
+                ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
+
+                return errorCode;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改發票狀態 => 待折讓
+        /// </summary>
+        public ErrorCodeDefine PendingDiscountInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto)
+        {
+            try
+            {
+                ElectronicInvoice requestElectronicInvoice = mapper.Map<ElectronicInvoice>(editInvoiceStatusDto);
+                int errorCodeNumber = invoiceRepository.PendingDiscountInvoice(requestElectronicInvoice);
 
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (ErrorCodeDefine.ServerError);

@@ -444,9 +444,17 @@ namespace UnitTest.Test.OrderTest
                 }
             };
 
+            List<ElectronicInvoice> electronicInvoices = new List<ElectronicInvoice>
+            {
+                new ElectronicInvoice
+                {
+                    ElectronicInvoiceId = 1,
+                }
+            };
+
             // Mock 設定
             orderRepositoryMock.Setup(s
-                => s.GetOrderDetailById(requestOrderIdDto.OrderId)).Returns((order, orderStates));
+                => s.GetOrderDetailById(requestOrderIdDto.OrderId)).Returns((order, orderStates, electronicInvoices));
             mapperMock.Setup(s => s.Map<ResponseGetOrderByIdDto>(order)).Returns(responseGet.Order);
             mapperMock.Setup(s => s.Map<List<ResponseGetOrderStateByIdDto>>(orderStates)).Returns(responseGet.OrderStateList);
 
@@ -465,10 +473,11 @@ namespace UnitTest.Test.OrderTest
             RequestOrderIdDto requestOrderIdDto = new RequestOrderIdDto { OrderId = 1 };
             Order order = null;
             List<OrderState> orderStates = null;
+            List<ElectronicInvoice> electronicInvoices = null;
 
             // Mock 設定
             orderRepositoryMock.Setup(s
-                => s.GetOrderDetailById(requestOrderIdDto.OrderId)).Returns((order, orderStates));
+                => s.GetOrderDetailById(requestOrderIdDto.OrderId)).Returns((order, orderStates, electronicInvoices));
 
             // Act
             ResponseGetOrderDetailByIdDto result = service.GetOrderDetailById(requestOrderIdDto);

@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DomainLayer.Models;
+using PersistentLayer.Interface;
+using System.Configuration;
+
+namespace PersistentLayer.Repository
+{
+    public class MemberPlanRepository : IMemberPlanRepository
+    {
+        private readonly string ConnStr = ConfigurationManager.ConnectionStrings["ConnStr"].ConnectionString;
+        public int EditMemberMembershipPlanStatus(MemberMembershipPlan membershipPlan)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editMemberMembershipPlanStatus @memberMembershipPlanId, @status" +
+                    ", @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@memberMembershipPlanId", SqlDbType.Int).Value = membershipPlan.MemberMembershipPlanId;
+                cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = membershipPlan.Status;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = membershipPlan.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+    }
+}

@@ -25,7 +25,8 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 取得會員詳細資料
         /// </summary>
-        Member GetMemberDetail(int memberId);
+        (Member member, List<MemberMembershipPlan> memberMembershipPlans,
+            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages, List<Coach> coaches) GetMemberDetail(int memberId);
 
         /// <summary>
         /// 根據電話或名稱取得會員

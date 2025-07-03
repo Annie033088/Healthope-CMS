@@ -31,7 +31,7 @@ namespace ApiLayer.Models.Order.Response
         /// <summary>
         /// 訂單編號
         /// </summary>
-        public long OrderNumber { get; set; }
+        public string OrderNumber { get; set; }
 
         /// <summary>
         /// 金額
@@ -108,5 +108,10 @@ namespace ApiLayer.Models.Order.Response
         /// 開立狀態 (1:處理中 2:成功 3:失敗)
         /// </summary>
         public byte Status { get; set; }
+
+        /// <summary>
+        /// 最後更新時間
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
     }
 }

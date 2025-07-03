@@ -45,17 +45,27 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 取得發票號碼
         /// </summary>
-        (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(RequestOrderIdDto orderIdDto);
+        (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(RequestOrderIdAndCategoryDto orderIdAndCategoryDto);
 
         /// <summary>
         /// 作廢發票
         /// </summary>
-        ErrorCodeDefine VoidInvoice(RequestOrderIdDto orderIdDto);
+        ErrorCodeDefine VoidInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto);
 
         /// <summary>
         /// 折讓發票
         /// </summary>
-        ErrorCodeDefine DiscountInvoice(RequestOrderIdDto orderIdDto);
+        ErrorCodeDefine DiscountInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto);
+
+        /// <summary>
+        /// 修改發票狀態 => 待作廢
+        /// </summary>
+        ErrorCodeDefine PendingVoidInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto);
+
+        /// <summary>
+        /// 修改發票狀態 => 待折讓
+        /// </summary>
+        ErrorCodeDefine PendingDiscountInvoice(RequestEditInvoiceStatusDto editInvoiceStatusDto);
 
         /// <summary>
         /// 取得發票清單

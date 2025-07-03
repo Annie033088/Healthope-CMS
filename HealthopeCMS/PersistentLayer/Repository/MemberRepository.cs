@@ -210,12 +210,16 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 取得會員詳細資料
         /// </summary>
-        public Member GetMemberDetail(int memberId)
+        public (Member member, List<MemberMembershipPlan> memberMembershipPlans,
+            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages, List<Coach> coaches) GetMemberDetail(int memberId)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
             SqlDataAdapter da = new SqlDataAdapter();
-            DataTable dt = new DataTable();
+            DataSet ds = new DataSet();
+            List<MemberMembershipPlan> memberMembershipPlans = new List<MemberMembershipPlan>();
+            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages = new List<MemberPersonalTrainingPackage>();
+            List<Coach> coaches = new List<Coach>();
 
             try
             {
@@ -226,45 +230,107 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Open();
 
                 da.SelectCommand = cmd;
-                da.Fill(dt);
+                da.Fill(ds);
 
                 cmd.Connection.Close();
 
-                if (dt.Rows.Count > 0)
+                if (ds.Tables.Count > 0)
                 {
-                    DataRow dr = dt.Rows[0];
+                    DataRow memberDataRow = ds.Tables[0].Rows[0];
                     Member member = new Member()
                     {
-                        Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
-                        Phone = dr.IsNull("f_phone") ? 0 : dr.Field<int>("f_phone"),
-                        Email = dr.IsNull("f_email") ? string.Empty : dr.Field<string>("f_email"),
-                        PhoneVerified = dr.IsNull("f_phoneVerified") ? false : dr.Field<bool>("f_phoneVerified"),
-                        PhotoUrl = dr.IsNull("f_photoUrl") ? string.Empty : dr.Field<string>("f_photoUrl"),
-                        Gender = (byte)(dr.IsNull("f_gender") ? 0 : dr.Field<byte>("f_gender")),
-                        Height = dr.IsNull("f_height") ? 0 : dr.Field<int>("f_height"),
-                        Weight = dr.IsNull("f_weight") ? 0 : dr.Field<int>("f_weight"),
-                        Status = dr.IsNull("f_status") ? false : dr.Field<bool>("f_status"),
-                        AbsenceTime = (byte)(dr.IsNull("f_gender") ? 0 : dr.Field<byte>("f_gender")),
-                        EmergencyContactName = dr.IsNull("f_emergencyContactName") ?
-                            string.Empty : dr.Field<string>("f_emergencyContactName"),
-                        EmergencyContactPhone = dr.IsNull("f_emergencyContactPhone") ?
-                            0 : dr.Field<int>("f_emergencyContactPhone"),
-                        EmergencyContactRelation = dr.IsNull("f_emergencyContactRelation") ?
-                            string.Empty : dr.Field<string>("f_emergencyContactRelation"),
-                        Birthday = dr.IsNull("f_birthday") ? DateTime.MinValue
-                            : dr.Field<DateTime>("f_birthday"),
-                        AllowGroupClass = dr.IsNull("f_allowGroupClass") ? DateTime.MinValue
-                            : dr.Field<DateTime>("f_allowGroupClass"),
-                        MembershipExpiry = dr.IsNull("f_membershipExpiry") ? DateTime.MinValue
-                            : dr.Field<DateTime>("f_membershipExpiry"),
-                        CreateTime = dr.IsNull("f_createTime") ? DateTime.MinValue
-                            : dr.Field<DateTime>("f_createTime"),
+                        Name = memberDataRow.IsNull("f_name") ? string.Empty : memberDataRow.Field<string>("f_name"),
+                        Phone = memberDataRow.IsNull("f_phone") ? 0 : memberDataRow.Field<int>("f_phone"),
+                        Email = memberDataRow.IsNull("f_email") ? string.Empty : memberDataRow.Field<string>("f_email"),
+                        PhoneVerified = memberDataRow.IsNull("f_phoneVerified") ? false : memberDataRow.Field<bool>("f_phoneVerified"),
+                        PhotoUrl = memberDataRow.IsNull("f_photoUrl") ? string.Empty : memberDataRow.Field<string>("f_photoUrl"),
+                        Gender = (byte)(memberDataRow.IsNull("f_gender") ? 0 : memberDataRow.Field<byte>("f_gender")),
+                        Height = memberDataRow.IsNull("f_height") ? 0 : memberDataRow.Field<int>("f_height"),
+                        Weight = memberDataRow.IsNull("f_weight") ? 0 : memberDataRow.Field<int>("f_weight"),
+                        Status = memberDataRow.IsNull("f_status") ? false : memberDataRow.Field<bool>("f_status"),
+                        AbsenceTime = (byte)(memberDataRow.IsNull("f_gender") ? 0 : memberDataRow.Field<byte>("f_gender")),
+                        EmergencyContactName = memberDataRow.IsNull("f_emergencyContactName") ?
+                            string.Empty : memberDataRow.Field<string>("f_emergencyContactName"),
+                        EmergencyContactPhone = memberDataRow.IsNull("f_emergencyContactPhone") ?
+                            0 : memberDataRow.Field<int>("f_emergencyContactPhone"),
+                        EmergencyContactRelation = memberDataRow.IsNull("f_emergencyContactRelation") ?
+                            string.Empty : memberDataRow.Field<string>("f_emergencyContactRelation"),
+                        Birthday = memberDataRow.IsNull("f_birthday") ? DateTime.MinValue
+                            : memberDataRow.Field<DateTime>("f_birthday"),
+                        AllowGroupClass = memberDataRow.IsNull("f_allowGroupClass") ? DateTime.MinValue
+                            : memberDataRow.Field<DateTime>("f_allowGroupClass"),
+                        MembershipExpiry = memberDataRow.IsNull("f_membershipExpiry") ? DateTime.MinValue
+                            : memberDataRow.Field<DateTime>("f_membershipExpiry"),
+                        CreateTime = memberDataRow.IsNull("f_createTime") ? DateTime.MinValue
+                            : memberDataRow.Field<DateTime>("f_createTime"),
                     };
 
-                    return member;
+                    // 取得會籍方案
+                    for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                    {
+                        MemberMembershipPlan memberMembershipPlan = new MemberMembershipPlan();
+                        memberMembershipPlan.MemberMembershipPlanId =
+                            ds.Tables[1].Rows[i].IsNull("f_memberMembershipPlanId") ? 0 :
+                            ds.Tables[1].Rows[i].Field<int>("f_memberMembershipPlanId");
+                        memberMembershipPlan.PlanName = ds.Tables[1].Rows[i].IsNull("f_planName") ?
+                            string.Empty : ds.Tables[1].Rows[i].Field<string>("f_planName");
+                        memberMembershipPlan.Duration = (byte)(ds.Tables[1].Rows[i].IsNull("f_duration") ? 0 :
+                            ds.Tables[1].Rows[i].Field<byte>("f_duration"));
+                        memberMembershipPlan.Status = (byte)(ds.Tables[1].Rows[i].IsNull("f_status") ? 0 :
+                            ds.Tables[1].Rows[i].Field<byte>("f_status"));
+                        memberMembershipPlan.EndDate = ds.Tables[1].Rows[i].IsNull("f_endDate") ?
+                            DateTime.MinValue : ds.Tables[1].Rows[i].Field<DateTime>("f_endDate");
+                        memberMembershipPlan.UpdateTime = ds.Tables[1].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[1].Rows[i].Field<DateTime>("f_updateTime");
+
+                        memberMembershipPlans.Add(memberMembershipPlan);
+                    }
+
+                    // 取得教練課方案
+                    for (int i = 0; i < ds.Tables[2].Rows.Count; i++)
+                    {
+                        MemberPersonalTrainingPackage memberPTPackage = new MemberPersonalTrainingPackage();
+                        memberPTPackage.MemberPersonalTrainingPackageId =
+                            ds.Tables[2].Rows[i].IsNull("f_memberPersonalTrainingPackageId") ? 0 :
+                            ds.Tables[2].Rows[i].Field<int>("f_memberPersonalTrainingPackageId");
+                        memberPTPackage.CoachId =
+                            ds.Tables[2].Rows[i].IsNull("f_coachId") ? 0 :
+                            ds.Tables[2].Rows[i].Field<int>("f_coachId");
+                        memberPTPackage.PlanName = ds.Tables[2].Rows[i].IsNull("f_planName") ?
+                            string.Empty : ds.Tables[2].Rows[i].Field<string>("f_planName");
+                        memberPTPackage.SessionCount =
+                            ds.Tables[2].Rows[i].IsNull("f_sessionCount") ? 0 :
+                            ds.Tables[2].Rows[i].Field<int>("f_sessionCount");
+                        memberPTPackage.Status = (byte)(ds.Tables[2].Rows[i].IsNull("f_status") ? 0 :
+                            ds.Tables[2].Rows[i].Field<byte>("f_status"));
+                        memberPTPackage.UpdateTime = ds.Tables[2].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[2].Rows[i].Field<DateTime>("f_updateTime");
+
+                        memberPersonalTrainingPackages.Add(memberPTPackage);
+                    }
+
+                    // 取得教練
+                    for (int i = 0; i < ds.Tables[3].Rows.Count; i++)
+                    {
+                        Coach coach = new Coach();
+                        coach.CoachId =
+                            ds.Tables[3].Rows[i].IsNull("f_coachId") ? 0 :
+                            ds.Tables[3].Rows[i].Field<int>("f_coachId");
+                        coach.Phone =
+                            ds.Tables[3].Rows[i].IsNull("f_phone") ? 0 :
+                            ds.Tables[3].Rows[i].Field<int>("f_phone");
+                        coach.Name = ds.Tables[3].Rows[i].IsNull("f_name") ?
+                            string.Empty : ds.Tables[3].Rows[i].Field<string>("f_name");
+                        coach.UpdateTime = ds.Tables[3].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[3].Rows[i].Field<DateTime>("f_updateTime");
+
+                        coaches.Add(coach);
+                    }
+
+                    return (member, memberMembershipPlans, memberPersonalTrainingPackages, coaches);
                 }
 
-                return (null);
+                return (null, null, null, null);
             }
             catch (Exception)
             {

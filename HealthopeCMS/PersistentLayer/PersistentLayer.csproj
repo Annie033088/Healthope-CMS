@@ -52,6 +52,7 @@
     <Compile Include="Interface\IGroupClassShowcaseRepository.cs" />
     <Compile Include="Interface\IInvoiceRepository.cs" />
     <Compile Include="Interface\ILeaseAgreementRepository.cs" />
+    <Compile Include="Interface\IMemberPlanRepository.cs" />
     <Compile Include="Interface\IMemberRepository.cs" />
     <Compile Include="Interface\IOrderRepository.cs" />
     <Compile Include="Interface\IRefundRepository.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Repository\GroupClassShowcaseRepository.cs" />
     <Compile Include="Repository\InvoiceRepository.cs" />
     <Compile Include="Repository\LeaseAgreementRepository.cs" />
+    <Compile Include="Repository\MemberPlanRepository.cs" />
     <Compile Include="Repository\MemberRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
     <Compile Include="Repository\PlanTemplateRepository.cs" />

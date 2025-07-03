@@ -57,6 +57,8 @@
     <Compile Include="Models\InvoiceTrackNumber.cs" />
     <Compile Include="Models\LeaseAgreement.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\MemberMembershipPlan.cs" />
+    <Compile Include="Models\MemberPersonalTrainingPackage.cs" />
     <Compile Include="Models\MembershipPlan.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderState.cs" />

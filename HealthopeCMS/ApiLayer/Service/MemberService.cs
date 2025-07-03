@@ -110,8 +110,17 @@ namespace ApiLayer.Service
         {
             try
             {
-                Member member = memberRepository.GetMemberDetail(memberIdDto.MemberId);
-                return mapper.Map<ResponseGetMemberDetailDto>(member);
+                (Member member, List<MemberMembershipPlan> memberMembershipPlans,
+                 List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages,
+                 List<Coach> coaches) = memberRepository.GetMemberDetail(memberIdDto.MemberId);
+
+                ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto();
+                response.Member = mapper.Map<ResponseGetMemberDetailMemberDto>(member);
+                response.MemberMembershipPlanList = mapper.Map<List<ResponseGetMemberDetailMembershipPlanDto>>(memberMembershipPlans);
+                response.MemberPersonalTrainingPackageList = mapper.Map<List<ResponseGetMemberDetailPersonalTrainingPackageDto>>(memberPersonalTrainingPackages);
+                response.CoachList = mapper.Map<List<ResponseGetMemberDetailCoachDto>>(coaches);
+
+                return response;
             }
             catch (Exception)
             {

@@ -184,7 +184,7 @@ namespace ApiLayer.Controllers.api
         /// </summary>
         [HttpPost]
         public IHttpActionResult CompleteOrderAndPrintInvoice(
-            [FromBody] RequestOrderIdDto orderIdDto)
+            [FromBody] RequestOrderIdAndCategoryDto orderIdAndCategoryDto)
         {
             try
             {
@@ -192,13 +192,14 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
 
                 if (!ModelState.IsValid
-                    || orderIdDto.OrderId < 1)
+                    || orderIdAndCategoryDto.OrderId < 1
+                    || !Enum.IsDefined(typeof(ElectronicInvoiceCategory), orderIdAndCategoryDto.Category))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) = invoiceService.EditOrderStateAndGetInvoiceNumber(orderIdDto);
+                (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) = invoiceService.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto);
 
                 if (printInvoiceDto == null || errorCode != ErrorCodeDefine.Success)
                 {
@@ -231,7 +232,7 @@ namespace ApiLayer.Controllers.api
         /// </summary>
         [HttpPost]
         public IHttpActionResult VoidInvoice(
-           [FromBody] RequestOrderIdDto orderIdDto)
+           [FromBody] RequestEditInvoiceStatusDto editInvoiceStatusDto)
         {
             try
             {
@@ -239,7 +240,8 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
 
                 if (!ModelState.IsValid
-                    || orderIdDto.OrderId < 1)
+                    || editInvoiceStatusDto.OrderId < 1
+                    || !Enum.IsDefined(typeof(ElectronicInvoiceCategory), editInvoiceStatusDto.Category))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
@@ -247,7 +249,7 @@ namespace ApiLayer.Controllers.api
 
                 response = new ResultResponse()
                 {
-                    ErrorCode = invoiceService.VoidInvoice(orderIdDto),
+                    ErrorCode = invoiceService.VoidInvoice(editInvoiceStatusDto),
                 };
                 return Ok(response);
             }
@@ -264,7 +266,7 @@ namespace ApiLayer.Controllers.api
         /// </summary>
         [HttpPost]
         public IHttpActionResult DiscountInvoice(
-           [FromBody] RequestOrderIdDto orderIdDto)
+           [FromBody] RequestEditInvoiceStatusDto editInvoiceStatusDto)
         {
             try
             {
@@ -272,7 +274,8 @@ namespace ApiLayer.Controllers.api
                 // 驗證前端傳遞的參數是否合法
 
                 if (!ModelState.IsValid
-                    || orderIdDto.OrderId < 1)
+                    || editInvoiceStatusDto.OrderId < 1
+                    || !Enum.IsDefined(typeof(ElectronicInvoiceCategory), editInvoiceStatusDto.Category))
                 {
                     response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
                     return Ok(response);
@@ -280,7 +283,75 @@ namespace ApiLayer.Controllers.api
 
                 response = new ResultResponse()
                 {
-                    ErrorCode = invoiceService.DiscountInvoice(orderIdDto),
+                    ErrorCode = invoiceService.DiscountInvoice(editInvoiceStatusDto),
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改發票狀態 => 待作廢
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult PendingVoidInvoice(
+           [FromBody] RequestEditInvoiceStatusDto editInvoiceStatusDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || editInvoiceStatusDto.OrderId < 1
+                    || !Enum.IsDefined(typeof(ElectronicInvoiceCategory), editInvoiceStatusDto.Category))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse()
+                {
+                    ErrorCode = invoiceService.PendingVoidInvoice(editInvoiceStatusDto),
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改發票狀態 => 待折讓
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult PendingDiscountInvoice(
+           [FromBody] RequestEditInvoiceStatusDto editInvoiceStatusDto)
+        {
+            try
+            {
+                ResultResponse response;
+                // 驗證前端傳遞的參數是否合法
+
+                if (!ModelState.IsValid
+                    || editInvoiceStatusDto.OrderId < 1
+                    || !Enum.IsDefined(typeof(ElectronicInvoiceCategory), editInvoiceStatusDto.Category))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse()
+                {
+                    ErrorCode = invoiceService.PendingDiscountInvoice(editInvoiceStatusDto),
                 };
                 return Ok(response);
             }

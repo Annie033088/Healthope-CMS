@@ -468,6 +468,8 @@ namespace PersistentLayer.Repository
                         invoice.TotalAmount =
                             ds.Tables[2].Rows[i].IsNull("f_totalAmount") ? 0 :
                             ds.Tables[2].Rows[i].Field<int>("f_totalAmount");
+                        invoice.UpdateTime = ds.Tables[2].Rows[i].IsNull("f_updateTime") ?
+                            DateTime.MinValue : ds.Tables[2].Rows[i].Field<DateTime>("f_updateTime");
 
                         electronicInvoices.Add(invoice);
                     }

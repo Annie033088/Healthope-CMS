@@ -9,6 +9,7 @@ using ApiLayer.Models.Order.Request;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Models;
+using MailKit.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
@@ -293,9 +294,10 @@ namespace UnitTest.Test.Invoice
         public void 完成訂單和補印發票_成功_回傳成功()
         {
             // Arrange
-            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            RequestOrderIdAndCategoryDto orderIdAndCategoryDto = new RequestOrderIdAndCategoryDto()
             {
                 OrderId = 1,
+                Category = 2
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
@@ -319,12 +321,19 @@ namespace UnitTest.Test.Invoice
                 TotalAmount = electronicInvoice.TotalAmount,
             };
 
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId)).Returns((errorCodeNumber, electronicInvoice, planName));
+                => s.EditOrderStateAndGetInvoiceNumber(requestElectronicInvoice)).Returns((errorCodeNumber, electronicInvoice, planName));
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(orderIdAndCategoryDto)).Returns(requestElectronicInvoice);
 
             // Act
-            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdDto);
+            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto);
 
             // Assert
             Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
@@ -334,9 +343,10 @@ namespace UnitTest.Test.Invoice
         public void 完成訂單和補印發票_失敗_回傳失敗()
         {
             // Arrange
-            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            RequestOrderIdAndCategoryDto orderIdAndCategoryDto = new RequestOrderIdAndCategoryDto()
             {
                 OrderId = 1,
+                Category = 2
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.ServerError;
@@ -345,12 +355,19 @@ namespace UnitTest.Test.Invoice
 
             string planName = "一個月會籍";
 
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.EditOrderStateAndGetInvoiceNumber(orderIdDto.OrderId)).Returns((errorCodeNumber, electronicInvoice, planName));
+                => s.EditOrderStateAndGetInvoiceNumber(requestElectronicInvoice)).Returns((errorCodeNumber, electronicInvoice, planName));
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(orderIdAndCategoryDto)).Returns(requestElectronicInvoice);
 
             // Act
-            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdDto);
+            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto);
 
             // Assert
             Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
@@ -360,19 +377,28 @@ namespace UnitTest.Test.Invoice
         public void 作廢發票_成功_回傳成功()
         {
             // Arrange
-            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
             {
                 OrderId = 1,
+                Category = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
 
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.VoidInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
+                => s.VoidInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
 
             // Act
-            ErrorCodeDefine result = service.VoidInvoice(orderIdDto);
+            ErrorCodeDefine result = service.VoidInvoice(editInvoiceStatusDto);
 
             // Assert
             Assert.AreEqual(result, ErrorCodeDefine.Success);
@@ -382,19 +408,28 @@ namespace UnitTest.Test.Invoice
         public void 作廢發票_失敗_回傳失敗()
         {
             // Arrange
-            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
             {
                 OrderId = 1,
+                Category = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
 
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.VoidInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
+                => s.VoidInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
 
             // Act
-            ErrorCodeDefine result = service.VoidInvoice(orderIdDto);
+            ErrorCodeDefine result = service.VoidInvoice(editInvoiceStatusDto);
 
             // Assert
             Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
@@ -404,19 +439,28 @@ namespace UnitTest.Test.Invoice
         public void 折讓發票_成功_回傳成功()
         {
             // Arrange
-            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
             {
                 OrderId = 1,
+                Category = 2,
+                UpdateTime = DateTime.Now,
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
 
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.DiscountInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
+                => s.DiscountInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
 
             // Act
-            ErrorCodeDefine result = service.DiscountInvoice(orderIdDto);
+            ErrorCodeDefine result = service.DiscountInvoice(editInvoiceStatusDto);
 
             // Assert
             Assert.AreEqual(result, ErrorCodeDefine.Success);
@@ -426,19 +470,146 @@ namespace UnitTest.Test.Invoice
         public void 折讓發票_失敗_回傳失敗()
         {
             // Arrange
-            RequestOrderIdDto orderIdDto = new RequestOrderIdDto()
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
             {
                 OrderId = 1,
+            };
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
 
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.DiscountInvoice(orderIdDto.OrderId)).Returns(errorCodeNumber);
+                => s.DiscountInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
 
             // Act
-            ErrorCodeDefine result = service.DiscountInvoice(orderIdDto);
+            ErrorCodeDefine result = service.DiscountInvoice(editInvoiceStatusDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
+        }
+
+        [TestMethod]
+        public void 修改發票狀態為待作廢_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
+            {
+                OrderId = 1,
+                Category = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.PendingVoidInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
+
+            // Act
+            ErrorCodeDefine result = service.PendingVoidInvoice(editInvoiceStatusDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改發票狀態為待作廢_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
+            {
+                OrderId = 1,
+            };
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.PendingVoidInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
+
+            // Act
+            ErrorCodeDefine result = service.PendingVoidInvoice(editInvoiceStatusDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
+        }
+
+        [TestMethod]
+        public void 修改發票狀態為待折讓_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
+            {
+                OrderId = 1,
+                Category = 2,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.PendingDiscountInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
+
+            // Act
+            ErrorCodeDefine result = service.PendingDiscountInvoice(editInvoiceStatusDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改發票狀態為待折讓_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditInvoiceStatusDto editInvoiceStatusDto = new RequestEditInvoiceStatusDto()
+            {
+                OrderId = 1,
+            };
+
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
+
+            // Mock 設定
+            invoiceRepositoryMock.Setup(s
+                => s.PendingDiscountInvoice(requestElectronicInvoice)).Returns(errorCodeNumber);
+            mapperMock.Setup(s => s.Map<ElectronicInvoice>(editInvoiceStatusDto)).Returns(requestElectronicInvoice);
+
+            // Act
+            ErrorCodeDefine result = service.PendingDiscountInvoice(editInvoiceStatusDto);
 
             // Assert
             Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);

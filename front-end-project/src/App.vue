@@ -74,6 +74,7 @@ export default {
         AddOrder: false,
         EditOrder: false,
         SelectOrder: false,
+        EditMemberMembershipPlan: false,
       },
     };
   },
