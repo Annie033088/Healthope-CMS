@@ -154,6 +154,9 @@ export default {
       }
     },
     async addPlan() {
+      this.name = this.name.trim();
+      this.introduction = this.introduction.trim();
+      
       if (!this.validInput()) {
         this.verifyFail = true;
         return;
@@ -269,7 +272,7 @@ export default {
       this.sessionCount = "";
       this.price = "";
       this.status = "false";
-      this.display = "fasle";
+      this.display = "false";
       this.avatarFile = "";
       this.revokePreviewUrl();
     },

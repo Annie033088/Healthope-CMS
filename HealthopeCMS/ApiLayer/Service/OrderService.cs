@@ -57,7 +57,7 @@ namespace ApiLayer.Service
                 Order addOrder = mapper.Map<Order>(addOrderDto);
                 (Order order, int errorCodeNumber) = orderRepository.AddOrder(addOrder, orderNumber);
 
-                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber) || order == null)
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
                     return (null, ErrorCodeDefine.ServerError);
 
                 return (mapper.Map<ResponseAddOrderDto>(order), (ErrorCodeDefine)errorCodeNumber);

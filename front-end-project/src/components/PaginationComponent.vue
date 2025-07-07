@@ -149,11 +149,12 @@ export default {
   gap: 2px;
 }
 
-.currentPage {
+.btnNormal.currentPage {
+  background-color: #b2dbb594;
   background: #b2dbb594;
 }
 
-.currentPage:hover {
+.btnNormal.currentPage:hover {
   background: #a6cdaab5;
 }
 

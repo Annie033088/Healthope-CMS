@@ -40,11 +40,6 @@
         <div class="detailRowContainer">
           <strong>操作：</strong>
           <BtnNormal text="查看訂單" @click="goOrderDetail(row)" />
-          <BtnNormal
-            v-if="row.ElectronicInvoiceId !== 0"
-            text="查看發票"
-            @click="goElectronicInvoice(row)"
-          />
         </div>
       </template>
     </TableNormal>
@@ -130,9 +125,6 @@ export default {
         path: "/order/detail",
         query: { id: row.OrderId },
       });
-    },
-    goElectronicInvoice(row) {
-      console.log(row);
     },
     resetSearchingRecord() {
       this.selectRefundType = "";

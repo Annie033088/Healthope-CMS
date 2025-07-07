@@ -140,6 +140,11 @@ export default {
           this.$router.push("/admin");
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+          
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
@@ -186,7 +191,7 @@ export default {
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
-        
+
         if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
           this.$emit("refreshPage");
         }

@@ -88,7 +88,8 @@ namespace ApiLayer.Models
             { "PlanTemplate,GetTicketPlan", new List<AdminPermission> {
                 AdminPermission.EditPlan, AdminPermission.SelectPlan} },
             { "PlanTemplate,GetAllTypePlan", new List<AdminPermission> {
-                AdminPermission.EditPlan, AdminPermission.SelectPlan} },
+                AdminPermission.EditPlan, AdminPermission.SelectPlan,
+                AdminPermission.AddOrder, AdminPermission.EditOrder} },
 
             // TermController
             { "Term,GetOldTerm", new List<AdminPermission> {

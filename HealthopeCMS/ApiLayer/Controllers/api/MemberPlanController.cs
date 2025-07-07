@@ -52,10 +52,9 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                bool successFlag = invoiceService.AddInvoiceTrackNumber(addInvoiceTrackNumberDto);
                 response = new ResultResponse()
                 {
-                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.CreateFailed
+                    ErrorCode = memberPlanService.EditMemberMembershipPlanStatus(addInvoiceTrackNumberDto)
                 };
                 return Ok(response);
             }

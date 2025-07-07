@@ -167,7 +167,7 @@ namespace ApiLayer.Service
                 else if (!string.IsNullOrEmpty(oldPhotoUrl))
                     fileService.DeleteFile(Path.Combine(rootUrl, oldPhotoUrl.Replace('/', Path.DirectorySeparatorChar)));
                 // 成功根據修改狀態, 清除教練會話
-                else if (editCoachDto.Status == false) // TODO: 完成 Client 登入後回來補清除會話相關邏輯
+                if (errorCode == ErrorCodeDefine.Success && editCoachDto.Status == false) // TODO: 完成 Client 登入後回來補清除會話相關邏輯
                 {
                     string coachRedisKey = "Coach" + editCoachDto.CoachId;
                     redisService.DeleteKey(coachRedisKey);

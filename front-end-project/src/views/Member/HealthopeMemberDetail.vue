@@ -110,7 +110,10 @@
     <div class="sectionTitle">
       <h3>會籍方案</h3>
     </div>
-    <div>
+    <div v-if="memberMembershipPlanList.length === 0" class="emptyMessage">
+      尚未有任何會籍方案。
+    </div>
+    <div v-else>
       <TableNormal
         :columns="memberMembershipPlanColumns"
         :rows="memberMembershipPlanList"
@@ -119,7 +122,10 @@
       </TableNormal>
     </div>
     <div class="sectionTitle"><h3>教練課程</h3></div>
-    <div>
+    <div v-if="memberPersonalTrainingPackageList.length === 0" class="emptyMessage">
+      尚未有任何教練課程方案。
+    </div>
+    <div v-else>
       <TableNormal
         :columns="memberPersonalTrainingPackageColumns"
         :rows="memberPersonalTrainingPackageList"
@@ -624,5 +630,15 @@ export default {
   border: #bc5858c0 solid 1px;
   border-radius: 15%;
   color: #bc5858c0;
+}
+
+.emptyMessage {
+  padding: 16px;
+  text-align: center;
+  color: #777;
+  border: 1px dashed #ccc;
+  background-color: #fafafa;
+  border-radius: 6px;
+  margin-top: 12px;
 }
 </style>

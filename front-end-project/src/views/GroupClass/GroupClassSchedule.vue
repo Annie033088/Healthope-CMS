@@ -355,7 +355,7 @@ export default {
       this.selectSortOrder = "ascending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
-      this.selectTime = "";
+      this.selectTime = "all";
       this.searchingPage = 1;
       this.getClassData();
     },
