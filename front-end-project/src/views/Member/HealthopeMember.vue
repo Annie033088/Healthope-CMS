@@ -12,8 +12,8 @@
         v-model="searchPhone"
         @search="selectMemberByPhone"
       ></SearchInput>
-       <RadioSelector
-       class="statusSelector"
+      <RadioSelector
+        class="statusSelector"
         v-model="selectStatus"
         @change="selectMemberByStatus"
         inputTitle="狀態："
@@ -69,7 +69,7 @@
                 {{ row.AllowGroupClassFlag ? "是" : "否" }}
               </div>
               <div v-if="!row.AllowGroupClassFlag">
-                <strong>允許開始日：</strong>{{ row.AllowGroupClass }}
+                <strong>允許開始日：</strong>{{ row.LocalAllowGroupClass }}
               </div>
             </div>
           </div>
@@ -112,14 +112,14 @@ export default {
   props: {
     permissionMap: {},
     text: String,
-    notificationBoxConfirmFlag:Boolean
+    notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
       searchName: "",
       searchPhone: "",
       selectStatus: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       selectSortOption: "",
       recordPerPage: "8",
       currentPage: 1,
@@ -128,8 +128,7 @@ export default {
       columns: [
         { label: "姓名", key: "Name" },
         { label: "手機", key: "Phone" },
-        // { label: "當前會籍方案", key: "MembershipPlanName" },
-        { label: "會籍到期日", key: "MembershipExpiry" },
+        { label: "會籍到期日", key: "LocalMembershipExpiry" },
         { label: "狀態", key: "Status" },
       ],
       memberList: [],
@@ -143,7 +142,10 @@ export default {
     },
     goDetail(row) {
       if (row.MemberId < 1) return;
-      this.$router.push({ path: "/member/detail", query: { id: row.MemberId } });
+      this.$router.push({
+        path: "/member/detail",
+        query: { id: row.MemberId },
+      });
     },
     selectMemberByStatus() {
       this.searchingPage = 1;
@@ -230,7 +232,7 @@ export default {
         )
       )
         return;
-      
+
       const IntMax = 2147483647;
       let searchingPage = Number(this.searchingPage);
       if (
@@ -271,21 +273,37 @@ export default {
           response.data.ApiDataObject.MemberList.forEach((member) => {
             if (member.Status === true) member.Status = "啟用中";
             else member.Status = "停用";
-            member.Phone = ("0" + member.Phone).replace(/^(\d{4})\d{3}(\d{3})$/, '$1-xxx-$2');
-            member.MembershipExpiry = member.MembershipExpiry.substring(0, 10);
+            member.Phone = ("0" + member.Phone).replace(
+              /^(\d{4})\d{3}(\d{3})$/,
+              "$1-xxx-$2"
+            );
             member.AllowGroupClass = member.AllowGroupClass.substring(0, 10);
-            const membershipExpiryTargetDate = new Date(
-              member.MembershipExpiry
+
+            if (member.MembershipExpiry.substring(0, 10) === "0001-01-01") {
+              member.MembershipExpiry = "無會籍";
+            } else {
+              const localMembershipExpiry = new Date(
+                member.MembershipExpiry + "Z"
+              );
+              member.LocalMembershipExpiry =
+                localMembershipExpiry.toLocaleDateString();
+
+              if (localMembershipExpiry < today) {
+                member.LocalMembershipExpiry = "無會籍";
+              }
+            }
+
+            const allowGroupClassTargetDate = new Date(
+              member.AllowGroupClass + "Z"
             );
 
-            if (membershipExpiryTargetDate < today)
-              member.MembershipExpiry = "無會籍";
-
-            const allowGroupClassTargetDate = new Date(member.AllowGroupClass);
-
-            if (allowGroupClassTargetDate > today)
+            if (allowGroupClassTargetDate > today) {
               member.AllowGroupClassFlag = false;
-            else member.AllowGroupClassFlag = true;
+              member.LocalAllowGroupClass =
+                allowGroupClassTargetDate.toLocaleDateString();
+            } else {
+              member.AllowGroupClassFlag = true;
+            }
 
             this.memberList.push(member);
           });
@@ -339,7 +357,7 @@ export default {
   gap: 10px 20px;
 }
 
-.statusSelector{
+.statusSelector {
   width: 300px;
 }
 

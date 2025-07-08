@@ -90,7 +90,7 @@ export default {
       searchName: "",
       searchPhone: "",
       selectStatus: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       selectSortOption: "",
       recordPerPage: "8",
       currentPage: 1,

@@ -22,21 +22,23 @@ namespace ApiLayer.Service
         private readonly ITransactionRepository transactionRepository;
         private readonly IOrderRepository orderRepository;
         private readonly IJobDispatcher jobDispatcher;
+        private readonly IInvoiceRepository invoiceRepository;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public PaymentService(IHttpService httpService, ITransactionRepository transactionRepository,
-            IOrderRepository orderRepository, IJobDispatcher jobDispatcher)
+            IOrderRepository orderRepository, IJobDispatcher jobDispatcher, IInvoiceRepository invoiceRepository)
         {
             this.httpService = httpService;
             this.transactionRepository = transactionRepository;
             this.orderRepository = orderRepository;
             this.jobDispatcher = jobDispatcher;
+            this.invoiceRepository = invoiceRepository;
         }
 
         /// <summary>
         /// 刷卡
         /// </summary>
-        public async Task<(ErrorCodeDefine errorCode, DBResponsePaymentDto dbResponse)> PayByCard(
+        public async Task<(ErrorCodeDefine errorCode, DBResponseSingleEntryPassDto dBResponseSingleEntryPassDto)> PayByCard(
             RequestCardPaymentDto requestCardPaymentDto, int creditCardTransactionId, RequestPayByCardDto payByCardDto)
         {
             try
@@ -68,33 +70,37 @@ namespace ApiLayer.Service
                 // 查看回傳是成功/失敗
                 if (response.Status)
                 {
-                    bool editTransactionFlag = transactionRepository.EditCreditCardTransactionStatusSuccess(transaction);
-
-                    if (!editTransactionFlag)
-                    {
-                        logger.Error("刷卡成功但交易紀錄更新失敗!");
-                        return (ErrorCodeDefine.CardPaySuccessTransactionUpdateFail, null);
-                    }
-
-                    (int errorCodeNumber, DBResponsePaymentDto dbResponse) = orderRepository.PayByCardSuccess(payByCardDto);
+                    // 更新交易狀態
+                    (int errorCodeNumber, DBResponseSingleEntryPassDto dBResponseSingleEntryPassDto) =
+                        orderRepository.PayByCardSuccess(payByCardDto, transaction);
 
                     if (errorCodeNumber != (int)ErrorCodeDefine.Success)
                     {
-                        logger.Error("刷卡及交易紀錄更新成功，但修改訂單失敗!");
-                        return (ErrorCodeDefine.TransactionSuccessOrderUpdateFail, null);
+                        logger.Error("交易成功，但交易紀錄及訂單狀態修改失敗!");
+                        return (ErrorCodeDefine.CardPaySuccessTransactionUpdateFail, null);
+                    }
+
+                    // 取得發票資料
+                    (int invoiceErrorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) =
+                        invoiceRepository.GetInvoiceNumberAndAddElectronicInvoice(payByCardDto.OrderId);
+
+                    if(invoiceErrorCodeNumber != (int)ErrorCodeDefine.Success)
+                    {
+                        logger.Error("交易紀錄更新成功，但列印發票失敗!");
+                        return (ErrorCodeDefine.TransactionSuccessPrintInvoiceFail, null);
                     }
 
                     RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
                     {
-                        ElectronicInvoiceId = dbResponse.ElectronicInvoiceId,
-                        InvoiceNumber = dbResponse.InvoiceNumber,
-                        PlanName = dbResponse.PlanName,
-                        RandomNumber = dbResponse.RandomNumber,
-                        TotalAmount = dbResponse.TotalAmount,
+                        ElectronicInvoiceId = responsePrintInvoiceDto.ElectronicInvoiceId,
+                        InvoiceNumber = responsePrintInvoiceDto.InvoiceNumber,
+                        PlanName = responsePrintInvoiceDto.PlanName,
+                        RandomNumber = responsePrintInvoiceDto.RandomNumber,
+                        TotalAmount = responsePrintInvoiceDto.TotalAmount,
                     };
                     jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto);
 
-                    return (ErrorCodeDefine.Success, dbResponse);
+                    return (ErrorCodeDefine.Success, dBResponseSingleEntryPassDto);
                 }
 
                 bool successEditStatusFail = transactionRepository.EditCreditCardTransactionStatusFail(creditCardTransactionId);

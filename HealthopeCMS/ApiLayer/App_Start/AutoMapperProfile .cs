@@ -40,6 +40,7 @@ namespace ApiLayer.App_Start
             CreateMap<MemberMembershipPlan, ResponseGetMemberDetailMembershipPlanDto>();
             CreateMap<MemberPersonalTrainingPackage, ResponseGetMemberDetailPersonalTrainingPackageDto>();
             CreateMap<RequestMemberMembershipPlanStatusDto, MemberMembershipPlan>();
+            CreateMap<RequestEditMemberPersonalTrainingPackageCoachDto, MemberPersonalTrainingPackage>();
             CreateMap<Coach, ResponseGetMemberDetailCoachDto>();
             CreateMap<Coach, ResponseGetCoachEditDataByIdDto>();
             CreateMap<Coach, ResponseGetCoachDto>();

@@ -53,7 +53,12 @@
                 <p>
                   <strong>{{ member.Name }}</strong>
                 </p>
-                <p>電話：{{ "0" + member.Phone }}</p>
+                <p>
+                  電話：{{ "0" + member.Phone }} ({{
+                    member.PhoneVerified ? "已驗證" : "未驗證"
+                  }})
+                </p>
+                <p>狀態：{{ member.Status ? "啟用" : "禁用" }}</p>
               </div>
             </div>
           </div>

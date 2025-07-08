@@ -384,7 +384,7 @@ namespace PersistentLayer.Repository
                         Phone = dr.IsNull("f_phone") ? 0 : dr.Field<int>("f_phone"),
                         PhoneVerified = dr.IsNull("f_phoneVerified") ? false : dr.Field<bool>("f_phoneVerified"),
                         Name = dr.IsNull("f_name") ? string.Empty : dr.Field<string>("f_name"),
-                        UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
+                        Status = dr.IsNull("f_status") ? false : dr.Field<bool>("f_status"),
                     };
                     members.Add(member);
                 }

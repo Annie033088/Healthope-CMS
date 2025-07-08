@@ -89,7 +89,7 @@ export default {
       selectStatus: "",
       selectRefundType: "",
       selectSortOption: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       recordPerPage: "8",
       refundList: [],
       columns: [

@@ -16,6 +16,7 @@ import settingRoutes from './routes/setting';
 import transactionRoutes from './routes/transaction';
 import refundRoutes from './routes/refund';
 import invoiceRoutes from './routes/invoice';
+import reportRoutes from './routes/report';
 
 import axios from '../plugins/axios';
 import { errorCodeDefine } from '../utils/globalSetting';
@@ -53,6 +54,8 @@ const routes = [
     ...refundRoutes,
     // 發票資訊
     ...invoiceRoutes,
+    // 報表
+    ...reportRoutes,
 ]
 
 const router = new VueRouter({

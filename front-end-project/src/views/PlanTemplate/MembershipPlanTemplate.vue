@@ -73,7 +73,7 @@ export default {
     return {
       selectStatus: "",
       selectSortOption: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       recordPerPage: "8",
       currentPage: 1,
       totalPage: 1,

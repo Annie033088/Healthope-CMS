@@ -540,5 +540,69 @@ namespace PersistentLayer.Repository
                 cmd.Connection.Close();
             }
         }
+
+        /// <summary>
+        /// 取得列印發票需要的資料
+        /// </summary>
+        public (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) GetInvoiceNumberAndAddElectronicInvoice(int orderId)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getInvoiceNumberAndAddElectronicInvoice @orderId, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+
+                errorCodeNumber = (int)errorCodeOutput.Value;
+                cmd.Connection.Close();
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    DBResponsePrintInvoiceDto responsePrintInvoiceDto = new DBResponsePrintInvoiceDto()
+                    {
+                        ElectronicInvoiceId = dr.IsNull("f_electronicInvoiceId") ? 0 :
+                            dr.Field<int>("f_electronicInvoiceId"),
+                        InvoiceNumber = dr.IsNull("f_invoiceNumber") ? string.Empty :
+                            dr.Field<string>("f_invoiceNumber"),
+                        RandomNumber = dr.IsNull("f_randomNumber") ? string.Empty :
+                            dr.Field<string>("f_randomNumber"),
+                        TotalAmount = dr.IsNull("f_totalAmount") ? 0 :
+                            dr.Field<int>("f_totalAmount"),
+                        PlanName = dr.IsNull("f_planName") ? string.Empty :
+                            dr.Field<string>("f_planName"),
+                    };
+
+                    return (errorCodeNumber, responsePrintInvoiceDto);
+                }
+
+                return (errorCodeNumber, null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
     }
 }

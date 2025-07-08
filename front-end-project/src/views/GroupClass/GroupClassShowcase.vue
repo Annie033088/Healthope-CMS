@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       selectCategory: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       selectSortOption: "",
       recordPerPage: "8",
       searchName: "",

@@ -223,9 +223,12 @@ namespace UnitTest.Test.MemberTest
 
             ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto()
             {
-                Name = "okwopekq122",
-                Phone = 987654342,
-                Status = true,
+                Member =
+                {
+                    Name = "okwopekq122",
+                    Phone = 987654342,
+                    Status = true,
+                }
             };
 
             // Mock 設定

@@ -232,6 +232,8 @@
     <Compile Include="Test\InvoiceTest\InvoiceServiceTest.cs" />
     <Compile Include="Test\LeaseAgreementTest\LeaseAgreementControllerTest.cs" />
     <Compile Include="Test\LeaseAgreementTest\LeaseAgreementServiceTest.cs" />
+    <Compile Include="Test\MemberPlanTest\MemberPlanControllerTest.cs" />
+    <Compile Include="Test\MemberPlanTest\MemberPlanServiceTest.cs" />
     <Compile Include="Test\MemberTest\MemberControllerTest.cs" />
     <Compile Include="Test\MemberTest\MemberServiceTest.cs" />
     <Compile Include="Test\OrderTest\OrderControllerTest.cs" />

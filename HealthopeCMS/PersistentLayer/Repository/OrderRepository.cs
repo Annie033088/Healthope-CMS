@@ -158,7 +158,8 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 刷卡付款
         /// </summary>
-        public (int errorCodeNumber, DBResponsePaymentDto dBResponsePaymentDto) PayByCardSuccess(RequestPayByCardDto payByCardDto)
+        public (int errorCodeNumber, DBResponseSingleEntryPassDto dBResponseSingleEntryPassDto) PayByCardSuccess(
+            RequestPayByCardDto payByCardDto, CreditCardTransaction creditCardTransaction)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -168,9 +169,15 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_editOrderStatusPayByCardSuccess @orderId, @coachId, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_editOrderStatusPayByCardSuccess @orderId, @coachId," +
+                    "@creditCardTransactionId, @authCode, @cardLastFour, @cardType, @transactionId, @errorCode OUTPUT";
 
                 cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = payByCardDto.OrderId;
+                cmd.Parameters.Add("@creditCardTransactionId", SqlDbType.Int).Value = creditCardTransaction.CreditCardTransactionId;
+                cmd.Parameters.Add("@authCode", SqlDbType.Char).Value = creditCardTransaction.AuthCode;
+                cmd.Parameters.Add("@cardLastFour", SqlDbType.Char).Value = creditCardTransaction.CardLastFour;
+                cmd.Parameters.Add("@cardType", SqlDbType.VarChar).Value = creditCardTransaction.CardType;
+                cmd.Parameters.Add("@transactionId", SqlDbType.Char).Value = creditCardTransaction.TransactionId;
 
                 if (payByCardDto.CoachId == null)
                     cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = DBNull.Value;
@@ -193,30 +200,13 @@ namespace PersistentLayer.Repository
 
                 if (ds.Tables.Count > 0)
                 {
-                    DBResponsePaymentDto response = new DBResponsePaymentDto
-                    {
-                        ElectronicInvoiceId = ds.Tables[0].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
-                            ds.Tables[0].Rows[0].Field<int>("f_electronicInvoiceId"),
-                        InvoiceNumber = ds.Tables[0].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
-                            ds.Tables[0].Rows[0].Field<string>("f_invoiceNumber"),
-                        RandomNumber = ds.Tables[0].Rows[0].IsNull("f_randomNumber") ? string.Empty :
-                            ds.Tables[0].Rows[0].Field<string>("f_randomNumber"),
-                        TotalAmount = ds.Tables[0].Rows[0].IsNull("f_totalAmount") ? 0 :
-                            ds.Tables[0].Rows[0].Field<int>("f_totalAmount"),
-                        PlanName = ds.Tables[0].Rows[0].IsNull("f_planName") ? string.Empty :
-                            ds.Tables[0].Rows[0].Field<string>("f_planName"),
-                        SingleEntryPassId = null,
-                        TicketCode = null,
-                    };
+                    DBResponseSingleEntryPassDto response = new DBResponseSingleEntryPassDto();
 
                     // 若是票劵方案, 取得票劵資訊
-                    if (ds.Tables.Count > 1)
-                    {
-                        response.SingleEntryPassId = ds.Tables[1].Rows[0].IsNull("f_singleEntryPassId") ? 0 :
-                                ds.Tables[1].Rows[0].Field<int>("f_singleEntryPassId");
-                        response.TicketCode = ds.Tables[1].Rows[0].IsNull("f_ticketCode") ? Guid.Empty :
-                                ds.Tables[1].Rows[0].Field<Guid>("f_ticketCode");
-                    }
+                    response.SingleEntryPassId = ds.Tables[0].Rows[0].IsNull("f_singleEntryPassId") ? 0 :
+                            ds.Tables[0].Rows[0].Field<int>("f_singleEntryPassId");
+                    response.TicketCode = ds.Tables[0].Rows[0].IsNull("f_ticketCode") ? Guid.Empty :
+                            ds.Tables[0].Rows[0].Field<Guid>("f_ticketCode");
 
                     return (errorCodeNumber, response);
                 }

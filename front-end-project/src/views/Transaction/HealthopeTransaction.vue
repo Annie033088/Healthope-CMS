@@ -97,7 +97,7 @@ export default {
       selectStatus: "",
       selectMethod: "",
       selectSortOption: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       recordPerPage: "8",
       transactionList: [],
       columns: [

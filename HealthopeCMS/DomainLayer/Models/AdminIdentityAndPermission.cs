@@ -128,6 +128,16 @@ namespace DomainLayer.Models
         /// 修改會員的私人課程教練
         /// </summary>
         EditMemberPersonalPeckagePlan = 24,
+
+        /// <summary>
+        /// 查看財務報表
+        /// </summary>
+        SelectFinancialStatements = 25,
+
+        /// <summary>
+        /// 查看教練課報表
+        /// </summary>
+        SelectCoachReport = 26,
     }
 
     public enum AdminIdentity : byte
@@ -194,6 +204,8 @@ namespace DomainLayer.Models
                 AdminPermission.SelectTransaction,
                 AdminPermission.EditMemberMembershipPlan,
                 AdminPermission.EditMemberPersonalPeckagePlan,
+                AdminPermission.SelectFinancialStatements,
+                AdminPermission.SelectCoachReport,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -207,6 +219,8 @@ namespace DomainLayer.Models
                 AdminPermission.SelectTransaction,
                 AdminPermission.EditMemberMembershipPlan,
                 AdminPermission.EditMemberPersonalPeckagePlan,
+                AdminPermission.SelectFinancialStatements,
+                AdminPermission.SelectCoachReport,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,
@@ -219,6 +233,7 @@ namespace DomainLayer.Models
                 AdminPermission.SelectMember,
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
                 AdminPermission.EditMemberPersonalPeckagePlan,
+                AdminPermission.SelectCoachReport,
             } },
             {AdminIdentity.CourseManager, new List<AdminPermission>{
                 AdminPermission.EditGroupClassShowcase,AdminPermission.SelectGroupClassShowcase,
@@ -229,6 +244,8 @@ namespace DomainLayer.Models
             } },
             {AdminIdentity.Accountant, new List<AdminPermission>{
                 AdminPermission.SelectTransaction,
+                AdminPermission.SelectFinancialStatements,
+                AdminPermission.SelectCoachReport,
             } }
         };
     }

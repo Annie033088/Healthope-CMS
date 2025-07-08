@@ -24,6 +24,7 @@ namespace UnitTest.Test.PaymentTest
         private Mock<ITransactionRepository> transactionRepositoryMock;
         private Mock<IOrderRepository> orderRepositoryMock;
         private Mock<IJobDispatcher> jobDispatcherMock;
+        private Mock<IInvoiceRepository> invoiceRepositoryMock;
         private PaymentService service;
 
         [TestInitialize]
@@ -33,8 +34,9 @@ namespace UnitTest.Test.PaymentTest
             transactionRepositoryMock = new Mock<ITransactionRepository>();
             orderRepositoryMock = new Mock<IOrderRepository>();
             jobDispatcherMock = new Mock<IJobDispatcher>();
+            invoiceRepositoryMock = new Mock<IInvoiceRepository>();
             service = new PaymentService(httpServiceMock.Object, transactionRepositoryMock.Object,
-                orderRepositoryMock.Object, jobDispatcherMock.Object);
+                orderRepositoryMock.Object, jobDispatcherMock.Object, invoiceRepositoryMock.Object);
         }
 
         [TestMethod]
@@ -69,24 +71,22 @@ namespace UnitTest.Test.PaymentTest
             string responseString = json;
             ResponseCardPaymentDto response = JsonConvert.DeserializeObject<ResponseCardPaymentDto>(responseString);
 
-            bool editTransactionFlag = true;
-
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
-            DBResponsePaymentDto dbResponse = new DBResponsePaymentDto
+            DBResponseSingleEntryPassDto dbResponse = new DBResponseSingleEntryPassDto
             {
-                ElectronicInvoiceId = creditCardTransactionId,
+                SingleEntryPassId = 1,
+                TicketCode = Guid.NewGuid(),
             };
 
             // Mock 設定
             httpServiceMock.Setup(s => s.SendPostAsync(It.IsAny<string>(), It.IsAny<StringContent>(), It.IsAny<TimeSpan>()))
                 .ReturnsAsync(responseString);
-            transactionRepositoryMock.Setup(s => s.EditCreditCardTransactionStatusSuccess(It.IsAny<CreditCardTransaction>()))
-                .Returns(editTransactionFlag);
-            orderRepositoryMock.Setup(s => s.PayByCardSuccess(It.IsAny<RequestPayByCardDto>())).Returns((errorCodeNumber, dbResponse));
+            orderRepositoryMock.Setup(s => s.PayByCardSuccess(It.IsAny<RequestPayByCardDto>(), It.IsAny<CreditCardTransaction>()))
+                .Returns((errorCodeNumber, dbResponse));
             jobDispatcherMock.Setup(s => s.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(It.IsAny<RequestPrintInvoiceDto>()));
 
             // Act
-            (ErrorCodeDefine errorCode, DBResponsePaymentDto dbResponse) result = await service.PayByCard(
+            (ErrorCodeDefine errorCode, DBResponseSingleEntryPassDto dbResponse) result = await service.PayByCard(
                 requestCardPaymentDto, creditCardTransactionId, payByCardDto);
 
             // Assert
@@ -127,9 +127,10 @@ namespace UnitTest.Test.PaymentTest
 
             bool successEditStatusFail = true;
 
-            DBResponsePaymentDto dbResponse = new DBResponsePaymentDto
+            DBResponseSingleEntryPassDto dbResponse = new DBResponseSingleEntryPassDto
             {
-                ElectronicInvoiceId = creditCardTransactionId,
+                SingleEntryPassId = 1,
+                TicketCode = Guid.NewGuid(),
             };
 
             // Mock 設定
@@ -139,7 +140,7 @@ namespace UnitTest.Test.PaymentTest
                 .Returns(successEditStatusFail);
 
             // Act
-            (ErrorCodeDefine errorCode, DBResponsePaymentDto dbResponse) result = await service.PayByCard(
+            (ErrorCodeDefine errorCode, DBResponseSingleEntryPassDto dbResponse) result = await service.PayByCard(
                 requestCardPaymentDto, creditCardTransactionId, payByCardDto);
 
             // Assert

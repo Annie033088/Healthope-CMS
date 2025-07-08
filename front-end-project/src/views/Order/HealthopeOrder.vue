@@ -145,7 +145,7 @@ export default {
       selectState: "",
       selectMethod: "",
       selectSortOption: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       recordPerPage: "8",
       orderList: [],
       columns: [

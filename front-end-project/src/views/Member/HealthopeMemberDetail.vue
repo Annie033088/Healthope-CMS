@@ -122,14 +122,17 @@
       </TableNormal>
     </div>
     <div class="sectionTitle"><h3>教練課程</h3></div>
-    <div v-if="memberPersonalTrainingPackageList.length === 0" class="emptyMessage">
+    <div
+      v-if="memberPersonalTrainingPackageList.length === 0"
+      class="emptyMessage"
+    >
       尚未有任何教練課程方案。
     </div>
     <div v-else>
       <TableNormal
         :columns="memberPersonalTrainingPackageColumns"
         :rows="memberPersonalTrainingPackageList"
-        @changeCoach="editMemberPersonalPeckagePlanCoach"
+        @changeCoach="editMemberPersonalTrainingPackageCoach"
       >
       </TableNormal>
     </div>
@@ -172,7 +175,7 @@ export default {
           enableFlag: this.permissionMap.EditMemberMembershipPlan,
         },
         { label: "最後修改日期", key: "LocalUpdateTime" },
-        { label: "結束日期", key: "EndDate" },
+        { label: "結束日期", key: "LocalEndDate" },
       ],
       memberPersonalTrainingPackageColumns: [
         { label: "方案名稱", key: "PlanName" },
@@ -226,7 +229,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = "/member/detail";
+                let redirectRoute = null;
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -244,10 +247,10 @@ export default {
         console.error("修改會員的會籍方案時發生錯誤", error);
       }
     },
-    async editMemberPersonalPeckagePlanCoach(row) {
+    async editMemberPersonalTrainingPackageCoach(row) {
       if (row.Coach.Value < 1) return;
 
-      const editStatusDto = {
+      const editCoachDto = {
         MemberPersonalTrainingPackageId: row.MemberPersonalTrainingPackageId,
         CoachId: row.Coach.Value,
         UpdateTime: row.UpdateTime,
@@ -256,8 +259,8 @@ export default {
       try {
         // post
         const response = await this.$axios.post(
-          "/api/MemberPlan/EditMemberPersonalPeckagePlanCoach",
-          editStatusDto
+          "/api/MemberPlan/EditMemberPersonalTrainingPackageCoach",
+          editCoachDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
@@ -273,7 +276,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = "/member/detail";
+                let redirectRoute = null;
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -361,10 +364,13 @@ export default {
             };
 
             if (plan.EndDate.substring(0, 10) === "0001-01-01") {
-              plan.EndDate = "-";
+              plan.LocalEndDate = "-";
+            } else {
+              const localEndTime = new Date(plan.EndDate + "Z");
+              plan.LocalEndDate = localEndTime.toLocaleString();
             }
 
-            const localUpdateTime = new Date(plan.UpdateTime);
+            const localUpdateTime = new Date(plan.UpdateTime + "Z");
             plan.LocalUpdateTime = localUpdateTime.toLocaleString();
           });
 
@@ -388,7 +394,7 @@ export default {
               OldValue: String(plan.CoachId),
             };
 
-            const localUpdateTime = new Date(plan.UpdateTime);
+            const localUpdateTime = new Date(plan.UpdateTime + "Z");
             plan.LocalUpdateTime = localUpdateTime.toLocaleString();
           });
           // 調整顯示格式

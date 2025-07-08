@@ -61,5 +61,10 @@ namespace PersistentLayer.Interface
         /// 取得字軌
         /// </summary>
         (List<ElectronicInvoice> invoices, int totalPage) GetInvoice(RequestGetInvoiceDto getInvoiceDto);
+
+        /// <summary>
+        /// 取得列印發票需要的資料
+        /// </summary>
+        (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) GetInvoiceNumberAndAddElectronicInvoice(int orderId);
     }
 }

@@ -454,23 +454,74 @@
         ></BtnSubSideBar>
       </div>
     </div>
-    <div class="sidebarRow">
-      <button class="btnSidebar">
-        <svg
-          class="sidebarIcon"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+    <div>
+      <div class="sidebarRow" v-if="reportFlag">
+        <button
+          class="btnDropDownSidebar"
+          @click="
+            dropDownFlag.Report
+              ? closeDropdown('Report')
+              : openDropdown('Report')
+          "
         >
-          <path
-            d="M4 19V20H22V22H2V2H4V17C7 17 10 15 12.1 11.4C15.1 6.4 18.4 4 22 4V6C19.2 6 16.5 8.1 13.9 12.5C11.3 16.6 7.7 19 4 19Z"
-            fill="black"
-          />
-        </svg>
-        <b>報表</b>
-      </button>
+          <svg
+            class="sidebarIcon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 19V20H22V22H2V2H4V17C7 17 10 15 12.1 11.4C15.1 6.4 18.4 4 22 4V6C19.2 6 16.5 8.1 13.9 12.5C11.3 16.6 7.7 19 4 19Z"
+              fill="black"
+            />
+          </svg>
+          <b>報表</b>
+          <svg
+            v-if="!dropDownFlag.Report"
+            class="sidebarSymbol"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 12.998H13V18.998H11V12.998H5V10.998H11V4.99799H13V10.998H19V12.998Z"
+              fill="black"
+            />
+          </svg>
+          <svg
+            v-else
+            class="sidebarSymbol"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M19 12.998H5V10.998H19V12.998Z" fill="black" />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="btnSubContainer"
+        :class="dropDownFlag.Report ? 'showDropdown' : 'hideDropdown'"
+        @animationend="handleAnimationEnd('Report')"
+        v-if="showElement.Report"
+      >
+        <BtnSubSideBar
+          v-if="permissionMap.SelectFinancialStatements"
+          text="財務報表"
+          @click="redirect('/financialStatements')"
+        ></BtnSubSideBar>
+        <BtnSubSideBar
+          v-if="permissionMap.SelectCoachReport"
+          text="教練課報表"
+          @click="redirect('/coachClassPerformanceReport')"
+        ></BtnSubSideBar>
+      </div>
     </div>
   </div>
 </template>
@@ -495,12 +546,14 @@ export default {
         PlanTemplate: false,
         Order: false,
         Setting: false,
+        Report: false,
       },
       showElement: {
         Course: false,
         PlanTemplate: false,
         Order: false,
         Setting: false,
+        Report: false,
       },
     };
   },
@@ -513,10 +566,12 @@ export default {
       this.showElement.Order = false;
       this.showElement.PlanTemplate = false;
       this.showElement.Setting = false;
+      this.showElement.Report = false;
       this.dropDownFlag.Course = false;
       this.dropDownFlag.Order = false;
       this.dropDownFlag.PlanTemplate = false;
       this.dropDownFlag.Setting = false;
+      this.dropDownFlag.Report = false;
 
       this.showElement[key] = true;
       this.dropDownFlag[key] = true;
@@ -576,6 +631,12 @@ export default {
     },
     settingFlag() {
       return this.permissionMap.EditOrder;
+    },
+    reportFlag() {
+      return (
+        this.permissionMap.SelectFinancialStatements ||
+        this.permissionMap.SelectCoachReport
+      );
     },
   },
   mounted() {

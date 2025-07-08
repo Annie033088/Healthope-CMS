@@ -119,7 +119,7 @@ export default {
     return {
       adminList: [],
       selectStatus: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       selectSortOption: "",
       recordPerPage: "8",
       searchAccount: "",

@@ -10,7 +10,7 @@ namespace ApiLayer.Interface
         /// <summary>
         /// 刷卡
         /// </summary>
-        Task<(ErrorCodeDefine errorCode, DBResponsePaymentDto dbResponse)> PayByCard(
+        Task<(ErrorCodeDefine errorCode, DBResponseSingleEntryPassDto dBResponseSingleEntryPassDto)> PayByCard(
             RequestCardPaymentDto requestCardPaymentDto, int creditCardTransactionId, RequestPayByCardDto payByCardDto);
     }
 }

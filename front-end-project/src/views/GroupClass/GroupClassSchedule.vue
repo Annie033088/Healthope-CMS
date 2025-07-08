@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       selectStatus: "",
-      selectSortOrder: "ascending",
+      selectSortOrder: "descending",
       selectSortOption: "",
       recordPerPage: "8",
       selectTime: "all",

@@ -20,7 +20,8 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 刷卡付款
         /// </summary>
-        (int errorCodeNumber, DBResponsePaymentDto dBResponsePaymentDto) PayByCardSuccess(RequestPayByCardDto payByCardDto);
+        (int errorCodeNumber, DBResponseSingleEntryPassDto dBResponseSingleEntryPassDto) PayByCardSuccess(
+            RequestPayByCardDto payByCardDto, CreditCardTransaction creditCardTransaction);
 
         /// <summary>
         /// 取得訂單

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Caching;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
@@ -268,16 +269,23 @@ namespace UnitTest.Test.MemberTest
                 Phone = 987654342,
                 Status = true,
             };
+            List<MemberMembershipPlan> memberMembershipPlans = null;
+            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages = null;
+            List<Coach> coaches = null;
 
             ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto()
             {
-                Name = "okwopekq122",
-                Phone = 987654342,
-                Status = true,
+                Member =
+                {
+                    Name = "okwopekq122",
+                    Phone = 987654342,
+                    Status = true,
+                },
             };
 
             // Mock 設定
-            memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId)).Returns(member);
+            memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId))
+                .Returns((member, memberMembershipPlans, memberPersonalTrainingPackages, coaches));
             mapperMock.Setup(s => s.Map<ResponseGetMemberDetailDto>(member)).Returns(response);
 
             // Act
@@ -297,11 +305,15 @@ namespace UnitTest.Test.MemberTest
             };
 
             Member member = null;
+            List<MemberMembershipPlan> memberMembershipPlans = null;
+            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages = null;
+            List<Coach> coaches = null;
 
             ResponseGetMemberDetailDto response = null;
 
             // Mock 設定
-            memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId)).Returns(member);
+            memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId))
+                .Returns((member, memberMembershipPlans, memberPersonalTrainingPackages, coaches));
 
             // Act
             ResponseGetMemberDetailDto result = memberService.GetMemberDetail(memberIdDto);

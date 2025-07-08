@@ -327,7 +327,7 @@ namespace UnitTest.Test.OrderTest
             };
 
             ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
-            DBResponsePaymentDto dbResponse = new DBResponsePaymentDto()
+            DBResponseSingleEntryPassDto dbResponse = new DBResponseSingleEntryPassDto()
             {
                 SingleEntryPassId = 1,
                 TicketCode = Guid.NewGuid(),
@@ -387,7 +387,7 @@ namespace UnitTest.Test.OrderTest
             };
 
             ErrorCodeDefine errorCode = ErrorCodeDefine.PayFailed;
-            DBResponsePaymentDto dbResponse = null;
+            DBResponseSingleEntryPassDto dbResponse = null;
 
             string qrCodeString = string.Empty;
 

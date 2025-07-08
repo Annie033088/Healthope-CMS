@@ -98,8 +98,8 @@ export const errorCodeDefine = {
     // 刷卡成功但交易紀錄更新失敗
     CardPaySuccessTransactionUpdateFail: 32,
 
-    // 交易紀錄更新成功但訂單更新失敗
-    TransactionSuccessOrderUpdateFail: 33,
+    // 交易紀錄更新成功但列印發票失敗
+    TransactionSuccessPrintInvoiceFail: 33,
 
     // 時間/日期超過
     TimeExceeded: 34,
@@ -118,6 +118,12 @@ export const errorCodeDefine = {
 
     // 無法開立跨期發票，請手動開立發票
     CantPrintCrossDateInvoice: 39,
+
+    // 已有進行中的會籍
+    OngoingMembershipExists: 40,
+
+    // 已有暫停中的會籍
+    PausedMembershipExists: 41,
 };
 
 
@@ -240,6 +246,12 @@ export function errorCodeToMessage(errorCode) {
         case 39:
             message = "無法開立跨期發票，請手動開立發票";
             return message;
+        case 40:
+            message = "已有一筆使用中的會籍!";
+            return message;
+        case 41:
+            message = "尚有一筆已暫停的會籍尚未恢復，請先恢復使用";
+            return message;
         default:
             message = "";
             return message;
@@ -321,6 +333,12 @@ export const adminPermission = {
 
     // 修改會員的私人課程教練
     EditMemberPersonalPeckagePlan: 24,
+
+    // 查看財務報表
+    SelectFinancialStatements: 25,
+
+    // 查看教練課報表
+    SelectCoachReport: 26,
 }
 
 export default function adminIdentityToText(identity) {

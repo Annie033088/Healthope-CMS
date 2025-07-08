@@ -142,7 +142,7 @@ namespace ApiLayer.Service
                     Amount = creditCardTransaction.Amount,
                 };
 
-                (ErrorCodeDefine errorCode, DBResponsePaymentDto dbResponse) = await paymentService.PayByCard(
+                (ErrorCodeDefine errorCode, DBResponseSingleEntryPassDto dbResponse) = await paymentService.PayByCard(
                     requestCardPayment, creditCardTransaction.CreditCardTransactionId, payByCardDto);
 
                 string qrCodeString = string.Empty;

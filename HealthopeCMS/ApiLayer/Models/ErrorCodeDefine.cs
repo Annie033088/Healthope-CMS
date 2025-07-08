@@ -168,9 +168,9 @@
         CardPaySuccessTransactionUpdateFail = 32,
 
         /// <summary>
-        /// 交易紀錄更新成功但訂單更新失敗
+        /// 交易紀錄更新成功但列印發票失敗
         /// </summary>
-        TransactionSuccessOrderUpdateFail = 33,
+        TransactionSuccessPrintInvoiceFail = 33,
 
         /// <summary>
         /// 時間/日期超過
@@ -201,5 +201,15 @@
         /// 無法開立跨期發票，請手動開立發票
         /// </summary>
         CantPrintCrossDateInvoice = 39,
+
+        /// <summary>
+        /// 已有進行中的會籍
+        /// </summary>
+        OngoingMembershipExists = 40,
+
+        /// <summary>
+        /// 已有暫停中的會籍
+        /// </summary>
+        PausedMembershipExists = 41,
     }
 }
