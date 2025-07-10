@@ -82,7 +82,7 @@ export default {
       columns: [
         { label: "發票號碼", key: "InvoiceNumber" },
         { label: "隨機碼", key: "RandomNumber" },
-        { label: "開立時間", key: "InvoiceTime" },
+        { label: "開立時間", key: "LocalInvoiceTime" },
         { label: "狀態", key: "Status" },
         { label: "總計額", key: "TotalAmount" },
         { label: "分類", key: "Category" },
@@ -158,15 +158,17 @@ export default {
 
             invoice.TotalAmount = "$" + invoice.TotalAmount;
 
-            let invoiceTime = "";
+            let localInvoiceTime = "";
 
             if (invoice.InvoiceTime.split("T")[0] === "1900-01-01") {
-              invoiceTime = "-";
+              localInvoiceTime = "-";
             } else {
-              invoiceTime = new Date(invoice.InvoiceTime).toLocaleString();
+              localInvoiceTime = new Date(
+                invoice.InvoiceTime + "Z"
+              ).toLocaleString();
             }
 
-            invoice.InvoiceTime = invoiceTime;
+            invoice.LocalInvoiceTime = localInvoiceTime;
           });
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵

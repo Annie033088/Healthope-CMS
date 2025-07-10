@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using ApiLayer.Interface;
-using ApiLayer.Models.Transaction.Response;
-using ApiLayer.Models.Transaction;
-using ApiLayer.Models;
-using DomainLayer.Utility;
-using PersistentLayer.Models;
 using ApiLayer.Filters;
-using NLog;
+using ApiLayer.Interface;
+using ApiLayer.Models;
 using ApiLayer.Models.Refund;
 using ApiLayer.Models.Refund.Response;
+using DomainLayer.Utility;
+using NLog;
+using PersistentLayer.Models;
 
 namespace ApiLayer.Controllers.api
 {

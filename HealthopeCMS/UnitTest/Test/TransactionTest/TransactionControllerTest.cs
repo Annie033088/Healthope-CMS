@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+﻿using System.Web.Http;
 using ApiLayer.Controllers.api;
 using ApiLayer.Interface;
 using ApiLayer.Models;
-using ApiLayer.Models.PlanTemplate.Request;
-using ApiLayer.Models.PlanTemplate.Response;
-using ApiLayer.Models.Response.PlanTemplate;
 using ApiLayer.Models.Transaction.Request;
 using ApiLayer.Models.Transaction.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

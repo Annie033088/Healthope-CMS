@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ApiLayer.Models.Refund.Response;
 using PersistentLayer.Models;
-using System.Web.Http;
-using ApiLayer.Models.Refund.Response;
 
 namespace ApiLayer.Interface
 {

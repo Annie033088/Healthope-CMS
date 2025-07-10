@@ -98,7 +98,7 @@ export default {
         { label: "原始應退", key: "RefundAmount" },
         { label: "違約金", key: "PenaltyAmount" },
         { label: "淨退額", key: "NetRefund" },
-        { label: "退費時間", key: "CreateTime" },
+        { label: "退費時間", key: "LocalCreateTime" },
       ],
       resetDetailIndexFlag: false,
       currentPage: 1,
@@ -179,9 +179,11 @@ export default {
             refund.PenaltyAmount =
               refund.PenaltyAmount === 0 ? "-" : "$" + refund.PenaltyAmount;
 
-            const createTime = new Date(refund.CreateTime).toLocaleString();
+            const localCreateTime = new Date(
+              refund.CreateTime + "Z"
+            ).toLocaleString();
 
-            refund.CreateTime = createTime;
+            refund.LocalCreateTime = localCreateTime;
           });
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵

@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
-using System.Web.Http;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Job;
-using ApiLayer.Models.Order.Request;
 using PersistentLayer.Models;
 
 namespace ApiLayer.Interface

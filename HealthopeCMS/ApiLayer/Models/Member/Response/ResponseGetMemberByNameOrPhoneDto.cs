@@ -11,7 +11,7 @@
         /// 手機
         /// </summary>
         public int Phone { get; set; }
-         
+
         /// <summary>
         /// 手機 OTP 是否驗證
         /// </summary>

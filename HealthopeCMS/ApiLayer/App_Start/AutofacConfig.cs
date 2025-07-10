@@ -79,6 +79,12 @@ namespace ApiLayer.App_Start
             builder.RegisterType<MemberPlanService>().As<IMemberPlanService>().InstancePerRequest();
             builder.RegisterType<MemberPlanRepository>().As<IMemberPlanRepository>().InstancePerRequest();
 
+            builder.RegisterType<ReportService>().As<IReportService>().InstancePerRequest();
+            builder.RegisterType<ReportRepository>().As<IReportRepository>().InstancePerRequest();
+
+            builder.RegisterType<MemberClassService>().As<IMemberClassService>().InstancePerRequest();
+            builder.RegisterType<MemberClassRepository>().As<IMemberClassRepository>().InstancePerRequest();
+
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>
             {

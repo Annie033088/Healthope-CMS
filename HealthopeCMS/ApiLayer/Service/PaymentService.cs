@@ -84,7 +84,7 @@ namespace ApiLayer.Service
                     (int invoiceErrorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) =
                         invoiceRepository.GetInvoiceNumberAndAddElectronicInvoice(payByCardDto.OrderId);
 
-                    if(invoiceErrorCodeNumber != (int)ErrorCodeDefine.Success)
+                    if (invoiceErrorCodeNumber != (int)ErrorCodeDefine.Success)
                     {
                         logger.Error("交易紀錄更新成功，但列印發票失敗!");
                         return (ErrorCodeDefine.TransactionSuccessPrintInvoiceFail, null);

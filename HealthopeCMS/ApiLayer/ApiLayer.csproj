@@ -229,9 +229,11 @@
     <Compile Include="Controllers\api\OrderController.cs" />
     <Compile Include="Controllers\api\PlanTemplateController.cs" />
     <Compile Include="Controllers\api\RefundController.cs" />
+    <Compile Include="Controllers\api\ReportController.cs" />
     <Compile Include="Controllers\api\TermController.cs" />
     <Compile Include="Controllers\api\TransactionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MemberClassController.cs" />
     <Compile Include="Filters\VeriyLoginFilter.cs" />
     <Compile Include="Filters\AdminPermissionAuthFilter.cs" />
     <Compile Include="Filters\RequestLoggerFilter.cs" />
@@ -247,6 +249,7 @@
     <Compile Include="Interface\IInvoiceService.cs" />
     <Compile Include="Interface\ILeaseAgreementService.cs" />
     <Compile Include="Interface\IEmailService.cs" />
+    <Compile Include="Interface\IMemberClassService.cs" />
     <Compile Include="Interface\IMemberPlanService.cs" />
     <Compile Include="Interface\IMemberService.cs" />
     <Compile Include="Interface\IMultipartRequestService.cs" />
@@ -256,6 +259,7 @@
     <Compile Include="Interface\IRedisService.cs" />
     <Compile Include="Interface\IGroupClassShowcaseService.cs" />
     <Compile Include="Interface\IRefundService.cs" />
+    <Compile Include="Interface\IReportService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Interface\ITermService.cs" />
     <Compile Include="Interface\ITransactionService.cs" />
@@ -373,6 +377,7 @@
     <Compile Include="Service\InvoiceService.cs" />
     <Compile Include="Service\LeaseAgreementService.cs" />
     <Compile Include="Service\EmailService.cs" />
+    <Compile Include="Service\MemberClassService.cs" />
     <Compile Include="Service\MemberPlanService.cs" />
     <Compile Include="Service\MemberService.cs" />
     <Compile Include="Service\MultipartRequestService.cs" />
@@ -381,6 +386,7 @@
     <Compile Include="Service\PlanTemplateService.cs" />
     <Compile Include="Service\RedisService.cs" />
     <Compile Include="Service\RefundService.cs" />
+    <Compile Include="Service\ReportService.cs" />
     <Compile Include="Service\SessionService.cs" />
     <Compile Include="Service\TermService.cs" />
     <Compile Include="Service\TransactionService.cs" />
@@ -407,14 +413,13 @@
     <Content Include="wwwroot\css\116.684a2557.css" />
     <Content Include="wwwroot\css\124.b626eaf1.css" />
     <Content Include="wwwroot\css\126.97b3e68e.css" />
+    <Content Include="wwwroot\css\143.e7202ada.css" />
     <Content Include="wwwroot\css\149.58088de3.css" />
-    <Content Include="wwwroot\css\16.a249b2f5.css" />
     <Content Include="wwwroot\css\247.05a25e05.css" />
     <Content Include="wwwroot\css\315.2d7304c4.css" />
     <Content Include="wwwroot\css\319.bcfd649f.css" />
     <Content Include="wwwroot\css\340.b4195538.css" />
     <Content Include="wwwroot\css\385.c479bf26.css" />
-    <Content Include="wwwroot\css\451.f3ad5e23.css" />
     <Content Include="wwwroot\css\47.8e524bab.css" />
     <Content Include="wwwroot\css\482.e16a49e9.css" />
     <Content Include="wwwroot\css\488.f5ff85d5.css" />
@@ -434,14 +439,17 @@
     <Content Include="wwwroot\css\809.47970732.css" />
     <Content Include="wwwroot\css\811.98f66309.css" />
     <Content Include="wwwroot\css\822.d4e97a42.css" />
+    <Content Include="wwwroot\css\845.3de9aef2.css" />
+    <Content Include="wwwroot\css\852.5df162e9.css" />
     <Content Include="wwwroot\css\861.115f0d8a.css" />
+    <Content Include="wwwroot\css\875.44d71fa9.css" />
     <Content Include="wwwroot\css\877.b13d471b.css" />
     <Content Include="wwwroot\css\900.494f3722.css" />
     <Content Include="wwwroot\css\907.10b77ef2.css" />
     <Content Include="wwwroot\css\972.3de9aef2.css" />
     <Content Include="wwwroot\css\979.5f24eb27.css" />
     <Content Include="wwwroot\css\994.d349e94b.css" />
-    <Content Include="wwwroot\css\app.119d9d3b.css" />
+    <Content Include="wwwroot\css\app.bc793d58.css" />
     <Content Include="wwwroot\img\avatar1.ca19a3cf.png" />
     <Content Include="wwwroot\img\HealthopeCMSLogo.8c088643.png" />
     <Content Include="wwwroot\img\HealthopeLogo-circle-removebg-preview.277aed21.png" />
@@ -453,14 +461,13 @@
     <Content Include="wwwroot\js\116.6e566645.js" />
     <Content Include="wwwroot\js\124.22cc8143.js" />
     <Content Include="wwwroot\js\126.3c0aab58.js" />
+    <Content Include="wwwroot\js\143.4c15644f.js" />
     <Content Include="wwwroot\js\149.21c85385.js" />
-    <Content Include="wwwroot\js\16.c33bc2b1.js" />
     <Content Include="wwwroot\js\247.05628f55.js" />
     <Content Include="wwwroot\js\315.02e0f583.js" />
     <Content Include="wwwroot\js\319.1f62e7e5.js" />
     <Content Include="wwwroot\js\340.15be1aa2.js" />
     <Content Include="wwwroot\js\385.dc886c21.js" />
-    <Content Include="wwwroot\js\451.3a11b463.js" />
     <Content Include="wwwroot\js\47.751aeadb.js" />
     <Content Include="wwwroot\js\478.6e7f5630.js" />
     <Content Include="wwwroot\js\482.8e5e2349.js" />
@@ -483,18 +490,22 @@
     <Content Include="wwwroot\js\809.68544368.js" />
     <Content Include="wwwroot\js\811.e6bc64b0.js" />
     <Content Include="wwwroot\js\822.6b2dec41.js" />
+    <Content Include="wwwroot\js\845.f3683b06.js" />
+    <Content Include="wwwroot\js\852.cbcd131c.js" />
     <Content Include="wwwroot\js\861.9f2b18ee.js" />
+    <Content Include="wwwroot\js\875.822b878e.js" />
     <Content Include="wwwroot\js\877.f5d2e34e.js" />
     <Content Include="wwwroot\js\900.3878c3c5.js" />
     <Content Include="wwwroot\js\907.39e4e36b.js" />
     <Content Include="wwwroot\js\972.e74e4aa8.js" />
     <Content Include="wwwroot\js\979.e428bf44.js" />
     <Content Include="wwwroot\js\994.009e5d62.js" />
-    <Content Include="wwwroot\js\app.a3547183.js" />
+    <Content Include="wwwroot\js\app.8fde914b.js" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\Report\Request\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config" />
@@ -506,14 +517,13 @@
     <Content Include="wwwroot\js\116.6e566645.js.map" />
     <Content Include="wwwroot\js\124.22cc8143.js.map" />
     <Content Include="wwwroot\js\126.3c0aab58.js.map" />
+    <Content Include="wwwroot\js\143.4c15644f.js.map" />
     <Content Include="wwwroot\js\149.21c85385.js.map" />
-    <Content Include="wwwroot\js\16.c33bc2b1.js.map" />
     <Content Include="wwwroot\js\247.05628f55.js.map" />
     <Content Include="wwwroot\js\315.02e0f583.js.map" />
     <Content Include="wwwroot\js\319.1f62e7e5.js.map" />
     <Content Include="wwwroot\js\340.15be1aa2.js.map" />
     <Content Include="wwwroot\js\385.dc886c21.js.map" />
-    <Content Include="wwwroot\js\451.3a11b463.js.map" />
     <Content Include="wwwroot\js\47.751aeadb.js.map" />
     <Content Include="wwwroot\js\478.6e7f5630.js.map" />
     <Content Include="wwwroot\js\482.8e5e2349.js.map" />
@@ -536,14 +546,17 @@
     <Content Include="wwwroot\js\809.68544368.js.map" />
     <Content Include="wwwroot\js\811.e6bc64b0.js.map" />
     <Content Include="wwwroot\js\822.6b2dec41.js.map" />
+    <Content Include="wwwroot\js\845.f3683b06.js.map" />
+    <Content Include="wwwroot\js\852.cbcd131c.js.map" />
     <Content Include="wwwroot\js\861.9f2b18ee.js.map" />
+    <Content Include="wwwroot\js\875.822b878e.js.map" />
     <Content Include="wwwroot\js\877.f5d2e34e.js.map" />
     <Content Include="wwwroot\js\900.3878c3c5.js.map" />
     <Content Include="wwwroot\js\907.39e4e36b.js.map" />
     <Content Include="wwwroot\js\972.e74e4aa8.js.map" />
     <Content Include="wwwroot\js\979.e428bf44.js.map" />
     <Content Include="wwwroot\js\994.009e5d62.js.map" />
-    <Content Include="wwwroot\js\app.a3547183.js.map" />
+    <Content Include="wwwroot\js\app.8fde914b.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js.map" />
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,6 @@ using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.Job;
-using ApiLayer.Models.Order.Request;
 using AutoMapper;
 using DomainLayer.Models;
 using Newtonsoft.Json;

@@ -9,4 +9,12 @@ export default [
                 , { adminPermission: adminPermission.SelectMemberClass }]
         }
     },
+    {
+        path: '/memberPersonalClass/add',
+        name: 'MemberPersonalClass',
+        component: () => import('@/views/MemberClass/AddMemberPersonalClass'),
+        meta: {
+            requireAuth: [{ adminPermission: adminPermission.EditMemberClass }]
+        }
+    },
 ];

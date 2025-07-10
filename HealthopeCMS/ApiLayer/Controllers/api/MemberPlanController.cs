@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Web.Http;
 using ApiLayer.Filters;
-using ApiLayer.Models.Invoice.Request;
-using ApiLayer.Models;
-using ApiLayer.Service;
-using DomainLayer.Utility;
-using NLog;
-using ApiLayer.Models.MemberPlan.Request;
-using ApiLayer.Models.Invoice;
-using ApiLayer.Models.MemberPlan;
 using ApiLayer.Interface;
+using ApiLayer.Models;
+using ApiLayer.Models.MemberPlan;
+using ApiLayer.Models.MemberPlan.Request;
+using NLog;
 
 namespace ApiLayer.Controllers.api
 {

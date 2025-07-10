@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using ApiLayer.Controllers.api;
-using ApiLayer.Interface;
-using ApiLayer.Models.MemberPlan.Request;
 using ApiLayer.Models;
+using ApiLayer.Models.MemberPlan.Request;
 using ApiLayer.Service;
 using AutoMapper;
+using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistentLayer.Interface;
-using UnitTest.utils;
-using DomainLayer.Models;
-using PersistentLayer.Repository;
 
 namespace UnitTest.Test.MemberPlanTest
 {

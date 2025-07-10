@@ -125,7 +125,7 @@ namespace DomainLayer.Models
         EditMemberMembershipPlan = 23,
 
         /// <summary>
-        /// 修改會員的私人課程教練
+        /// 修改會員的私人課程教練 
         /// </summary>
         EditMemberPersonalPeckagePlan = 24,
 
@@ -206,6 +206,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditMemberPersonalPeckagePlan,
                 AdminPermission.SelectFinancialStatements,
                 AdminPermission.SelectCoachReport,
+                AdminPermission.EditMemberClass, AdminPermission.SelectMemberClass,
             } },
             { AdminIdentity.Admin, new List<AdminPermission> {
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -221,6 +222,7 @@ namespace DomainLayer.Models
                 AdminPermission.EditMemberPersonalPeckagePlan,
                 AdminPermission.SelectFinancialStatements,
                 AdminPermission.SelectCoachReport,
+                AdminPermission.EditMemberClass, AdminPermission.SelectMemberClass,
             } },
             {AdminIdentity.Receptionist, new List<AdminPermission>{
                 AdminPermission.SelectMember,
@@ -234,6 +236,7 @@ namespace DomainLayer.Models
                 AdminPermission.SelectCoach, AdminPermission.AddCoach, AdminPermission.EditCoach,
                 AdminPermission.EditMemberPersonalPeckagePlan,
                 AdminPermission.SelectCoachReport,
+                AdminPermission.EditMemberClass, AdminPermission.SelectMemberClass,
             } },
             {AdminIdentity.CourseManager, new List<AdminPermission>{
                 AdminPermission.EditGroupClassShowcase,AdminPermission.SelectGroupClassShowcase,

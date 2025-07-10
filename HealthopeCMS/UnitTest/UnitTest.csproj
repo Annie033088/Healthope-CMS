@@ -243,6 +243,8 @@
     <Compile Include="Test\PlanTemplateTest\PlanTemplateServiceTest.cs" />
     <Compile Include="Test\RefundTest\RefundControllerTest.cs" />
     <Compile Include="Test\RefundTest\RefundServiceTest.cs" />
+    <Compile Include="Test\ReportTest\ReportControllerTest.cs" />
+    <Compile Include="Test\ReportTest\ReportServiceTest.cs" />
     <Compile Include="Test\TermTest\TermControllerTest.cs" />
     <Compile Include="Test\TermTest\TermServiceTest.cs" />
     <Compile Include="Test\TransactionTest\TransactionServiceTest.cs" />

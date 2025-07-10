@@ -1009,7 +1009,6 @@ export default function (mock) {
         }
     ]
 
-
     mock.onPost("/api/GroupClassShowcase/AddShowcase").reply(() => {
         // 可用這方式查看傳輸的資料
         // for (let [key, value] of config.data.entries()) {

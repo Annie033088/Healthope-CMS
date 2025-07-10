@@ -178,6 +178,16 @@ namespace ApiLayer.Models
             // RefundController
             { "Refund,GetRefund", new List<AdminPermission> {
                 AdminPermission.SelectTransaction} },
+
+            // MemberPlanController
+            { "MemberPlan,EditMemberMembershipPlanStatus", new List<AdminPermission> {
+                AdminPermission.EditMemberMembershipPlan} },
+            { "MemberPlan,EditMemberPersonalTrainingPackageCoach", new List<AdminPermission> {
+                AdminPermission.EditMemberPersonalPeckagePlan} },
+
+            // ReportController
+            { "Report,GetRevenueExpenseReport", new List<AdminPermission> {
+                AdminPermission.SelectFinancialStatements} },
         };
     }
 }

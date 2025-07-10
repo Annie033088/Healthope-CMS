@@ -6,7 +6,6 @@ using System.Data.SqlClient;
 using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using static System.TimeZoneInfo;
 
 namespace PersistentLayer.Repository
 {
