@@ -69,6 +69,7 @@
     <Compile Include="Models\RequestEditPersonalTrainingPackageDto.cs" />
     <Compile Include="Models\RequestEditShowcaseDto.cs" />
     <Compile Include="Models\RequestEditTermDto.cs" />
+    <Compile Include="Models\RequestGetMemberPersonalClassDto.cs" />
     <Compile Include="Models\RequestGetRevenueExpenseReportDto.cs" />
     <Compile Include="Models\RequestGetGroupClassScheduleDto.cs" />
     <Compile Include="Models\RequestGetInvoiceDto.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Models\RequestGetTransactionDto.cs" />
     <Compile Include="Models\RequestPayByCardDto.cs" />
     <Compile Include="Models\RequestPayByCashDto.cs" />
+    <Compile Include="Models\ResponseGetMemberPersonalClassListDto.cs" />
     <Compile Include="Models\ResponseGetOrderListDto.cs" />
     <Compile Include="Models\ResponseGetPersonalTrainingPackageAndCoachDto.cs" />
     <Compile Include="Models\ResponseGetRevenueExpenseDto.cs" />

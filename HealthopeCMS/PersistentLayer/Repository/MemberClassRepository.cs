@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Data;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
+using DomainLayer.Models;
 
 namespace PersistentLayer.Repository
 {
@@ -47,7 +48,7 @@ namespace PersistentLayer.Repository
                         CoachPhone = dr.IsNull("f_coachPhone") ? 0 : dr.Field<int>("f_coachPhone"),
                         CoachName = dr.IsNull("f_coachName") ? string.Empty : dr.Field<string>("f_coachName"),
                         PlanName = dr.IsNull("f_planName") ? string.Empty : dr.Field<string>("f_planName"),
-                        UsedSession = dr.IsNull("f_usedSession") ? 0 : dr.Field<int>("f_usedSession"),
+                        UsedSession = dr.IsNull("f_usedSessionCount") ? 0 : dr.Field<int>("f_usedSessionCount"),
                         SessionCount = dr.IsNull("f_sessionCount") ? 0 : dr.Field<int>("f_sessionCount"),
                         UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime"),
                     };
@@ -56,6 +57,138 @@ namespace PersistentLayer.Repository
                 }
 
                 return responseList;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 新增會員預約教練課程
+        /// </summary>
+        public int AddMemberPersonalClass(MemberPersonalClass memberPersonalClass)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_addMemberPersonalClass @memberPersonalTrainingPackageId, @memberId, @coachId, " +
+                    "@time, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@memberPersonalTrainingPackageId", SqlDbType.Int).Value
+                    = memberPersonalClass.MemberPersonalTrainingPackageId;
+                cmd.Parameters.Add("@memberId", SqlDbType.Int).Value = memberPersonalClass.MemberId;
+                cmd.Parameters.Add("@coachId", SqlDbType.Int).Value = memberPersonalClass.CoachId;
+                cmd.Parameters.Add("@time", SqlDbType.DateTime2).Value = memberPersonalClass.Time;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 取得會員預約的教練課程列表
+        /// </summary>
+        public ResponseGetMemberPersonalClassListDto GetMemberPersonalClass(RequestGetMemberPersonalClassDto getMemberPersonalClassDto)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            SqlDataAdapter da = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            int totalPage = 1;
+            List<ResponseGetMemberPersonalClassDto> memberPersonalClasses = new List<ResponseGetMemberPersonalClassDto>();
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_getMemberPersonalClass @searchPhone, @status, @sortOrder, @sortOption," +
+                    " @recordPerPage, @page, @totalPage OUTPUT";
+
+                if (getMemberPersonalClassDto.SearchPhone == null)
+                    cmd.Parameters.Add("@searchPhone", SqlDbType.VarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@searchPhone", SqlDbType.VarChar).Value = getMemberPersonalClassDto.SearchPhone;
+
+                if (getMemberPersonalClassDto.Status == null)
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@status", SqlDbType.Bit).Value = getMemberPersonalClassDto.Status;
+
+                if (getMemberPersonalClassDto.SortOption == null)
+                    cmd.Parameters.Add("@sortOption", SqlDbType.VarChar).Value = DBNull.Value;
+                else
+                    cmd.Parameters.Add("@sortOption", SqlDbType.VarChar).Value = getMemberPersonalClassDto.SortOption;
+
+                cmd.Parameters.Add("@sortOrder", SqlDbType.VarChar).Value = getMemberPersonalClassDto.SortOrder;
+                cmd.Parameters.Add("@recordPerPage", SqlDbType.Int).Value = getMemberPersonalClassDto.RecordPerPage;
+                cmd.Parameters.Add("@page", SqlDbType.Int).Value = getMemberPersonalClassDto.Page;
+                SqlParameter totalPageOutput = new SqlParameter("@totalPage", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(totalPageOutput);
+
+
+                cmd.Connection.Open();
+
+                da.SelectCommand = cmd;
+                da.Fill(dt);
+                totalPage = (int)totalPageOutput.Value;
+
+                cmd.Connection.Close();
+
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    DataRow dr = dt.Rows[i];
+                    ResponseGetMemberPersonalClassDto memberPersonalClass = new ResponseGetMemberPersonalClassDto()
+                    {
+                        MemberPersonalClassId = dr.IsNull("f_memberPersonalClassId") ? 0 : dr.Field<int>("f_memberPersonalClassId"),
+                        MemberId = dr.IsNull("f_memberId") ? 0 : dr.Field<int>("f_memberId"),
+                        MemberName = dr.IsNull("f_memberName") ? string.Empty : dr.Field<string>("f_memberName"),
+                        MemberPhone = dr.IsNull("f_memberPhone") ? 0 : dr.Field<int>("f_memberPhone"),
+                        CoachId = dr.IsNull("f_coachId") ? 0 : dr.Field<int>("f_coachId"),
+                        CoachName = dr.IsNull("f_coachName") ? string.Empty : dr.Field<string>("f_coachName"),
+                        Time = dr.IsNull("f_time") ? DateTime.MinValue : dr.Field<DateTime>("f_time"),
+                        Category = dr.IsNull("f_category") ? false : dr.Field<bool>("f_category"),
+                        Status = (byte)(dr.IsNull("f_status") ? 0 : dr.Field<byte>("f_status")),
+                        Remark = dr.IsNull("f_remark") ? string.Empty : dr.Field<string>("f_remark"),
+                        UpdateTime = dr.IsNull("f_updateTime") ? DateTime.MinValue : dr.Field<DateTime>("f_updateTime")
+                    };
+                    memberPersonalClasses.Add(memberPersonalClass);
+                }
+
+                ResponseGetMemberPersonalClassListDto response = new ResponseGetMemberPersonalClassListDto
+                {
+                    MemberPersonalClassList = memberPersonalClasses,
+                    TotalPage = totalPage,
+                };
+
+                return response;
             }
             catch (Exception)
             {

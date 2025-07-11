@@ -200,7 +200,7 @@ export default {
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = "/";
+                let redirectRoute = null;
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -223,6 +223,9 @@ export default {
     },
     async selectMember(member) {
       this.selectedMember = member;
+
+      if (member.MemberId < 1) return;
+
       let memberIdDto = {
         MemberId: member.MemberId,
       };
@@ -238,12 +241,17 @@ export default {
           this.selectedPTCourse = {};
           this.memberPersonalTrainingPackages = response.data.ApiDataObject;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = "/";
+                let redirectRoute = null;
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -284,6 +292,8 @@ export default {
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.selectedMember = {};
+          this.memberPersonalTrainingPackages = [];
+          this.selectedPTCourse = {};
           this.filteredMembers = response.data.ApiDataObject;
 
           if (response.data.ApiDataObject.length === 0)
@@ -321,6 +331,15 @@ export default {
 
       if (Object.keys(this.selectedPTCourse).length === 0) {
         this.hintText = "請選擇教練課";
+        return false;
+      }
+
+      if (
+        this.selectedPTCourse.MemberPersonalTrainingPackageId < 1 ||
+        this.selectedMember.MemberId < 1 ||
+        this.selectedPTCourse.CoachId < 1
+      ) {
+        this.hintText = "格式錯誤";
         return false;
       }
 

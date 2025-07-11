@@ -211,5 +211,15 @@
         /// 已有暫停中的會籍
         /// </summary>
         PausedMembershipExists = 41,
+
+        /// <summary>
+        /// 會員的時間衝突
+        /// </summary>
+        MemberTimeConflict = 42,
+
+        /// <summary>
+        /// 教練的時間衝突
+        /// </summary>
+        CoachTimeConflict = 43,
     }
 }

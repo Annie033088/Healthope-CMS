@@ -10,6 +10,7 @@ using ApiLayer.Models.Invoice.Response;
 using ApiLayer.Models.LeaseAgreement.Request;
 using ApiLayer.Models.LeaseAgreement.Response;
 using ApiLayer.Models.Member.Response;
+using ApiLayer.Models.MemberClass.Request;
 using ApiLayer.Models.MemberPlan.Request;
 using ApiLayer.Models.Order.Request;
 using ApiLayer.Models.Order.Response;
@@ -95,6 +96,7 @@ namespace ApiLayer.App_Start
             CreateMap<ElectronicInvoice, ResponseGetEelectonicInvoiceByOrderIdDto>();
             CreateMap<RequestOrderIdAndCategoryDto, ElectronicInvoice>();
             CreateMap<RequestEditInvoiceStatusDto, ElectronicInvoice>();
+            CreateMap<RequestAddMemberPersonalClassDto, MemberPersonalClass>();
         }
     }
 }

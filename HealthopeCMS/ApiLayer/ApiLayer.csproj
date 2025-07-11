@@ -314,6 +314,8 @@
     <Compile Include="Models\LeaseAgreement\Request\RequestEditLeaseAgreementStatusDto.cs" />
     <Compile Include="Models\LeaseAgreement\Request\RequestLeaseAgreementIdDto.cs" />
     <Compile Include="Models\LeaseAgreement\Response\ResponseGetLeaseAgreementListDto.cs" />
+    <Compile Include="Models\MemberClass\MemberPersonalClassStatus.cs" />
+    <Compile Include="Models\MemberClass\Request\RequestAddMemberPersonalClassDto.cs" />
     <Compile Include="Models\MemberPlan\MemberMembershipPlanStatus.cs" />
     <Compile Include="Models\MemberPlan\Request\RequestEditMemberPersonalTrainingPackageCoachDto.cs" />
     <Compile Include="Models\MemberPlan\Request\RequestMemberMembershipPlanStatusDto.cs" />
@@ -410,12 +412,13 @@
     <Content Include="wwwroot\css\109.87dbbdd9.css" />
     <Content Include="wwwroot\css\110.85309e14.css" />
     <Content Include="wwwroot\css\111.6499924e.css" />
-    <Content Include="wwwroot\css\116.684a2557.css" />
     <Content Include="wwwroot\css\124.b626eaf1.css" />
     <Content Include="wwwroot\css\126.97b3e68e.css" />
     <Content Include="wwwroot\css\143.e7202ada.css" />
     <Content Include="wwwroot\css\149.58088de3.css" />
+    <Content Include="wwwroot\css\212.6caf8671.css" />
     <Content Include="wwwroot\css\247.05a25e05.css" />
+    <Content Include="wwwroot\css\300.4cc259e0.css" />
     <Content Include="wwwroot\css\315.2d7304c4.css" />
     <Content Include="wwwroot\css\319.bcfd649f.css" />
     <Content Include="wwwroot\css\340.b4195538.css" />
@@ -428,8 +431,10 @@
     <Content Include="wwwroot\css\528.4f6aba15.css" />
     <Content Include="wwwroot\css\559.faac0dd3.css" />
     <Content Include="wwwroot\css\577.462583d3.css" />
+    <Content Include="wwwroot\css\640.beeb82ba.css" />
     <Content Include="wwwroot\css\671.3ce5534b.css" />
     <Content Include="wwwroot\css\675.d74fcb2c.css" />
+    <Content Include="wwwroot\css\68.dad261ae.css" />
     <Content Include="wwwroot\css\696.06dd20bf.css" />
     <Content Include="wwwroot\css\716.893b0373.css" />
     <Content Include="wwwroot\css\729.dfd1a861.css" />
@@ -440,13 +445,11 @@
     <Content Include="wwwroot\css\811.98f66309.css" />
     <Content Include="wwwroot\css\822.d4e97a42.css" />
     <Content Include="wwwroot\css\845.3de9aef2.css" />
-    <Content Include="wwwroot\css\852.5df162e9.css" />
     <Content Include="wwwroot\css\861.115f0d8a.css" />
     <Content Include="wwwroot\css\875.44d71fa9.css" />
     <Content Include="wwwroot\css\877.b13d471b.css" />
     <Content Include="wwwroot\css\900.494f3722.css" />
     <Content Include="wwwroot\css\907.10b77ef2.css" />
-    <Content Include="wwwroot\css\972.3de9aef2.css" />
     <Content Include="wwwroot\css\979.5f24eb27.css" />
     <Content Include="wwwroot\css\994.d349e94b.css" />
     <Content Include="wwwroot\css\app.bc793d58.css" />
@@ -458,12 +461,13 @@
     <Content Include="wwwroot\js\109.b829f5dc.js" />
     <Content Include="wwwroot\js\110.22e9328b.js" />
     <Content Include="wwwroot\js\111.14c057ef.js" />
-    <Content Include="wwwroot\js\116.6e566645.js" />
     <Content Include="wwwroot\js\124.22cc8143.js" />
     <Content Include="wwwroot\js\126.3c0aab58.js" />
     <Content Include="wwwroot\js\143.4c15644f.js" />
     <Content Include="wwwroot\js\149.21c85385.js" />
+    <Content Include="wwwroot\js\212.48901462.js" />
     <Content Include="wwwroot\js\247.05628f55.js" />
+    <Content Include="wwwroot\js\300.1077c8be.js" />
     <Content Include="wwwroot\js\315.02e0f583.js" />
     <Content Include="wwwroot\js\319.1f62e7e5.js" />
     <Content Include="wwwroot\js\340.15be1aa2.js" />
@@ -477,8 +481,10 @@
     <Content Include="wwwroot\js\528.25fb5b5c.js" />
     <Content Include="wwwroot\js\559.91c5e4a3.js" />
     <Content Include="wwwroot\js\577.1285128e.js" />
+    <Content Include="wwwroot\js\640.547afeda.js" />
     <Content Include="wwwroot\js\671.1f5594a4.js" />
     <Content Include="wwwroot\js\675.ddba1d57.js" />
+    <Content Include="wwwroot\js\68.3c6c6b69.js" />
     <Content Include="wwwroot\js\684.35d7e3f7.js" />
     <Content Include="wwwroot\js\696.bf85fd1a.js" />
     <Content Include="wwwroot\js\716.c7e8950d.js" />
@@ -491,16 +497,14 @@
     <Content Include="wwwroot\js\811.e6bc64b0.js" />
     <Content Include="wwwroot\js\822.6b2dec41.js" />
     <Content Include="wwwroot\js\845.f3683b06.js" />
-    <Content Include="wwwroot\js\852.cbcd131c.js" />
     <Content Include="wwwroot\js\861.9f2b18ee.js" />
     <Content Include="wwwroot\js\875.822b878e.js" />
     <Content Include="wwwroot\js\877.f5d2e34e.js" />
     <Content Include="wwwroot\js\900.3878c3c5.js" />
     <Content Include="wwwroot\js\907.39e4e36b.js" />
-    <Content Include="wwwroot\js\972.e74e4aa8.js" />
     <Content Include="wwwroot\js\979.e428bf44.js" />
     <Content Include="wwwroot\js\994.009e5d62.js" />
-    <Content Include="wwwroot\js\app.8fde914b.js" />
+    <Content Include="wwwroot\js\app.62257dd3.js" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js" />
   </ItemGroup>
   <ItemGroup>
@@ -514,12 +518,13 @@
     <Content Include="wwwroot\js\109.b829f5dc.js.map" />
     <Content Include="wwwroot\js\110.22e9328b.js.map" />
     <Content Include="wwwroot\js\111.14c057ef.js.map" />
-    <Content Include="wwwroot\js\116.6e566645.js.map" />
     <Content Include="wwwroot\js\124.22cc8143.js.map" />
     <Content Include="wwwroot\js\126.3c0aab58.js.map" />
     <Content Include="wwwroot\js\143.4c15644f.js.map" />
     <Content Include="wwwroot\js\149.21c85385.js.map" />
+    <Content Include="wwwroot\js\212.48901462.js.map" />
     <Content Include="wwwroot\js\247.05628f55.js.map" />
+    <Content Include="wwwroot\js\300.1077c8be.js.map" />
     <Content Include="wwwroot\js\315.02e0f583.js.map" />
     <Content Include="wwwroot\js\319.1f62e7e5.js.map" />
     <Content Include="wwwroot\js\340.15be1aa2.js.map" />
@@ -533,8 +538,10 @@
     <Content Include="wwwroot\js\528.25fb5b5c.js.map" />
     <Content Include="wwwroot\js\559.91c5e4a3.js.map" />
     <Content Include="wwwroot\js\577.1285128e.js.map" />
+    <Content Include="wwwroot\js\640.547afeda.js.map" />
     <Content Include="wwwroot\js\671.1f5594a4.js.map" />
     <Content Include="wwwroot\js\675.ddba1d57.js.map" />
+    <Content Include="wwwroot\js\68.3c6c6b69.js.map" />
     <Content Include="wwwroot\js\684.35d7e3f7.js.map" />
     <Content Include="wwwroot\js\696.bf85fd1a.js.map" />
     <Content Include="wwwroot\js\716.c7e8950d.js.map" />
@@ -547,16 +554,14 @@
     <Content Include="wwwroot\js\811.e6bc64b0.js.map" />
     <Content Include="wwwroot\js\822.6b2dec41.js.map" />
     <Content Include="wwwroot\js\845.f3683b06.js.map" />
-    <Content Include="wwwroot\js\852.cbcd131c.js.map" />
     <Content Include="wwwroot\js\861.9f2b18ee.js.map" />
     <Content Include="wwwroot\js\875.822b878e.js.map" />
     <Content Include="wwwroot\js\877.f5d2e34e.js.map" />
     <Content Include="wwwroot\js\900.3878c3c5.js.map" />
     <Content Include="wwwroot\js\907.39e4e36b.js.map" />
-    <Content Include="wwwroot\js\972.e74e4aa8.js.map" />
     <Content Include="wwwroot\js\979.e428bf44.js.map" />
     <Content Include="wwwroot\js\994.009e5d62.js.map" />
-    <Content Include="wwwroot\js\app.8fde914b.js.map" />
+    <Content Include="wwwroot\js\app.62257dd3.js.map" />
     <Content Include="wwwroot\js\chunk-vendors.ca1f6371.js.map" />
   </ItemGroup>
   <ItemGroup>

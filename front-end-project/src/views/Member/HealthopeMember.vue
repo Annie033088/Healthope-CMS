@@ -334,7 +334,7 @@ export default {
     },
     resetSearchingRecord() {
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchPhone = "";

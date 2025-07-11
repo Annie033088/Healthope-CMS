@@ -124,6 +124,12 @@ export const errorCodeDefine = {
 
     // 已有暫停中的會籍
     PausedMembershipExists: 41,
+
+    // 會員的時間衝突
+    MemberTimeConflict:42,
+
+    // 教練的時間衝突
+    CoachTimeConflict:43,
 };
 
 
@@ -250,6 +256,12 @@ export function errorCodeToMessage(errorCode) {
             message = "已有一筆使用中的會籍!";
             return message;
         case 41:
+            message = "尚有一筆已暫停的會籍尚未恢復，請先恢復使用";
+            return message;
+        case 42:
+            message = "會員已在此時段安排";
+            return message;
+        case 43:
             message = "尚有一筆已暫停的會籍尚未恢復，請先恢復使用";
             return message;
         default:
