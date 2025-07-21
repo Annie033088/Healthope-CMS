@@ -587,7 +587,7 @@ export default {
     },
     redirect(page) {
       if (this.$route.path === page) {
-        this.$emit("refreshPage");
+        this.$router.go(0);
       } else {
         this.$router.push(page);
       }

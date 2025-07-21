@@ -223,7 +223,7 @@ namespace UnitTest.Test.MemberTest
 
             ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto()
             {
-                Member =
+                Member = new ResponseGetMemberDetailMemberDto
                 {
                     Name = "okwopekq122",
                     Phone = 987654342,

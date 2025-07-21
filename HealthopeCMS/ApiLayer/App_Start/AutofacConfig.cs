@@ -9,6 +9,7 @@ using Autofac.Integration.WebApi;
 using AutoMapper;
 using DomainLayer.Interface;
 using DomainLayer.Utility;
+using PersistentLayer.Data.DbAccess;
 using PersistentLayer.Interface;
 using PersistentLayer.Repository;
 using StackExchange.Redis;
@@ -26,15 +27,22 @@ namespace ApiLayer.App_Start
             builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
             builder.RegisterType<HttpService>().As<IHttpService>().InstancePerLifetimeScope();
             builder.RegisterType<FileService>().As<IFileService>().InstancePerRequest();
-            builder.RegisterType<AppSetting>().As<IAppSetting>().InstancePerLifetimeScope();
+            builder.RegisterType<AppConfigProvider>().As<IAppConfigProvider>().InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(MultipartRequestService<>))
                     .As(typeof(IMultipartRequestService<>))
                     .InstancePerRequest();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<JobDispatcher>().As<IJobDispatcher>();
+            // 把此 SendEmailJob 類別所屬的整個 Assembly 的型別都拿出來掃過一次。
             builder.RegisterAssemblyTypes(typeof(SendEmailJob).Assembly)
                     .AsClosedTypesOf(typeof(IJob<>))
                     .InstancePerDependency();
+            builder.RegisterAssemblyTypes(typeof(CancelReservingPersonalClassJob).Assembly)
+                   .Where(jobType => typeof(IJob).IsAssignableFrom(jobType) && !jobType.IsAbstract)
+                   .AsSelf().As<IJob>()
+                   .InstancePerDependency();
+            builder.RegisterType<DbConnectionFactory>().As<IDbConnectionFactory>().InstancePerRequest();
+            builder.RegisterType<DbExecutor>().As<IDbExecutor>().InstancePerRequest();
 
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
 
@@ -82,8 +90,8 @@ namespace ApiLayer.App_Start
             builder.RegisterType<ReportService>().As<IReportService>().InstancePerRequest();
             builder.RegisterType<ReportRepository>().As<IReportRepository>().InstancePerRequest();
 
-            builder.RegisterType<MemberClassService>().As<IMemberClassService>().InstancePerRequest();
-            builder.RegisterType<MemberClassRepository>().As<IMemberClassRepository>().InstancePerRequest();
+            builder.RegisterType<MemberClassService>().As<IMemberClassService>().InstancePerLifetimeScope();
+            builder.RegisterType<MemberClassRepository>().As<IMemberClassRepository>().InstancePerLifetimeScope();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

@@ -268,30 +268,59 @@ namespace UnitTest.Test.MemberTest
                 Phone = 987654342,
                 Status = true,
             };
-            List<MemberMembershipPlan> memberMembershipPlans = null;
-            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages = null;
-            List<Coach> coaches = null;
+            List<MemberMembershipPlan> memberMembershipPlans = new List<MemberMembershipPlan>();
+            List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages = new List<MemberPersonalTrainingPackage>();
+            List<Coach> coaches = new List<Coach>();
 
             ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto()
             {
-                Member =
+                Member = new ResponseGetMemberDetailMemberDto
                 {
                     Name = "okwopekq122",
                     Phone = 987654342,
                     Status = true,
                 },
+                MemberMembershipPlanList = new List<ResponseGetMemberDetailMembershipPlanDto>
+                {
+                    new ResponseGetMemberDetailMembershipPlanDto
+                    {
+                        Duration = 12,
+                    }
+                },
+                MemberPersonalTrainingPackageList = new List<ResponseGetMemberDetailPersonalTrainingPackageDto>
+                {
+                    new ResponseGetMemberDetailPersonalTrainingPackageDto
+                    {
+                        CoachId = 1,
+                    }
+                },
+                CoachList = new List<ResponseGetMemberDetailCoachDto>
+                {
+                    new ResponseGetMemberDetailCoachDto
+                    {
+                        CoachId = 1,
+                    }
+                }
             };
 
             // Mock 設定
             memberRepositoryMock.Setup(s => s.GetMemberDetail(memberIdDto.MemberId))
                 .Returns((member, memberMembershipPlans, memberPersonalTrainingPackages, coaches));
-            mapperMock.Setup(s => s.Map<ResponseGetMemberDetailDto>(member)).Returns(response);
+            mapperMock.Setup(s => s.Map<ResponseGetMemberDetailMemberDto>(member)).Returns(response.Member);
+            mapperMock.Setup(s => s.Map<List<ResponseGetMemberDetailMembershipPlanDto>>(memberMembershipPlans))
+                .Returns(response.MemberMembershipPlanList);
+            mapperMock.Setup(s => s.Map<List<ResponseGetMemberDetailPersonalTrainingPackageDto>>(memberPersonalTrainingPackages))
+                .Returns(response.MemberPersonalTrainingPackageList);
+            mapperMock.Setup(s => s.Map<List<ResponseGetMemberDetailCoachDto>>(coaches)).Returns(response.CoachList);
 
             // Act
             ResponseGetMemberDetailDto result = memberService.GetMemberDetail(memberIdDto);
 
             // Assert
-            Assert.AreEqual(result, response);
+            Assert.AreEqual(result.Member, response.Member);
+            Assert.IsTrue(result.MemberMembershipPlanList.SequenceEqual(response.MemberMembershipPlanList));
+            Assert.IsTrue(result.MemberPersonalTrainingPackageList.SequenceEqual(response.MemberPersonalTrainingPackageList));
+            Assert.IsTrue(result.CoachList.SequenceEqual(response.CoachList));
         }
 
         [TestMethod]

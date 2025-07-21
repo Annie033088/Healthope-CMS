@@ -120,7 +120,9 @@ export default {
         return;
       }
 
-      this.currentPersonalTrainingPackageData = this.cleanData(this.currentPersonalTrainingPackageData);
+      this.currentPersonalTrainingPackageData = this.cleanData(
+        this.currentPersonalTrainingPackageData
+      );
 
       if (!this.validInput()) {
         this.verifyFail = true;
@@ -176,7 +178,7 @@ export default {
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         }
-        
+
         if (response.data.ErrorCode === this.$errorCodeDefine.HasBeenModified) {
           this.$emit("refreshPage");
         }
@@ -227,7 +229,8 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.originalPersonalTrainingPackageData =
             response.data.ApiDataObject;
-          this.originalPersonalTrainingPackageData.PersonalTrainingPackageId = id;
+          this.originalPersonalTrainingPackageData.PersonalTrainingPackageId =
+            id;
 
           this.originalPersonalTrainingPackageData = this.cleanData(
             this.originalPersonalTrainingPackageData
@@ -236,6 +239,11 @@ export default {
             this.originalPersonalTrainingPackageData
           );
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

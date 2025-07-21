@@ -128,18 +128,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrderDetail(this.order.OrderId);
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = "/order";
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrderDetail(this.order.OrderId);
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -148,7 +137,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("修改訂單狀態時發生錯誤", error);
+        console.error("修改訂單狀態備註時發生錯誤", error);
       }
     },
     async getOrderDetail(orderId) {
@@ -237,7 +226,7 @@ export default {
       try {
         // post
         const response = await this.$axios.post(
-          "/api/Invoice/CompleteOrderAndPrintInvoice",
+          "/api/Invoice/PrintInvoice",
           printInvoiceDto
         );
 
@@ -247,29 +236,16 @@ export default {
           response.data.ErrorCode ===
           this.$errorCodeDefine.CantPrintCrossDateInvoice
         ) {
+          this.getOrderDetail(printInvoiceDto.OrderId);
+
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
+          this.getOrderDetail(printInvoiceDto.OrderId);
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
           this.$notificationBox.notificationBoxErrorCode =
             response.data.ErrorCode;
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          if (this.unwatchFlag) {
-            this.unwatchFlag(); // 移除監聽
-            this.unwatchFlag = null;
-          }
-
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = "/order";
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrderDetail(printInvoiceDto.OrderId);
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -306,23 +282,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrderDetail(this.order.OrderId);
         } else {
-          if (this.unwatchFlag) {
-            this.unwatchFlag(); // 移除監聽
-            this.unwatchFlag = null;
-          }
-
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrderDetail(this.order.OrderId);
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -331,7 +291,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("修改備註時發生錯誤", error);
+        console.error("修改發票狀態時發生錯誤", error);
       }
     },
     async discountInvoice(invoice) {
@@ -359,23 +319,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrderDetail(this.order.OrderId);
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          if (this.unwatchFlag) {
-            this.unwatchFlag(); // 移除監聽
-            this.unwatchFlag = null;
-          }
-
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrderDetail(this.order.OrderId);
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -384,7 +328,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("修改備註時發生錯誤", error);
+        console.error("修改發票狀態時發生錯誤", error);
       }
     },
     async pendingDiscountInvoice(invoice) {
@@ -412,23 +356,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrderDetail(this.order.OrderId);
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          if (this.unwatchFlag) {
-            this.unwatchFlag(); // 移除監聽
-            this.unwatchFlag = null;
-          }
-
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrderDetail(this.order.OrderId);
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -437,7 +365,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("修改備註時發生錯誤", error);
+        console.error("修改發票狀態時發生錯誤", error);
       }
     },
     async pendingVoidInvoice(invoice) {
@@ -465,23 +393,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrderDetail(this.order.OrderId);
         } else {
-          if (this.unwatchFlag) {
-            this.unwatchFlag(); // 移除監聽
-            this.unwatchFlag = null;
-          }
-
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrderDetail(this.order.OrderId);
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -490,7 +402,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("修改備註時發生錯誤", error);
+        console.error("修改發票狀態時發生錯誤", error);
       }
     },
     editStatusValidInput(editInvoiceStatusDto) {

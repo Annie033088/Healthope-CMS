@@ -42,6 +42,9 @@ export default {
       hintText: "",
     };
   },
+  props: {
+    notificationBoxConfirmFlag: Boolean,
+  },
   methods: {
     goToLogin() {
       this.beforeLoginFlag = !this.beforeLoginFlag;
@@ -81,8 +84,11 @@ export default {
           this.$router.push("/");
           return;
         } else {
-          this.loginFail = true;
-          this.hintText = "帳號密碼輸入錯誤";
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
         }
       } catch (error) {
         console.error("登入驗證時發生錯誤", error);
@@ -119,7 +125,7 @@ export default {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;;
+  align-items: center;
 }
 
 .form {

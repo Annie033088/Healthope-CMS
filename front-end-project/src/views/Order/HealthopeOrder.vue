@@ -2,7 +2,11 @@
   <div>
     <TitleCard text="訂單" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
-      <BtnNormal text="新增訂單" @click="redirect('/order/add')"></BtnNormal>
+      <BtnNormal
+        text="新增訂單"
+        @click="redirect('/order/add')"
+        v-if="permissionMap.EditOrder || permissionMap.AddOrder"
+      ></BtnNormal>
       <RadioSelector
         class="radioState"
         v-model="selectState"
@@ -28,7 +32,10 @@
         :sortOrder.sync="selectSortOrder"
         @change="getOrder"
       />
-      <RecordSelector :parentValue.sync="recordPerPage" @change="getOrder" />
+      <RecordSelector
+        :parentValue.sync="recordPerPage"
+        @change="setRecordPerPage"
+      />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
@@ -44,18 +51,25 @@
       <template #detail="{ row }">
         <div class="detailRowContainer">
           <strong>操作：{{ row.Member }}</strong>
-          <BtnNormal text="查看會員" @click="goMemberDetail(row)" />
           <BtnNormal
+            :disabled="!permissionMap.SelectMember && !permissionMap.EditMember"
+            text="查看會員"
+            @click="goMemberDetail(row)"
+          />
+          <BtnNormal
+            :disabled="!(permissionMap.EditOrder || permissionMap.AddOrder)"
             v-if="Number(row.State.Value) === orderState.Pending"
             text="付款"
             @click="goCheckoutOrder(row)"
           />
           <BtnNormal
+            :disabled="!permissionMap.EditOrder"
             v-if="row.State.Value === String(orderState.Paid)"
             text="7 日內無條件退款"
             @click="refundIn7Days(row)"
           />
           <BtnNormal
+            :disabled="!permissionMap.EditOrder"
             v-if="
               row.State.Value === String(orderState.Paid) &&
               row.PlanType !== planType.Ticket
@@ -64,6 +78,7 @@
             @click="checkoutRefundQualifyAndTerminateOrder(row)"
           />
           <BtnNormal
+            :disabled="!permissionMap.EditOrder"
             v-if="
               row.State.Value === String(orderState.Paid) &&
               row.PlanType !== planType.Ticket
@@ -72,20 +87,20 @@
             @click="checkoutRefundQualifyAndBreachOrder(row)"
           />
           <BtnNormal
+            :disabled="!(permissionMap.EditOrder || permissionMap.AddOrder)"
             v-if="
               (row.InvoiceStatus.Value ===
                 String(electronicInvoiceStatus.Fail) ||
                 row.InvoiceStatus.Value === '') &&
-              (row.State.Value === String(orderState.Paid) ||
-                row.State.Value === String(orderState.Paying))
+              row.State.Value === String(orderState.Paid)
             "
-            text="完成訂單/補印發票"
+            text="補印發票"
             @click="printInvoice(row)"
           />
         </div>
         <div class="detailRowContainer">
           <strong>備註：</strong> {{ row.Remark ? row.Remark : "無" }}
-          <SvgEdit @click="editRemark(row)" />
+          <SvgEdit @click="editRemark(row)" v-if="permissionMap.EditOrder" />
         </div>
       </template>
     </TableNormal>
@@ -175,6 +190,10 @@ export default {
     };
   },
   methods: {
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getOrder();
+    },
     getOrderByState() {
       this.searchingPage = 1;
       this.getOrder();
@@ -216,18 +235,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -247,34 +255,14 @@ export default {
         };
         // post
         const response = await this.$axios.post(
-          "/api/Invoice/CompleteOrderAndPrintInvoice",
+          "/api/Invoice/PrintInvoice",
           printInvoiceDto
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
-        } else if (
-          response.data.ErrorCode ===
-          this.$errorCodeDefine.CantPrintCrossDateInvoice
-        ) {
-          // 設定彈窗資料
-          this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
-          this.$notificationBox.notificationBoxErrorCode =
-            response.data.ErrorCode;
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = "/order";
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -434,6 +422,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -511,7 +504,7 @@ export default {
     resetSearchingRecord() {
       this.selectMethod = "";
       this.selectState = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchingPage = 1;
@@ -574,18 +567,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -608,18 +590,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -642,18 +613,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -722,18 +682,7 @@ export default {
             "這筆訂單因尚未使用，且符合 7 日內條件，將全額退費。請確認是否要繼續執行解約？";
           this.$notificationBox.notificationBoxErrorCode = 0;
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -763,20 +712,7 @@ export default {
             "字軌號碼為：" + invoiceNumber;
           this.$notificationBox.notificationBoxErrorCode = 0;
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = "stop";
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.getOrder();
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
+          this.getOrder();
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
@@ -845,18 +781,7 @@ export default {
             "這筆訂單因尚未使用，且符合 7 日內條件，將全額退費。請確認是否要繼續執行設置違約？";
           this.$notificationBox.notificationBoxErrorCode = 0;
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -884,19 +809,7 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getOrder();
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.getOrder();
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
+          this.getOrder();
 
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
@@ -933,19 +846,7 @@ export default {
             this.$notificationBox.notificationBoxErrorCode = 0;
           }
         } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
+          this.getOrder();
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";

@@ -170,6 +170,11 @@ namespace ApiLayer.Models.Member.Response
         public int SessionCount { get; set; }
 
         /// <summary>
+        /// 課堂數
+        /// </summary>
+        public int UsedSessionCount { get; set; }
+
+        /// <summary>
         /// 狀態 1:進行中 ; 2:終止 ; 3:完成
         /// </summary>
         public byte Status { get; set; }

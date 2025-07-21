@@ -10,7 +10,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 1,
+            MemberName: "王小明",
+            MemberPhone: 912345678,
         },
         {
             "TransactionId": 0,
@@ -22,7 +25,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 2,
+            MemberName: "陳美麗",
+            MemberPhone: 911223344,
         },
         {
             "TransactionId": 0,
@@ -34,7 +40,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 2,
+            MemberName: "陳美麗",
+            MemberPhone: 911223344,
         },
         {
             "TransactionId": 0,
@@ -46,7 +55,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 3,
+            MemberName: "李大仁",
+            MemberPhone: 913334455,
         },
         {
             "TransactionId": 0,
@@ -58,7 +70,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 4,
+            MemberName: "張小華",
+            MemberPhone: 914556677,
         },
         {
             "TransactionId": 0,
@@ -70,7 +85,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 5,
+            MemberName: "林阿忠",
+            MemberPhone: 915667788,
         },
         {
             "TransactionId": 0,
@@ -82,7 +100,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 6,
+            MemberName: "周玉芬",
+            MemberPhone: 916778899,
         },
         {
             "TransactionId": 8,
@@ -94,7 +115,10 @@ export default function (mock) {
             "AuthCode": "B42X9",
             "CardLastFour": "6062",
             "CardType": "VISA",
-            "GatewayTransactionId": "dbe7330e-5011-4452-a29a-bd2df4198e06"
+            "GatewayTransactionId": "dbe7330e-5011-4452-a29a-bd2df4198e06",
+            MemberId: 7,
+            MemberName: "鄭家豪",
+            MemberPhone: 917889900,
         },
         {
             "TransactionId": 9,
@@ -106,7 +130,10 @@ export default function (mock) {
             "AuthCode": "B42X9",
             "CardLastFour": "6062",
             "CardType": "VISA",
-            "GatewayTransactionId": "5e44824b-16e8-4393-9166-00a878e06309"
+            "GatewayTransactionId": "5e44824b-16e8-4393-9166-00a878e06309",
+            MemberId: 10,
+            MemberName: "賴佩芬",
+            MemberPhone: 920112233,
         },
         {
             "TransactionId": 10,
@@ -118,7 +145,10 @@ export default function (mock) {
             "AuthCode": "B42X9",
             "CardLastFour": "6062",
             "CardType": "VISA",
-            "GatewayTransactionId": "9cebbef4-5fc1-46ae-892a-f90fb4a636ed"
+            "GatewayTransactionId": "9cebbef4-5fc1-46ae-892a-f90fb4a636ed",
+            MemberId: 9,
+            MemberName: "曾明志",
+            MemberPhone: 919101112,
         },
         {
             "TransactionId": 11,
@@ -130,7 +160,10 @@ export default function (mock) {
             "AuthCode": "B42X9",
             "CardLastFour": "6062",
             "CardType": "VISA",
-            "GatewayTransactionId": "0d617dfa-751f-4af8-a83b-7c3e7b71c28c"
+            "GatewayTransactionId": "0d617dfa-751f-4af8-a83b-7c3e7b71c28c",
+            MemberId: 8,
+            MemberName: "何玉清",
+            MemberPhone: 918990011,
         },
         {
             "TransactionId": 12,
@@ -142,7 +175,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 7,
+            MemberName: "鄭家豪",
+            MemberPhone: 917889900,
         },
         {
             "TransactionId": 18,
@@ -154,7 +190,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 5,
+            MemberName: "林阿忠",
+            MemberPhone: 915667788,
         },
         {
             "TransactionId": 19,
@@ -166,7 +205,10 @@ export default function (mock) {
             "AuthCode": null,
             "CardLastFour": null,
             "CardType": null,
-            "GatewayTransactionId": null
+            "GatewayTransactionId": null,
+            MemberId: 4,
+            MemberName: "張小華",
+            MemberPhone: 914556677,
         }
     ]
 

@@ -29,7 +29,7 @@
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
-        @change="getTransaction"
+        @change="setRecordPerPage"
       />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
@@ -48,6 +48,7 @@
             text="查看金流資料"
             @click="checkoutCashFlowData(row)"
           />
+          <BtnNormal text="查看會員" @click="goMemberDetail(row)" />
         </div>
       </template>
     </TableNormal>
@@ -101,6 +102,7 @@ export default {
       recordPerPage: "8",
       transactionList: [],
       columns: [
+        { label: "付款會員", key: "Member" },
         { label: "付款方式", key: "Method" },
         { label: "狀態", key: "Status" },
         { label: "金額", key: "Amount" },
@@ -113,8 +115,19 @@ export default {
     };
   },
   methods: {
+    goMemberDetail(row) {
+      if (row.MemberId < 1) return;
+      this.$router.push({
+        path: "/member/detail",
+        query: { id: row.MemberId },
+      });
+    },
     searchPage(page) {
       this.searchingPage = page;
+      this.getTransaction();
+    },
+    setRecordPerPage() {
+      this.searchingPage = 1;
       this.getTransaction();
     },
     getTransactionByStatus() {
@@ -128,7 +141,7 @@ export default {
     resetSearchingRecord() {
       this.selectMethod = "";
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchingPage = 1;
@@ -156,6 +169,11 @@ export default {
             response.data.ApiDataObject.GatewayTransactionId;
           this.$notificationBox.notificationBoxErrorCode = 0;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -206,6 +224,7 @@ export default {
 
           this.transactionList.forEach((transaction) => {
             transaction.Amount = "$" + transaction.Amount;
+            transaction.Member = `${transaction.MemberName} (0${transaction.MemberPhone})`;
 
             transactionStatusAndText.forEach((status) => {
               if (Number(status.value) === transaction.Status) {
@@ -224,9 +243,14 @@ export default {
               .replace("T", " ")
               .substring(0, 19);
 
-            transaction.Time =  displayTime;
+            transaction.Time = displayTime;
           });
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

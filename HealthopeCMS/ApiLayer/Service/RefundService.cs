@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ApiLayer.Interface;
-using ApiLayer.Models.Refund.Response;
 using AutoMapper;
-using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
 
@@ -27,7 +25,7 @@ namespace ApiLayer.Service
         {
             try
             {
-                (List<Refund> refunds, int totalPage) = refundRepository.GetRefund(getRefundDto);
+                (List<ResponseGetRefundDto> refunds, int totalPage) = refundRepository.GetRefund(getRefundDto);
                 ResponseGetRefundListDto response = new ResponseGetRefundListDto
                 {
                     RefundList = refunds,

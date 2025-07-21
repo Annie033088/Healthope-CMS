@@ -47,14 +47,16 @@ namespace ApiLayer.Controllers.api
 
                 if (!success)
                 {
-                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.LoginFailed };
-                    return Ok(response);
-                }
-
-                if (admin.Status == false)
-                {
-                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.Baned };
-                    return Ok(response);
+                    if(admin != null && admin.Status == false)
+                    {
+                        response = new ResultResponse { ErrorCode = ErrorCodeDefine.Baned };
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        response = new ResultResponse { ErrorCode = ErrorCodeDefine.LoginFailed };
+                        return Ok(response);
+                    }
                 }
 
                 response = new ResultResponse<List<AdminPermission>>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Job;
 using ApiLayer.Models.Other;
 using DomainLayer.Models;
@@ -81,8 +82,14 @@ namespace ApiLayer.Service
                     }
 
                     // 取得發票資料
+                    ElectronicInvoice electronicInvoice = new ElectronicInvoice
+                    {
+                        OrderId = payByCardDto.OrderId,
+                        Category = (byte)ElectronicInvoiceCategory.Main,
+                    };
+
                     (int invoiceErrorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) =
-                        invoiceRepository.GetInvoiceNumberAndAddElectronicInvoice(payByCardDto.OrderId);
+                        invoiceRepository.GetInvoiceNumberAndAddElectronicInvoice(electronicInvoice);
 
                     if (invoiceErrorCodeNumber != (int)ErrorCodeDefine.Success)
                     {

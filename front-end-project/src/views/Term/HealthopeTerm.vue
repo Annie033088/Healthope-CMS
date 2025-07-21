@@ -27,7 +27,10 @@
         inputType="radioTarget"
         :options="targetOptions"
       />
-      <RecordSelector :parentValue.sync="recordPerPage" @change="getTermData" />
+      <RecordSelector
+        :parentValue.sync="recordPerPage"
+        @change="setRecordPerPage"
+      />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
@@ -117,6 +120,10 @@ export default {
     redirect(path) {
       if (this.$route.path !== path) this.$router.push(path);
     },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getTermData();
+    },
     selectTermByStatus() {
       this.searchingPage = 1;
       this.getTermData();
@@ -196,6 +203,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -254,6 +266,12 @@ export default {
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
+
+      if (this.unwatchFlag) {
+        this.unwatchFlag(); // 確保監聽被移除
+        this.unwatchFlag = null;
+      }
+
       // 添加監聽器，查看彈窗是否被按確認鍵
       this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
         if (newVal) {
@@ -292,12 +310,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$emit("refreshPage");
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+              this.getTermData();
+              let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -350,12 +374,18 @@ export default {
     },
     async editStatus(row) {
       if (row.Status.OldValue !== String(termStatus.Draft)) {
+        if (this.unwatchFlag) {
+          this.unwatchFlag(); // 確保監聽被移除
+          this.unwatchFlag = null;
+        }
+
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              let redirectRoute = null;
+              this.getTermData();
+              let redirectRoute = "stop";
               this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;
@@ -385,12 +415,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getTermData();
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+              this.getTermData();
+              let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -408,7 +444,7 @@ export default {
         console.error("修改狀態時發生錯誤", error);
       }
     },
-    async goCheckDetail(row) {
+    goCheckDetail(row) {
       if (row.TermId < 1) return;
 
       this.$router.push({ path: "/term/detail", query: { id: row.TermId } });

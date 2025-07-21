@@ -2,7 +2,7 @@
   <div>
     <TitleCard text="條款" @refreshPage="$emit('refreshPage')"></TitleCard>
     <SubTitleCard text="新增條款"></SubTitleCard>
-      <div class="sectionTitle"><p>新增條款</p></div>
+    <div class="sectionTitle"><p>新增條款</p></div>
     <div class="StepOneContainer" v-if="step === 1">
       <!-- 1. 條款類型 -->
       <div class="input">
@@ -219,6 +219,11 @@ export default {
             this.oldTermOption.push(oldTerm);
           });
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

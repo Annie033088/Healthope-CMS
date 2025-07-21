@@ -147,6 +147,7 @@ import {
   memberMembershipPlanStatusAndText,
   memberMembershipPlanStatus,
   memberPersonalTrainingPackageStatusAndText,
+  memberPersonalTrainingPackageStatus,
 } from "@/utils/memberPlan";
 
 export default {
@@ -185,7 +186,7 @@ export default {
           type: "dropDownSelector",
           enableFlag: this.permissionMap.EditMemberPersonalPeckagePlan,
         },
-        { label: "課堂數", key: "SessionCount" },
+        { label: "課堂數", key: "SessionUsedAndCount" },
         { label: "狀態", key: "Status" },
         { label: "最後修改日期", key: "LocalUpdateTime" },
       ],
@@ -375,24 +376,42 @@ export default {
           });
 
           this.memberPersonalTrainingPackageList.forEach((plan) => {
-            memberPersonalTrainingPackageStatusAndText.forEach((status) => {
-              if (Number(status.value) === plan.Status)
-                plan.Status = status.text;
-            });
+            plan.SessionUsedAndCount = `${plan.UsedSessionCount}/${plan.SessionCount}`;
 
             let coachOption = [];
-            this.coachList.forEach((coach) => {
-              coachOption.push({
-                value: coach.CoachId,
-                text: coach.Name + `(0${coach.Phone})`,
+
+            // 判斷是否有剩餘課堂 及 狀態是否為 "進行中"方案
+            if (
+              plan.UsedSessionCount < plan.SessionCount &&
+              plan.Status === memberPersonalTrainingPackageStatus.Active
+            ) {
+              this.coachList.forEach((coach) => {
+                coachOption.push({
+                  value: coach.CoachId,
+                  text: coach.Name + `(0${coach.Phone})`,
+                });
               });
-            });
+            } else {
+              this.coachList.forEach((coach) => {
+                if (coach.CoachId === plan.CoachId) {
+                  coachOption.push({
+                    value: coach.CoachId,
+                    text: coach.Name + `(0${coach.Phone})`,
+                  });
+                }
+              });
+            }
 
             plan.Coach = {
               Value: String(plan.CoachId),
               Options: coachOption,
               OldValue: String(plan.CoachId),
             };
+
+            memberPersonalTrainingPackageStatusAndText.forEach((status) => {
+              if (Number(status.value) === plan.Status)
+                plan.Status = status.text;
+            });
 
             const localUpdateTime = new Date(plan.UpdateTime + "Z");
             plan.LocalUpdateTime = localUpdateTime.toLocaleString();
@@ -449,6 +468,11 @@ export default {
             this.AllowGroupClassFlag = false;
           else this.AllowGroupClassFlag = true;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

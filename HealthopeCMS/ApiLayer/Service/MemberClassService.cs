@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http.Results;
+using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
@@ -69,6 +69,60 @@ namespace ApiLayer.Service
             try
             {
                 return memberClassRepository.GetMemberPersonalClass(getMemberPersonalClassDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改預約課程備註
+        /// </summary>
+        public bool EditMemberPersonalClassRemark(RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto)
+        {
+            try
+            {
+                MemberPersonalClass memberPersonalClass = mapper.Map<MemberPersonalClass>(editMemberPersonalClassRemarkDto);
+                return memberClassRepository.EditMemberPersonalClassRemark(memberPersonalClass);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 修改會員的教練預約課程狀態
+        /// </summary>
+        public ErrorCodeDefine EditMemberPersonalClassStatus(RequestEditMemberPersonalClassStatusDto editStatusDto)
+        {
+            try
+            {
+                MemberPersonalClass memberPersonalClass = mapper.Map<MemberPersonalClass>(editStatusDto);
+                int errorCodeNumber = memberClassRepository.EditMemberPersonalClassStatus(memberPersonalClass);
+
+                if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
+                {
+                    return (ErrorCodeDefine.ServerError);
+                }
+
+                return (ErrorCodeDefine)errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 每日取消當日預約中的教練課程 (預約中課程於一天之前 無確認，即改為取消)
+        /// </summary>
+        public Task AutoCancelReservingMemberPersonalClass()
+        {
+            try
+            {
+               return memberClassRepository.AutoCancelReservingMemberPersonalClass();
             }
             catch (Exception)
             {

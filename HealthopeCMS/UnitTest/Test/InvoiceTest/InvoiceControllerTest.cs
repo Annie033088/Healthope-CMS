@@ -19,14 +19,12 @@ namespace UnitTest.Test.Invoice
     {
         private InvoiceController controller;
         private Mock<IInvoiceService> invoiceServiceMock;
-        private Mock<IJobDispatcher> jobDispatcherMock;
 
         [TestInitialize]
         public void Setup()
         {
             invoiceServiceMock = new Mock<IInvoiceService>();
-            jobDispatcherMock = new Mock<IJobDispatcher>();
-            controller = new InvoiceController(invoiceServiceMock.Object, jobDispatcherMock.Object);
+            controller = new InvoiceController(invoiceServiceMock.Object);
         }
 
         [TestMethod]
@@ -235,11 +233,10 @@ namespace UnitTest.Test.Invoice
 
             // Mock 設定
             invoiceServiceMock.Setup(s
-                => s.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto)).Returns((errorCode, printInvoiceDto));
-            jobDispatcherMock.Setup(s => s.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto));
+                => s.GetInvoiceNumberAndAddElectronicInvoice(orderIdAndCategoryDto)).Returns(errorCode);
 
             // Act
-            IHttpActionResult result = controller.CompleteOrderAndPrintInvoice(orderIdAndCategoryDto);
+            IHttpActionResult result = controller.PrintInvoice(orderIdAndCategoryDto);
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
@@ -257,14 +254,13 @@ namespace UnitTest.Test.Invoice
             };
 
             ErrorCodeDefine errorCode = ErrorCodeDefine.GetFailed;
-            RequestPrintInvoiceDto printInvoiceDto = null;
 
             // Mock 設定
             invoiceServiceMock.Setup(s
-                => s.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto)).Returns((errorCode, printInvoiceDto));
+                => s.GetInvoiceNumberAndAddElectronicInvoice(orderIdAndCategoryDto)).Returns(errorCode);
 
             // Act
-            IHttpActionResult result = controller.CompleteOrderAndPrintInvoice(orderIdAndCategoryDto);
+            IHttpActionResult result = controller.PrintInvoice(orderIdAndCategoryDto);
 
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();

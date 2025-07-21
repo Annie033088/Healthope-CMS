@@ -33,11 +33,6 @@ namespace PersistentLayer.Interface
         bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime);
 
         /// <summary>
-        /// 取得發票號碼
-        /// </summary>
-        (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(ElectronicInvoice invoice);
-
-        /// <summary>
         /// 作廢發票
         /// </summary>
         int VoidInvoice(ElectronicInvoice invoice);
@@ -65,6 +60,7 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 取得列印發票需要的資料
         /// </summary>
-        (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) GetInvoiceNumberAndAddElectronicInvoice(int orderId);
+        (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) GetInvoiceNumberAndAddElectronicInvoice(
+            ElectronicInvoice electronicInvoice);
     }
 }

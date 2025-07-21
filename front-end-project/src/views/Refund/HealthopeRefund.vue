@@ -27,7 +27,10 @@
         :sortOrder.sync="selectSortOrder"
         @change="getRefund"
       />
-      <RecordSelector :parentValue.sync="recordPerPage" @change="getRefund" />
+      <RecordSelector
+        :parentValue.sync="recordPerPage"
+        @change="setRecordPerPage"
+      />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
@@ -40,6 +43,7 @@
         <div class="detailRowContainer">
           <strong>操作：</strong>
           <BtnNormal text="查看訂單" @click="goOrderDetail(row)" />
+          <BtnNormal text="查看會員" @click="goMemberDetail(row)" />
         </div>
       </template>
     </TableNormal>
@@ -93,6 +97,7 @@ export default {
       recordPerPage: "8",
       refundList: [],
       columns: [
+        { label: "退款會員", key: "Member" },
         { label: "退款類型", key: "RefundType" },
         { label: "狀態", key: "Status" },
         { label: "原始應退", key: "RefundAmount" },
@@ -107,6 +112,17 @@ export default {
     };
   },
   methods: {
+    goMemberDetail(row) {
+      if (row.MemberId < 1) return;
+      this.$router.push({
+        path: "/member/detail",
+        query: { id: row.MemberId },
+      });
+    },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getRefund();
+    },
     searchPage(page) {
       this.searchingPage = page;
       this.getRefund();
@@ -129,7 +145,7 @@ export default {
     resetSearchingRecord() {
       this.selectRefundType = "";
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchingPage = 1;
@@ -173,6 +189,8 @@ export default {
               }
             });
 
+            refund.Member = `${refund.MemberName} (0${refund.MemberPhone})`;
+
             refund.NetRefund = refund.RefundAmount - refund.PenaltyAmount;
             refund.NetRefund = "$" + refund.NetRefund;
             refund.RefundAmount = "$" + refund.RefundAmount;
@@ -186,6 +204,11 @@ export default {
             refund.LocalCreateTime = localCreateTime;
           });
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -292,5 +315,11 @@ export default {
 
 .radioRefundType {
   width: 400px;
+}
+
+.detailRowContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 </style>

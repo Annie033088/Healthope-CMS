@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApiLayer.Interface;
 using ApiLayer.Job;
 using ApiLayer.Models;
+using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Job;
 using ApiLayer.Models.Other;
 using ApiLayer.Service;
@@ -77,6 +78,21 @@ namespace UnitTest.Test.PaymentTest
                 SingleEntryPassId = 1,
                 TicketCode = Guid.NewGuid(),
             };
+            ElectronicInvoice electronicInvoice = new ElectronicInvoice
+            {
+                OrderId = payByCardDto.OrderId,
+                Category = (byte)ElectronicInvoiceCategory.Main,
+            };
+            int invoiceErrorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            DBResponsePrintInvoiceDto responsePrintInvoiceDto = new DBResponsePrintInvoiceDto
+            {
+                ElectronicInvoiceId = payByCardDto.OrderId,
+                InvoiceNumber = "QC12345678",
+                PlanName = "違約金",
+                RandomNumber = "2232",
+                TotalAmount = 2000
+            };
 
             // Mock 設定
             httpServiceMock.Setup(s => s.SendPostAsync(It.IsAny<string>(), It.IsAny<StringContent>(), It.IsAny<TimeSpan>()))
@@ -84,13 +100,15 @@ namespace UnitTest.Test.PaymentTest
             orderRepositoryMock.Setup(s => s.PayByCardSuccess(It.IsAny<RequestPayByCardDto>(), It.IsAny<CreditCardTransaction>()))
                 .Returns((errorCodeNumber, dbResponse));
             jobDispatcherMock.Setup(s => s.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(It.IsAny<RequestPrintInvoiceDto>()));
+            invoiceRepositoryMock.Setup(s => s.GetInvoiceNumberAndAddElectronicInvoice(It.IsAny<ElectronicInvoice>()))
+                .Returns((invoiceErrorCodeNumber, responsePrintInvoiceDto));
 
             // Act
             (ErrorCodeDefine errorCode, DBResponseSingleEntryPassDto dbResponse) result = await service.PayByCard(
                 requestCardPaymentDto, creditCardTransactionId, payByCardDto);
 
             // Assert
-            Assert.AreEqual(result.errorCode, ErrorCodeDefine.Success);
+            Assert.AreEqual(ErrorCodeDefine.Success, result.errorCode);
         }
 
         [TestMethod]
@@ -144,7 +162,7 @@ namespace UnitTest.Test.PaymentTest
                 requestCardPaymentDto, creditCardTransactionId, payByCardDto);
 
             // Assert
-            Assert.AreEqual(result.errorCode, ErrorCodeDefine.PayFailed);
+            Assert.AreEqual(ErrorCodeDefine.PayFailed, result.errorCode);
         }
     }
 }

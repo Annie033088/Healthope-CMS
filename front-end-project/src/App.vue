@@ -98,17 +98,23 @@ export default {
     },
     notificationBoxCreated() {
       this.notificationBoxConfirmFlag = false;
-    },
+    },  
     // 檢查用戶擁有的權限
     initializePermissionMap(permissionList) {
       // 遍歷權限對照表並根據用戶權限設定對應結果
       for (let key in adminPermission) {
         const permissionValue = adminPermission[key];
-        this.$set(
-          this.permissionMap,
-          key,
-          permissionList.includes(permissionValue)
-        );
+
+        if (permissionList) {
+          this.$set(
+            this.permissionMap,
+            key,
+            permissionList.includes(permissionValue)
+          );
+        } else {
+          this.$set(this.permissionMap, key, false);
+        }
+
         this.permissionMapReady = true;
       }
     },
@@ -121,12 +127,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.initializePermissionMap(response.data.ApiDataObject);
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                this.afterConfirmEvent();
+                let redirectRoute = null;
+                this.afterConfirmEvent(redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
               }
@@ -139,7 +151,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("創建管理者時發生錯誤", error);
+        console.error("取得權限時發生錯誤", error);
       }
     },
   },

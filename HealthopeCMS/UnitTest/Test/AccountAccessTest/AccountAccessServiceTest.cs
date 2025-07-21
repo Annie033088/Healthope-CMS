@@ -18,7 +18,7 @@ namespace UnitTest.Test.AccountAccessTest
     {
         private AccountAccessService accountAccessService;
         private Mock<IAdminRepository> adminRepositoryMock;
-        private Mock<IAppSetting> appSettingMock;
+        private Mock<IAppConfigProvider> appSettingMock;
         private Mock<IRedisService> redisServiceMock;
         private Mock<ISessionService> sessionServiceMock;
 
@@ -26,7 +26,7 @@ namespace UnitTest.Test.AccountAccessTest
         public void Setup()
         {
             adminRepositoryMock = new Mock<IAdminRepository>();
-            appSettingMock = new Mock<IAppSetting>();
+            appSettingMock = new Mock<IAppConfigProvider>();
             redisServiceMock = new Mock<IRedisService>();
             sessionServiceMock = new Mock<ISessionService>();
             accountAccessService = new AccountAccessService(adminRepositoryMock.Object, appSettingMock.Object, redisServiceMock.Object, sessionServiceMock.Object);

@@ -16,12 +16,12 @@ namespace ApiLayer.Service
     {
         private readonly string adminSessionKey = "AdminSession";
         private readonly IAdminRepository adminRepository;
-        private readonly IAppSetting appSetting;
+        private readonly IAppConfigProvider appSetting;
         private readonly IRedisService redisService;
         private readonly ISessionService sessionService;
 
         public AccountAccessService(IAdminRepository adminRepository,
-            IAppSetting appSetting, IRedisService redisService, ISessionService sessionService)
+            IAppConfigProvider appSetting, IRedisService redisService, ISessionService sessionService)
         {
             this.appSetting = appSetting;
             this.adminRepository = adminRepository;
@@ -84,6 +84,8 @@ namespace ApiLayer.Service
                     Admin logginInAdmin = adminRepository.GetLoggingInAdmin(loginDto.Account);
 
                     if (logginInAdmin == null) return (false, null);
+
+                    if (logginInAdmin.Status == false) return (false, logginInAdmin);
 
                     salt = logginInAdmin.Hash.Substring(0, 36);
                     pwdHash = hash.PwdHash(loginDto.Pwd, salt);

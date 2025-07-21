@@ -50,7 +50,7 @@ namespace ApiLayer.Service
 
         /// <summary>
         /// 根據 id 取得修改會員時需要的資料
-        /// </summary>
+        /// </summary> 
         public ResponseGetMemberEditDataByIdDto GetMemberEditDataById(
             RequestMemberIdDto getMemberByIdDto)
         {
@@ -113,6 +113,8 @@ namespace ApiLayer.Service
                 (Member member, List<MemberMembershipPlan> memberMembershipPlans,
                  List<MemberPersonalTrainingPackage> memberPersonalTrainingPackages,
                  List<Coach> coaches) = memberRepository.GetMemberDetail(memberIdDto.MemberId);
+
+                if (member == null) return null;
 
                 ResponseGetMemberDetailDto response = new ResponseGetMemberDetailDto();
                 response.Member = mapper.Map<ResponseGetMemberDetailMemberDto>(member);

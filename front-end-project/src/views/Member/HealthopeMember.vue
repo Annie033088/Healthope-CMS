@@ -19,7 +19,7 @@
         inputTitle="狀態："
         inputType="radioStatus"
         :options="[
-          { value: '', text: '無' },
+          { value: '', text: '全部' },
           { value: 'true', text: '啟用' },
           { value: 'false', text: '停用' },
         ]"
@@ -36,7 +36,7 @@
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
-        @change="getMemberData"
+        @change="setRecordPerPage"
       />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
@@ -146,6 +146,10 @@ export default {
         path: "/member/detail",
         query: { id: row.MemberId },
       });
+    },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getMemberData();
     },
     selectMemberByStatus() {
       this.searchingPage = 1;
@@ -309,6 +313,11 @@ export default {
           });
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

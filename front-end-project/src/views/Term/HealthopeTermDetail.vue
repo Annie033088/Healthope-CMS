@@ -4,7 +4,7 @@
     <SubTitleCard text="查看條款內容"></SubTitleCard>
     <div class="sectionTitle">
       <h3>條款基本資訊</h3>
-      <h3>{{term.Name + ' - ' + term.Version}}</h3>
+      <h3>{{ term.Name + " - " + term.Version }}</h3>
     </div>
     <div class="termDetailContentBox">
       <div class="termDetailContentContainer">
@@ -62,6 +62,11 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.term = response.data.ApiDataObject;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

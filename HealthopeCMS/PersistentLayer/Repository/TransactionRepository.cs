@@ -55,13 +55,13 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 取得付款紀錄
         /// </summary>
-        public (List<PaymentTransaction> transactions, int totalPage) GetTransaction(RequestGetTransactionDto getTransactionDto)
+        public ResponseGetTransactionListDto GetTransaction(RequestGetTransactionDto getTransactionDto)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
             SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
-            List<PaymentTransaction> transactions = null;
+            List<ResponseGetTransactionDto> transactions = null;
             int totalPage = 0;
 
             try
@@ -102,14 +102,17 @@ namespace PersistentLayer.Repository
 
                 cmd.Connection.Close();
 
-                if (dt.Rows.Count > 0) transactions = new List<PaymentTransaction>();
+                if (dt.Rows.Count > 0) transactions = new List<ResponseGetTransactionDto>();
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     DataRow dr = dt.Rows[i];
-                    PaymentTransaction transaction = new PaymentTransaction();
+                    ResponseGetTransactionDto transaction = new ResponseGetTransactionDto();
                     transaction.TransactionId = dr.IsNull("f_transactionId") ? 0 : dr.Field<int>("f_transactionId");
                     transaction.OrderId = dr.IsNull("f_orderId") ? 0 : dr.Field<int>("f_orderId");
+                    transaction.MemberId = dr.IsNull("f_memberId") ? 0 : dr.Field<int>("f_memberId");
+                    transaction.MemberName = dr.IsNull("f_memberName") ? string.Empty : dr.Field<string>("f_memberName");
+                    transaction.MemberPhone = dr.IsNull("f_memberPhone") ? 0 : dr.Field<int>("f_memberPhone");
                     transaction.Status = (byte)(dr.IsNull("f_status") ? 0 : dr.Field<byte>("f_status"));
                     transaction.Amount = dr.IsNull("f_amount") ? 0 : dr.Field<int>("f_amount");
                     transaction.Method = (byte)(dr.IsNull("f_method") ? 0 : dr.Field<byte>("f_method"));
@@ -117,7 +120,12 @@ namespace PersistentLayer.Repository
                     transactions.Add(transaction);
                 }
 
-                return (transactions, totalPage);
+                ResponseGetTransactionListDto response = new ResponseGetTransactionListDto
+                {
+                    TotalPage = totalPage,
+                    TransactionList = transactions
+                };
+                return response;
             }
             catch (Exception)
             {

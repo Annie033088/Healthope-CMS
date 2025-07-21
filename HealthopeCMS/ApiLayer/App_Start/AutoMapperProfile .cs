@@ -90,13 +90,14 @@ namespace ApiLayer.App_Start
             CreateMap<RequestEditOrderStateRemarkDto, OrderState>();
             CreateMap<RequestEditOrderRemarkDto, Order>();
             CreateMap<RequestEditOrderStateDto, Order>();
-            CreateMap<PaymentTransaction, ResponseGetTransactionDto>();
             CreateMap<PaymentTransaction, ResponsetGetCreditCardCashFlowDto>();
             CreateMap<ElectronicInvoice, ResponseGetInvoiceDto>();
             CreateMap<ElectronicInvoice, ResponseGetEelectonicInvoiceByOrderIdDto>();
             CreateMap<RequestOrderIdAndCategoryDto, ElectronicInvoice>();
             CreateMap<RequestEditInvoiceStatusDto, ElectronicInvoice>();
             CreateMap<RequestAddMemberPersonalClassDto, MemberPersonalClass>();
+            CreateMap<RequestEditMemberPersonalClassRemarkDto, MemberPersonalClass>();
+            CreateMap<RequestEditMemberPersonalClassStatusDto, MemberPersonalClass>();
         }
     }
 }

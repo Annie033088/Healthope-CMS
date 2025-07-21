@@ -14,7 +14,7 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 取得付款紀錄
         /// </summary>
-        (List<PaymentTransaction> transactions, int totalPage) GetTransaction(RequestGetTransactionDto getTransactionDto);
+        ResponseGetTransactionListDto GetTransaction(RequestGetTransactionDto getTransactionDto);
 
         /// <summary>
         /// 取得金流資訊(Auth code 跟 外部金流Id)

@@ -242,72 +242,6 @@ namespace PersistentLayer.Repository
         }
 
         /// <summary>
-        /// 取得發票號碼
-        /// </summary>
-        public (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) EditOrderStateAndGetInvoiceNumber(
-            ElectronicInvoice invoice)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
-            SqlDataAdapter da = new SqlDataAdapter();
-            DataSet ds = new DataSet();
-            int errorCodeNumber;
-
-            try
-            {
-                cmd.CommandText = "EXEC pro_healthope_editOrderStateAndGetInvoiceNumber @orderId, @category, @errorCode OUTPUT";
-
-                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
-                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
-
-                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                cmd.Parameters.Add(errorCodeOutput);
-
-                cmd.Connection.Open();
-
-                da.SelectCommand = cmd;
-                da.Fill(ds);
-
-                errorCodeNumber = (int)errorCodeOutput.Value;
-                cmd.Connection.Close();
-
-                if (ds.Tables.Count > 0)
-                {
-                    ElectronicInvoice response = new ElectronicInvoice
-                    {
-                        ElectronicInvoiceId = ds.Tables[0].Rows[0].IsNull("f_electronicInvoiceId") ? 0 :
-                            ds.Tables[0].Rows[0].Field<int>("f_electronicInvoiceId"),
-                        InvoiceNumber = ds.Tables[0].Rows[0].IsNull("f_invoiceNumber") ? string.Empty :
-                            ds.Tables[0].Rows[0].Field<string>("f_invoiceNumber"),
-                        RandomNumber = ds.Tables[0].Rows[0].IsNull("f_randomNumber") ? string.Empty :
-                            ds.Tables[0].Rows[0].Field<string>("f_randomNumber"),
-                        TotalAmount = ds.Tables[0].Rows[0].IsNull("f_totalAmount") ? 0 :
-                            ds.Tables[0].Rows[0].Field<int>("f_totalAmount"),
-                    };
-
-                    string planName = ds.Tables[0].Rows[0].IsNull("f_planName") ? string.Empty :
-                            ds.Tables[0].Rows[0].Field<string>("f_planName");
-
-                    return (errorCodeNumber, response, planName);
-                }
-
-                return (errorCodeNumber, null, null);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
-            }
-        }
-
-        /// <summary>
         /// 作廢發票
         /// </summary>
         public int VoidInvoice(ElectronicInvoice invoice)
@@ -544,7 +478,7 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 取得列印發票需要的資料
         /// </summary>
-        public (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) GetInvoiceNumberAndAddElectronicInvoice(int orderId)
+        public (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) GetInvoiceNumberAndAddElectronicInvoice(ElectronicInvoice invoice)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
@@ -554,9 +488,10 @@ namespace PersistentLayer.Repository
 
             try
             {
-                cmd.CommandText = "EXEC pro_healthope_getInvoiceNumberAndAddElectronicInvoice @orderId, @errorCode OUTPUT";
+                cmd.CommandText = "EXEC pro_healthope_getInvoiceNumberAndAddElectronicInvoice @orderId, @category, @errorCode OUTPUT";
 
-                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+                cmd.Parameters.Add("@orderId", SqlDbType.Int).Value = invoice.OrderId;
+                cmd.Parameters.Add("@category", SqlDbType.TinyInt).Value = invoice.Category;
 
                 SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
                 {

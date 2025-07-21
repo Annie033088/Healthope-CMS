@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using ApiLayer.Interface;
+using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice;
 using ApiLayer.Models.Invoice.Request;
@@ -23,13 +24,15 @@ namespace ApiLayer.Service
         private readonly IMapper mapper;
         private readonly IInvoiceRepository invoiceRepository;
         private readonly IHttpService httpService;
+        private readonly IJobDispatcher jobDispatcher;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public InvoiceService(IMapper mapper, IInvoiceRepository invoiceRepository, IHttpService httpService)
+        public InvoiceService(IMapper mapper, IInvoiceRepository invoiceRepository, IHttpService httpService, IJobDispatcher jobDispatcher)
         {
             this.mapper = mapper;
             this.invoiceRepository = invoiceRepository;
             this.httpService = httpService;
+            this.jobDispatcher = jobDispatcher;
         }
 
         /// <summary>
@@ -197,33 +200,40 @@ namespace ApiLayer.Service
         }
 
         /// <summary>
-        /// 針對「現金發票列印失敗」或「刷卡未完成訂單狀態」或「刷卡發票列印失敗」進行補印與補狀態處理
+        /// 印發票
         /// </summary>
-        public (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(
+        public ErrorCodeDefine GetInvoiceNumberAndAddElectronicInvoice(
             RequestOrderIdAndCategoryDto orderIdAndCategoryDto)
         {
             try
             {
                 ElectronicInvoice requestElectronicInvoice = mapper.Map<ElectronicInvoice>(orderIdAndCategoryDto);
-                (int errorCodeNumber, ElectronicInvoice electronicInvoice, string planName) =
-                    invoiceRepository.EditOrderStateAndGetInvoiceNumber(requestElectronicInvoice);
 
+                (int errorCodeNumber, DBResponsePrintInvoiceDto responsePrintInvoiceDto) =
+                    invoiceRepository.GetInvoiceNumberAndAddElectronicInvoice(requestElectronicInvoice);
+
+                // 狀態碼錯誤
                 if (!Enum.IsDefined(typeof(ErrorCodeDefine), errorCodeNumber))
-                    return (ErrorCodeDefine.ServerError, null);
+                    return ErrorCodeDefine.ServerError;
 
                 ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
 
-                if (electronicInvoice == null) return (errorCode, null);
+                // 沒有取得資料
+                if (responsePrintInvoiceDto == null) return errorCode;
 
                 RequestPrintInvoiceDto requestPrintInvoiceDto = new RequestPrintInvoiceDto
                 {
-                    ElectronicInvoiceId = electronicInvoice.ElectronicInvoiceId,
-                    InvoiceNumber = electronicInvoice.InvoiceNumber,
-                    PlanName = planName,
-                    RandomNumber = electronicInvoice.RandomNumber,
-                    TotalAmount = electronicInvoice.TotalAmount,
+                    ElectronicInvoiceId = responsePrintInvoiceDto.ElectronicInvoiceId,
+                    InvoiceNumber = responsePrintInvoiceDto.InvoiceNumber,
+                    PlanName = responsePrintInvoiceDto.PlanName,
+                    RandomNumber = responsePrintInvoiceDto.RandomNumber,
+                    TotalAmount = responsePrintInvoiceDto.TotalAmount,
                 };
-                return (errorCode, requestPrintInvoiceDto);
+
+                // 請求第三放列印發票
+                jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(requestPrintInvoiceDto);
+
+                return errorCode;
             }
             catch (Exception)
             {

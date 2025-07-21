@@ -21,13 +21,11 @@ namespace ApiLayer.Controllers.api
     public class InvoiceController : ApiController
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IJobDispatcher jobDispatcher;
         private readonly IInvoiceService invoiceService;
 
-        public InvoiceController(IInvoiceService invoiceService, IJobDispatcher jobDispatcher)
+        public InvoiceController(IInvoiceService invoiceService)
         {
             this.invoiceService = invoiceService;
-            this.jobDispatcher = jobDispatcher;
         }
 
         /// <summary>
@@ -179,10 +177,10 @@ namespace ApiLayer.Controllers.api
         }
 
         /// <summary>
-        /// 針對「現金發票列印失敗」或「刷卡未完成訂單狀態」或「刷卡發票列印失敗」進行補印與補狀態處理
+        /// 印發票
         /// </summary>
         [HttpPost]
-        public IHttpActionResult CompleteOrderAndPrintInvoice(
+        public IHttpActionResult PrintInvoice(
             [FromBody] RequestOrderIdAndCategoryDto orderIdAndCategoryDto)
         {
             try
@@ -198,23 +196,9 @@ namespace ApiLayer.Controllers.api
                     return Ok(response);
                 }
 
-                (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) = invoiceService.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto);
-
-                if (printInvoiceDto == null || errorCode != ErrorCodeDefine.Success)
-                {
-                    response = new ResultResponse()
-                    {
-                        ErrorCode = errorCode,
-                    };
-                    return Ok(response);
-                }
-
-                // 請求第三放列印發票
-                jobDispatcher.Enqueue<RequestPrintInoviceJob, RequestPrintInvoiceDto>(printInvoiceDto);
-
                 response = new ResultResponse()
                 {
-                    ErrorCode = errorCode,
+                    ErrorCode = invoiceService.GetInvoiceNumberAndAddElectronicInvoice(orderIdAndCategoryDto),
                 };
                 return Ok(response);
             }
@@ -401,6 +385,5 @@ namespace ApiLayer.Controllers.api
                 return Ok(response);
             }
         }
-
     }
 }

@@ -2,8 +2,9 @@
   <div>
     <TitleCard text="方案" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
-      <BtnNormal text="新增方案" @click="redirect('/plan/add')"></BtnNormal>
+      <BtnNormal text="新增方案" @click="redirect('/plan/add')" v-if="permissionMap.EditPlan"></BtnNormal>
       <RadioSelector
+        class="radioStatus"
         v-model="selectStatus"
         @change="getPlan"
         inputTitle="狀態："
@@ -109,12 +110,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getPlan();
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getPlan();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -129,7 +136,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得團課列表時發生錯誤", error);
+        console.error("修改票卷方案狀態時發生錯誤", error);
       }
     },
     searchPage(page) {
@@ -168,6 +175,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -188,7 +200,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得團課列表時發生錯誤", error);
+        console.error("取得票卷方案列表時發生錯誤", error);
       }
     },
     validInput() {
@@ -222,7 +234,7 @@ export default {
         )
       )
         return false;
-      
+
       const IntMax = 2147483647;
       let searchingPage = Number(this.searchingPage);
       if (
@@ -237,7 +249,7 @@ export default {
     },
     resetSearchingRecord() {
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchingPage = 1;
@@ -257,7 +269,7 @@ export default {
   flex-wrap: wrap;
   gap: 10px 20px;
 }
-.radioType {
+.radioStatus {
   width: 350px;
 }
 </style>

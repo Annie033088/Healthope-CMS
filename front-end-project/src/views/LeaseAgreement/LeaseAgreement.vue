@@ -1,6 +1,10 @@
 <template>
   <div>
-    <TitleCard text="場館租約" @refreshPage="$emit('refreshPage')"></TitleCard>
+    <TitleCard
+      text="場館租約"
+      @refreshPage="$emit('refreshPage')"
+      v-if="permissionMap.EditLeaseAgreement"
+    ></TitleCard>
     <div class="functionColumn">
       <BtnNormal
         text="新增租約"
@@ -16,7 +20,7 @@
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
-        @change="getLeaseAgreementData"
+        @change="setRecordPerPage"
       />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
@@ -100,6 +104,10 @@ export default {
   methods: {
     redirect(path) {
       if (this.$route.path !== path) this.$router.push(path);
+    },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getLeaseAgreementData();
     },
     selectLeaseAgreementByStatus() {
       this.searchingPage = 1;
@@ -186,6 +194,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -248,6 +261,12 @@ export default {
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
+
+      if (this.unwatchFlag) {
+        this.unwatchFlag(); // 確保監聽被移除
+        this.unwatchFlag = null;
+      }
+
       // 添加監聽器，查看彈窗是否被按確認鍵
       this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
         if (newVal) {
@@ -289,6 +308,11 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$emit("refreshPage");
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -319,12 +343,18 @@ export default {
           row.Status.Value
         )
       ) {
+        if (this.unwatchFlag) {
+          this.unwatchFlag(); // 確保監聽被移除
+          this.unwatchFlag = null;
+        }
+
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              let redirectRoute = null;
+              this.getLeaseAgreementData();
+              let redirectRoute = "stop";
               this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;
@@ -374,12 +404,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getLeaseAgreementData();
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getLeaseAgreementData();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -399,12 +435,18 @@ export default {
     },
     async editRemind(row) {
       if (Boolean(row.Remind.OldValue) === false) {
+        if (this.unwatchFlag) {
+          this.unwatchFlag(); // 確保監聽被移除
+          this.unwatchFlag = null;
+        }
+
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              let redirectRoute = null;
+              this.getLeaseAgreementData();
+              let redirectRoute = "stop";
               this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;
@@ -434,12 +476,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getLeaseAgreementData();
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getLeaseAgreementData();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;

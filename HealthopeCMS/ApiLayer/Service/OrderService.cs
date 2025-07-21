@@ -332,7 +332,9 @@ namespace ApiLayer.Service
             }
         }
 
+        /// <summary>
         /// 確認是否可以無條件退費 若是=>請前端管理者確認是否要設置違約而不是無條件退費, 若否=>直接走違約流程
+        /// </summary>
         public (ErrorCodeDefine errorCode, ResponseInvoiceNumberDto invoiceNumberDto) CheckoutRefundQualifyAndBreachOrder(RequestEditOrderStateDto editOrderStateDto)
         {
             try

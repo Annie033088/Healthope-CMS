@@ -119,7 +119,7 @@ export default {
         if (!editFlag) {
           this.editFail = true;
           this.hintText = "請修改資料或返回";
-          return
+          return;
         }
 
         // post
@@ -128,11 +128,16 @@ export default {
           editMemberDto
         );
 
-          this.editFail = false;
+        this.editFail = false;
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$router.push("/member");
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -173,6 +178,11 @@ export default {
           this.selectStatus = this.member.Status ? "true" : "false";
           this.phone = "0" + this.member.Phone;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -208,7 +218,8 @@ export default {
 </script>
 
 <style scoped>
-.btnEditContainer, .hintContainer {
+.btnEditContainer,
+.hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 25px;

@@ -324,4 +324,7 @@ export default function (mock) {
         return [200, { ErrorCode: 1 }]
     })
 
+    mock.onPost("/api/MemberClass/EditMemberPersonalClassStatus").reply(() => {
+        return [200, { ErrorCode: 1 }]
+    })
 }

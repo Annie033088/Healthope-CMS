@@ -1,7 +1,9 @@
 ﻿using System.Configuration;
 using ApiLayer.App_Start;
+using ApiLayer.Job;
 using Autofac;
 using Hangfire;
+using Hangfire.Common;
 using Microsoft.Owin;
 using Owin;
 
@@ -24,6 +26,13 @@ namespace ApiLayer
             // 3. 啟用 Hangfire server + dashboard
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+
+            IJobDispatcher jobDispatcher = container.Resolve<IJobDispatcher>();
+
+            // 每天午夜執行 MyJob
+            jobDispatcher.ScheduleRecurring<CancelReservingPersonalClassJob>(
+                "CancelReservingPersonalClassRecurringJob", Cron.Daily());
+
         }
     }
 }

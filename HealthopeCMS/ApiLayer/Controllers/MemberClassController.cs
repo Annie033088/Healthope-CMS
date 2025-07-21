@@ -5,14 +5,11 @@ using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Member;
+using ApiLayer.Models.MemberClass;
 using ApiLayer.Models.MemberClass.Request;
-using ApiLayer.Models.Term.Response;
-using ApiLayer.Models.Term;
-using ApiLayer.Service;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;
-using ApiLayer.Models.MemberClass;
 
 namespace ApiLayer.Controllers
 {
@@ -129,6 +126,73 @@ namespace ApiLayer.Controllers
                 {
                     ErrorCode = ErrorCodeDefine.Success,
                     ApiDataObject = responseGet
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改預約課程備註
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditMemberPersonalClassRemark([FromBody] RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editMemberPersonalClassRemarkDto.MemberPersonalClassId < 1
+                    || editMemberPersonalClassRemarkDto.Remark.Length > 20)
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                bool successFlag = memberClassService.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto);
+                response = new ResultResponse
+                {
+                    ErrorCode = successFlag ? ErrorCodeDefine.Success : ErrorCodeDefine.ModifiedFailed,
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.ServerError };
+                return Ok(response);
+            }
+        }
+
+        /// <summary>
+        /// 修改會員的教練預約課程狀態
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult EditMemberPersonalClassStatus([FromBody] RequestEditMemberPersonalClassStatusDto editStatusDto)
+        {
+            try
+            {
+                ResultResponse response;
+
+                // 格式錯誤
+                if (!ModelState.IsValid
+                    || editStatusDto.MemberPersonalClassId < 1
+                    || !Enum.IsDefined(typeof(MemberPersonalClassStatus), editStatusDto.Status))
+                {
+                    response = new ResultResponse { ErrorCode = ErrorCodeDefine.InvalidFormatOrEntry };
+                    return Ok(response);
+                }
+
+                response = new ResultResponse
+                {
+                    ErrorCode = memberClassService.EditMemberPersonalClassStatus(editStatusDto),
                 };
                 return Ok(response);
             }

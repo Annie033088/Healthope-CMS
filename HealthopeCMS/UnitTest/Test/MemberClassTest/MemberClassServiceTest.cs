@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Controllers;
-using ApiLayer.Interface;
-using ApiLayer.Models.Member;
 using ApiLayer.Models;
+using ApiLayer.Models.Member;
+using ApiLayer.Models.MemberClass.Request;
+using ApiLayer.Service;
+using AutoMapper;
+using DomainLayer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using PersistentLayer.Models;
-using System.Web.Http;
-using UnitTest.utils;
-using ApiLayer.Service;
 using PersistentLayer.Interface;
-using AutoMapper;
-using ApiLayer.Models.MemberClass.Request;
-using DomainLayer.Models;
+using PersistentLayer.Models;
 
 namespace UnitTest.Test.MemberClassTest
 {
@@ -161,5 +155,128 @@ namespace UnitTest.Test.MemberClassTest
             Assert.IsTrue(responseGets.Equals(responseGets));
         }
 
+        [TestMethod]
+        public void 修改會員預約教練課程備註_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto = new RequestEditMemberPersonalClassRemarkDto()
+            {
+                MemberPersonalClassId = 1,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            MemberPersonalClass memberPersonalClass = new MemberPersonalClass
+            {
+                MemberPersonalClassId = 1,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<MemberPersonalClass>(editMemberPersonalClassRemarkDto)).Returns(memberPersonalClass);
+            memberClassRepositoryMock.Setup(s => s.EditMemberPersonalClassRemark(memberPersonalClass)).Returns(successFlag);
+
+            // Act
+            bool result = service.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程備註_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto = new RequestEditMemberPersonalClassRemarkDto()
+            {
+                MemberPersonalClassId = 1,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            MemberPersonalClass memberPersonalClass = new MemberPersonalClass
+            {
+                MemberPersonalClassId = 1,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<MemberPersonalClass>(editMemberPersonalClassRemarkDto)).Returns(memberPersonalClass);
+            memberClassRepositoryMock.Setup(s => s.EditMemberPersonalClassRemark(memberPersonalClass)).Returns(successFlag);
+
+            // Act
+            bool result = service.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassStatusDto editStatusDto = new RequestEditMemberPersonalClassStatusDto()
+            {
+                MemberPersonalClassId = 1,
+                Status = 5,
+                UpdateTime = DateTime.Now,
+            };
+
+            MemberPersonalClass memberPersonalClass = new MemberPersonalClass
+            {
+                MemberPersonalClassId = 1,
+                Status = 5,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.Success;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<MemberPersonalClass>(editStatusDto)).Returns(memberPersonalClass);
+            memberClassRepositoryMock.Setup(s => s.EditMemberPersonalClassStatus(memberPersonalClass)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditMemberPersonalClassStatus(editStatusDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.Success);
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程狀態_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassStatusDto editStatusDto = new RequestEditMemberPersonalClassStatusDto()
+            {
+                MemberPersonalClassId = 1,
+                Status = 5,
+                UpdateTime = DateTime.Now,
+            };
+
+            MemberPersonalClass memberPersonalClass = new MemberPersonalClass
+            {
+                MemberPersonalClassId = 1,
+                Status = 5,
+                UpdateTime = DateTime.Now,
+            };
+
+            int errorCodeNumber = (int)ErrorCodeDefine.ModifiedFailed;
+
+            // Mock 設定
+            mapperMock.Setup(s => s.Map<MemberPersonalClass>(editStatusDto)).Returns(memberPersonalClass);
+            memberClassRepositoryMock.Setup(s => s.EditMemberPersonalClassStatus(memberPersonalClass)).Returns(errorCodeNumber);
+
+            // Act
+            ErrorCodeDefine result = service.EditMemberPersonalClassStatus(editStatusDto);
+
+            // Assert
+            Assert.AreEqual(result, ErrorCodeDefine.ModifiedFailed);
+        }
     }
 }

@@ -2,7 +2,11 @@
   <div>
     <TitleCard text="教練" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
-      <BtnNormal text="新增教練" @click="redirect('/coach/add')"></BtnNormal>
+      <BtnNormal
+        text="新增教練"
+        @click="redirect('/coach/add')"
+        v-if="permissionMap.AddCoach || permissionMap.EditCoach"
+      ></BtnNormal>
       <SearchInput
         placeholder="Name..."
         v-model="searchName"
@@ -20,7 +24,7 @@
         inputTitle="狀態："
         inputType="radioStatus"
         :options="[
-          { value: '', text: '無' },
+          { value: '', text: '全部' },
           { value: 'true', text: '啟用' },
           { value: 'false', text: '停用' },
         ]"
@@ -33,7 +37,7 @@
         ]"
         :sortOption.sync="selectSortOption"
         :sortOrder.sync="selectSortOrder"
-        @change="getCoachData"
+        @change="setRecordPerPage"
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
@@ -83,6 +87,7 @@ export default {
     PaginationComponent,
   },
   props: {
+    permissionMap: {},
     notificationBoxConfirmFlag: Boolean,
   },
   data() {
@@ -120,6 +125,10 @@ export default {
     redirect(path) {
       this.$router.push(path);
     },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getCoachData();
+    },
     selectCoachByStatus() {
       this.searchingPage = 1;
       this.getCoachData();
@@ -148,7 +157,7 @@ export default {
     },
     resetSearchingRecord() {
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchPhone = "";
@@ -270,6 +279,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

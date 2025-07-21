@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiLayer.Controllers.api;
+using System.Web.Http;
+using ApiLayer.Controllers;
 using ApiLayer.Interface;
-using ApiLayer.Models.MemberPlan.Request;
 using ApiLayer.Models;
+using ApiLayer.Models.Member;
+using ApiLayer.Models.MemberClass.Request;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Web.Http;
-using UnitTest.utils;
-using ApiLayer.Controllers;
-using ApiLayer.Models.Member;
-using ApiLayer.Service;
 using PersistentLayer.Models;
-using ApiLayer.Models.MemberClass.Request;
+using UnitTest.utils;
 
 namespace UnitTest.Test.MemberClassTest
 {
@@ -200,6 +194,140 @@ namespace UnitTest.Test.MemberClassTest
             // Assert
             ResponseIsEqual responseIsEqual = new ResponseIsEqual();
             Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程備註_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto = new RequestEditMemberPersonalClassRemarkDto()
+            {
+                MemberPersonalClassId = 1,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = true;
+
+            // Mock 設定
+            memberClassServiceMock.Setup(s => s.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程備註_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto = new RequestEditMemberPersonalClassRemarkDto()
+            {
+                MemberPersonalClassId = 0,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程備註_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassRemarkDto editMemberPersonalClassRemarkDto = new RequestEditMemberPersonalClassRemarkDto()
+            {
+                MemberPersonalClassId = 1,
+                Remark = "123",
+                UpdateTime = DateTime.Now,
+            };
+
+            bool successFlag = false;
+
+            // Mock 設定
+            memberClassServiceMock.Setup(s => s.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto)).Returns(successFlag);
+
+            // Act
+            IHttpActionResult result = controller.EditMemberPersonalClassRemark(editMemberPersonalClassRemarkDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程狀態_成功_回傳成功()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassStatusDto editStatusDto = new RequestEditMemberPersonalClassStatusDto()
+            {
+                MemberPersonalClassId = 1,
+                Status = 5,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.Success;
+
+            // Mock 設定
+            memberClassServiceMock.Setup(s => s.EditMemberPersonalClassStatus(editStatusDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.EditMemberPersonalClassStatus(editStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.Success));
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程狀態_失敗_回傳格式錯誤()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassStatusDto editStatusDto = new RequestEditMemberPersonalClassStatusDto()
+            {
+                MemberPersonalClassId = 1,
+                Status = 10,
+                UpdateTime = DateTime.Now,
+            };
+
+            // Act
+            IHttpActionResult result = controller.EditMemberPersonalClassStatus(editStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.InvalidFormatOrEntry));
+        }
+
+        [TestMethod]
+        public void 修改會員預約教練課程狀態_失敗_回傳失敗()
+        {
+            // Arrange
+            RequestEditMemberPersonalClassStatusDto editStatusDto = new RequestEditMemberPersonalClassStatusDto()
+            {
+                MemberPersonalClassId = 1,
+                Status = 5,
+                UpdateTime = DateTime.Now,
+            };
+
+            ErrorCodeDefine errorCode = ErrorCodeDefine.ModifiedFailed;
+
+            // Mock 設定
+            memberClassServiceMock.Setup(s => s.EditMemberPersonalClassStatus(editStatusDto)).Returns(errorCode);
+
+            // Act
+            IHttpActionResult result = controller.EditMemberPersonalClassStatus(editStatusDto);
+
+            // Assert
+            ResponseIsEqual responseIsEqual = new ResponseIsEqual();
+            Assert.IsTrue(responseIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.ModifiedFailed));
         }
     }
 }

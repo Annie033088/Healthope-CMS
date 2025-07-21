@@ -150,37 +150,37 @@ namespace DomainLayer.Models
         /// <summary>
         /// SA
         /// </summary>
-        SuperAdmin,
+        SuperAdmin = 1,
 
         /// <summary>
         /// 一般管理員
         /// </summary>
-        Admin,
+        Admin = 2,
 
         /// <summary>
         /// 接待員 (櫃檯人員)
         /// </summary>
-        Receptionist,
+        Receptionist = 3,
 
         /// <summary>
         /// 會計
         /// </summary>
-        Accountant,
+        Accountant = 4,
 
         /// <summary>
         /// 課程管理員
         /// </summary>
-        CourseManager,
+        CourseManager = 5,
 
         /// <summary>
         /// 教練管理員
         /// </summary>
-        CoachManager,
+        CoachManager = 6,
 
         /// <summary>
         /// 業務
         /// </summary>
-        SalesRepresentative
+        SalesRepresentative = 7
     }
 
     public class AdminPermissionDictionary
@@ -190,7 +190,7 @@ namespace DomainLayer.Models
         /// </summary>
         public readonly Dictionary<AdminIdentity, List<AdminPermission>> IdentityPermission
             = new Dictionary<AdminIdentity, List<AdminPermission>>()
-        {
+        {   
             { AdminIdentity.SuperAdmin, new List<AdminPermission> {
                 AdminPermission.EditAdmin,
                 AdminPermission.SelectMember, AdminPermission.EditMember,
@@ -228,8 +228,14 @@ namespace DomainLayer.Models
                 AdminPermission.SelectMember,
                 AdminPermission.SelectGroupClassShowcase,
                 AdminPermission.SelectGroupClassSchedule,
+                AdminPermission.SelectPlan,
                 AdminPermission.AddOrder,
-                AdminPermission.EditMemberMembershipPlan,
+            } },
+            {AdminIdentity.Accountant, new List<AdminPermission>{
+                AdminPermission.SelectTransaction,
+                AdminPermission.SelectFinancialStatements,
+                AdminPermission.SelectCoachReport,
+                AdminPermission.SelectOrder,
             } },
             {AdminIdentity.CoachManager, new List<AdminPermission>{
                 AdminPermission.SelectMember,
@@ -244,12 +250,8 @@ namespace DomainLayer.Models
             } },
             {AdminIdentity.SalesRepresentative, new List<AdminPermission>{
                 AdminPermission.SelectMember,
+                AdminPermission.SelectMemberClass,
             } },
-            {AdminIdentity.Accountant, new List<AdminPermission>{
-                AdminPermission.SelectTransaction,
-                AdminPermission.SelectFinancialStatements,
-                AdminPermission.SelectCoachReport,
-            } }
         };
     }
 }

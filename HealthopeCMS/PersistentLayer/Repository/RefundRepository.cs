@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
 
@@ -16,13 +15,13 @@ namespace PersistentLayer.Repository
         /// <summary>
         /// 取得退款紀錄
         /// </summary>
-        public (List<Refund> refunds, int totalPage) GetRefund(RequestGetRefundDto getRefundDto)
+        public (List<ResponseGetRefundDto> refunds, int totalPage) GetRefund(RequestGetRefundDto getRefundDto)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(this.ConnStr);
             SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
-            List<Refund> refunds = null;
+            List<ResponseGetRefundDto> refunds = null;
             int totalPage = 0;
 
             try
@@ -63,15 +62,17 @@ namespace PersistentLayer.Repository
 
                 cmd.Connection.Close();
 
-                if (dt.Rows.Count > 0) refunds = new List<Refund>();
+                if (dt.Rows.Count > 0) refunds = new List<ResponseGetRefundDto>();
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     DataRow dr = dt.Rows[i];
-                    Refund refund = new Refund();
+                    ResponseGetRefundDto refund = new ResponseGetRefundDto();
                     refund.RefundId = dr.IsNull("f_refundId") ? 0 : dr.Field<int>("f_refundId");
                     refund.OrderId = dr.IsNull("f_orderId") ? 0 : dr.Field<int>("f_orderId");
-                    refund.ElectronicInvoiceId = dr.IsNull("f_electronicInvoiceId") ? 0 : dr.Field<int>("f_electronicInvoiceId");
+                    refund.MemberId = dr.IsNull("f_memberId") ? 0 : dr.Field<int>("f_memberId");
+                    refund.MemberName = dr.IsNull("f_memberName") ? string.Empty : dr.Field<string>("f_memberName");
+                    refund.MemberPhone = dr.IsNull("f_memberPhone") ? 0 : dr.Field<int>("f_memberPhone");
                     refund.RefundType = (byte)(dr.IsNull("f_refundType") ? 0 : dr.Field<byte>("f_refundType"));
                     refund.Status = (byte)(dr.IsNull("f_status") ? 0 : dr.Field<byte>("f_status"));
                     refund.RefundAmount = dr.IsNull("f_refundAmount") ? 0 : dr.Field<int>("f_refundAmount");

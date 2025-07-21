@@ -5,6 +5,7 @@
       <BtnNormal
         text="新增課程"
         @click="redirect('/groupClass/showcase/add')"
+        v-if="permissionMap.EditGroupClassSchedule"
       ></BtnNormal>
       <SearchInput
         @search="selectClassByName"
@@ -30,7 +31,7 @@
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
-        @change="getClassData"
+        @change="setRecordPerPage"
       />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
@@ -66,7 +67,7 @@ import SearchInput from "@/components/Input/SearchInput";
 import {
   groupClassCategoryAndText,
   groupClassIcon,
-  groupClassCategoryReverse
+  groupClassCategoryReverse,
 } from "@/utils/groupClass";
 import TableNormal from "@/components/Table/TableNormal";
 import PaginationComponent from "@/components/PaginationComponent";
@@ -114,14 +115,24 @@ export default {
     },
     goDetail(row) {
       if (row.GroupClassShowcaseId < 1) return;
-      this.$router.push({ path: "/groupClass/showcase/detail", query: { id: row.GroupClassShowcaseId } });
+      this.$router.push({
+        path: "/groupClass/showcase/detail",
+        query: { id: row.GroupClassShowcaseId },
+      });
     },
-    goEdit(row){
+    goEdit(row) {
       if (row.GroupClassShowcaseId < 1) return;
-      this.$router.push({ path: "/groupClass/showcase/edit", query: { id: row.GroupClassShowcaseId } });
+      this.$router.push({
+        path: "/groupClass/showcase/edit",
+        query: { id: row.GroupClassShowcaseId },
+      });
     },
     redirect(path) {
       if (this.$route.path !== path) this.$router.push(path);
+    },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getClassData();
     },
     selectClassByName() {
       this.searchingPage = 1;
@@ -181,6 +192,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -244,7 +260,7 @@ export default {
         )
       )
         return false;
-      
+
       const IntMax = 2147483647;
       let searchingPage = Number(this.searchingPage);
       if (
@@ -259,7 +275,7 @@ export default {
     },
     resetSearchingRecord() {
       this.selectCategory = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchName = "";
@@ -267,6 +283,11 @@ export default {
       this.getClassData();
     },
     deleteShowcase(row) {
+      if (this.unwatchFlag) {
+        this.unwatchFlag(); // 確保監聽被移除
+        this.unwatchFlag = null;
+      }
+
       // 添加監聽器，查看彈窗是否被按確認鍵
       this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
         if (newVal) {
@@ -308,12 +329,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$emit("refreshPage");
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getClassData();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -335,7 +362,7 @@ export default {
   computed: {
     groupClassCategoryAndText() {
       let category = [...groupClassCategoryAndText];
-      category.push({ value: "", text: "無" });
+      category.push({ value: "", text: "全部" });
       return category;
     },
     groupClassIcon() {

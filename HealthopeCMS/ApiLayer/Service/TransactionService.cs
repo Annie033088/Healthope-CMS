@@ -28,12 +28,7 @@ namespace ApiLayer.Service
         {
             try
             {
-                (List<PaymentTransaction> transactions, int totalPage) = transactionRepository.GetTransaction(getTransactionDto);
-                ResponseGetTransactionListDto responseGetTransactionList = new ResponseGetTransactionListDto()
-                {
-                    TransactionList = mapper.Map<List<ResponseGetTransactionDto>>(transactions),
-                    TotalPage = totalPage
-                };
+                ResponseGetTransactionListDto responseGetTransactionList  = transactionRepository.GetTransaction(getTransactionDto);
 
                 return responseGetTransactionList;
             }

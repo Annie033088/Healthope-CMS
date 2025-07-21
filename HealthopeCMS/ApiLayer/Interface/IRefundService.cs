@@ -1,5 +1,4 @@
-﻿using ApiLayer.Models.Refund.Response;
-using PersistentLayer.Models;
+﻿using PersistentLayer.Models;
 
 namespace ApiLayer.Interface
 {

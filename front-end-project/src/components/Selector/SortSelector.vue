@@ -6,7 +6,7 @@
       v-model="localSortOption"
       @change="emitChange"
     >
-      <option value="">無</option>
+      <option value="">預設</option>
       <option
         v-for="option in options"
         :key="option.value"

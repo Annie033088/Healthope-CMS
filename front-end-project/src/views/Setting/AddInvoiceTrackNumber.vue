@@ -104,6 +104,11 @@ export default {
       let nowInvoicePeriod = taiwanYear * 10 + period;
 
       if (nowInvoicePeriod > Number(this.invoiceYear + this.invoiceCycle)) {
+        if (this.unwatchFlag) {
+          this.unwatchFlag(); // 確保監聽被移除
+          this.unwatchFlag = null;
+        }
+
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
@@ -112,7 +117,7 @@ export default {
               try {
                 this.submitAddInvoiceTrackNumber();
               } catch (error) {
-                console.error("刪除條款時發生錯誤", error);
+                console.error("新增條款時發生錯誤", error);
               } finally {
                 this.unwatchFlag(); // 確保監聽被移除
                 this.unwatchFlag = null;

@@ -60,9 +60,9 @@ namespace UnitTest.Test.AccountAccessTest
             string pwd = "g4556fgerger";
             RequestLoginDto loginDto = new RequestLoginDto { Account = account, Pwd = pwd };
 
-            // Mock 設定
+            // Mock 設定 
             bool success = false;
-            Admin admin = new Admin();
+            Admin admin = null;
             accountAccessServiceMock.Setup(s => s.AdminLogin(loginDto))
                 .Returns((success, admin));
 
@@ -70,10 +70,9 @@ namespace UnitTest.Test.AccountAccessTest
             IHttpActionResult result = controller.VerifyAdminLogin(loginDto);
 
             ResponseIsEqual errorCodeIsEqual = new ResponseIsEqual();
-            if (errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.LoginFailed)) return;
 
             // Assert
-            Assert.Fail("測試出錯");
+            Assert.IsTrue(errorCodeIsEqual.ErrorCodeIsEqual(result, ErrorCodeDefine.LoginFailed));
         }
 
         [TestMethod]
@@ -85,7 +84,7 @@ namespace UnitTest.Test.AccountAccessTest
             RequestLoginDto loginDto = new RequestLoginDto { Account = account, Pwd = pwd };
 
             // Mock 設定
-            bool success = true;
+            bool success = false;
             Admin admin = new Admin()
             {
                 AdminId = 10,

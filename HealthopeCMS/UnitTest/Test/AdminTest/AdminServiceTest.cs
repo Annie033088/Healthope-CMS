@@ -22,7 +22,7 @@ namespace UnitTest.Test.AdminTest
         private Mock<IAdminRepository> adminRepositoryMock;
         private Mock<ISessionService> sessionServiceMock;
         private Mock<IRedisService> redisServiceMock;
-        private Mock<IAppSetting> appSettingMock;
+        private Mock<IAppConfigProvider> appSettingMock;
         private Mock<IMapper> mapperMock;
         private AdminService adminService;
 
@@ -30,7 +30,7 @@ namespace UnitTest.Test.AdminTest
         public void Setup()
         {
             adminRepositoryMock = new Mock<IAdminRepository>();
-            appSettingMock = new Mock<IAppSetting>();
+            appSettingMock = new Mock<IAppConfigProvider>();
             sessionServiceMock = new Mock<ISessionService>();
             redisServiceMock = new Mock<IRedisService>();
             mapperMock = new Mock<IMapper>();
@@ -133,8 +133,8 @@ namespace UnitTest.Test.AdminTest
             // Arrange
             AdminSession adminSession = new AdminSession()
             {
-                AdminId = 1,
-                Identity = AdminIdentity.Accountant
+                AdminId = 20,
+                Identity = AdminIdentity.None,
             };
             string adminSessionKey = "AdminSession";
             AdminPermissionUtility adminPermissionUtility = new AdminPermissionUtility();

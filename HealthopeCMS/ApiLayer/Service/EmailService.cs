@@ -10,7 +10,7 @@ namespace ApiLayer.Service
 {
     public class EmailService : IEmailService
     {
-        private readonly IAppSetting appSetting;
+        private readonly IAppConfigProvider appSetting;
 
         /// <summary>
         /// SMTP 郵件伺服器主機名稱
@@ -32,7 +32,7 @@ namespace ApiLayer.Service
         /// </summary>
         private readonly string fromPassword;
 
-        public EmailService(IAppSetting appSetting)
+        public EmailService(IAppConfigProvider appSetting)
         {
             this.appSetting = appSetting;
             this.smtpHost = this.appSetting.GetConfigurationAppsetting("SmtpHost");

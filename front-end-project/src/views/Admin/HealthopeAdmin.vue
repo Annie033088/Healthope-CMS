@@ -1,9 +1,6 @@
 <template>
   <div>
-    <TitleCard
-      text="管理員"
-      @refreshPage="$emit('refreshPage')"
-    ></TitleCard>
+    <TitleCard text="管理員" @refreshPage="$emit('refreshPage')"></TitleCard>
     <div class="functionColumn">
       <BtnNormal text="新增管理者" @click="redirect('/admin/add')"></BtnNormal>
       <SearchInput
@@ -18,7 +15,7 @@
         inputTitle="狀態："
         inputType="radioStatus"
         :options="[
-          { value: '', text: '無' },
+          { value: '', text: '全部' },
           { value: 'true', text: '啟用' },
           { value: 'false', text: '停用' },
         ]"
@@ -34,7 +31,7 @@
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
-        @change="getAdminData"
+        @change="setRecordPerPage"
       />
       <BtnNormal text="差異紀錄"></BtnNormal>
       <SvgReset @click="resetSearchingRecord"></SvgReset>
@@ -130,6 +127,10 @@ export default {
   },
   methods: {
     adminIdentityToText,
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getAdminData();
+    },
     goEditAdmin(adminId) {
       if (adminId < 1) return;
       this.$router.push({ path: "/admin/edit", query: { id: adminId } });
@@ -198,7 +199,7 @@ export default {
         )
       )
         return;
-      
+
       const IntMax = 2147483647;
       let searchingPage = Number(this.searchingPage);
       if (
@@ -231,6 +232,11 @@ export default {
           this.adminList = response.data.ApiDataObject.AdminList;
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -255,6 +261,11 @@ export default {
       }
     },
     delAdmin(id) {
+      if (this.unwatchFlag) {
+        this.unwatchFlag(); // 確保監聽被移除
+        this.unwatchFlag = null;
+      }
+
       // 添加監聽器，查看彈窗是否被按確認鍵
       this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
         if (newVal) {
@@ -296,6 +307,11 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$emit("refreshPage");
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -321,7 +337,7 @@ export default {
     },
     resetSearchingRecord() {
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchAccount = "";

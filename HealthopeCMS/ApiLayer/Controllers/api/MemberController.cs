@@ -25,7 +25,7 @@ namespace ApiLayer.Controllers.api
         {
             this.memberService = memberService;
         }
-        // TODO: 查詢會籍/查詢教練課程
+
         /// <summary>
         /// 取得會員列表
         /// </summary>

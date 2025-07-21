@@ -4,7 +4,6 @@ using ApiLayer.Filters;
 using ApiLayer.Interface;
 using ApiLayer.Models;
 using ApiLayer.Models.Refund;
-using ApiLayer.Models.Refund.Response;
 using DomainLayer.Utility;
 using NLog;
 using PersistentLayer.Models;

@@ -2,8 +2,9 @@
   <div>
     <TitleCard text="方案" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
-      <BtnNormal text="新增方案" @click="redirect('/plan/add')"></BtnNormal>
+      <BtnNormal text="新增方案" @click="redirect('/plan/add')" v-if="permissionMap.EditPlan"></BtnNormal>
       <RadioSelector
+        class="radioStatus"
         v-model="selectStatus"
         @change="getPlan"
         inputTitle="狀態："
@@ -29,7 +30,7 @@
     <TableNormal
       :columns="columns"
       :rows="planList"
-      :editBtnFlag="true"
+      :editBtnFlag="permissionMap.EditPlan"
       @goEdit="goEdit"
     >
     </TableNormal>
@@ -134,6 +135,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -154,7 +160,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得團課列表時發生錯誤", error);
+        console.error("取得私人教練課列表時發生錯誤", error);
       }
     },
     validInput() {
@@ -203,7 +209,7 @@ export default {
     },
     resetSearchingRecord() {
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchingPage = 1;
@@ -230,7 +236,7 @@ export default {
   flex-wrap: wrap;
   gap: 10px 20px;
 }
-.radioType {
+.radioStatus {
   width: 350px;
 }
 </style>

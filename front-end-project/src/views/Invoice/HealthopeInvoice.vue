@@ -18,7 +18,10 @@
         inputType="radioRefundType"
         :options="invoiceCategoryOptions"
       />
-      <RecordSelector :parentValue.sync="recordPerPage" @change="getInvoice" />
+      <RecordSelector
+        :parentValue.sync="recordPerPage"
+        @change="setRecordPerPage"
+      />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
@@ -98,6 +101,10 @@ export default {
       this.searchingPage = page;
       this.getInvoice();
     },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getInvoice();
+    },
     getInvoiceByStatus() {
       this.searchingPage = 1;
       this.getInvoice();
@@ -171,6 +178,11 @@ export default {
             invoice.LocalInvoiceTime = localInvoiceTime;
           });
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

@@ -20,10 +20,10 @@ namespace ApiLayer.Service
         private readonly IAdminRepository adminRepository;
         private readonly ISessionService sessionService;
         private readonly IRedisService redisService;
-        private readonly IAppSetting appSetting;
+        private readonly IAppConfigProvider appSetting;
         private readonly IMapper mapper;
 
-        public AdminService(IAdminRepository adminRepository, IAppSetting appSetting,
+        public AdminService(IAdminRepository adminRepository, IAppConfigProvider appSetting,
             ISessionService sessionService, IMapper mapper, IRedisService redisService)
         {
             this.adminRepository = adminRepository;

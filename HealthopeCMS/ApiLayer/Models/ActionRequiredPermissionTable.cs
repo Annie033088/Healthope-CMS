@@ -140,6 +140,8 @@ namespace ApiLayer.Models
                 AdminPermission.EditOrder} },
             { "Invoice,PendingDiscountInvoice", new List<AdminPermission> {
                 AdminPermission.EditOrder} },
+            { "Invoice,GetInvoice", new List<AdminPermission> {
+                AdminPermission.EditOrder, AdminPermission.SelectOrder, AdminPermission.AddOrder, AdminPermission.SelectTransaction} },
 
             // OrderController
             { "Order,AddOrder", new List<AdminPermission> {
@@ -188,6 +190,18 @@ namespace ApiLayer.Models
             // ReportController
             { "Report,GetRevenueExpenseReport", new List<AdminPermission> {
                 AdminPermission.SelectFinancialStatements} },
+
+            // MemberClassController
+            { "MemberClass,GetPersonalTrainingPackageAndCoach", new List<AdminPermission> {
+                AdminPermission.SelectMemberClass, AdminPermission.EditMemberClass} },
+            { "MemberClass,AddMemberPersonalClass", new List<AdminPermission> {
+                AdminPermission.EditMemberClass} },
+            { "MemberClass,GetMemberPersonalClass", new List<AdminPermission> {
+                AdminPermission.SelectMemberClass, AdminPermission.EditMemberClass} },
+            { "MemberClass,EditMemberPersonalClassRemark", new List<AdminPermission> {
+                AdminPermission.EditMemberClass} },
+            { "MemberClass,EditMemberPersonalClassStatus", new List<AdminPermission> {
+                AdminPermission.EditMemberClass} },
         };
     }
 }

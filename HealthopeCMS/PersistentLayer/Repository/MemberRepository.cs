@@ -298,6 +298,8 @@ namespace PersistentLayer.Repository
                             ds.Tables[2].Rows[i].Field<int>("f_coachId");
                         memberPTPackage.PlanName = ds.Tables[2].Rows[i].IsNull("f_planName") ?
                             string.Empty : ds.Tables[2].Rows[i].Field<string>("f_planName");
+                        memberPTPackage.UsedSessionCount = ds.Tables[2].Rows[i].IsNull("f_usedSessionCount") ?
+                            0 : ds.Tables[2].Rows[i].Field<int>("f_usedSessionCount");
                         memberPTPackage.SessionCount =
                             ds.Tables[2].Rows[i].IsNull("f_sessionCount") ? 0 :
                             ds.Tables[2].Rows[i].Field<int>("f_sessionCount");

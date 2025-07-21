@@ -8,6 +8,7 @@
       <BtnNormal
         text="新增課程"
         @click="redirect('/memberPersonalClass/add')"
+        v-if="permissionMap.EditMemberClass"
       ></BtnNormal>
       <SearchInput
         placeholder="會員手機末三碼..."
@@ -33,7 +34,7 @@
       />
       <RecordSelector
         :parentValue.sync="recordPerPage"
-        @change="getMemberPersonalClassData"
+        @change="setRecordPerPage"
       />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
@@ -42,6 +43,7 @@
       :rows="memberPersonalClassList"
       :expandable="true"
       :resetDetailIndexFlag="resetDetailIndexFlag"
+      @changeStatus="checkEditStatus"
     >
       <template #detail="{ row }">
         <div class="detailRowContainer">
@@ -113,7 +115,12 @@ export default {
         { label: "會員", key: "Member" },
         { label: "教練", key: "Coach" },
         { label: "課程時間", key: "LocalTime" },
-        { label: "狀態", key: "Status" },
+        {
+          label: "狀態",
+          key: "Status",
+          type: "dropDownSelector",
+          enableFlag: this.permissionMap.EditMemberClass,
+        },
         { label: "分類", key: "Category" },
       ],
       memberPersonalClassList: [],
@@ -154,12 +161,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getMemberPersonalClassData();
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getMemberPersonalClassData();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -176,6 +189,10 @@ export default {
       } catch (error) {
         console.error("修改備註時發生錯誤", error);
       }
+    },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getMemberPersonalClassData();
     },
     selectByStatus() {
       this.searchingPage = 1;
@@ -230,20 +247,43 @@ export default {
             course.LocalTime = localTime;
 
             memberPersonalClassCategoryAndText.forEach((category) => {
-              if (course.Category === Boolean(category.value)) {
+              if (Boolean(course.Category) === Boolean(category.value)) {
                 course.Category = category.text;
               }
             });
+            let statusOption = [];
 
             memberPersonalClassStatusAndText.forEach((status) => {
               if (course.Status === Number(status.value)) {
-                course.Status = status.text;
+                statusOption.push(status);
+              }
+
+              if (
+                Number(status.value) === memberPersonalClassStatus.Cancelled &&
+                (course.Status ===
+                  memberPersonalClassStatus.BookingInProgress ||
+                  course.Status ===
+                    memberPersonalClassStatus.BookedSuccessfully ||
+                  course.Status === memberPersonalClassStatus.DidNotAttend)
+              ) {
+                statusOption.push(status);
               }
             });
+
+            course.Status = {
+              OldValue: String(course.Status),
+              Value: String(course.Status),
+              Options: statusOption,
+            };
           });
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -345,6 +385,104 @@ export default {
         path: "/member/detail",
         query: { id: row.MemberId },
       });
+    },
+    checkEditStatus(row) {
+      if (this.unwatchFlag) {
+        this.unwatchFlag(); // 確保監聽被移除
+        this.unwatchFlag = null;
+      }
+
+      // 添加監聽器，查看彈窗是否被按確認鍵
+      this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
+        if (newVal) {
+          let redirectRoute = "stop";
+          this.$emit("afterConfirmEvent", redirectRoute);
+
+          try {
+            this.editStatus(row);
+          } catch (error) {
+            console.error("修改會員預約的教練課狀態時發生錯誤", error);
+          } finally {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+        }
+      });
+
+      this.getMemberPersonalClassData();
+
+      // 設定彈窗資料
+      this.$notificationBox.notificationBoxFlag = true;
+      this.$notificationBox.notificationBoxTitle = "此操作不可修改，確認修改?";
+      this.$notificationBox.notificationBoxCancelFlag = true;
+      this.$notificationBox.notificationBoxErrorCode = 0;
+    },
+    async editStatus(row) {
+      // 檢查是否轉換成功
+      if (
+        !this.statusTranslator(
+          Number(row.Status.OldValue),
+          Number(row.Status.Value)
+        )
+      )
+        return;
+
+      const editStatusDto = {
+        MemberPersonalClassId: row.MemberPersonalClassId,
+        Status: row.Status.Value,
+        UpdateTime: row.UpdateTime,
+      };
+
+      try {
+        // post
+        const response = await this.$axios.post(
+          "/api/MemberClass/EditMemberPersonalClassStatus",
+          editStatusDto
+        );
+
+        if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
+          this.getMemberPersonalClassData();
+        } else {
+          // 添加監聽器，查看彈窗是否被按確認鍵
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 移除監聽
+            this.unwatchFlag = null;
+          }
+
+          this.unwatchFlag = this.$watch(
+            "notificationBoxConfirmFlag",
+            (newVal) => {
+              if (newVal) {
+                this.getMemberPersonalClassData();
+                let redirectRoute = "stop";
+                this.$emit("afterConfirmEvent", redirectRoute);
+                this.unwatchFlag(); // 移除監聽
+                this.unwatchFlag = null;
+              }
+            }
+          );
+
+          // 設定彈窗資料
+          this.$notificationBox.notificationBoxFlag = true;
+          this.$notificationBox.notificationBoxTitle = "發生錯誤!";
+          this.$notificationBox.notificationBoxErrorCode =
+            response.data.ErrorCode;
+        }
+      } catch (error) {
+        console.error("修改會員的教練課成時發生錯誤", error);
+      }
+    },
+    statusTranslator(oldStatus, newStatus) {
+      if (Number(newStatus) === memberPersonalClassStatus.Cancelled) {
+        if (
+          Number(oldStatus) === memberPersonalClassStatus.BookingInProgress ||
+          Number(oldStatus) === memberPersonalClassStatus.BookedSuccessfully ||
+          Number(oldStatus) === memberPersonalClassStatus.DidNotAttend
+        ) {
+          return true;
+        }
+      }
+      return false;
     },
   },
   computed: {

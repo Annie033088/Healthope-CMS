@@ -55,25 +55,15 @@ namespace UnitTest.Test.TransactionTest
                     }
                 };
 
-            List<PaymentTransaction> transactions = new List<PaymentTransaction>
+            ResponseGetTransactionListDto responseGetTransactionList = new ResponseGetTransactionListDto
             {
-                new PaymentTransaction
-                {
-                    TransactionId = 1,
-                    OrderId = 1,
-                    Status = 1,
-                    Amount = 1000,
-                    Method =2,
-                    Time = DateTime.Now,
-                }
+                TotalPage = 1,
+                TransactionList = TransactionList
             };
-
-            int totalPage = 1;
 
             // Mock 設定
             transactionRepositoryMock.Setup(s
-                => s.GetTransaction(getTransactionDto)).Returns((transactions, totalPage));
-            mapperMock.Setup(s => s.Map<List<ResponseGetTransactionDto>>(transactions)).Returns(TransactionList);
+                => s.GetTransaction(getTransactionDto)).Returns(responseGetTransactionList);
 
             // Act
             ResponseGetTransactionListDto result = service.GetTransaction(getTransactionDto);
@@ -96,20 +86,17 @@ namespace UnitTest.Test.TransactionTest
                 RecordPerPage = 8, // 只允許 8 或 12 或 16
             };
 
-            List<ResponseGetTransactionDto> TransactionList = null;
-            List<PaymentTransaction> transactions = null;
-            int totalPage = 1;
+            ResponseGetTransactionListDto responseGetTransactionList = null;
 
             // Mock 設定
             transactionRepositoryMock.Setup(s
-                => s.GetTransaction(getTransactionDto)).Returns((transactions, totalPage));
-            mapperMock.Setup(s => s.Map<List<ResponseGetTransactionDto>>(transactions)).Returns(TransactionList);
+                => s.GetTransaction(getTransactionDto)).Returns(responseGetTransactionList);
 
             // Act
             ResponseGetTransactionListDto result = service.GetTransaction(getTransactionDto);
 
             // Assert
-            Assert.IsNull(result.TransactionList);
+            Assert.IsNull(result);
         }
 
         [TestMethod]

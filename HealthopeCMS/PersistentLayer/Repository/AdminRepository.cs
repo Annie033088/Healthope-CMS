@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using DomainLayer.Models;
+using PersistentLayer.Data.DbAccess;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
 
@@ -11,7 +12,12 @@ namespace PersistentLayer.Repository
 {
     public class AdminRepository : IAdminRepository
     {
-        private readonly string ConnStr = ConfigurationManager.ConnectionStrings["ConnStr"].ConnectionString;
+        private readonly IDbExecutor dbExecutor;
+
+        public AdminRepository(IDbExecutor dbExecutor)
+        {
+            this.dbExecutor = dbExecutor;
+        }
 
         /// <summary>
         /// 取得正要登入的管理員資料
@@ -19,9 +25,7 @@ namespace PersistentLayer.Repository
         public Admin GetLoggingInAdmin(string account)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
-            SqlDataAdapter da = new SqlDataAdapter();
-            DataTable dt = new DataTable();
+            DataTable dt;
 
             try
             {
@@ -29,12 +33,7 @@ namespace PersistentLayer.Repository
 
                 cmd.Parameters.Add("@account", SqlDbType.VarChar).Value = account;
 
-                cmd.Connection.Open();
-
-                da.SelectCommand = cmd;
-                da.Fill(dt);
-
-                cmd.Connection.Close();
+                dt = dbExecutor.ExecuteDataTable(cmd);
 
                 if (dt.Rows.Count > 0)
                 {
@@ -56,11 +55,6 @@ namespace PersistentLayer.Repository
             {
                 throw;
             }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
-            }
         }
 
         /// <summary>
@@ -69,7 +63,6 @@ namespace PersistentLayer.Repository
         public bool EditSelfPwd(EditPwdDto editPwdDto)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
 
             try
             {
@@ -79,8 +72,7 @@ namespace PersistentLayer.Repository
                 cmd.Parameters.Add("@oldPwd", SqlDbType.VarChar).Value = editPwdDto.OldPwd;
                 cmd.Parameters.Add("@newPwd", SqlDbType.VarChar).Value = editPwdDto.NewPwd;
 
-                cmd.Connection.Open();
-                int ExeCnt = cmd.ExecuteNonQuery();
+                int ExeCnt = dbExecutor.ExecuteNonQuery(cmd);
 
                 // 受影響筆數為1代表成功
                 if (ExeCnt == 1)
@@ -95,11 +87,6 @@ namespace PersistentLayer.Repository
             catch (Exception)
             {
                 throw;
-            }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
             }
         }
 
@@ -109,7 +96,6 @@ namespace PersistentLayer.Repository
         public bool AddAdmin(Admin admin)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
 
             try
             {
@@ -119,9 +105,7 @@ namespace PersistentLayer.Repository
                 cmd.Parameters.Add("@hash", SqlDbType.VarChar).Value = admin.Hash;
                 cmd.Parameters.Add("@identity", SqlDbType.TinyInt).Value = admin.Identity;
 
-                cmd.Connection.Open();
-
-                int ExeCnt = cmd.ExecuteNonQuery();
+                int ExeCnt = dbExecutor.ExecuteNonQuery(cmd);
 
                 // 受影響筆數為1代表成功
                 if (ExeCnt == 1)
@@ -137,19 +121,14 @@ namespace PersistentLayer.Repository
             {
                 throw;
             }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
-            }
         }
 
+        /// <summary>
+        /// 取得管理員
+        /// </summary>
         public (List<Admin> admins, int totalPage) GetAdmin(RequestGetAdminDto getAdminDto)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
-            SqlDataAdapter da = new SqlDataAdapter();
-            DataTable dt = new DataTable();
             int totalPage = 1;
             List<Admin> admins = new List<Admin>();
 
@@ -193,14 +172,8 @@ namespace PersistentLayer.Repository
                 };
                 cmd.Parameters.Add(totalPageOutput);
 
-
-                cmd.Connection.Open();
-
-                da.SelectCommand = cmd;
-                da.Fill(dt);
-                totalPage = (int)totalPageOutput.Value;
-
-                cmd.Connection.Close();
+                (DataTable dt, Dictionary<string, object> outputParams) = dbExecutor.ExecuteDataTableWithOutput(cmd, "@totalPage");
+                totalPage = outputParams["@totalPage"] is int cnt ? cnt : 1;
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
@@ -222,11 +195,6 @@ namespace PersistentLayer.Repository
             {
                 throw;
             }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
-            }
         }
 
         /// <summary>
@@ -235,8 +203,6 @@ namespace PersistentLayer.Repository
         public Admin GetAdminById(int adminId)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
-            SqlDataAdapter da = new SqlDataAdapter();
             DataTable dt = new DataTable();
 
             try
@@ -245,12 +211,7 @@ namespace PersistentLayer.Repository
 
                 cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = adminId;
 
-                cmd.Connection.Open();
-
-                da.SelectCommand = cmd;
-                da.Fill(dt);
-
-                cmd.Connection.Close();
+                dt = dbExecutor.ExecuteDataTable(cmd);
 
                 if (dt.Rows.Count > 0)
                 {
@@ -273,11 +234,6 @@ namespace PersistentLayer.Repository
             {
                 throw;
             }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
-            }
         }
 
         /// <summary>
@@ -286,7 +242,6 @@ namespace PersistentLayer.Repository
         public bool EditAdmin(RequestEditAdminDto editAdminDto)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
 
             try
             {
@@ -312,9 +267,7 @@ namespace PersistentLayer.Repository
                 cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = editAdminDto.AdminId;
                 cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = editAdminDto.UpdateTime;
 
-                cmd.Connection.Open();
-
-                int ExeCnt = cmd.ExecuteNonQuery();
+                int ExeCnt = dbExecutor.ExecuteNonQuery(cmd);
 
                 // 受影響筆數為1代表成功
                 if (ExeCnt == 1)
@@ -329,11 +282,6 @@ namespace PersistentLayer.Repository
             catch (Exception)
             {
                 throw;
-            }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
             }
         }
 
@@ -343,16 +291,14 @@ namespace PersistentLayer.Repository
         public bool DeleteAdmin(int adminId)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = new SqlConnection(this.ConnStr);
 
             try
             {
                 cmd.CommandText = "EXEC pro_healthope_delAdmin @adminId";
                 cmd.Parameters.Add("@adminId", SqlDbType.Int).Value = adminId;
 
-                cmd.Connection.Open();
 
-                int ExeCnt = cmd.ExecuteNonQuery();
+                int ExeCnt = dbExecutor.ExecuteNonQuery(cmd);
 
                 // 受影響筆數為1代表成功
                 if (ExeCnt == 1)
@@ -367,11 +313,6 @@ namespace PersistentLayer.Repository
             catch (Exception)
             {
                 throw;
-            }
-            finally
-            {
-                cmd.Parameters.Clear();
-                cmd.Connection.Close();
             }
         }
     }

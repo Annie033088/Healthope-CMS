@@ -41,9 +41,9 @@ namespace ApiLayer.Interface
         bool EditElectronicInvoiceStatus(bool success, int electronicInvoiceId, string invocieTime);
 
         /// <summary>
-        /// 取得發票號碼
+        /// 印發票
         /// </summary>
-        (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) EditOrderStateAndGetInvoiceNumber(RequestOrderIdAndCategoryDto orderIdAndCategoryDto);
+        ErrorCodeDefine GetInvoiceNumberAndAddElectronicInvoice(RequestOrderIdAndCategoryDto orderIdAndCategoryDto);
 
         /// <summary>
         /// 作廢發票

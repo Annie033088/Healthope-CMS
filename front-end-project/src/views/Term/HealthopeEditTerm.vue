@@ -144,6 +144,11 @@ export default {
           this.originalTermData = this.cleanData(this.originalTermData);
           this.currentTermData = this.cleanData(this.originalTermData);
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",

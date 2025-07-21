@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DomainLayer.Models;
 using PersistentLayer.Models;
 
 namespace PersistentLayer.Interface
@@ -9,6 +8,6 @@ namespace PersistentLayer.Interface
         /// <summary>
         /// 取得退款紀錄
         /// </summary>
-        (List<Refund> refunds, int totalPage) GetRefund(RequestGetRefundDto getRefundDto);
+        (List<ResponseGetRefundDto> refunds, int totalPage) GetRefund(RequestGetRefundDto getRefundDto);
     }
 }

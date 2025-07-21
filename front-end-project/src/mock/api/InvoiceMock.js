@@ -320,10 +320,6 @@ export default function (mock) {
         return [200, { ErrorCode: 1 }]
     })
 
-    mock.onPost("/api/Invoice/CompleteOrderAndPrintInvoice").reply(() => {
-        return [200, { ErrorCode: 1 }]
-    })
-
     mock.onPost("/api/Invoice/PrintInvoice").reply(() => {
         return [200, { ErrorCode: 1 }]
     })

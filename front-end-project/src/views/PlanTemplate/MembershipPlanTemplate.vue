@@ -2,8 +2,9 @@
   <div>
     <TitleCard text="方案" @refreshPage="$emit('refreshPage')" />
     <div class="functionColumn">
-      <BtnNormal text="新增方案" @click="redirect('/plan/add')"></BtnNormal>
+      <BtnNormal text="新增方案" @click="redirect('/plan/add')" v-if="permissionMap.EditPlan"></BtnNormal>
       <RadioSelector
+        class="radioStatus"
         v-model="selectStatus"
         @change="getPlan"
         inputTitle="狀態："
@@ -23,13 +24,16 @@
         :sortOrder.sync="selectSortOrder"
         @change="getPlan"
       />
-      <RecordSelector :parentValue.sync="recordPerPage" @change="getPlan" />
+      <RecordSelector
+        :parentValue.sync="recordPerPage"
+        @change="setRecordPerPage"
+      />
       <SvgReset @click="resetSearchingRecord"></SvgReset>
     </div>
     <TableNormal
       :columns="columns"
       :rows="planList"
-      :editBtnFlag="true"
+      :editBtnFlag="permissionMap.EditPlan"
       @goEdit="goEdit"
     >
     </TableNormal>
@@ -92,6 +96,10 @@ export default {
     redirect(path) {
       if (this.$route.path !== path) this.$router.push(path);
     },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getPlan();
+    },
     searchPage(page) {
       this.searchingPage = page;
       this.getPlan();
@@ -130,6 +138,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -150,7 +163,7 @@ export default {
             response.data.ErrorCode;
         }
       } catch (error) {
-        console.error("取得團課列表時發生錯誤", error);
+        console.error("取得會籍方案列表時發生錯誤", error);
       }
     },
     validInput() {
@@ -184,7 +197,7 @@ export default {
         )
       )
         return false;
-      
+
       const IntMax = 2147483647;
       let searchingPage = Number(this.searchingPage);
       if (
@@ -199,15 +212,18 @@ export default {
     },
     resetSearchingRecord() {
       this.selectStatus = "";
-      this.selectSortOrder = "ascending";
+      this.selectSortOrder = "descending";
       this.selectSortOption = "";
       this.recordPerPage = "8";
       this.searchingPage = 1;
       this.getPlan();
     },
-    goEdit(row){
+    goEdit(row) {
       if (row.MembershipPlanId < 1) return;
-      this.$router.push({ path: "/plan/membershipPlan/edit", query: { id: row.MembershipPlanId } });
+      this.$router.push({
+        path: "/plan/membershipPlan/edit",
+        query: { id: row.MembershipPlanId },
+      });
     },
   },
   computed: {},
@@ -224,7 +240,7 @@ export default {
   flex-wrap: wrap;
   gap: 10px 20px;
 }
-.radioType {
+.radioStatus {
   width: 350px;
 }
 </style>

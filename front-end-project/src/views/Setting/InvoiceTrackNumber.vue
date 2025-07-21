@@ -5,6 +5,7 @@
       <BtnNormal
         text="新增字軌"
         @click="redirect('/setting/invoiceTrackNumber/add')"
+        v-if="permissionMap.EditOrder"
       ></BtnNormal>
       <RadioSelector
         class="timeSelector"
@@ -30,7 +31,7 @@
         :parentValue.sync="recordPerPage"
         @change="getInvoiceTrackNumberData"
       />
-      <SvgReset @click="resetSearchingRecord"></SvgReset>
+      <SvgReset @click="setRecordPerPage"></SvgReset>
     </div>
     <TableNormal
       class="tableContainer"
@@ -178,6 +179,11 @@ export default {
 
           this.totalPage = response.data.ApiDataObject.TotalPage;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -235,6 +241,10 @@ export default {
 
       return true;
     },
+    setRecordPerPage() {
+      this.searchingPage = 1;
+      this.getInvoiceTrackNumberData();
+    },
     selectInvoiceTrackNumberByTime() {
       this.searchingPage = 1;
       this.getInvoiceTrackNumberData();
@@ -257,16 +267,17 @@ export default {
           row.Status.Value
         )
       ) {
-        if(this.unwatchFlag){
-              this.unwatchFlag(); // 移除監聽
-              this.unwatchFlag = null;
+        if (this.unwatchFlag) {
+          this.unwatchFlag(); // 移除監聽
+          this.unwatchFlag = null;
         }
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              let redirectRoute = null;
+              this.getInvoiceTrackNumberData();
+              let redirectRoute = "stop";
               this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;
@@ -280,18 +291,22 @@ export default {
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
-      
-      if (this.compareTerm(row.InvoicePeriod) < 0 && row.Status.Value === String(invoiceTrackNumberStatus.Active)) {
-        if(this.unwatchFlag){
-              this.unwatchFlag(); // 移除監聽
-              this.unwatchFlag = null;
+
+      if (
+        this.compareTerm(row.InvoicePeriod) < 0 &&
+        row.Status.Value === String(invoiceTrackNumberStatus.Active)
+      ) {
+        if (this.unwatchFlag) {
+          this.unwatchFlag(); // 移除監聽
+          this.unwatchFlag = null;
         }
         // 添加監聽器，查看彈窗是否被按確認鍵
         this.unwatchFlag = this.$watch(
           "notificationBoxConfirmFlag",
           (newVal) => {
             if (newVal) {
-              let redirectRoute = null;
+              this.getInvoiceTrackNumberData();
+              let redirectRoute = "stop";
               this.$emit("afterConfirmEvent", redirectRoute);
               this.unwatchFlag(); // 移除監聽
               this.unwatchFlag = null;
@@ -324,12 +339,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.getInvoiceTrackNumberData();
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getInvoiceTrackNumberData();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
@@ -356,6 +377,12 @@ export default {
         this.$notificationBox.notificationBoxErrorCode = 0;
         return;
       }
+
+      if (this.unwatchFlag) {
+        this.unwatchFlag(); // 確保監聽被移除
+        this.unwatchFlag = null;
+      }
+
       // 添加監聽器，查看彈窗是否被按確認鍵
       this.unwatchFlag = this.$watch("notificationBoxConfirmFlag", (newVal) => {
         if (newVal) {
@@ -394,12 +421,18 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$emit("refreshPage");
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = null;
+                this.getInvoiceTrackNumberData();
+                let redirectRoute = "stop";
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;

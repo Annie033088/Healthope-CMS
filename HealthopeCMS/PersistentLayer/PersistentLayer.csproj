@@ -46,8 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\DbAccess\DbExecutor.cs" />
     <Compile Include="Interface\IAdminRepository.cs" />
     <Compile Include="Interface\ICoachRepository.cs" />
+    <Compile Include="Interface\IDbConnectionFactory.cs" />
+    <Compile Include="Interface\IDbExecutor.cs" />
     <Compile Include="Interface\IGroupClassScheduleRepository.cs" />
     <Compile Include="Interface\IGroupClassShowcaseRepository.cs" />
     <Compile Include="Interface\IInvoiceRepository.cs" />
@@ -87,7 +90,9 @@
     <Compile Include="Models\ResponseGetMemberPersonalClassListDto.cs" />
     <Compile Include="Models\ResponseGetOrderListDto.cs" />
     <Compile Include="Models\ResponseGetPersonalTrainingPackageAndCoachDto.cs" />
+    <Compile Include="Models\ResponseGetRefundListDto.cs" />
     <Compile Include="Models\ResponseGetRevenueExpenseDto.cs" />
+    <Compile Include="Models\ResponseGetTransactionListDto.cs" />
     <Compile Include="Models\ResultWithException.cs" />
     <Compile Include="Models\RequestEditAdminDto.cs" />
     <Compile Include="Models\RequestEditCoachDto.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AdminRepository.cs" />
     <Compile Include="Repository\CoachRepository.cs" />
+    <Compile Include="Data\DbAccess\DbConnectionFactory.cs" />
     <Compile Include="Repository\GroupClassScheduleRepository.cs" />
     <Compile Include="Repository\GroupClassShowcaseRepository.cs" />
     <Compile Include="Repository\InvoiceRepository.cs" />

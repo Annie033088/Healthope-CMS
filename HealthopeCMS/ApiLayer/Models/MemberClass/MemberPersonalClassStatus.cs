@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ApiLayer.Models.MemberClass
+﻿namespace ApiLayer.Models.MemberClass
 {
     public enum MemberPersonalClassStatus : byte
     {

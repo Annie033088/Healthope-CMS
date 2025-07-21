@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ApiLayer.Interface;
+using ApiLayer.Job;
 using ApiLayer.Models;
 using ApiLayer.Models.Invoice.Request;
 using ApiLayer.Models.Invoice.Response;
@@ -21,6 +22,7 @@ namespace UnitTest.Test.Invoice
         private InvoiceService service;
         private Mock<IMapper> mapperMock;
         private Mock<IInvoiceRepository> invoiceRepositoryMock;
+        private Mock<IJobDispatcher> jobDispatcherMock;
         private Mock<IHttpService> httpServiceMock;
 
         [TestInitialize]
@@ -29,7 +31,8 @@ namespace UnitTest.Test.Invoice
             mapperMock = new Mock<IMapper>();
             invoiceRepositoryMock = new Mock<IInvoiceRepository>();
             httpServiceMock = new Mock<IHttpService>();
-            service = new InvoiceService(mapperMock.Object, invoiceRepositoryMock.Object, httpServiceMock.Object);
+            jobDispatcherMock = new Mock<IJobDispatcher>();
+            service = new InvoiceService(mapperMock.Object, invoiceRepositoryMock.Object, httpServiceMock.Object, jobDispatcherMock.Object);
         }
 
         [TestMethod]
@@ -298,6 +301,12 @@ namespace UnitTest.Test.Invoice
                 Category = 2
             };
 
+            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
+            {
+                OrderId = 1,
+                Category = 2
+            };
+
             int errorCodeNumber = (int)ErrorCodeDefine.Success;
 
             ElectronicInvoice electronicInvoice = new ElectronicInvoice
@@ -308,33 +317,25 @@ namespace UnitTest.Test.Invoice
                 TotalAmount = 3000
             };
 
-            string planName = "一個月會籍";
-
-            RequestPrintInvoiceDto printInvoiceDto = new RequestPrintInvoiceDto()
+            DBResponsePrintInvoiceDto responsePrintInvoiceDto = new DBResponsePrintInvoiceDto
             {
                 ElectronicInvoiceId = electronicInvoice.ElectronicInvoiceId,
                 InvoiceNumber = electronicInvoice.InvoiceNumber,
-                PlanName = planName,
+                PlanName = "違約金",
                 RandomNumber = electronicInvoice.RandomNumber,
                 TotalAmount = electronicInvoice.TotalAmount,
             };
 
-            ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
-            {
-                OrderId = 1,
-                Category = 2
-            };
-
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.EditOrderStateAndGetInvoiceNumber(requestElectronicInvoice)).Returns((errorCodeNumber, electronicInvoice, planName));
+                => s.GetInvoiceNumberAndAddElectronicInvoice(requestElectronicInvoice)).Returns((errorCodeNumber, responsePrintInvoiceDto));
             mapperMock.Setup(s => s.Map<ElectronicInvoice>(orderIdAndCategoryDto)).Returns(requestElectronicInvoice);
 
             // Act
-            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto);
+            ErrorCodeDefine result = service.GetInvoiceNumberAndAddElectronicInvoice(orderIdAndCategoryDto);
 
             // Assert
-            Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
+            Assert.AreEqual(result, (ErrorCodeDefine)errorCodeNumber);
         }
 
         [TestMethod]
@@ -348,10 +349,7 @@ namespace UnitTest.Test.Invoice
             };
 
             int errorCodeNumber = (int)ErrorCodeDefine.ServerError;
-
-            ElectronicInvoice electronicInvoice = null;
-
-            string planName = "一個月會籍";
+            DBResponsePrintInvoiceDto responsePrintInvoiceDto = null;
 
             ElectronicInvoice requestElectronicInvoice = new ElectronicInvoice
             {
@@ -361,14 +359,14 @@ namespace UnitTest.Test.Invoice
 
             // Mock 設定
             invoiceRepositoryMock.Setup(s
-                => s.EditOrderStateAndGetInvoiceNumber(requestElectronicInvoice)).Returns((errorCodeNumber, electronicInvoice, planName));
+                => s.GetInvoiceNumberAndAddElectronicInvoice(requestElectronicInvoice)).Returns((errorCodeNumber, responsePrintInvoiceDto));
             mapperMock.Setup(s => s.Map<ElectronicInvoice>(orderIdAndCategoryDto)).Returns(requestElectronicInvoice);
 
             // Act
-            (ErrorCodeDefine errorCode, RequestPrintInvoiceDto printInvoiceDto) result = service.EditOrderStateAndGetInvoiceNumber(orderIdAndCategoryDto);
+            ErrorCodeDefine result = service.GetInvoiceNumberAndAddElectronicInvoice(orderIdAndCategoryDto);
 
             // Assert
-            Assert.AreEqual(result.errorCode, (ErrorCodeDefine)errorCodeNumber);
+            Assert.AreEqual(result, (ErrorCodeDefine)errorCodeNumber);
         }
 
         [TestMethod]

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ApiLayer.Models.Refund.Response;
 using ApiLayer.Service;
 using AutoMapper;
 using DomainLayer.Models;
@@ -41,9 +40,9 @@ namespace UnitTest.Test.TransactionTest
                 RecordPerPage = 8, // 只允許 8 或 12 或 16
             };
 
-            List<Refund> refunds = new List<Refund>
+            List<ResponseGetRefundDto> refunds = new List<ResponseGetRefundDto>
             {
-                new Refund
+                new ResponseGetRefundDto
                 {
                     RefundId = 1,
                     OrderId = 1,
@@ -81,7 +80,7 @@ namespace UnitTest.Test.TransactionTest
                 SortOption = null, // 只允許 status | createTime | null
                 RecordPerPage = 8, // 只允許 8 或 12 或 16
             };
-            List<Refund> refunds = null;
+            List<ResponseGetRefundDto> refunds = null;
             int totalPage = 1;
 
             // Mock 設定

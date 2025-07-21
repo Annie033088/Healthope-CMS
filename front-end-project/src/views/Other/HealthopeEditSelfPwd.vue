@@ -47,8 +47,8 @@ export default {
     InputSpan,
     BtnConfirm,
   },
-  props:{
-    notificationBoxConfirmFlag:Boolean
+  props: {
+    notificationBoxConfirmFlag: Boolean,
   },
   data() {
     return {
@@ -88,8 +88,8 @@ export default {
       try {
         // 傳輸登入資料
         const editAdminPwd = {
-          OldPwd : this.oldPwd,
-          NewPwd: this.newPwd
+          OldPwd: this.oldPwd,
+          NewPwd: this.newPwd,
         };
 
         // post後回傳
@@ -103,6 +103,11 @@ export default {
           this.$router.go(0);
           return;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -145,11 +150,12 @@ export default {
   max-width: 350px;
 }
 
-.inputSpanContainer{
+.inputSpanContainer {
   margin-bottom: 2%;
 }
 
-.btnAddContainer, .hintContainer {
+.btnAddContainer,
+.hintContainer {
   display: flex;
   justify-content: center;
   margin-top: 15px;

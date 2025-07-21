@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
+using DomainLayer.Models;
 using PersistentLayer.Interface;
 using PersistentLayer.Models;
-using DomainLayer.Models;
 
 namespace PersistentLayer.Repository
 {
@@ -189,6 +190,118 @@ namespace PersistentLayer.Repository
                 };
 
                 return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改預約課程備註
+        /// </summary>
+        public bool EditMemberPersonalClassRemark(MemberPersonalClass memberPersonalClass)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editMemberPersonalClassRemark @memberPersonalClassId, @remark, @updateTime";
+
+                cmd.Parameters.Add("@memberPersonalClassId", SqlDbType.Int).Value = memberPersonalClass.MemberPersonalClassId;
+                cmd.Parameters.Add("@remark", SqlDbType.NVarChar).Value = memberPersonalClass.Remark;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = memberPersonalClass.UpdateTime;
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+
+                // 受影響筆數>0代表成功
+                if (ExeCnt > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 修改會員的教練預約課程狀態
+        /// </summary>
+        public int EditMemberPersonalClassStatus(MemberPersonalClass memberPersonalClass)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+            int errorCodeNumber;
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editMemberPersonalClassStatus @memberPersonalClassId," +
+                    " @status, @updateTime, @errorCode OUTPUT";
+
+                cmd.Parameters.Add("@memberPersonalClassId", SqlDbType.Int).Value
+                    = memberPersonalClass.MemberPersonalClassId;
+                cmd.Parameters.Add("@status", SqlDbType.TinyInt).Value = memberPersonalClass.Status;
+                cmd.Parameters.Add("@updateTime", SqlDbType.DateTime2).Value = memberPersonalClass.UpdateTime;
+                SqlParameter errorCodeOutput = new SqlParameter("@errorCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(errorCodeOutput);
+
+                cmd.Connection.Open();
+
+                int ExeCnt = cmd.ExecuteNonQuery();
+                errorCodeNumber = (int)errorCodeOutput.Value;
+
+                return errorCodeNumber;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cmd.Connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// 每日取消當日預約中的教練課程 (預約中課程於一天之前 無確認，即改為取消)
+        /// </summary>
+        public Task AutoCancelReservingMemberPersonalClass()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = new SqlConnection(this.ConnStr);
+
+            try
+            {
+                cmd.CommandText = "EXEC pro_healthope_editReservingMemberPersonalClassStatusCancel";
+
+                cmd.Connection.Open();
+
+                cmd.ExecuteNonQuery();
+
+                return Task.CompletedTask;
             }
             catch (Exception)
             {

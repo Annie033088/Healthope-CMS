@@ -190,24 +190,6 @@ export default {
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.$router.push("/memberPersonalClass");
         } else {
-          if (this.unwatchFlag) {
-            this.unwatchFlag(); // 移除監聽
-            this.unwatchFlag = null;
-          }
-
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
           // 設定彈窗資料
           this.$notificationBox.notificationBoxFlag = true;
           this.$notificationBox.notificationBoxTitle = "發生錯誤!";
@@ -300,12 +282,17 @@ export default {
             this.selectDefaultFlag = false;
           else this.selectDefaultFlag = true;
         } else {
+          if (this.unwatchFlag) {
+            this.unwatchFlag(); // 確保監聽被移除
+            this.unwatchFlag = null;
+          }
+
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
             (newVal) => {
               if (newVal) {
-                let redirectRoute = "/";
+                let redirectRoute = null;
                 this.$emit("afterConfirmEvent", redirectRoute);
                 this.unwatchFlag(); // 移除監聽
                 this.unwatchFlag = null;
